@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LoginCredentials } from '../models/LoginCredentials';
-import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 
@@ -29,10 +29,6 @@ export class AuthService {
    * @memberof AuthService
    */
   login(model: LoginCredentials): Observable<any> {
-    return this.http.post(environment.apiBaseURL + '/login', model, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
-    });
+    return this.http.post(environment.apiBaseURL + '/login', model);
   }
 }
