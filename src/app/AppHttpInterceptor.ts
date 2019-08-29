@@ -49,12 +49,8 @@ export class AppHttpInterceptor implements HttpInterceptor {
         }
 
         return next.handle(request).pipe(tap((event: HttpEvent<any>) => {
-            if (event instanceof HttpResponse) {
-                console.log(`[${event.status}] ${event.statusText}\n${event.url.replace(/\?[\D\d\s]+/gi, "")}`);
-            }
         }, (err: any) => {
             if (err instanceof HttpErrorResponse) {
-                console.error(`[${err.status}] ${err.statusText}\n${err.url}\n${err.message}`);
                 if ((err.status === 401) || (err.status === 403)) {
                     this.router.navigate(["/public/login"]);
                     localStorage.removeItem('token');
