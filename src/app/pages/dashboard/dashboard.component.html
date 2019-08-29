@@ -1,1 +1,114 @@
-<p>dashboard works!</p>
+<mat-toolbar color="primary" class="mat-elevation-z6 sticky-top">
+    <span class="title">Dashboard</span>
+    <span style="flex: 1 1 auto;"></span>
+    <span></span>
+</mat-toolbar>
+
+<div class="container-fluid p-4">
+    <h3 class="mat-h3">
+        Preliminary Tasks
+    </h3>
+
+    <br>
+
+    <div>
+        <table mat-table [dataSource]="tasks">
+
+            <ng-container matColumnDef="title">
+                <th mat-header-cell *matHeaderCellDef> Title </th>
+                <td mat-cell *matCellDef="let task"> {{task.title}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef> Description </th>
+                <td mat-cell *matCellDef="let task"> {{task.description}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+    </div>
+
+</div>
+
+<div class="container-fluid p-4">
+    <h3 class="mat-h3">
+        Experiments
+    </h3>
+
+    <br>
+
+    <div>
+        <table mat-table [dataSource]="experiments">
+
+            <ng-container matColumnDef="title">
+                <th mat-header-cell *matHeaderCellDef> Title </th>
+                <td mat-cell *matCellDef="let experiment"> {{experiment.title}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef> Description </th>
+                <td mat-cell *matCellDef="let experiment"> {{experiment.description}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+    </div>
+</div>
+
+<div class="container-fluid p-4">
+    <h3 class="mat-h3">
+        Questionnaires
+    </h3>
+
+    <br>
+
+    <div>
+        <table mat-table [dataSource]="questionnaires">
+
+            <ng-container matColumnDef="title">
+                <th mat-header-cell *matHeaderCellDef> Title </th>
+                <td mat-cell *matCellDef="let questionnaire"> {{questionnaire.title}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef> Description </th>
+                <td mat-cell *matCellDef="let questionnaire"> {{questionnaire.description}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+    </div>
+</div>
+
+<div class="container-fluid p-4">
+    <h3 class="mat-h3">
+        Workflows
+    </h3>
+
+    <br>
+
+    <div>
+        <table mat-table [dataSource]="workflows">
+
+            <ng-container matColumnDef="title">
+                <th mat-header-cell *matHeaderCellDef> Title </th>
+                <td mat-cell *matCellDef="let workflow"> {{workflow.title}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef> Description </th>
+                <td mat-cell *matCellDef="let workflow"> {{workflow.description}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+    </div>
+</div>

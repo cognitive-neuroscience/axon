@@ -7,6 +7,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DashboardComponent implements OnInit {
 
+  experiments: any[] = [];
+  questionnaires: any[] = [];
+  workflows: any[] = [];
+  displayedColumns: string[] = ['title', 'description']
+
   constructor() { }
 
   ngOnInit() {
