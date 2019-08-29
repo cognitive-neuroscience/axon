@@ -1,0 +1,24 @@
+<div class="container">
+    <div class="d-flex flex-column align-items-center justify-content-center login">
+        <div class="card">
+            <div class="card-body">
+                <div align="center">
+                    <img src="../../../../assets/logo.png" style="height: 100px;" alt="">
+                </div>
+                <mat-form-field>
+                    <input type="email" matInput autocomplete [(ngModel)]="model.email" placeholder="Email">
+                </mat-form-field>
+                <br>
+                <mat-form-field>
+                    <input type="password" autocomplete matInput [(ngModel)]="model.password" placeholder="Password">
+                </mat-form-field>
+                <br>
+                <br>
+                <div align="center">
+                    <button mat-stroked-button color="primary" (click)="proceed()">Proceed&nbsp;<i
+                            class="material-icons">keyboard_arrow_right</i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
