@@ -8,11 +8,11 @@
     <h3 class="mat-h3">
         Preliminary Tasks
     </h3>
-
+    <hr>
     <br>
 
     <div>
-        <table mat-table [dataSource]="tasks">
+        <table mat-table [dataSource]="tasks" class="mat-elevation-z3">
 
             <ng-container matColumnDef="title">
                 <th mat-header-cell *matHeaderCellDef> Title </th>
@@ -22,6 +22,13 @@
             <ng-container matColumnDef="description">
                 <th mat-header-cell *matHeaderCellDef> Description </th>
                 <td mat-cell *matCellDef="let task"> {{task.description}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="config">
+                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <td mat-cell *matCellDef="let task"> <button mat-icon-button>
+                        <mat-icon>play_arrow</mat-icon>
+                    </button> </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -36,11 +43,11 @@
     <h3 class="mat-h3">
         Experiments
     </h3>
-
+    <hr>
     <br>
 
     <div>
-        <table mat-table [dataSource]="experiments">
+        <table mat-table [dataSource]="experiments" class="mat-elevation-z3">
 
             <ng-container matColumnDef="title">
                 <th mat-header-cell *matHeaderCellDef> Title </th>
@@ -50,6 +57,13 @@
             <ng-container matColumnDef="description">
                 <th mat-header-cell *matHeaderCellDef> Description </th>
                 <td mat-cell *matCellDef="let experiment"> {{experiment.description}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="config">
+                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <td mat-cell *matCellDef="let experiment"><button mat-icon-button>
+                        <mat-icon>play_arrow</mat-icon>
+                    </button></td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -63,11 +77,11 @@
     <h3 class="mat-h3">
         Questionnaires
     </h3>
-
+    <hr>
     <br>
 
     <div>
-        <table mat-table [dataSource]="questionnaires">
+        <table mat-table [dataSource]="questionnaires" class="mat-elevation-z3">
 
             <ng-container matColumnDef="title">
                 <th mat-header-cell *matHeaderCellDef> Title </th>
@@ -77,6 +91,13 @@
             <ng-container matColumnDef="description">
                 <th mat-header-cell *matHeaderCellDef> Description </th>
                 <td mat-cell *matCellDef="let questionnaire"> {{questionnaire.description}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="config">
+                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <td mat-cell *matCellDef="let questionnaire"><button mat-icon-button>
+                        <mat-icon>play_arrow</mat-icon>
+                    </button> </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -90,11 +111,11 @@
     <h3 class="mat-h3">
         Workflows
     </h3>
-
+    <hr>
     <br>
 
     <div>
-        <table mat-table [dataSource]="workflows">
+        <table mat-table [dataSource]="workflows" class="mat-elevation-z3">
 
             <ng-container matColumnDef="title">
                 <th mat-header-cell *matHeaderCellDef> Title </th>
@@ -104,6 +125,13 @@
             <ng-container matColumnDef="description">
                 <th mat-header-cell *matHeaderCellDef> Description </th>
                 <td mat-cell *matCellDef="let workflow"> {{workflow.description}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="config">
+                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <td mat-cell *matCellDef="let workflow"><button mat-icon-button>
+                        <mat-icon>play_arrow</mat-icon>
+                    </button></td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
