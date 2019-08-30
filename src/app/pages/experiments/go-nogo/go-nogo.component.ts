@@ -1,5 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+declare function setFullScreen(): any;
 
 @Component({
   selector: 'app-go-nogo',
@@ -76,6 +77,7 @@ export class GoNogoComponent implements OnInit {
   }
 
   async startPractice() {
+    this.startGameInFullScreen();
     this.resetData();
     this.proceedtoNextStep();
     await this.wait(2000);
@@ -198,6 +200,10 @@ export class GoNogoComponent implements OnInit {
   resetData() {
     this.data = [];
     this.totalScore = 0;
+  }
+
+  startGameInFullScreen() {
+    setFullScreen();
   }
 
   wait(time: number): Promise<void> {

@@ -5,7 +5,7 @@ import { Workflow } from 'src/app/models/Workflow';
 import { DataService } from 'src/app/services/data.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-
+declare function closeFullscreen(): any;
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -103,7 +103,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
    *
    * @memberof DashboardComponent
    */
-  ngOnInit() {
+  async ngOnInit() {
+
+    try {
+      await closeFullscreen();
+    } catch (error) {
+
+    }
+
     this.experimentsSubscription = this.dataService.getExperiments().subscribe((results: Experiment[]) => {
       this.tasks = results.filter(result => result.description.includes('Task'));
       this.experiments = results.filter(result => !result.description.includes('Task'));
