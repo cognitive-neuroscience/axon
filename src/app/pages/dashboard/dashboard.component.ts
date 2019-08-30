@@ -112,18 +112,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     this.experimentsSubscription = this.dataService.getExperiments().subscribe((results: Experiment[]) => {
-      this.tasks = results.filter(result => result.description.includes('Task'));
-      this.experiments = results.filter(result => !result.description.includes('Task'));
+      this.tasks = results.filter(result => result.type === 'task').sort((a, b) => {
+        if (a.id > b.id) return 1; else return -1;
+      });
+      this.experiments = results.filter(result => result.type === 'experiment').sort((a, b) => {
+        if (a.id > b.id) return 1; else return -1;
+      });;
     }, (error) => {
       console.error(error);
     });
     this.questionnairesSubscription = this.dataService.getQuestionnaires().subscribe((results: Questionnaire[]) => {
-      this.questionnaires = results;
+      this.questionnaires = results.sort((a, b) => {
+        if (a.id > b.id) return 1; else return -1;
+      });;
     }, (error) => {
       console.error(error);
     });
     this.workflowsSubscription = this.dataService.getWorkflows().subscribe((results: Workflow[]) => {
-      this.workflows = results;
+      this.workflows = results.sort((a, b) => {
+        if (a.id > b.id) return 1; else return -1;
+      });;
     }, (error) => {
       console.error(error);
     });
