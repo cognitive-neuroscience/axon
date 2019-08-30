@@ -167,12 +167,24 @@
     </p>
 
     <div align="center" class="bottom-button-bar">
-        <div class="d-flex flex-row align-items-center justify-content-center">
+        <div class="d-flex flex-row align-items-center justify-content-around">
             <div class="m-2">
-                <button mat-raised-button color="warn" (click)="consent(false)">DECLINE</button>
+                <button mat-raised-button color="warn" (click)="consent(false)">
+                    DECLINE
+                    &nbsp;
+                    <mat-icon>
+                        clear
+                    </mat-icon>
+                </button>
             </div>
             <div class="m-2">
-                <button mat-raised-button color="primary" (click)="consent(true)">ACCEPT</button>
+                <button mat-raised-button color="primary" (click)="consent(true)">
+                    ACCEPT
+                    &nbsp;
+                    <mat-icon>
+                        check
+                    </mat-icon>
+                </button>
             </div>
         </div>
     </div>

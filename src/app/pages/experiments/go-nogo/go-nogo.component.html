@@ -251,7 +251,7 @@
             </div>
 
             <div class="statement" *ngIf="isScored">
-                Your score for this game is : {{totalScore}}
+                Your earnings in this game is : {{totalScore}} cent(s)
             </div>
 
             <br>
@@ -270,7 +270,7 @@
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
                         <mat-icon>
                             arrow_backward
                         </mat-icon>

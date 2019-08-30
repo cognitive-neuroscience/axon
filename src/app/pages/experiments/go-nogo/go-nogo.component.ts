@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 export class GoNogoComponent implements OnInit {
 
   step: number = 1;
-
   color: string = '';
   feedback: string = '';
   isScored: boolean = true;
@@ -17,22 +16,20 @@ export class GoNogoComponent implements OnInit {
   showScoreAfterEveryTrial: boolean = true;
   scoreForSpecificTrial: number = 0;
   totalScore: number = 0;
-
   isPractice: boolean = false;
   isStimulus: boolean = false;
-
   practiceTrials: number = 1;
   actualTrials: number = 10;
   currentTrial: number = 0;
-
   isResponseAllowed: boolean = false;
-
+  maxResponseTime: number = 800;        // In milliseconds
+  durationOfFeedback: number = 1000;    // In milliseconds
+  interTrialDelay: number = 1000;       // In milliseconds
   data: {
     actualAnswer: string,
     userAnswer: string,
     responseTime: number
   }[] = [];
-
   timer: {
     started: number,
     ended: number
@@ -109,7 +106,10 @@ export class GoNogoComponent implements OnInit {
     this.timer.ended = 0;
 
     console.log(this.isPractice ? `Practice trial: ${this.currentTrial}` : `Actual trial: ${this.currentTrial}`);
-    await this.wait(2000);
+
+    // This is the delay between showing the stimulus and showing the feedback
+    await this.wait(this.maxResponseTime);
+
     this.showFeedback();
   }
 
@@ -150,14 +150,19 @@ export class GoNogoComponent implements OnInit {
       this.scoreForSpecificTrial = 0;
     }
 
-    await this.wait(1000);
+    // This is the duration for which the feedback is shown on the screen
+    await this.wait(this.durationOfFeedback);
+
     this.decideToContinue();
   }
 
   async decideToContinue() {
     if (this.isPractice) {
       if (this.currentTrial < this.practiceTrials) {
-        await this.wait(1000);
+
+        // This is delay between end of feedback of previous trial and showing the next stimulus
+        await this.wait(this.interTrialDelay);
+
         this.showStimulus();
       } else {
         this.proceedtoNextStep();
@@ -175,6 +180,9 @@ export class GoNogoComponent implements OnInit {
         console.log(this.data);
       }
     }
+  }
+
+  uploadResults() {
   }
 
   continueAhead() {
