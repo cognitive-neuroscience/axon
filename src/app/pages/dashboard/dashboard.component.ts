@@ -4,6 +4,7 @@ import { Questionnaire } from 'src/app/models/Questionnaire';
 import { Workflow } from 'src/app/models/Workflow';
 import { DataService } from 'src/app/services/data.service';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -92,7 +93,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @memberof DashboardComponent
    */
   constructor(
-    private dataService: DataService
+    private dataService: DataService,
+    private router: Router
   ) { }
 
 
@@ -130,6 +132,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.experimentsSubscription.unsubscribe();
     this.questionnairesSubscription.unsubscribe();
     this.workflowsSubscription.unsubscribe();
+  }
+
+
+  run(prefix: string, path: string) {
+    this.router.navigate([`/${prefix}/${path}`]);
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-consent',
@@ -7,9 +7,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ConsentComponent implements OnInit {
 
+  @Output()
+  broadcastConsent: EventEmitter<Boolean> = new EventEmitter();
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  consent(answer: boolean) {
+    this.broadcastConsent.emit(answer);
   }
 
 }
