@@ -10,6 +10,7 @@ import { LoginResponse } from '../models/LoginResponse';
 })
 export class AuthService {
 
+  private _userRole: string = 'user';
 
   /**
    * Creates an instance of AuthService
@@ -32,4 +33,13 @@ export class AuthService {
   login(model: LoginCredentials): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(environment.apiBaseURL + '/login', model);
   }
+
+  setRole(role: string) {
+    this._userRole = role;
+  }
+
+  get userRole(): string {
+    return this._userRole;
+  }
+
 }
