@@ -142,6 +142,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
 
+
+  /**
+   * Run experiment
+   *
+   * @param {string} prefix
+   * @param {string} path
+   * @memberof DashboardComponent
+   */
   run(prefix: string, path: string) {
     this.router.navigate([`/${prefix}/${path}`]);
   }

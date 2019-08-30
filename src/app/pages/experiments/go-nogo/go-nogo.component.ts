@@ -53,13 +53,33 @@ export class GoNogoComponent implements OnInit {
     }
   }
 
+
+  /**
+   * Creates an instance of GoNogoComponent
+   * 
+   * @param {Router} router
+   * @memberof GoNogoComponent
+   */
   constructor(
     private router: Router
   ) { }
 
+
+  /**
+   * ngOnInit lifecycle hook
+   *
+   * @memberof GoNogoComponent
+   */
   ngOnInit() {
   }
 
+
+  /**
+   * Process consent
+   *
+   * @param {Boolean} consent
+   * @memberof GoNogoComponent
+   */
   processConsent(consent: Boolean) {
     if (consent) {
       this.proceedtoNextStep();
@@ -68,14 +88,32 @@ export class GoNogoComponent implements OnInit {
     }
   }
 
+
+  /**
+   * Go back to previous step
+   *
+   * @memberof GoNogoComponent
+   */
   proceedtoPreviousStep() {
     this.step -= 1;
   }
 
+
+  /**
+   * Proceed to next step
+   *
+   * @memberof GoNogoComponent
+   */
   proceedtoNextStep() {
     this.step += 1;
   }
 
+
+  /**
+   * Start the practice session
+   *
+   * @memberof GoNogoComponent
+   */
   async startPractice() {
     this.startGameInFullScreen();
     this.resetData();
@@ -87,6 +125,12 @@ export class GoNogoComponent implements OnInit {
     this.showStimulus();
   }
 
+
+  /**
+   * Start actual game
+   *
+   * @memberof GoNogoComponent
+   */
   async startActualGame() {
     this.resetData();
     this.proceedtoNextStep();
@@ -97,6 +141,12 @@ export class GoNogoComponent implements OnInit {
     this.showStimulus();
   }
 
+
+  /**
+   * Show stimulus
+   *
+   * @memberof GoNogoComponent
+   */
   async showStimulus() {
     this.reset();
     this.currentTrial += 1;
@@ -115,6 +165,12 @@ export class GoNogoComponent implements OnInit {
     this.showFeedback();
   }
 
+
+  /**
+   * Generate target stimulus
+   *
+   * @memberof GoNogoComponent
+   */
   generateStimulus() {
     const random = Math.random();
     if (random < 0.5) {
@@ -134,6 +190,12 @@ export class GoNogoComponent implements OnInit {
     }
   }
 
+
+  /**
+   * Show feedback
+   *
+   * @memberof GoNogoComponent
+   */
   async showFeedback() {
     this.isStimulus = false;
     this.isResponseAllowed = false;
@@ -158,6 +220,12 @@ export class GoNogoComponent implements OnInit {
     this.decideToContinue();
   }
 
+
+  /**
+   * Check if trials have been finished
+   *
+   * @memberof GoNogoComponent
+   */
   async decideToContinue() {
     if (this.isPractice) {
       if (this.currentTrial < this.practiceTrials) {
@@ -184,28 +252,67 @@ export class GoNogoComponent implements OnInit {
     }
   }
 
+
+  /**
+   * Upload results
+   *
+   * @memberof GoNogoComponent
+   */
   uploadResults() {
   }
 
+
+  /**
+   * Go to dashboard or next experiment
+   *
+   * @memberof GoNogoComponent
+   */
   continueAhead() {
     this.router.navigate(['/dashboard']);
   }
 
+
+
+  /**
+   * Reset trial data
+   *
+   * @memberof GoNogoComponent
+   */
   reset() {
     this.color = '';
     this.feedback = '';
     this.scoreForSpecificTrial = 0;
   }
 
+
+  /**
+   * Reset all results
+   *
+   * @memberof GoNogoComponent
+   */
   resetData() {
     this.data = [];
     this.totalScore = 0;
   }
 
+
+  /**
+   * Start fullscreen
+   *
+   * @memberof GoNogoComponent
+   */
   startGameInFullScreen() {
     setFullScreen();
   }
 
+
+  /**
+   * Delay function
+   *
+   * @param {number} time
+   * @returns {Promise<void>}
+   * @memberof GoNogoComponent
+   */
   wait(time: number): Promise<void> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
