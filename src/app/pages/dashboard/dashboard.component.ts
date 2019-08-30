@@ -56,7 +56,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @type {string[]}
    * @memberof DashboardComponent
    */
-  displayedColumns: string[] = ['title', 'description', 'config']
+  displayedColumnsForExperiments: string[] = ['title', 'description', 'route'];
+
+  /**
+ * List of columns to show on the table in the view
+ *
+ * @type {string[]}
+ * @memberof DashboardComponent
+ */
+  displayedColumnsForOthers: string[] = ['title', 'description', 'data'];
 
 
   /**
