@@ -14,12 +14,12 @@ export class GoNogoComponent implements OnInit {
   isScored: boolean = true;
   showFeedbackAfterEveryTrial: boolean = true;
   showScoreAfterEveryTrial: boolean = true;
-  numberOfBreaks: number = 0;
+  numberOfBreaks: number = 2;
   maxResponseTime: number = 800;        // In milliseconds
   durationOfFeedback: number = 1000;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
   practiceTrials: number = 1;
-  actualTrials: number = 10;
+  actualTrials: number = 6;
 
   step: number = 1;
   color: string = '';
@@ -28,6 +28,7 @@ export class GoNogoComponent implements OnInit {
   totalScore: number = 0;
   isPractice: boolean = false;
   isStimulus: boolean = false;
+  isBreak: boolean = false;
   currentTrial: number = 0;
   isResponseAllowed: boolean = false;
   data: {
@@ -250,11 +251,7 @@ export class GoNogoComponent implements OnInit {
   async decideToContinue() {
     if (this.isPractice) {
       if (this.currentTrial < this.practiceTrials) {
-
-        // This is delay between end of feedback of previous trial and showing the next stimulus
-        await this.wait(this.interTrialDelay);
-
-        this.showStimulus();
+        this.continueGame();
       } else {
         this.proceedtoNextStep();
         await this.wait(2000);
@@ -262,8 +259,21 @@ export class GoNogoComponent implements OnInit {
       }
     } else {
       if (this.currentTrial < this.actualTrials) {
-        await this.wait(1000);
-        this.showStimulus();
+        if (this.numberOfBreaks === 0) {
+          this.continueGame();
+        } else {
+          let breakAtTrailIndices = [];
+          let setSize = this.actualTrials / (this.numberOfBreaks + 1);
+          for (let i = 1; i < this.numberOfBreaks + 1; i++) {
+            breakAtTrailIndices.push(setSize * i);
+          }
+          if (breakAtTrailIndices.includes(this.currentTrial)) {
+            this.isBreak = true;
+          } else {
+            this.isBreak = false;
+            this.continueGame();
+          }
+        }
       } else {
         this.proceedtoNextStep();
         await this.wait(2000);
@@ -271,6 +281,29 @@ export class GoNogoComponent implements OnInit {
         console.log(this.data);
       }
     }
+  }
+
+
+  /**
+   * Resume game
+   *
+   * @memberof GoNogoComponent
+   */
+  resume() {
+    this.reset();
+    this.isBreak = false;
+    this.continueGame();
+  }
+
+
+  /**
+   * Go ahead with next trial
+   *
+   * @memberof GoNogoComponent
+   */
+  async continueGame() {
+    await this.wait(this.interTrialDelay);
+    this.showStimulus();
   }
 
 

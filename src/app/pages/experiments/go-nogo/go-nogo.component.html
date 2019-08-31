@@ -1,12 +1,12 @@
 <div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
 
     <!-- Initial screen to get participant's consent -->
-    <div class="full-box" *ngIf="step === 1">
+    <div class="full-box" *ngIf="!isBreak && step === 1">
         <app-consent (broadcastConsent)="processConsent($event)"></app-consent>
     </div>
 
     <!-- Show welcome message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 2">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
 
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
@@ -67,7 +67,7 @@
     </div>
 
     <!-- Show practice round message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 3">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 3">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Practice Round</h2>
@@ -126,12 +126,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 4">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 4">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start Practice Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 5">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 5">
 
         <div *ngIf="isStimulus">
             <div class="square" [style.background-color]="color">
@@ -146,12 +146,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 6">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 6">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 7">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 7">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Practice Round Is Now Complete</h2>
@@ -214,12 +214,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 8">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Start Practice Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 9">
+    <!-- Start Actual Round -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
 
         <div *ngIf="isStimulus">
             <div class="square" [style.background-color]="color">
@@ -238,12 +238,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 10">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 10">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 11">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 11">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Game has finished</h2>
@@ -287,6 +287,55 @@
                 <div>
                     <button mat-raised-button color="primary" (click)="continueAhead()">
                         CONTINUE
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Show break message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="isBreak">
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>It's break time</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+
+            <div class="statement">
+                Take a short break
+            </div>
+
+            <br>
+
+            <div class="statement-final">
+                Click 'RESUME' when you are ready
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="resume()">
+                        RESUME
                         &nbsp;
                         <mat-icon>
                             arrow_forward
