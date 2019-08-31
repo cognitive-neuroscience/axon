@@ -13,6 +13,24 @@ export class DataService {
 
 
     /**
+     * List of experiments
+     *
+     * @private
+     * @memberof DataService
+     */
+    private experiments = [];
+
+    /**
+     * Set experiments
+     *
+     * @param {Experiment[]} experiments
+     * @memberof DataService
+     */
+    setExperiments(experiments: Experiment[]): void {
+        this.experiments = experiments;
+    }
+
+    /**
      * Creates an instance of DataService
      * 
      * @param {HttpClient} http
