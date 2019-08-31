@@ -30,6 +30,16 @@ export class DataService {
         this.experiments = experiments;
     }
 
+    getExperimentById(id: number): Experiment {
+        let exp = null;
+        this.experiments.forEach((experiment: Experiment) => {
+            if (experiment.id === id) {
+                exp = experiment;
+            }
+        });
+        return exp;
+    }
+
     /**
      * Creates an instance of DataService
      * 
