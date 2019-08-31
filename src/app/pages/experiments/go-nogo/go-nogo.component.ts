@@ -1,5 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import { DataService } from 'src/app/services/data.service';
 declare function setFullScreen(): any;
 
 @Component({
@@ -64,7 +65,8 @@ export class GoNogoComponent implements OnInit {
    * @memberof GoNogoComponent
    */
   constructor(
-    private router: Router
+    private router: Router,
+    private dataService: DataService
   ) { }
 
 
@@ -74,6 +76,18 @@ export class GoNogoComponent implements OnInit {
    * @memberof GoNogoComponent
    */
   ngOnInit() {
+    let route_split = this.router.url.split('/');
+    let routePath = route_split[route_split.length - 1];
+    let currentExperiment = this.dataService.getExperimentByRoute(routePath);
+    this.isScored = currentExperiment.isScored
+    this.showFeedbackAfterEveryTrial = currentExperiment.showFeedbackAfterEveryTrial
+    this.showScoreAfterEveryTrial = currentExperiment.showScoreAfterEveryTrial
+    this.numberOfBreaks = currentExperiment.numberOfBreaks
+    this.maxResponseTime = currentExperiment.maxResponseTime
+    this.durationOfFeedback = currentExperiment.durationOfFeedback
+    this.interTrialDelay = currentExperiment.interTrialDelay
+    this.practiceTrials = currentExperiment.practiceTrials
+    this.actualTrials = currentExperiment.actualTrials
   }
 
 
@@ -213,7 +227,11 @@ export class GoNogoComponent implements OnInit {
       this.scoreForSpecificTrial = 10;
       this.totalScore += 10;
     } else {
-      this.feedback = "Incorrect";
+      if (this.data[this.data.length - 1].actualAnswer === 'responded') {
+        this.feedback = "Too slow"
+      } else {
+        this.feedback = "Incorrect";
+      }
       this.scoreForSpecificTrial = 0;
     }
 

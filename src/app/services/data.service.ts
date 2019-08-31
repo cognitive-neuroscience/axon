@@ -30,10 +30,18 @@ export class DataService {
         this.experiments = experiments;
     }
 
-    getExperimentById(id: number): Experiment {
+
+    /**
+     * Get Experiment by route
+     *
+     * @param {string} route
+     * @returns {Experiment}
+     * @memberof DataService
+     */
+    getExperimentByRoute(route: string): Experiment {
         let exp = null;
         this.experiments.forEach((experiment: Experiment) => {
-            if (experiment.id === id) {
+            if (experiment.route === route) {
                 exp = experiment;
             }
         });
