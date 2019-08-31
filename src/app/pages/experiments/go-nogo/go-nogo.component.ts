@@ -9,23 +9,26 @@ declare function setFullScreen(): any;
 })
 export class GoNogoComponent implements OnInit {
 
-  step: number = 1;
-  color: string = '';
-  feedback: string = '';
+  // Default Experiment config 
   isScored: boolean = true;
   showFeedbackAfterEveryTrial: boolean = true;
   showScoreAfterEveryTrial: boolean = true;
+  numberOfBreaks: number = 0;
+  maxResponseTime: number = 800;        // In milliseconds
+  durationOfFeedback: number = 1000;    // In milliseconds
+  interTrialDelay: number = 1000;       // In milliseconds
+  practiceTrials: number = 1;
+  actualTrials: number = 10;
+
+  step: number = 1;
+  color: string = '';
+  feedback: string = '';
   scoreForSpecificTrial: number = 0;
   totalScore: number = 0;
   isPractice: boolean = false;
   isStimulus: boolean = false;
-  practiceTrials: number = 1;
-  actualTrials: number = 10;
   currentTrial: number = 0;
   isResponseAllowed: boolean = false;
-  maxResponseTime: number = 800;        // In milliseconds
-  durationOfFeedback: number = 1000;    // In milliseconds
-  interTrialDelay: number = 1000;       // In milliseconds
   data: {
     actualAnswer: string,
     userAnswer: string,
