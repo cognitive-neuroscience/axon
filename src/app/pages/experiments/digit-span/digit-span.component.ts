@@ -11,15 +11,15 @@ declare function setFullScreen(): any;
 export class DigitSpanComponent implements OnInit {
 
   // Default Experiment config 
-  isScored: boolean = true;
-  showFeedbackAfterEveryTrial: boolean = true;
-  showScoreAfterEveryTrial: boolean = true;
+  isScored: boolean | number = true;
+  showFeedbackAfterEveryTrial: boolean | number = false;
+  showScoreAfterEveryTrial: boolean | number = false;
   numberOfBreaks: number = 0;
   maxResponseTime: number = 0;        // In milliseconds, 0 for indefinte
   durationOfFeedback: number = 1000;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
   practiceTrials: number = 1;
-  actualTrials: number = 1;
+  actualTrials: number = 6;
 
   step: number = 1;
   digitShown: string = '';
@@ -293,8 +293,9 @@ export class DigitSpanComponent implements OnInit {
       this.failedAttempts += 1;
     }
 
-    // This is the duration for which the feedback is shown on the screen
-    await this.wait(this.durationOfFeedback);
+    if (this.showFeedbackAfterEveryTrial || this.isPractice) {
+      await this.wait(this.durationOfFeedback);
+    }
     this.decideToContinue();
   }
 

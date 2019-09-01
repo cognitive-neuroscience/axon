@@ -11,9 +11,9 @@ declare function setFullScreen(): any;
 export class GoNogoComponent implements OnInit {
 
   // Default Experiment config 
-  isScored: boolean = true;
-  showFeedbackAfterEveryTrial: boolean = true;
-  showScoreAfterEveryTrial: boolean = true;
+  isScored: boolean | number = true;
+  showFeedbackAfterEveryTrial: boolean | number = false;
+  showScoreAfterEveryTrial: boolean | number = false;
   numberOfBreaks: number = 2;
   maxResponseTime: number = 800;        // In milliseconds
   durationOfFeedback: number = 1000;    // In milliseconds
@@ -221,6 +221,7 @@ export class GoNogoComponent implements OnInit {
    * @memberof GoNogoComponent
    */
   async showFeedback() {
+
     this.isStimulus = false;
     this.isResponseAllowed = false;
 
@@ -246,9 +247,9 @@ export class GoNogoComponent implements OnInit {
       this.scoreForSpecificTrial = 0;
     }
 
-    // This is the duration for which the feedback is shown on the screen
-    await this.wait(this.durationOfFeedback);
-
+    if (this.showFeedbackAfterEveryTrial || this.isPractice) {
+      await this.wait(this.durationOfFeedback);
+    }
     this.decideToContinue();
   }
 
