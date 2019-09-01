@@ -4,9 +4,9 @@ export class Experiment {
     description: string = '';
     route: string = '';
     type: string = '';
-    isScored: boolean = true;
-    showFeedbackAfterEveryTrial: boolean = true;
-    showScoreAfterEveryTrial: boolean = true;
+    isScored: boolean | number = true;
+    showFeedbackAfterEveryTrial: boolean | number = true;
+    showScoreAfterEveryTrial: boolean | number = true;
     numberOfBreaks: number = 0;
     maxResponseTime: number = 800;
     durationOfFeedback: number = 1000;
