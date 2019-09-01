@@ -1,1 +1,442 @@
-<p>digit-span works!</p>
+<div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
+
+    <!-- Initial screen to get participant's consent -->
+    <div class="full-box" *ngIf="!isBreak && step === 1">
+        <app-consent (broadcastConsent)="processConsent($event)"></app-consent>
+    </div>
+
+    <!-- Show welcome message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
+
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Welcome to Digit Span Task</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="title">
+                <h2 class="mat-h2">
+                    Read the instructions carefully
+                </h2>
+            </div>
+
+            <div class="statement">
+                In this task, a sequence of numbers will appear on the screen, one at a time
+            </div>
+
+            <div class="statement">
+                When the keypad is shown, you need to enter the numbers in the same order and click the next arrow
+            </div>
+
+            <div class="statement-final">
+                Click 'NEXT' to proceed
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show practice round message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 3">
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Practice Round</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="statement">
+                <h4>Let's Practice</h4>
+            </div>
+
+            <div class="statement">
+                Remember, when the keypad is shown, you need to enter the numbers in the same order as they were shown
+                and click the next arrow
+            </div>
+
+            <br>
+
+            <div class="statement">
+                The game will launch in fullscreen
+            </div>
+
+            <div class="statement-final">
+                Click 'START' when you are ready for the practice round
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="startPractice()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 4">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Start Practice Round -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 5">
+
+        <div *ngIf="isStimulus">
+            <div style="font-size: 50px;">
+                {{digitShown}}
+            </div>
+        </div>
+
+        <div *ngIf="isFeedback">
+            <div class="feedback">
+                {{feedback}}
+            </div>
+        </div>
+
+        <div *ngIf="isKeypad">
+            <div class="m-4" align="center">
+                <input class="form-control form-control-lg" type="text" style="text-align: center;" disabled
+                    [(ngModel)]="userAnswer" />
+            </div>
+            <div class="d-flex flex-row align-items-center justify-content-center">
+                <div class="keypadButton" (click)="addNumber(1)">
+                    1
+                </div>
+                <div class="keypadButton" (click)="addNumber(2)">
+                    2
+                </div>
+                <div class="keypadButton" (click)="addNumber(3)">
+                    3
+                </div>
+            </div>
+            <div class="d-flex flex-row align-items-center justify-content-center">
+                <div class="keypadButton" (click)="addNumber(4)">
+                    4
+                </div>
+                <div class="keypadButton" (click)="addNumber(5)">
+                    5
+                </div>
+                <div class="keypadButton" (click)="addNumber(6)">
+                    6
+                </div>
+            </div>
+            <div class="d-flex flex-row align-items-center justify-content-center">
+                <div class="keypadButton" (click)="addNumber(7)">
+                    7
+                </div>
+                <div class="keypadButton" (click)="addNumber(8)">
+                    8
+                </div>
+                <div class="keypadButton" (click)="addNumber(9)">
+                    9
+                </div>
+            </div>
+            <div class="d-flex flex-row align-items-center justify-content-center">
+                <div class="keypadButton" (click)="userAnswer = ''">
+                    <i class="material-icons">clear</i>
+                </div>
+                <div class="keypadButton" (click)="addNumber(0)">
+                    0
+                </div>
+                <div class="keypadButton" (click)="showFeedback()">
+                    <i class="material-icons">play_arrow</i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 6">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Show practice round finished message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 7">
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Practice Round Is Now Complete</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="statement">
+                <h4>You will now play the actual game</h4>
+            </div>
+
+            <div *ngIf="isScored" class="statement">
+                You will earn 10 cents for every right answer
+            </div>
+
+            <div *ngIf="isScored" class="statement">
+                Good luck !
+            </div>
+
+            <br>
+
+            <div class="statement">
+                Remember, when the keypad is shown, you need to enter the numbers in the same order as they were shown
+                and click the next arrow
+            </div>
+
+            <div class="statement-final">
+                Click 'START' when you are ready for the actual game
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="startActualGame()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Start Actual Round -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
+        <div *ngIf="isStimulus">
+            <div style="font-size: 50px;">
+                {{digitShown}}
+            </div>
+        </div>
+
+        <div *ngIf="isFeedback" align="center">
+            <div class="feedback" *ngIf="showFeedbackAfterEveryTrial">
+                <span>{{feedback}}</span>
+                <br>
+                <span *ngIf="showScoreAfterEveryTrial && (scoreForSpecificTrial > 0)">
+                    +{{scoreForSpecificTrial}}
+                </span>
+            </div>
+        </div>
+
+        <div *ngIf="isKeypad">
+            <div class="m-4" align="center">
+                <input class="form-control form-control-lg" type="text" style="text-align: center;" disabled
+                    [(ngModel)]="userAnswer" />
+            </div>
+            <div class="d-flex flex-row align-items-center justify-content-center">
+                <div class="keypadButton" (click)="addNumber(1)">
+                    1
+                </div>
+                <div class="keypadButton" (click)="addNumber(2)">
+                    2
+                </div>
+                <div class="keypadButton" (click)="addNumber(3)">
+                    3
+                </div>
+            </div>
+            <div class="d-flex flex-row align-items-center justify-content-center">
+                <div class="keypadButton" (click)="addNumber(4)">
+                    4
+                </div>
+                <div class="keypadButton" (click)="addNumber(5)">
+                    5
+                </div>
+                <div class="keypadButton" (click)="addNumber(6)">
+                    6
+                </div>
+            </div>
+            <div class="d-flex flex-row align-items-center justify-content-center">
+                <div class="keypadButton" (click)="addNumber(7)">
+                    7
+                </div>
+                <div class="keypadButton" (click)="addNumber(8)">
+                    8
+                </div>
+                <div class="keypadButton" (click)="addNumber(9)">
+                    9
+                </div>
+            </div>
+            <div class="d-flex flex-row align-items-center justify-content-center">
+                <div class="keypadButton" (click)="userAnswer = ''">
+                    <i class="material-icons">clear</i>
+                </div>
+                <div class="keypadButton" (click)="addNumber(0)">
+                    0
+                </div>
+                <div class="keypadButton" (click)="showFeedback()">
+                    <i class="material-icons">play_arrow</i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 10">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Show practice round finished message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 11">
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Game has finished</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="statement">
+                <h4>Congratulations ! You have finished the game successfully</h4>
+            </div>
+
+            <div class="statement" *ngIf="isScored">
+                Your earnings in this game is : {{totalScore}} cent(s)
+            </div>
+
+            <br>
+
+            <div class="statement">
+                Thank you for your participation
+            </div>
+
+            <div class="statement-final">
+                Click 'CONTINUE'
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="continueAhead()">
+                        CONTINUE
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Show break message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="isBreak">
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>It's break time</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+
+            <div class="statement">
+                Take a short break
+            </div>
+
+            <br>
+
+            <div class="statement-final">
+                Click 'RESUME' when you are ready
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="resume()">
+                        RESUME
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

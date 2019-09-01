@@ -34,7 +34,9 @@ export class GoNogoComponent implements OnInit {
   data: {
     actualAnswer: string,
     userAnswer: string,
-    responseTime: number
+    responseTime: number,
+    isCorrect: number,
+    score: number
   }[] = [];
   timer: {
     started: number,
@@ -196,14 +198,18 @@ export class GoNogoComponent implements OnInit {
       this.data.push({
         actualAnswer: 'responded',
         userAnswer: 'not-responded',
-        responseTime: 0
+        responseTime: 0,
+        isCorrect: 0,
+        score: 0
       });
     } else {
       this.color = 'orange';
       this.data.push({
         actualAnswer: 'not-responded',
         userAnswer: 'not-responded',
-        responseTime: 0
+        responseTime: 0,
+        isCorrect: 0,
+        score: 0
       });
     }
   }
@@ -225,6 +231,8 @@ export class GoNogoComponent implements OnInit {
 
     if (this.data[this.data.length - 1].actualAnswer === this.data[this.data.length - 1].userAnswer) {
       this.feedback = "Correct";
+      this.data[this.data.length - 1].isCorrect = 1;
+      this.data[this.data.length - 1].score = 10;
       this.scoreForSpecificTrial = 10;
       this.totalScore += 10;
     } else {
@@ -233,6 +241,8 @@ export class GoNogoComponent implements OnInit {
       } else {
         this.feedback = "Incorrect";
       }
+      this.data[this.data.length - 1].isCorrect = 0;
+      this.data[this.data.length - 1].score = 0;
       this.scoreForSpecificTrial = 0;
     }
 
