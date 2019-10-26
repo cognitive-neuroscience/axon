@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiBaseURL: "https://sharplab.praveenravichandran.xyz/api"
+  apiBaseURL: `${window.location.protocol}//api.${window.location.host}/api`
 };
