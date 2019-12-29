@@ -71,11 +71,11 @@ export class StroopTaskComponent implements OnInit {
             case '3': this.data[this.data.length - 1].userAnswer = 'green'; break;
             default: this.data[this.data.length - 1].userAnswer = ''; break;
           }
-        }
-        try {
-          clearTimeout(this.sTimeout);
-          this.showFeedback();
-        } catch (error) {
+          try {
+            clearTimeout(this.sTimeout);
+            this.showFeedback();
+          } catch (error) {
+          }
         }
       } catch (error) {
       }

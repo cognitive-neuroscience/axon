@@ -46,6 +46,8 @@ export class GoNogoComponent implements OnInit {
       ended: 0
     };
   showFixation: boolean = false;
+  sTimeout: any;
+  feedbackShown: boolean = false;
 
   @HostListener('window:keypress', ['$event'])
   onKeyPress(event: KeyboardEvent) {
@@ -56,6 +58,11 @@ export class GoNogoComponent implements OnInit {
           this.timer.ended = new Date().getTime();
           this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
           this.data[this.data.length - 1].userAnswer = 'responded';
+          try {
+            clearTimeout(this.sTimeout);
+            this.showFeedback();
+          } catch (error) {
+          }
         }
       } catch (error) {
       }
@@ -188,9 +195,11 @@ export class GoNogoComponent implements OnInit {
     console.log(this.isPractice ? `Practice trial: ${this.currentTrial}` : `Actual trial: ${this.currentTrial}`);
 
     // This is the delay between showing the stimulus and showing the feedback
-    await this.wait(this.maxResponseTime);
-
-    this.showFeedback();
+    this.sTimeout = setTimeout(() => {
+      if (!this.feedbackShown) {
+        this.showFeedback();
+      }
+    }, this.maxResponseTime);
   }
 
 
@@ -229,7 +238,7 @@ export class GoNogoComponent implements OnInit {
    * @memberof GoNogoComponent
    */
   async showFeedback() {
-
+    this.feedbackShown = true;
     this.isStimulus = false;
     this.isResponseAllowed = false;
 
@@ -354,6 +363,7 @@ export class GoNogoComponent implements OnInit {
   reset() {
     this.color = '';
     this.feedback = '';
+    this.feedbackShown = false;
     this.scoreForSpecificTrial = 0;
   }
 
