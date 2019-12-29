@@ -138,6 +138,10 @@
             </div>
         </div>
 
+        <div *ngIf="showFixation">
+            <i class="material-icons" style="font-size: 60px;">add</i>
+        </div>
+
         <div *ngIf="!isStimulus">
             <div class="feedback">
                 {{feedback}}
@@ -224,6 +228,10 @@
         <div *ngIf="isStimulus">
             <div class="square" [style.background-color]="color">
             </div>
+        </div>
+
+        <div *ngIf="showFixation">
+            <i class="material-icons" style="font-size: 60px;">add</i>
         </div>
 
         <div *ngIf="!isStimulus" align="center">

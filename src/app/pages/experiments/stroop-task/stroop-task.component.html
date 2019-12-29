@@ -135,10 +135,14 @@
 
         <div *ngIf="isStimulus">
             <div [style.color]="color">
-                <div style="font-size: 30px; text-transform: uppercase;">
+                <div style="font-size: 65px; text-transform: uppercase;">
                     {{text}}
                 </div>
             </div>
+        </div>
+
+        <div *ngIf="showFixation">
+            <i class="material-icons" style="font-size: 60px;">add</i>
         </div>
 
         <div *ngIf="!isStimulus">
@@ -218,10 +222,14 @@
 
         <div *ngIf="isStimulus">
             <div [style.color]="color">
-                <div style="font-size: 30px; text-transform: uppercase;">
+                <div style="font-size: 65px; text-transform: uppercase;">
                     {{text}}
                 </div>
             </div>
+        </div>
+
+        <div *ngIf="showFixation">
+            <i class="material-icons" style="font-size: 60px;">add</i>
         </div>
 
         <div *ngIf="!isStimulus" align="center">

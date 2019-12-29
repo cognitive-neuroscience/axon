@@ -53,10 +53,14 @@ export class StroopTaskComponent implements OnInit {
       ended: 0
     };
   set: number;
+  showFixation: boolean = false;
+  sTimeout: any;
+  feedbackShown: boolean = false;
 
   @HostListener('window:keypress', ['$event'])
   onKeyPress(event: KeyboardEvent) {
     if (this.isResponseAllowed) {
+      this.isResponseAllowed = false;
       try {
         if (!!event.key) {
           this.timer.ended = new Date().getTime();
@@ -67,7 +71,11 @@ export class StroopTaskComponent implements OnInit {
             case '3': this.data[this.data.length - 1].userAnswer = 'green'; break;
             default: this.data[this.data.length - 1].userAnswer = ''; break;
           }
-
+        }
+        try {
+          clearTimeout(this.sTimeout);
+          this.showFeedback();
+        } catch (error) {
         }
       } catch (error) {
       }
@@ -181,7 +189,13 @@ export class StroopTaskComponent implements OnInit {
    * @memberof GoNogoComponent
    */
   async showStimulus() {
+
     this.reset();
+    this.showFixation = true;
+    await this.wait(500);
+    this.showFixation = false;
+    await this.wait(200);
+
     this.currentTrial += 1;
     this.generateStimulus();
     this.isStimulus = true;
@@ -193,9 +207,12 @@ export class StroopTaskComponent implements OnInit {
     console.log(this.isPractice ? `Practice trial: ${this.currentTrial}` : `Actual trial: ${this.currentTrial}`);
 
     // This is the delay between showing the stimulus and showing the feedback
-    await this.wait(this.maxResponseTime);
+    this.sTimeout = setTimeout(() => {
+      if (!this.feedbackShown) {
+        this.showFeedback();
+      }
+    }, this.maxResponseTime);
 
-    this.showFeedback();
   }
 
 
@@ -242,7 +259,7 @@ export class StroopTaskComponent implements OnInit {
    * @memberof GoNogoComponent
    */
   async showFeedback() {
-
+    this.feedbackShown = true;
     this.isStimulus = false;
     this.isResponseAllowed = false;
 
@@ -366,7 +383,9 @@ export class StroopTaskComponent implements OnInit {
    */
   reset() {
     this.color = '';
+    this.text = '';
     this.feedback = '';
+    this.feedbackShown = false;
     this.scoreForSpecificTrial = 0;
   }
 

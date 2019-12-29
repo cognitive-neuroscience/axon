@@ -45,10 +45,12 @@ export class GoNogoComponent implements OnInit {
       started: 0,
       ended: 0
     };
+  showFixation: boolean = false;
 
   @HostListener('window:keypress', ['$event'])
   onKeyPress(event: KeyboardEvent) {
     if (this.isResponseAllowed) {
+      this.isResponseAllowed = false;
       try {
         if (event.key === ' ') {
           this.timer.ended = new Date().getTime();
@@ -168,7 +170,13 @@ export class GoNogoComponent implements OnInit {
    * @memberof GoNogoComponent
    */
   async showStimulus() {
+
     this.reset();
+    this.showFixation = true;
+    await this.wait(500);
+    this.showFixation = false;
+    await this.wait(200);
+
     this.currentTrial += 1;
     this.generateStimulus();
     this.isStimulus = true;
@@ -238,9 +246,9 @@ export class GoNogoComponent implements OnInit {
       this.totalScore += 10;
     } else {
       if (this.data[this.data.length - 1].userAnswer === 'responded') {
-        this.feedback = "Too slow"
-      } else {
         this.feedback = "Incorrect";
+      } else {
+        this.feedback = "Too slow";
       }
       this.data[this.data.length - 1].isCorrect = 0;
       this.data[this.data.length - 1].score = 0;
