@@ -10,7 +10,12 @@ import { TaskSwitchingComponent } from './pages/experiments/task-switching/task-
 import { DemandSelectionComponent } from './pages/experiments/demand-selection/demand-selection.component';
 import { SimonTaskPrelimComponent } from './pages/experiments/simon-task-prelim/simon-task-prelim.component';
 import { SimonTaskFinalComponent } from './pages/experiments/simon-task-final/simon-task-final.component';
-import { SmileyGameComponent } from './pages/experiments/smiley-game/smiley-game.component';
+import { SmileyFaceComponent } from './pages/experiments/smiley-face/smiley-face.component';
+import { FingerTappingTaskComponent } from './pages/experiments/finger-tapping-task/finger-tapping-task.component';
+import { NBackComponent } from './pages/experiments/n-back/n-back.component';
+import { TrailMakingAComponent } from './pages/experiments/trail-making-a/trail-making-a.component';
+import { TrailMakingBComponent } from './pages/experiments/trail-making-b/trail-making-b.component';
+import { StroopTaskComponent } from './pages/experiments/stroop-task/stroop-task.component';
 
 
 const routes: Routes = [
@@ -61,7 +66,27 @@ const routes: Routes = [
   },
   {
     path: 'experiments/smiley-face',
-    component: SmileyGameComponent
+    component: SmileyFaceComponent
+  },
+  {
+    path: 'experiments/ftt',
+    component: FingerTappingTaskComponent
+  },
+  {
+    path: 'experiments/n-back',
+    component: NBackComponent
+  },
+  {
+    path: 'experiments/stroop',
+    component: StroopTaskComponent
+  },
+  {
+    path: 'experiments/trail-making-a',
+    component: TrailMakingAComponent
+  },
+  {
+    path: 'experiments/trail-making-b',
+    component: TrailMakingBComponent
   },
   {
     path: '**',

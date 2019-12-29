@@ -6,7 +6,6 @@ import { LoginComponent } from './pages/login/login.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ColorGameComponent } from './pages/experiments/color-game/color-game.component';
 import { ShapeGameComponent } from './pages/experiments/shape-game/shape-game.component';
-import { SmileyGameComponent } from './pages/experiments/smiley-game/smiley-game.component';
 import { GoNogoComponent } from './pages/experiments/go-nogo/go-nogo.component';
 import { DigitSpanComponent } from './pages/experiments/digit-span/digit-span.component';
 import { DemandSelectionComponent } from './pages/experiments/demand-selection/demand-selection.component';
@@ -20,6 +19,12 @@ import { FormsModule } from '@angular/forms';
 import { MaterialModule } from './modules/material/material.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppHttpInterceptor } from './AppHttpInterceptor';
+import { FingerTappingTaskComponent } from './pages/experiments/finger-tapping-task/finger-tapping-task.component';
+import { NBackComponent } from './pages/experiments/n-back/n-back.component';
+import { StroopTaskComponent } from './pages/experiments/stroop-task/stroop-task.component';
+import { TrailMakingAComponent } from './pages/experiments/trail-making-a/trail-making-a.component';
+import { TrailMakingBComponent } from './pages/experiments/trail-making-b/trail-making-b.component';
+import { SmileyFaceComponent } from './pages/experiments/smiley-face/smiley-face.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +33,6 @@ import { AppHttpInterceptor } from './AppHttpInterceptor';
     DashboardComponent,
     ColorGameComponent,
     ShapeGameComponent,
-    SmileyGameComponent,
     GoNogoComponent,
     DigitSpanComponent,
     DemandSelectionComponent,
@@ -36,7 +40,13 @@ import { AppHttpInterceptor } from './AppHttpInterceptor';
     SimonTaskPrelimComponent,
     SimonTaskFinalComponent,
     QuestionnaireComponent,
-    ConsentComponent
+    ConsentComponent,
+    FingerTappingTaskComponent,
+    NBackComponent,
+    StroopTaskComponent,
+    TrailMakingAComponent,
+    TrailMakingBComponent,
+    SmileyFaceComponent
   ],
   imports: [
     BrowserModule,
