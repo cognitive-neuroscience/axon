@@ -237,7 +237,7 @@ export class GoNogoComponent implements OnInit {
       this.scoreForSpecificTrial = 10;
       this.totalScore += 10;
     } else {
-      if (this.data[this.data.length - 1].actualAnswer === 'responded') {
+      if (this.data[this.data.length - 1].userAnswer === 'responded') {
         this.feedback = "Too slow"
       } else {
         this.feedback = "Incorrect";
