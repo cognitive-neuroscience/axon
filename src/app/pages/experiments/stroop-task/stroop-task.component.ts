@@ -240,7 +240,7 @@ export class StroopTaskComponent implements OnInit {
         this.text = Set4.set[this.currentTrial - 1 + (this.isPractice ? 0 : 10)].word;
         break;
     }
-    console.log(`${this.currentTrial}: ${this.color}, ${this.text}`);
+
     this.data.push({
       actualAnswer: this.color,
       userAnswer: 'NA',
