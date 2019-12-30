@@ -11,15 +11,15 @@ declare function setFullScreen(): any;
 export class GoNogoComponent implements OnInit {
 
   // Default Experiment config 
-  isScored: boolean | number = true;
+  isScored: boolean | number = false;
   showFeedbackAfterEveryTrial: boolean | number = false;
   showScoreAfterEveryTrial: boolean | number = false;
   numberOfBreaks: number = 2;
   maxResponseTime: number = 800;        // In milliseconds
-  durationOfFeedback: number = 1000;    // In milliseconds
+  durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 1;
-  actualTrials: number = 6;
+  practiceTrials: number = 10;
+  actualTrials: number = 30;
 
   step: number = 1;
   color: string = '';
