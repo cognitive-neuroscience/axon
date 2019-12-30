@@ -177,7 +177,7 @@ export class FingerTappingTaskComponent implements OnInit {
     this.startTime = new Date().getTime();
     this.blockTimer = setTimeout(() => {
       this.stopBlockTimer();
-    }, 2000);
+    }, 60000);
   }
 
   async stopBlockTimer() {
@@ -206,10 +206,10 @@ export class FingerTappingTaskComponent implements OnInit {
     this.resumeDisabled = true;
     this.breakTimer = setInterval(() => {
       this.time += 1;
-      if (this.time === 1) {
+      if (this.time === 30) {
         this.resumeDisabled = false;
       }
-      if (this.time === 5) {
+      if (this.time === 120) {
         try {
           clearInterval(this.breakTimer);
         } catch (error) {
