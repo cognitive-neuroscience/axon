@@ -56,6 +56,7 @@ export class DigitSpanComponent implements OnInit {
       started: 0,
       ended: 0
     };
+  showFixation: boolean = false;
 
   /**
    * Creates an instance of DigitSpanComponent
@@ -161,7 +162,13 @@ export class DigitSpanComponent implements OnInit {
    * @memberof DigitSpanComponent
    */
   async showStimulus() {
+
     this.reset();
+    this.showFixation = true;
+    await this.wait(500);
+    this.showFixation = false;
+    await this.wait(200);
+
     this.currentTrial += 1;
 
     this.isStimulus = true;
