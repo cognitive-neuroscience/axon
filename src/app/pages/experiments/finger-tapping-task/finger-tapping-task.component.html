@@ -214,7 +214,7 @@
     </div>
 
     <div class="full-box d-flex flex-column align-items-center justify-content-between"
-        *ngIf="!isBreak && (step === 6 || step === 9 || step === 12 || step === 15 || step === 18 || step === 21)">
+        *ngIf="!isBreak && (step === 6 || step === 10 || step === 14 || step === 18 || step === 22 || step === 26)">
 
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
@@ -259,7 +259,7 @@
                     </button>
                 </div>
                 <div>
-                    <button mat-raised-button color="primary" (click)="startBlock()">
+                    <button mat-raised-button color="primary" (click)="startCountDownTimer()">
                         START
                         &nbsp;
                         <mat-icon>
@@ -271,9 +271,18 @@
         </div>
     </div>
 
+    <div class="full-box d-flex flex-column align-items-center justify-content-center"
+        *ngIf="!isBreak && (step === 7 || step === 11 || step === 15 || step === 19 || step === 23 || step === 27)">
+
+        <div>
+            <div class="statement" style="font-size: 60px;">{{time2}}</div>
+        </div>
+
+    </div>
+
 
     <div class="full-box d-flex flex-column align-items-center justify-content-center"
-        *ngIf="!isBreak && (step === 7 || step === 10 || step === 13 || step === 16 || step === 19 || step === 22)">
+        *ngIf="!isBreak && (step === 8 || step === 12 || step === 16 || step === 20 || step === 24 || step === 28)">
 
         <div *ngIf="showFixation">
             <i class="material-icons" style="font-size: 60px;">add</i>
@@ -282,7 +291,7 @@
     </div>
 
     <div class="full-box d-flex flex-column align-items-center justify-content-between"
-        *ngIf="isBreak && (step === 8 || step === 11 || step === 14 || step === 17 || step === 20 || step === 23)">
+        *ngIf="isBreak && (step === 9 || step === 13 || step === 17 || step === 21 || step === 25 || step === 29)">
 
         <div class="w-100 p-4 uppercase" align="center">
         </div>
@@ -333,12 +342,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 24">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 30">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 25">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 31">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Game has finished</h2>

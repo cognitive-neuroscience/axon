@@ -146,9 +146,25 @@ export class FingerTappingTaskComponent implements OnInit {
     this.step += 1;
   }
 
+  startCountDownTimer() {
+    this.startGameInFullScreen();
+    this.proceedtoNextStep();
+    this.time2 = 5;
+    this.countdownTimer = setInterval(() => {
+      this.time2 -= 1;
+      if (this.time2 === 0) {
+        try {
+          clearInterval(this.countdownTimer);
+        } catch (error) {
+
+        }
+        this.startBlock();
+      }
+    }, 1000);
+  }
+
 
   startBlock() {
-    this.startGameInFullScreen();
     this.lastKey = this.keyB;
     this.proceedtoNextStep();
     this.block += 1;
