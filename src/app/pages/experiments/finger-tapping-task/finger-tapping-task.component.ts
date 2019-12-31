@@ -33,7 +33,6 @@ export class FingerTappingTaskComponent implements OnInit {
   currentTrial: number = 1;
   startTime: number;
   data: {
-    trial: number,
     hand: string,
     block: number,
     key: string,
@@ -57,7 +56,6 @@ export class FingerTappingTaskComponent implements OnInit {
             this.showFixation = false;
           }, 50);
           this.data.push({
-            trial: this.currentTrial,
             hand: this.hand,
             block: this.block,
             key: event.key.toUpperCase(),
