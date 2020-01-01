@@ -59,24 +59,25 @@ export class NBackComponent implements OnInit {
 
   @HostListener('window:keydown', ['$event'])
   onKeyPress(event: KeyboardEvent) {
-    if (this.isResponseAllowed) {
-      this.isResponseAllowed = false;
-      try {
-        if (!!event.key) {
-          this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
-          switch (event.key) {
-            case 'ArrowLeft': this.data[this.data.length - 1].userAnswer = 'NO'; break;
-            case 'ArrowRight': this.data[this.data.length - 1].userAnswer = 'YES'; break;
-            default: this.data[this.data.length - 1].userAnswer = 'NA'; break;
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      if (this.isResponseAllowed) {
+        this.isResponseAllowed = false;
+        try {
+          if (!!event.key) {
+            this.timer.ended = new Date().getTime();
+            this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
+            switch (event.key) {
+              case 'ArrowLeft': this.data[this.data.length - 1].userAnswer = 'NO'; break;
+              case 'ArrowRight': this.data[this.data.length - 1].userAnswer = 'YES'; break;
+            }
+            try {
+              clearTimeout(this.sTimeout);
+              this.showFeedback();
+            } catch (error) {
+            }
           }
-          try {
-            clearTimeout(this.sTimeout);
-            this.showFeedback();
-          } catch (error) {
-          }
+        } catch (error) {
         }
-      } catch (error) {
       }
     }
   }

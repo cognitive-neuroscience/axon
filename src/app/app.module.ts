@@ -22,9 +22,8 @@ import { AppHttpInterceptor } from './AppHttpInterceptor';
 import { FingerTappingTaskComponent } from './pages/experiments/finger-tapping-task/finger-tapping-task.component';
 import { NBackComponent } from './pages/experiments/n-back/n-back.component';
 import { StroopTaskComponent } from './pages/experiments/stroop-task/stroop-task.component';
-import { TrailMakingAComponent } from './pages/experiments/trail-making-a/trail-making-a.component';
-import { TrailMakingBComponent } from './pages/experiments/trail-making-b/trail-making-b.component';
 import { SmileyFaceComponent } from './pages/experiments/smiley-face/smiley-face.component';
+import { TrailMakingComponent } from './pages/experiments/trail-making/trail-making.component';
 
 @NgModule({
   declarations: [
@@ -44,9 +43,8 @@ import { SmileyFaceComponent } from './pages/experiments/smiley-face/smiley-face
     FingerTappingTaskComponent,
     NBackComponent,
     StroopTaskComponent,
-    TrailMakingAComponent,
-    TrailMakingBComponent,
-    SmileyFaceComponent
+    SmileyFaceComponent,
+    TrailMakingComponent
   ],
   imports: [
     BrowserModule,

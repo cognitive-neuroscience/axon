@@ -13,9 +13,8 @@ import { SimonTaskFinalComponent } from './pages/experiments/simon-task-final/si
 import { SmileyFaceComponent } from './pages/experiments/smiley-face/smiley-face.component';
 import { FingerTappingTaskComponent } from './pages/experiments/finger-tapping-task/finger-tapping-task.component';
 import { NBackComponent } from './pages/experiments/n-back/n-back.component';
-import { TrailMakingAComponent } from './pages/experiments/trail-making-a/trail-making-a.component';
-import { TrailMakingBComponent } from './pages/experiments/trail-making-b/trail-making-b.component';
 import { StroopTaskComponent } from './pages/experiments/stroop-task/stroop-task.component';
+import { TrailMakingComponent } from './pages/experiments/trail-making/trail-making.component';
 
 
 const routes: Routes = [
@@ -81,12 +80,8 @@ const routes: Routes = [
     component: StroopTaskComponent
   },
   {
-    path: 'experiments/trail-making-a',
-    component: TrailMakingAComponent
-  },
-  {
-    path: 'experiments/trail-making-b',
-    component: TrailMakingBComponent
+    path: 'experiments/trail-making',
+    component: TrailMakingComponent
   },
   {
     path: '**',
