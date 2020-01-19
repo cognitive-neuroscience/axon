@@ -1,0 +1,28 @@
+
+table{
+    td{
+        width: 120px;
+        height: 100px;
+        text-align: center;
+        div{
+            display: inline-block;
+        }
+        .line{
+            position: fixed;
+            height: 10px;
+            width: 55px;
+            margin-top: 32.5px;
+            margin-left: 10.5px;
+            background-color: black;
+        }
+        .m{
+            transform: rotate(90deg);
+        }
+        .s{
+            transform: rotate(45deg);
+        }
+        .z{
+            transform: rotate(0deg);
+        }
+    }
+}

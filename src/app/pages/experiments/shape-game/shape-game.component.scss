@@ -1,0 +1,37 @@
+table{
+    td{
+        width: 120px;
+        height: 120px;
+        text-align: center;
+        div{
+            display: inline-block;
+        }
+        .line{
+            position: fixed;
+            height: 12px;
+            width: 55px;
+            margin-top: 32.5px;
+            margin-left: 8.5px;
+            background-color: black;
+        }
+        .line2{
+            position: fixed;
+            height: 12px;
+            width: 55px;
+            margin-top: 31px;
+            margin-left: 8px;
+            background-color: black;
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+        .m{
+            transform: rotate(90deg);
+        }
+        .s{
+            // transform: rotate(45deg);
+        }
+        .z{
+            transform: rotate(0deg);
+        }
+    }
+}
