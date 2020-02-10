@@ -239,6 +239,10 @@
     <!-- Start Actual Round -->
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
 
+        <div class="feedback" *ngIf="showReward">
+            +{{currentReward}} cent(s)
+        </div>
+
         <div class="w-100" *ngIf="isStimulus">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div style="margin-left: 100px; height: 250px; width: 250px; border-radius: 50%;"
