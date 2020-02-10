@@ -10,7 +10,7 @@
 
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
-            <h2>Welcome Simon Task (Rewarded)</h2>
+            <h2>Welcome to Simon Task (Rewarded)</h2>
         </div>
 
         <!-- Introduction -->
@@ -23,20 +23,20 @@
             </div>
 
             <div class="statement">
-                <span>During the experiment, you will be shown a circle, either in <span
-                        style="color: green;">GREEN</span> or in
-                    <span style="color: orange">ORANGE</span> color.</span>
+                <span>This is a continuation of the previous game.</span>
             </div>
 
             <div class="statement">
-                <span>Your task is to press the "Z" key if the circle shown is in <span
-                        style="color: green;">GREEN</span>
-                    or press
-                    the "M" key if the circle is in <span style="color: orange">ORANGE</span>.</span>
+                <span>Each turn, before you see a circle, you will see how much money you can earn for a correct
+                    answer.</span>
             </div>
 
             <div class="statement">
-                <span>To do this task successfully you need to IGNORE the position of the circle on the screen.</span>
+                <span>For example, if you see +25 and you answer correctly, you WIN 25 cents.</span>
+            </div>
+
+            <div class="statement">
+                <span>The amount you can win will change from turn to turn.</span>
             </div>
 
             <div class="statement-final">
@@ -85,12 +85,10 @@
             </div>
 
             <div class="statement">
-                Put your index fingers in position.
-            </div>
-
-            <div class="statement">
-                <span>You will not have very much time so you need to respond as accurately and quickly as
-                    possible.</span>
+                <span>Remember, your task is to press the "Z" key if the circle shown is in <span
+                        style="color: green;">GREEN</span>
+                    or press
+                    the "M" key if the circle is in <span style="color: orange">ORANGE</span>.</span>
             </div>
 
             <br>
@@ -138,6 +136,10 @@
     <!-- Start Practice Round -->
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 5">
 
+        <div class="feedback" *ngIf="showReward">
+            +{{currentReward}} cent(s)
+        </div>
+
         <div class="w-100" *ngIf="isStimulus">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div style="margin-left: 100px; height: 250px; width: 250px; border-radius: 50%;"
@@ -181,7 +183,7 @@
             </div>
 
             <div *ngIf="isScored" class="statement">
-                You will earn 10 cents for every right answer
+                You will earn reward for every right answer
             </div>
 
             <div *ngIf="isScored" class="statement">

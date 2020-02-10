@@ -25,6 +25,8 @@ export class SimonTaskFinalComponent implements OnInit {
   step: number = 1;
   color_a: string = '';
   color_b: string = '';
+  currentReward: number = 0;
+  showReward: boolean = false;
   feedback: string = '';
   scoreForSpecificTrial: number = 0;
   totalScore: number = 0;
@@ -34,6 +36,7 @@ export class SimonTaskFinalComponent implements OnInit {
   currentTrial: number = 0;
   isResponseAllowed: boolean = false;
   data: {
+    currentReward: number,
     actualAnswer: string,
     position: string,
     compatible: boolean,
@@ -80,7 +83,7 @@ export class SimonTaskFinalComponent implements OnInit {
         } else {
           this.timer.ended = new Date().getTime();
           this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
-          this.data[this.data.length - 1].userAnswer = 'wrong-key';
+          this.data[this.data.length - 1].userAnswer = 'INVALID';
           try {
             clearTimeout(this.sTimeout);
             this.showFeedback();
@@ -202,13 +205,21 @@ export class SimonTaskFinalComponent implements OnInit {
   async showStimulus() {
 
     this.reset();
+
+
+    this.showReward = false;
+    this.currentTrial += 1;
+    this.generateStimulus();
+    this.showReward = true;
+    await this.wait(500);
+    this.showReward = false;
+    await this.wait(250);
+
     this.showFixation = true;
     await this.wait(500);
     this.showFixation = false;
     await this.wait(200);
 
-    this.currentTrial += 1;
-    this.generateStimulus();
     this.isStimulus = true;
     this.isResponseAllowed = true;
 
@@ -232,8 +243,9 @@ export class SimonTaskFinalComponent implements OnInit {
    * @memberof GoNogoComponent
    */
   generateStimulus() {
-    const random = this.matrix.stim[this.currentTrial];
-    const random2 = this.matrix.stim[this.currentTrial];
+    const random = this.matrix.stim[this.currentTrial - 1];
+    const random2 = this.matrix.stim[this.currentTrial - 1];
+    this.currentReward = this.matrix.rewards[this.currentTrial - 1];
 
     let color = 'green';
     if (random === 1) {
@@ -252,6 +264,7 @@ export class SimonTaskFinalComponent implements OnInit {
 
     this.data.push({
       actualAnswer: color === 'green' ? 'Z' : 'M',
+      currentReward: this.currentReward,
       position: random2 === 1 ? 'LEFT' : 'RIGHT',
       compatible: ((random2 === 1) && (color === 'green')) || ((random2 === 2) && (color === 'orange')),
       userAnswer: '',
@@ -281,9 +294,9 @@ export class SimonTaskFinalComponent implements OnInit {
     if (this.data[this.data.length - 1].actualAnswer === this.data[this.data.length - 1].userAnswer) {
       this.feedback = "Correct";
       this.data[this.data.length - 1].isCorrect = 1;
-      this.data[this.data.length - 1].score = 10;
-      this.scoreForSpecificTrial = 10;
-      this.totalScore += 10;
+      this.data[this.data.length - 1].score = this.data[this.data.length - 1].currentReward;
+      this.scoreForSpecificTrial = this.data[this.data.length - 1].currentReward;
+      this.totalScore += this.data[this.data.length - 1].currentReward;
     } else {
       if (this.data[this.data.length - 1].userAnswer === '') {
         this.feedback = "Too slow";

@@ -80,7 +80,7 @@ export class SimonTaskPrelimComponent implements OnInit {
         } else {
           this.timer.ended = new Date().getTime();
           this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
-          this.data[this.data.length - 1].userAnswer = 'wrong-key';
+          this.data[this.data.length - 1].userAnswer = 'INVALID';
           try {
             clearTimeout(this.sTimeout);
             this.showFeedback();
@@ -232,8 +232,8 @@ export class SimonTaskPrelimComponent implements OnInit {
    * @memberof GoNogoComponent
    */
   generateStimulus() {
-    const random = this.matrix.stim[this.currentTrial];
-    const random2 = this.matrix.stim[this.currentTrial];
+    const random = this.matrix.stim[this.currentTrial - 1];
+    const random2 = this.matrix.stim[this.currentTrial - 1];
 
     let color = 'green';
     if (random === 1) {

@@ -198,6 +198,8 @@ export class TaskSwitchingComponent implements OnInit {
     await this.wait(2000);
     this.proceedtoNextStep();
     this.isPractice = false;
+    this.showFeedbackAfterEveryTrial = false;
+    this.showScoreAfterEveryTrial = false;
     this.currentTrial = 0;
     this.showStimulus();
   }
@@ -241,7 +243,7 @@ export class TaskSwitchingComponent implements OnInit {
    * @memberof GoNogoComponent
    */
   generateStimulus() {
-    const rand = this.matrix.colors[this.currentTrial];
+    const rand = this.matrix.colors[this.currentTrial - 1];
 
     let color = 'blue';
     if (rand === 1) {
@@ -250,7 +252,7 @@ export class TaskSwitchingComponent implements OnInit {
       color = 'green';
     }
 
-    const digit = this.matrix.digits[this.currentTrial];
+    const digit = this.matrix.digits[this.currentTrial - 1];
 
     let answer = '';
 
