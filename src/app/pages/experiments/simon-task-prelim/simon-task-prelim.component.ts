@@ -233,7 +233,7 @@ export class SimonTaskPrelimComponent implements OnInit {
    */
   generateStimulus() {
     const random = this.matrix.stim[this.currentTrial - 1];
-    const random2 = this.matrix.stim[this.currentTrial - 1];
+    const random2 = this.matrix.pos[this.currentTrial - 1];
 
     let color = 'green';
     if (random === 1) {

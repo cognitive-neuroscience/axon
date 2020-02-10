@@ -244,7 +244,7 @@ export class SimonTaskFinalComponent implements OnInit {
    */
   generateStimulus() {
     const random = this.matrix.stim[this.currentTrial - 1];
-    const random2 = this.matrix.stim[this.currentTrial - 1];
+    const random2 = this.matrix.pos[this.currentTrial - 1];
     this.currentReward = this.matrix.rewards[this.currentTrial - 1];
 
     let color = 'green';
