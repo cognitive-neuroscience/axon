@@ -66,14 +66,14 @@
                 <span>You will see a number on the screen.</span>
             </div>
             <div class="statement">
-                <span>That number is either blue or yellow.</span>
+                <span>That number is either {{colorMapping[0]}} or yellow.</span>
             </div>
             <div class="statement">
                 <span>The color is important: it tells you what you must identify
                     about that number.</span>
             </div>
             <div class="statement">
-                <span>When the number is BLUE, you must indicate if the number is lesser or greater than 5.</span>
+                <span>When the number is {{colorMapping[0]}}, you must indicate if the number is lesser or greater than 5.</span>
             </div>
             <div class="statement">
                 <span>When the number is YELLOW, you must indicate if the number is odd or even.</span>
@@ -120,7 +120,7 @@
                 <h2 class="mat-h2"></h2>
             </div>
             <div class="statement">
-                <span style="color: blue; font-size: 50px;">3</span>
+                <span style="font-size: 50px;" [style.color]="colorMapping[0]">3</span>
             </div>
             <div class="statement">
                 <span>If number is GREATER THAN 5: click the left mouse button</span>
@@ -130,8 +130,15 @@
             </div>
             <br>
             <div class="statement">
-                <span style="color: yellow; font-size: 50px;">8</span>
+                <span style="font-size: 50px;" [style.color]="colorMapping[1]">8</span>
             </div>
+            <div class="statement">
+                <span>If number is EVEN: click the left mouse button</span>
+            </div>
+            <div class="statement">
+                <span>If number is ODD: click the right mouse button</span>
+            </div>
+            <br>
             <div class="statement-final">
                 Click 'NEXT' to proceed
             </div>
@@ -172,7 +179,7 @@
             </div>
             <br>
             <div class="statement">
-                <span style="color: blue; font-size: 50px;">3</span>
+                <span style="font-size: 50px;" [style.color]="colorMapping[0]">3</span>
             </div>
             <div class="statement">
                 <span>If number is GREATER THAN 5: click the left mouse button</span>
@@ -182,8 +189,15 @@
             </div>
             <br>
             <div class="statement">
-                <span style="color: yellow; font-size: 50px;">8</span>
+                <span style="font-size: 50px;" [style.color]="colorMapping[1]">8</span>
             </div>
+            <div class="statement">
+                <span>If number is EVEN: click the left mouse button</span>
+            </div>
+            <div class="statement">
+                <span>If number is ODD: click the right mouse button</span>
+            </div>
+            <br>
             <div class="statement-final">
                 Click 'NEXT' to proceed
             </div>
@@ -391,7 +405,7 @@
             </div>
             <br>
             <div class="statement">
-                <span style="color: blue; font-size: 50px;">3</span>
+                <span style="font-size: 50px;" [style.color]="colorMapping[0]">3</span>
             </div>
             <div class="statement">
                 <span>If number is GREATER THAN 5: click the left mouse button</span>
@@ -401,8 +415,15 @@
             </div>
             <br>
             <div class="statement">
-                <span style="color: yellow; font-size: 50px;">8</span>
+                <span style="font-size: 50px;" [style.color]="colorMapping[1]">8</span>
             </div>
+            <div class="statement">
+                <span>If number is EVEN: click the left mouse button</span>
+            </div>
+            <div class="statement">
+                <span>If number is ODD: click the right mouse button</span>
+            </div>
+            <br>
             <div class="statement-final">
                 Click 'START' to start the practice
             </div>
