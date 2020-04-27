@@ -1,0 +1,355 @@
+<div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
+
+    <!-- Initial screen to get participant's consent -->
+    <div class="full-box" *ngIf="!isBreak && step === 1">
+        <app-consent (broadcastConsent)="processConsent($event)"></app-consent>
+    </div>
+
+    <!-- Show welcome message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
+
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Welcome to Stroop Task</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="title">
+                <h2 class="mat-h2">
+                    Read the instructions carefully
+                </h2>
+            </div>
+
+            <div class="statement">
+                In this task, you will be presented with different words for colors (eg. 'BLUE') printed in different
+                color font.
+            </div>
+
+            <div class="statement">
+                It's your goal to respond to the color of the font that the word is printed in, not the word itself.
+            </div>
+
+            <div class="statement">
+                1 = 'RED'
+                <br>
+                2 = 'BLUE'
+                <br>
+                3 = 'GREEN'
+            </div>
+
+            <div class="statement-final">
+                Click 'NEXT' to proceed
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show practice round message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 3">
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Practice Round</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="statement">
+                <h4>Let's Practice</h4>
+            </div>
+
+            <div class="statement">
+                Good luck ! You will have very little time to respond, so be ready.
+            </div>
+
+            <br>
+
+            <div class="statement">
+                The game will launch in fullscreen
+            </div>
+
+            <div class="statement-final">
+                Click 'START' when you are ready for the practice round
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="startPractice()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 4">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Start Practice Round -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 5">
+
+        <div *ngIf="isStimulus">
+            <div [style.color]="color">
+                <div style="font-size: 65px; text-transform: uppercase;">
+                    {{text}}
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="showFixation">
+            <i class="material-icons" style="font-size: 60px;">add</i>
+        </div>
+
+        <div *ngIf="!isStimulus">
+            <div class="feedback">
+                {{feedback}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 6">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Show practice round finished message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 7">
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Practice Round Is Now Complete</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="statement">
+                <h4>You will now play the actual game</h4>
+            </div>
+
+            <div *ngIf="isScored" class="statement">
+                You will earn 10 cents for every right answer
+            </div>
+
+            <div *ngIf="isScored" class="statement">
+                Good luck !
+            </div>
+
+            <br>
+
+            <div class="statement-final">
+                Click 'START' when you are ready for the actual game
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="startActualGame()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Start Actual Round -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
+
+        <div *ngIf="isStimulus">
+            <div [style.color]="color">
+                <div style="font-size: 65px; text-transform: uppercase;">
+                    {{text}}
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="showFixation">
+            <i class="material-icons" style="font-size: 60px;">add</i>
+        </div>
+
+        <div *ngIf="!isStimulus" align="center">
+            <div class="feedback" *ngIf="showFeedbackAfterEveryTrial">
+                <span>{{feedback}}</span>
+                <br>
+                <span *ngIf="showScoreAfterEveryTrial && (scoreForSpecificTrial > 0)">
+                    +{{scoreForSpecificTrial}}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 10">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Show practice round finished message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 11">
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Game has finished</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="statement">
+                <h4>Congratulations ! You have finished the game successfully</h4>
+            </div>
+
+            <div class="statement" *ngIf="isScored">
+                Your earnings in this game is : {{totalScore}} cent(s)
+            </div>
+
+            <br>
+
+            <div class="statement">
+                Thank you for your participation
+            </div>
+
+            <div class="statement-final">
+                Click 'CONTINUE'
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="continueAhead()">
+                        CONTINUE
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Show break message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="isBreak">
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>It's break time</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+
+            <div class="statement">
+                Take a short break
+            </div>
+
+            <br>
+
+            <div class="statement-final">
+                Click 'RESUME' when you are ready
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="resume()">
+                        RESUME
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

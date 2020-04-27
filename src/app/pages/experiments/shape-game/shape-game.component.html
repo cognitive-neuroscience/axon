@@ -1,0 +1,498 @@
+<div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
+
+    <!-- Initial screen to get participant's consent -->
+    <div class="full-box" *ngIf="!isBreak && step === 1">
+        <app-consent (broadcastConsent)="processConsent($event)"></app-consent>
+    </div>
+
+    <!-- Show welcome message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
+
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Welcome to Shape Game</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="title">
+                <h2 class="mat-h2">
+                    Read the instructions carefully
+                </h2>
+            </div>
+
+            <div class="statement">
+                <span>Now, you will be shown 6 shapes on the screen.</span>
+            </div>
+
+            <div class="statement">
+                ONE of these is different than the others.
+            </div>
+
+            <div class="statement">
+                <span>Your job is to tell us if the bar inside the UNIQUE shape is horizontal or vertical. You should
+                    ignore the
+                    colours.</span>
+            </div>
+
+            <div class="statement-final">
+                Click 'NEXT' to proceed
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 3">
+
+        <div class="w-100 p-4 uppercase" align="center">
+        </div>
+
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="title">
+                <h2 class="mat-h2">
+                </h2>
+            </div>
+
+            <div class="statement">
+                <span>For instance, here the unique shape has a horizontal bar:</span>
+            </div>
+
+            <div class="statement">
+                <span>Press the Z key if the bar is horizontal.</span>
+            </div>
+
+            <div class="statement">
+                <span>Press the M key if the bar is vertical.</span>
+            </div>
+
+            <div class="statement-final">
+                Click 'NEXT' to proceed
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Show practice round message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 4">
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Practice Round</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="statement">
+                <h4>Let's Practice</h4>
+            </div>
+
+            <div class="statement">
+                Remember,
+                <br>
+                Press the Z key if the bar is horizontal.
+                <br>
+                Press the M key if the bar is vertical.
+            </div>
+
+            <br>
+
+            <div class="statement">
+                The game will launch in fullscreen
+            </div>
+
+            <div class="statement-final">
+                Click 'START' when you are ready for the practice round
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="startPractice()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 5">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Start Practice Round -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 6">
+
+        <div *ngIf="isStimulus">
+            <table>
+                <tr>
+                    <td colspan="3">
+                        <div class="{{s.a}} big {{c.a}}">
+                            <div class="{{a.a != 's' ? 'line' : 'line2'}} {{a.a}}"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="{{s.b}} big {{c.b}}">
+                            <div class="{{a.b != 's' ? 'line' : 'line2'}} {{a.b}}"></div>
+                        </div>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <div class="{{s.c}} big {{c.c}}">
+                            <div class="{{a.c != 's' ? 'line' : 'line2'}} {{a.c}}"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="{{s.d}} big {{c.d}}">
+                            <div class="{{a.d != 's' ? 'line' : 'line2'}} {{a.d}}"></div>
+                        </div>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <div class="{{s.e}} big {{c.e}}">
+                            <div class="{{a.e != 's' ? 'line' : 'line2'}} {{a.e}}"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div class="{{s.f}} big {{c.f}}">
+                            <div class="{{a.f != 's' ? 'line' : 'line2'}} {{a.f}}"></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div *ngIf="showFixation">
+            <i class="material-icons" style="font-size: 60px;">add</i>
+        </div>
+
+        <div *ngIf="!isStimulus">
+            <div class="feedback">
+                {{feedback}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 7">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Show practice round finished message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 8">
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Practice Round Is Now Complete</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="statement">
+                <h4>You will now play the actual game</h4>
+            </div>
+
+            <div *ngIf="isScored" class="statement">
+                You will earn between 1-10 cents for every right answer
+            </div>
+
+            <div *ngIf="isScored" class="statement">
+                Good luck !
+            </div>
+
+            <br>
+
+            <div class="statement">
+                Remember,
+                <br>
+                Press the Z key if the bar is horizontal.
+                <br>
+                Press the M key if the bar is vertical.
+            </div>
+
+            <div class="statement-final">
+                Click 'START' when you are ready for the actual game
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="startActualGame()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Start Actual Round -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 10">
+
+        <div *ngIf="isStimulus">
+            <table>
+                <tr>
+                    <td colspan="3">
+                        <div class="{{s.a}} big {{c.a}}">
+                            <div class="{{a.a != 's' ? 'line' : 'line2'}} {{a.a}}"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="{{s.b}} big {{c.b}}">
+                            <div class="{{a.b != 's' ? 'line' : 'line2'}} {{a.b}}"></div>
+                        </div>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <div class="{{s.c}} big {{c.c}}">
+                            <div class="{{a.c != 's' ? 'line' : 'line2'}} {{a.c}}"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="{{s.d}} big {{c.d}}">
+                            <div class="{{a.d != 's' ? 'line' : 'line2'}} {{a.d}}"></div>
+                        </div>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <div class="{{s.e}} big {{c.e}}">
+                            <div class="{{a.e != 's' ? 'line' : 'line2'}} {{a.e}}"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div class="{{s.f}} big {{c.f}}">
+                            <div class="{{a.f != 's' ? 'line' : 'line2'}} {{a.f}}"></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div *ngIf="showFixation">
+            <i class="material-icons" style="font-size: 60px;">add</i>
+        </div>
+
+        <div *ngIf="!isStimulus" align="center">
+            <div class="feedback" *ngIf="showFeedbackAfterEveryTrial">
+                <span>{{feedback}}</span>
+                <br>
+                <span *ngIf="showScoreAfterEveryTrial && (scoreForSpecificTrial > 0)">
+                    +{{scoreForSpecificTrial}}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 11">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Show practice round finished message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 12">
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Game has finished</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="statement">
+                <h4>Congratulations ! You have finished the game successfully</h4>
+            </div>
+
+            <div class="statement" *ngIf="isScored">
+                Your earnings in this game is : {{totalScore}} cent(s)
+            </div>
+
+            <br>
+
+            <div class="statement">
+                Thank you for your participation
+            </div>
+
+            <div class="statement-final">
+                Click 'CONTINUE'
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="continueAhead()">
+                        CONTINUE
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Show break message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="isBreak">
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>It's break time</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+
+            <div class="statement">
+                Take a short break
+            </div>
+
+            <br>
+
+            <div class="statement-final">
+                Click 'RESUME' when you are ready
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="resume()">
+                        RESUME
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

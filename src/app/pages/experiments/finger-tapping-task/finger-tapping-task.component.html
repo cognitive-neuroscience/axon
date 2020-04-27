@@ -1,0 +1,410 @@
+<div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
+    <!-- Initial screen to get participant's consent -->
+    <div class="full-box" *ngIf="!isBreak && step === 1">
+        <app-consent (broadcastConsent)="processConsent($event)"></app-consent>
+    </div>
+
+    <!-- Show welcome message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
+
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Welcome to Finger Tapping Task</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="title">
+                <h2 class="mat-h2">
+                    Read the instructions carefully
+                </h2>
+            </div>
+
+            <div class="statement">
+                You will be asked to alternately tap two keys on the keyboard as fast as you can.
+            </div>
+
+            <div class="statement-final">
+                Click 'NEXT' to proceed
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 3">
+
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+
+            <div class="statement">
+                You will do this by using your index finger.
+            </div>
+
+            <div class="statement">
+                This means that you will have to tap each key one after the other by alternating back and forth.
+            </div>
+
+            <div class="statement">
+                You will be told which hand you should use just before you start.
+            </div>
+
+            <div class="statement-final">
+                Click 'NEXT' to proceed
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 4">
+
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+
+            <div class="statement">
+                The keys you will be tapping on the keyboard are the <b>'{{keyA}}'</b> and the <b>'{{keyB}}'</b> keys.
+            </div>
+
+            <div class="statement">
+                Please go ahead and find these keys now.
+            </div>
+
+            <div class="statement-final">
+                Click 'NEXT' to proceed
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 5">
+
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+
+            <div class="statement">
+                Each tapping test will last 1 minute. This means that for one full minute, you have to keep tapping as
+                fast as you can.
+            </div>
+
+            <div class="statement">
+                In total you will do 6 tests: 3 with each index finger.
+            </div>
+
+            <div class="statement">
+                This may seem long, but you will be given breaks between each test.
+            </div>
+
+            <div class="statement-final">
+                Click 'NEXT' to proceed
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="full-box d-flex flex-column align-items-center justify-content-between"
+        *ngIf="!isBreak && (step === 6 || step === 10 || step === 14 || step === 18 || step === 22 || step === 26)">
+
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+
+            <div class="statement">
+                Please use your <b>{{hand === 'L' ? 'LEFT' : 'RIGHT'}}</b> hand.
+            </div>
+
+            <div class="statement">
+                Remember:
+                <br>
+                Tap the <b>'{{keyA}}'</b> and the <b>'{{keyB}}'</b> keys as fast as you can.
+            </div>
+
+            <br>
+
+            <div class="statement">
+                The game will launch in fullscreen
+            </div>
+
+            <div class="statement-final">
+                Click 'START' when you are ready
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="startCountDownTimer()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="full-box d-flex flex-column align-items-center justify-content-center"
+        *ngIf="!isBreak && (step === 7 || step === 11 || step === 15 || step === 19 || step === 23 || step === 27)">
+
+        <div>
+            <div class="statement" style="font-size: 60px;">{{time2}}</div>
+        </div>
+
+    </div>
+
+
+    <div class="full-box d-flex flex-column align-items-center justify-content-between"
+        *ngIf="!isBreak && (step === 8 || step === 12 || step === 16 || step === 20 || step === 24 || step === 28)">
+
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Begin Tapping</h2>
+        </div>
+
+        <div class="w-100 p-4 uppercase" align="center">
+            <div *ngIf="showFixation">
+                <i class="material-icons" style="font-size: 60px;">add</i>
+            </div>
+        </div>
+
+        <div class="w-100 p-4 uppercase" align="center">
+        </div>
+
+    </div>
+
+    <div class="full-box d-flex flex-column align-items-center justify-content-between"
+        *ngIf="isBreak && (step === 9 || step === 13 || step === 17 || step === 21 || step === 25 || step === 29)">
+
+        <div class="w-100 p-4 uppercase" align="center">
+        </div>
+
+        <div class="w-100 p-4 uppercase" align="center">
+            <div class="statement">
+                {{time}} seconds
+            </div>
+
+            <div class="statement">
+                It's break time
+            </div>
+
+            <div class="statement">
+                A minimum break of 30 seconds is required before you proceed to the next block.
+            </div>
+
+            <div class="statement">
+                The game will resume automatically in 120 seconds (2 minutes).
+            </div>
+        </div>
+
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" [disabled]="resumeDisabled" (click)="stopBreakTimer()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 30">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 31">
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Game has finished</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="statement">
+                <h4>Congratulations ! You have finished the game successfully</h4>
+            </div>
+
+            <br>
+
+            <div class="statement">
+                Thank you for your participation
+            </div>
+
+            <div class="statement-final">
+                Click 'CONTINUE'
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="continueAhead()">
+                        CONTINUE
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
