@@ -18,7 +18,7 @@ export class Matrix {
             if (shouldShift) {
                 color = 3 - color;
             }
-            this.colors.push(color)
+            this.colors.push(color);
         }
     }
 
