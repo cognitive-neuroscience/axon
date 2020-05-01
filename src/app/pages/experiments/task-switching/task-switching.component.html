@@ -73,7 +73,8 @@
                     about that number.</span>
             </div>
             <div class="statement">
-                <span>When the number is {{colorMapping[0]}}, you must indicate if the number is lesser or greater than 5.</span>
+                <span>When the number is {{colorMapping[0]}}, you must indicate if the number is lesser or greater than
+                    5.</span>
             </div>
             <div class="statement">
                 <span>When the number is YELLOW, you must indicate if the number is odd or even.</span>
@@ -112,8 +113,9 @@
 
     <!-- Slide 3 -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 4">
+        <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
-            <h2></h2>
+            <h2>More Instructions</h2>
         </div>
         <div class="w-100 p-4 uppercase" align="center">
             <div class="title">
@@ -170,8 +172,9 @@
 
     <!-- Slide 3a -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 5">
+        <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
-            <h2></h2>
+            <h2>More Instructions</h2>
         </div>
         <div class="w-100 p-4 uppercase" align="center">
             <div class="statement">
@@ -396,8 +399,9 @@
 
     <!-- Slide 6a -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 12">
+        <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
-            <h2></h2>
+            <h2>Recap Instructions</h2>
         </div>
         <div class="w-100 p-4 uppercase" align="center">
             <div class="statement">
@@ -647,7 +651,7 @@
                     </button>
                 </div>
                 <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                    <button mat-raised-button color="primary" (click)="continueAhead()">
                         NEXT
                         &nbsp;
                         <mat-icon>

@@ -1,6 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataService } from 'src/app/services/data.service';
 declare function setFullScreen(): any;
 import { Matrix } from './matrix';
 
@@ -16,8 +15,8 @@ export class DemandSelectionComponent implements OnInit {
   showFeedbackAfterEveryTrial: boolean | number = true;
   showScoreAfterEveryTrial: boolean | number = true;
   numberOfBreaks: number = 2;
-  maxResponseTime: number = 800;        // In milliseconds
-  durationOfFeedback: number = 500;    // In milliseconds
+  maxResponseTime: number = 2500;        // In milliseconds
+  durationOfFeedback: number = 1000;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
   practiceTrials: number = 10;
   actualTrials: number = 30;
@@ -53,6 +52,13 @@ export class DemandSelectionComponent implements OnInit {
   showFixation: boolean = false;
   sTimeout: any;
   feedbackShown: boolean = false;
+
+  rows = [1, 2, 3, 4, 5, 6];
+  cols = [1, 2, 3, 4, 5, 6];
+  posA = 0;
+  posB = 0;
+  hover = 'left';
+
   matrix = new Matrix();
 
   @HostListener('document:click', ['$event'])
@@ -79,47 +85,21 @@ export class DemandSelectionComponent implements OnInit {
     }
   }
 
-  
+
   constructor(
     private router: Router,
-    private dataService: DataService
   ) { }
 
 
-  
+
   ngOnInit() {
-    let route_split = this.router.url.split('/');
-    let routePath = route_split[route_split.length - 1];
-    let currentExperiment = this.dataService.getExperimentByRoute(routePath);
-    this.isScored = currentExperiment.isScored
-    this.showFeedbackAfterEveryTrial = currentExperiment.showFeedbackAfterEveryTrial
-    this.showScoreAfterEveryTrial = currentExperiment.showScoreAfterEveryTrial
-    this.numberOfBreaks = currentExperiment.numberOfBreaks
-    this.maxResponseTime = currentExperiment.maxResponseTime
-    this.durationOfFeedback = currentExperiment.durationOfFeedback
-    this.interTrialDelay = currentExperiment.interTrialDelay
-    this.practiceTrials = currentExperiment.practiceTrials
-    this.actualTrials = currentExperiment.actualTrials
   }
 
 
-  
-  processConsent(consent: Boolean) {
-    if (consent) {
-      this.proceedtoNextStep();
-    } else {
-      this.router.navigate(['/dashboard']);
-    }
-  }
-
-
-  
   proceedtoPreviousStep() {
     this.step -= 1;
   }
 
-
-  
   proceedtoNextStep() {
     this.step += 1;
   }
@@ -149,7 +129,7 @@ export class DemandSelectionComponent implements OnInit {
   }
 
 
-  
+
   async startPractice() {
     this.startGameInFullScreen();
     this.resetData();
@@ -162,7 +142,7 @@ export class DemandSelectionComponent implements OnInit {
   }
 
 
-  
+
   async startActualGame() {
     this.resetData();
     this.proceedtoNextStep();
@@ -176,13 +156,26 @@ export class DemandSelectionComponent implements OnInit {
   }
 
 
-  
+
   async showStimulus() {
 
     this.reset();
     this.showFixation = true;
     this.showNumber = false;
     this.showPatches = false;
+
+    this.posA = 0;
+    this.posB = 0;
+    
+    while (1) {
+      this.posA = Math.floor(Math.random() * this.rows.length * this.cols.length) + 1;
+      this.posB = Math.floor(Math.random() * this.rows.length * this.cols.length) + 1;
+      if (this.posA !== this.posB && ![15, 16, 21, 22].includes(this.posA) && ![15, 16, 21, 22].includes(this.posB)) {
+        break;
+      }
+    }
+    console.log(this.posA, this.posB);
+
     await this.wait(200);
 
     this.currentTrial += 1;
@@ -200,6 +193,7 @@ export class DemandSelectionComponent implements OnInit {
   }
 
   onHoverPatch(event, side = 'left') {
+    this.hover = side;
     let rand = 0;
     if (side === 'left') {
       rand = this.matrix.colors[this.currentTrial - 1];
@@ -261,7 +255,7 @@ export class DemandSelectionComponent implements OnInit {
 
   }
 
-  
+
   async showFeedback() {
     this.feedbackShown = true;
     this.isStimulus = false;
@@ -299,7 +293,7 @@ export class DemandSelectionComponent implements OnInit {
   }
 
 
-  
+
   async decideToContinue() {
     if (this.isPractice) {
       if (this.currentTrial < this.practiceTrials) {
@@ -336,7 +330,7 @@ export class DemandSelectionComponent implements OnInit {
   }
 
 
-  
+
   resume() {
     this.reset();
     this.isBreak = false;
@@ -344,26 +338,26 @@ export class DemandSelectionComponent implements OnInit {
   }
 
 
-  
+
   async continueGame() {
     await this.wait(this.interTrialDelay);
     this.showStimulus();
   }
 
 
-  
+
   uploadResults() {
   }
 
 
-  
+
   continueAhead() {
     this.router.navigate(['/dashboard']);
   }
 
 
 
-  
+
   reset() {
     this.number = 0;
     this.color = 'transparent';
@@ -373,23 +367,25 @@ export class DemandSelectionComponent implements OnInit {
     this.showPatches = false;
     this.showFixation = false;
     this.showNumber = false;
+    this.posA = 0;
+    this.posB = 0;
   }
 
 
-  
+
   resetData() {
     this.data = [];
     this.totalScore = 0;
   }
 
 
-  
+
   startGameInFullScreen() {
     setFullScreen();
   }
 
 
-  
+
   wait(time: number): Promise<void> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {

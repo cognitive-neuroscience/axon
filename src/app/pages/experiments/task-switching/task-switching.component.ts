@@ -17,7 +17,7 @@ export class TaskSwitchingComponent implements OnInit {
   durationOfFeedback: number = 500;
   interTrialDelay: number = 1000;
   practiceTrials: number = 20;
-  actualTrials: number = 125;
+  actualTrials: number = 20;
 
   step: number = 1;
   color: string = 'transparent';
@@ -289,7 +289,7 @@ export class TaskSwitchingComponent implements OnInit {
   }
 
   continueAhead() {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/experiments/dst']);
   }
 
   reset() {
