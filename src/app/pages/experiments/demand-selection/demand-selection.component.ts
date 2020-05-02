@@ -14,11 +14,10 @@ export class DemandSelectionComponent implements OnInit {
   isScored: boolean | number = true;
   showFeedbackAfterEveryTrial: boolean | number = true;
   showScoreAfterEveryTrial: boolean | number = true;
-  numberOfBreaks: number = 2;
-  maxResponseTime: number = 2500;        // In milliseconds
+  numberOfBreaks: number = 0;
   durationOfFeedback: number = 1000;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 10;
+  practiceTrials: number = 5;
   actualTrials: number = 30;
   showPatches: boolean = false;
   showNumber: boolean = false;
@@ -50,7 +49,6 @@ export class DemandSelectionComponent implements OnInit {
       ended: 0
     };
   showFixation: boolean = false;
-  sTimeout: any;
   feedbackShown: boolean = false;
 
   rows = [1, 2, 3, 4, 5, 6];
@@ -58,7 +56,8 @@ export class DemandSelectionComponent implements OnInit {
   posA = 0;
   posB = 0;
   hover = 'left';
-
+  colorMapping = localStorage.getItem('mapping') === '1' ? ['blue', 'yellow'] : ['yellow', 'blue'];
+  block = 1;
   matrix = new Matrix();
 
   @HostListener('document:click', ['$event'])
@@ -76,7 +75,6 @@ export class DemandSelectionComponent implements OnInit {
           this.data[this.data.length - 1].userAnswer = 'ODD';
         }
         try {
-          clearTimeout(this.sTimeout);
           this.showFeedback();
         } catch (error) {
         }
@@ -118,7 +116,6 @@ export class DemandSelectionComponent implements OnInit {
           this.data[this.data.length - 1].userAnswer = 'EVEN';
         }
         try {
-          clearTimeout(this.sTimeout);
           this.showFeedback();
         } catch (error) {
         }
@@ -143,7 +140,8 @@ export class DemandSelectionComponent implements OnInit {
 
 
 
-  async startActualGame() {
+  async startActualGame(trials = 100) {
+    this.actualTrials = trials;
     this.resetData();
     this.proceedtoNextStep();
     await this.wait(2000);
@@ -245,14 +243,6 @@ export class DemandSelectionComponent implements OnInit {
     this.timer.ended = 0;
 
     console.log(this.isPractice ? `Practice trial: ${this.currentTrial}` : `Actual trial: ${this.currentTrial}`);
-
-    // This is the delay between showing the stimulus and showing the feedback
-    this.sTimeout = setTimeout(() => {
-      if (!this.feedbackShown) {
-        this.showFeedback();
-      }
-    }, this.maxResponseTime);
-
   }
 
 
