@@ -55,7 +55,7 @@ export class TaskSwitchingComponent implements OnInit {
     colors: [],
     digits: []
   };
-  colorMapping = Math.random() > 0.5 ? ['blue', 'yellow'] : ['yellow', 'blue'];
+  colorMapping = localStorage.getItem('mapping') === '1' ? ['blue', 'yellow'] : ['yellow', 'blue'];
 
   @HostListener('document:click', ['$event'])
   onKeyPress(event: MouseEvent) {

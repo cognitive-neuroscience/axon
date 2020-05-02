@@ -13,16 +13,9 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-
-  
   model: LoginCredentials = new LoginCredentials();
-
-
-  
   loginSubscription: Subscription = new Subscription();
 
-
-  
   constructor(
     private authService: AuthService,
     private router: Router
@@ -31,7 +24,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnInit() {
   }
 
-  
   proceed() {
     this.loginSubscription = this.authService.login(this.model).subscribe((response: LoginResponse) => {
       localStorage.setItem('token', response.token);

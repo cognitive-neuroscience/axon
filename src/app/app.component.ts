@@ -12,6 +12,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.router.navigate(['/dashboard']);
+    localStorage.setItem('mapping', Math.random() > 0.5 ? '1' : '2');
   }
 
 }

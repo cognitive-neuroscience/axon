@@ -39,7 +39,8 @@ export class DemandSelectionComponent implements OnInit {
     userAnswer: string,
     responseTime: number,
     isCorrect: number,
-    score: number
+    score: number,
+    colorMapping: string[]
   }[] = [];
   timer: {
     started: number,
@@ -58,26 +59,26 @@ export class DemandSelectionComponent implements OnInit {
   hover = 'left';
   colorMapping = localStorage.getItem('mapping') === '1' ? ['blue', 'yellow'] : ['yellow', 'blue'];
   block = 1;
-  matrix = new Matrix();
+  matrix = {
+    colors: [],
+    digits: []
+  };
 
   @HostListener('document:click', ['$event'])
   onKeyPress(event: MouseEvent) {
     if (this.isResponseAllowed) {
       this.isResponseAllowed = false;
       try {
-        if (this.data[this.data.length - 1].color === 'blue') {
+        if (this.data[this.data.length - 1].color === this.colorMapping[0]) {
           this.timer.ended = new Date().getTime();
           this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
-          this.data[this.data.length - 1].userAnswer = 'LESSER';
+          this.data[this.data.length - 1].userAnswer = 'GREATER';
         } else {
           this.timer.ended = new Date().getTime();
           this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
-          this.data[this.data.length - 1].userAnswer = 'ODD';
+          this.data[this.data.length - 1].userAnswer = 'EVEN';
         }
-        try {
-          this.showFeedback();
-        } catch (error) {
-        }
+        this.showFeedback();
       } catch (error) {
       }
     }
@@ -128,6 +129,7 @@ export class DemandSelectionComponent implements OnInit {
 
 
   async startPractice() {
+    this.matrix = new Matrix(this.practiceTrials, 50);
     this.startGameInFullScreen();
     this.resetData();
     this.proceedtoNextStep();
@@ -142,6 +144,7 @@ export class DemandSelectionComponent implements OnInit {
 
   async startActualGame(trials = 100) {
     this.actualTrials = trials;
+    this.matrix = new Matrix(this.actualTrials, 50);
     this.resetData();
     this.proceedtoNextStep();
     await this.wait(2000);
@@ -192,38 +195,24 @@ export class DemandSelectionComponent implements OnInit {
 
   onHoverPatch(event, side = 'left') {
     this.hover = side;
-    let rand = 0;
-    if (side === 'left') {
-      rand = this.matrix.colors[this.currentTrial - 1];
-    } else {
-      rand = this.matrix.colors2[this.currentTrial - 1];
-    }
-
-    let color = 'blue';
-    if (rand === 1) {
-      color = 'blue';
-    } else {
-      color = 'green';
-    }
+    const color = this.colorMapping[this.matrix.colors[this.currentTrial - 1] - 1];
     const digit = this.matrix.digits[this.currentTrial - 1];
     let answer = '';
-    if (color === 'green') {
-      if (digit % 2 === 0) {
-        answer = 'EVEN';
-      } else {
-        answer = 'ODD';
-      }
-    } else {
+    if (color === this.colorMapping[0]) {
       if (digit > 5) {
         answer = 'GREATER';
       } else {
         answer = 'LESSER';
       }
+    } else {
+      if (digit % 2 === 0) {
+        answer = 'EVEN';
+      } else {
+        answer = 'ODD';
+      }
     }
-
     this.color = color;
     this.number = digit;
-
     this.data.push({
       color: color,
       digit: digit,
@@ -231,7 +220,8 @@ export class DemandSelectionComponent implements OnInit {
       userAnswer: '',
       responseTime: 0,
       isCorrect: 0,
-      score: 0
+      score: 0,
+      colorMapping: this.colorMapping
     });
 
     this.showPatches = false;
