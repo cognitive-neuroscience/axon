@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiBaseURL: 'https://api-sharplab.duckdns.org/api'
+  apiBaseURL: 'http://192.168.1.116:8181/api'
 };

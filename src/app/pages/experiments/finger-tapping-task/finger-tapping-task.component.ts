@@ -69,26 +69,14 @@ export class FingerTappingTaskComponent implements OnInit {
     }
   }
 
-  
+
   constructor(
     private router: Router,
     private dataService: DataService
   ) { }
 
-  
+
   ngOnInit() {
-    let route_split = this.router.url.split('/');
-    let routePath = route_split[route_split.length - 1];
-    let currentExperiment = this.dataService.getExperimentByRoute(routePath);
-    this.isScored = currentExperiment.isScored;
-    this.showFeedbackAfterEveryTrial = currentExperiment.showFeedbackAfterEveryTrial;
-    this.showScoreAfterEveryTrial = currentExperiment.showScoreAfterEveryTrial;
-    this.numberOfBreaks = currentExperiment.numberOfBreaks;
-    this.maxResponseTime = currentExperiment.maxResponseTime;
-    this.durationOfFeedback = currentExperiment.durationOfFeedback;
-    this.interTrialDelay = currentExperiment.interTrialDelay;
-    this.practiceTrials = currentExperiment.practiceTrials;
-    this.actualTrials = currentExperiment.actualTrials;
     if (Math.random() > 0.5) {
       this.keyA = 'Q';
       this.keyB = 'P';
@@ -101,7 +89,7 @@ export class FingerTappingTaskComponent implements OnInit {
   }
 
 
-  
+
   processConsent(consent: Boolean) {
     if (consent) {
       this.proceedtoNextStep();
@@ -111,13 +99,13 @@ export class FingerTappingTaskComponent implements OnInit {
   }
 
 
-  
+
   proceedtoPreviousStep() {
     this.step -= 1;
   }
 
 
-  
+
   proceedtoNextStep() {
     this.step += 1;
   }
@@ -208,23 +196,23 @@ export class FingerTappingTaskComponent implements OnInit {
   }
 
 
-  
+
   uploadResults() {
   }
 
 
-  
+
   continueAhead() {
     this.router.navigate(['/dashboard']);
   }
 
-  
+
   startGameInFullScreen() {
     setFullScreen();
   }
 
 
-  
+
   wait(time: number): Promise<void> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {

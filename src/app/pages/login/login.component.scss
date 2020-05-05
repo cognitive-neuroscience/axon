@@ -1,10 +1,33 @@
 .login{
-    height: calc(100vh - 60px);
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100vw;
+    height: 100vh;
 }
-.card-body{
-    padding-top: 0px;
-}
+
 .card{
-    border-color: #cecece;
-    background-color: #f5f5f5;
+    width: 18rem;
+}
+
+mat-form-field{
+    width: 100%;
+}
+
+.logo{
+    max-height: 100px;
+    max-width: 200px;
+}
+
+.vector {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 55vh;
+    width: 100%;
+    -webkit-transform: skewY(8deg);
+    transform: skewY(8deg);
+    -webkit-transform-origin: 100%;
+    transform-origin: 100%;
+    z-index: -1 !important;
 }

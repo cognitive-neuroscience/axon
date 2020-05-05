@@ -1,24 +1,40 @@
-<div class="container">
-    <div class="d-flex flex-column align-items-center justify-content-center login">
-        <div class="card">
+<div class="login d-flex flex-column align-items-center justify-content-center">
+    <div align="center">
+        <mat-card class="shadow-lg" style="border-radius: 10px; width: 300px;">
             <div class="card-body">
                 <div align="center">
-                    <img src="assets/logo/logo.png" style="height: 75px; width: 75px; border-radius: 50%; border: solid thin #e5e5e5; margin: 15px;" alt="">
+                    <img class="logo" src="assets/logo/logo.png" alt="">
                 </div>
-                <mat-form-field>
-                    <input type="email" matInput autocomplete [(ngModel)]="model.email" placeholder="Email">
+                <br>
+                <mat-form-field floatLabel="always">
+                    <mat-placeholder style="text-transform: uppercase;">Email</mat-placeholder>
+                    <input autocomplete="off" type="email" matInput [(ngModel)]="model.email">
+                    <mat-icon matSuffix>email</mat-icon>
                 </mat-form-field>
                 <br>
-                <mat-form-field>
-                    <input type="password" autocomplete matInput [(ngModel)]="model.password" placeholder="Password">
+                <mat-form-field floatLabel="always">
+                    <mat-placeholder style="text-transform: uppercase;">Password</mat-placeholder>
+                    <input autocomplete="off" type="password" matInput name="password" [(ngModel)]="model.password">
+                    <mat-icon matSuffix>vpn_key</mat-icon>
                 </mat-form-field>
                 <br>
+                <div align="center" matRipple matRippleColor="#ffffff33">
+                    <button class="btn-block btn-sm rounded-btn" mat-raised-button color="primary"
+                        style="text-transform: uppercase;" name="login" (click)="login()">Login</button>
+                </div>
                 <br>
-                <div align="center">
-                    <button mat-stroked-button color="primary" (click)="proceed()">Proceed&nbsp;<i
-                            class="material-icons">keyboard_arrow_right</i></button>
+                <div style=" font-weight: 300; font-size: 13px;">
+                    <a style="color:inherit; text-decoration:underline; background-color: transparent;"
+                        href="javascript:void(0)">Register</a>
+                </div>
+                <div style=" font-weight: 300; font-size: 13px;">
+                    <a style="color:inherit; text-decoration:underline; background-color: transparent;"
+                        href="javascript:void(0)">Forgot Password</a>
                 </div>
             </div>
-        </div>
+        </mat-card>
     </div>
+</div>
+
+<div class="vector" style="background: linear-gradient(145deg,#3f51b5,#3f51b5)">
 </div>

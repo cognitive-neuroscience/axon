@@ -10,7 +10,7 @@ declare function setFullScreen(): any;
 })
 export class DigitSpanComponent implements OnInit {
 
-  // Default Experiment config 
+  // Default Experiment config
   isScored: boolean | number = true;
   showFeedbackAfterEveryTrial: boolean | number = false;
   showScoreAfterEveryTrial: boolean | number = false;
@@ -58,31 +58,20 @@ export class DigitSpanComponent implements OnInit {
     };
   showFixation: boolean = false;
 
-  
+
   constructor(
     private router: Router,
     private dataService: DataService
   ) { }
 
 
-  
+
   ngOnInit() {
-    let route_split = this.router.url.split('/');
-    let routePath = route_split[route_split.length - 1];
-    let currentExperiment = this.dataService.getExperimentByRoute(routePath);
-    this.isScored = currentExperiment.isScored
-    this.showFeedbackAfterEveryTrial = currentExperiment.showFeedbackAfterEveryTrial
-    this.showScoreAfterEveryTrial = currentExperiment.showScoreAfterEveryTrial
-    this.numberOfBreaks = currentExperiment.numberOfBreaks
-    this.maxResponseTime = currentExperiment.maxResponseTime
-    this.durationOfFeedback = currentExperiment.durationOfFeedback
-    this.interTrialDelay = currentExperiment.interTrialDelay
-    this.practiceTrials = currentExperiment.practiceTrials
-    this.actualTrials = currentExperiment.actualTrials
+
   }
 
 
-  
+
   processConsent(consent: Boolean) {
     if (consent) {
       this.proceedtoNextStep();
@@ -92,18 +81,18 @@ export class DigitSpanComponent implements OnInit {
   }
 
 
-  
+
   proceedtoPreviousStep() {
     this.step -= 1;
   }
 
 
-  
+
   proceedtoNextStep() {
     this.step += 1;
   }
 
-  
+
   async startPractice() {
     this.startGameInFullScreen();
     this.resetData();
@@ -115,7 +104,7 @@ export class DigitSpanComponent implements OnInit {
     this.showStimulus();
   }
 
-  
+
   async startActualGame() {
     this.resetData();
     this.proceedtoNextStep();
@@ -126,7 +115,7 @@ export class DigitSpanComponent implements OnInit {
     this.showStimulus();
   }
 
-  
+
   async showStimulus() {
 
     this.reset();
@@ -160,7 +149,7 @@ export class DigitSpanComponent implements OnInit {
   }
 
 
-  
+
   generateStimulus() {
     if (this.failedAttempts >= 3) {
       this.numberLen -= 1;
@@ -177,10 +166,10 @@ export class DigitSpanComponent implements OnInit {
     if (this.numberLen > 7) {
       this.numberLen = 7;
     }
-    let min = this.getMaxMin(this.numberLen).min;
-    let max = this.getMaxMin(this.numberLen).max;
-    let numberToShow = Math.floor(Math.random() * (max - min + 1)) + min;
-    let numAsArray = numberToShow.toString().split('').join('_').split('');
+    const min = this.getMaxMin(this.numberLen).min;
+    const max = this.getMaxMin(this.numberLen).max;
+    const numberToShow = Math.floor(Math.random() * (max - min + 1)) + min;
+    const numAsArray = numberToShow.toString().split('').join('_').split('');
     this.userAnswer = '';
     this.textShown = numberToShow.toString();
     console.log(this.textShown, numAsArray);
@@ -196,9 +185,9 @@ export class DigitSpanComponent implements OnInit {
     return promise;
   }
 
-  
+
   getMaxMin(len: number) {
-    let ret = {
+    const ret = {
       min: 100,
       max: 999
     };
@@ -212,13 +201,13 @@ export class DigitSpanComponent implements OnInit {
   }
 
 
-  
+
   addNumber(num: number) {
     this.userAnswer += num.toString();
   }
 
 
-  
+
   async showFeedback() {
     this.data[this.data.length - 1].userAnswer = this.userAnswer;
     this.isStimulus = false;
@@ -254,7 +243,7 @@ export class DigitSpanComponent implements OnInit {
   }
 
 
-  
+
   async decideToContinue() {
     if (this.isPractice) {
       if (this.currentTrial < this.practiceTrials) {
@@ -269,8 +258,8 @@ export class DigitSpanComponent implements OnInit {
         if (this.numberOfBreaks === 0) {
           this.continueGame();
         } else {
-          let breakAtTrailIndices = [];
-          let setSize = this.actualTrials / (this.numberOfBreaks + 1);
+          const breakAtTrailIndices = [];
+          const setSize = this.actualTrials / (this.numberOfBreaks + 1);
           for (let i = 1; i < this.numberOfBreaks + 1; i++) {
             breakAtTrailIndices.push(setSize * i);
           }
@@ -291,33 +280,33 @@ export class DigitSpanComponent implements OnInit {
   }
 
 
-  
+
   resume() {
     this.reset();
     this.isBreak = false;
     this.continueGame();
   }
 
-  
+
   async continueGame() {
     await this.wait(this.interTrialDelay);
     this.showStimulus();
   }
 
 
-  
+
   uploadResults() {
   }
 
 
-  
+
   continueAhead() {
     this.router.navigate(['/dashboard']);
   }
 
 
 
-  
+
   reset() {
     this.textShown = '';
     this.feedback = '';
@@ -327,7 +316,7 @@ export class DigitSpanComponent implements OnInit {
   }
 
 
-  
+
   resetData() {
     this.data = [];
     this.totalScore = 0;
@@ -338,13 +327,13 @@ export class DigitSpanComponent implements OnInit {
   }
 
 
-  
+
   startGameInFullScreen() {
     setFullScreen();
   }
 
 
-  
+
   wait(time: number): Promise<void> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {

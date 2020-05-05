@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { LoginCredentials } from 'src/app/models/LoginCredentials';
 import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
-import { LoginResponse } from 'src/app/models/LoginResponse';
 import { Router } from '@angular/router';
+import { LoginCredentials } from 'src/app/models/LoginCredentials';
 
 @Component({
   selector: 'app-login',
@@ -24,8 +23,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnInit() {
   }
 
-  proceed() {
-    this.loginSubscription = this.authService.login(this.model).subscribe((response: LoginResponse) => {
+  login() {
+    this.loginSubscription = this.authService.login(this.model).subscribe((response) => {
       localStorage.setItem('token', response.token);
       this.router.navigate(['/dashboard']);
     }, (error: HttpErrorResponse) => {

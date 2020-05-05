@@ -10,7 +10,7 @@ declare function setFullScreen(): any;
 })
 export class GoNogoComponent implements OnInit {
 
-  // Default Experiment config 
+  // Default Experiment config
   isScored: boolean | number = true;
   showFeedbackAfterEveryTrial: boolean | number = true;
   showScoreAfterEveryTrial: boolean | number = true;
@@ -70,31 +70,20 @@ export class GoNogoComponent implements OnInit {
   }
 
 
-  
+
   constructor(
     private router: Router,
     private dataService: DataService
   ) { }
 
 
-  
+
   ngOnInit() {
-    let route_split = this.router.url.split('/');
-    let routePath = route_split[route_split.length - 1];
-    let currentExperiment = this.dataService.getExperimentByRoute(routePath);
-    this.isScored = currentExperiment.isScored
-    this.showFeedbackAfterEveryTrial = currentExperiment.showFeedbackAfterEveryTrial
-    this.showScoreAfterEveryTrial = currentExperiment.showScoreAfterEveryTrial
-    this.numberOfBreaks = currentExperiment.numberOfBreaks
-    this.maxResponseTime = currentExperiment.maxResponseTime
-    this.durationOfFeedback = currentExperiment.durationOfFeedback
-    this.interTrialDelay = currentExperiment.interTrialDelay
-    this.practiceTrials = currentExperiment.practiceTrials
-    this.actualTrials = currentExperiment.actualTrials
+
   }
 
 
-  
+
   processConsent(consent: Boolean) {
     if (consent) {
       this.proceedtoNextStep();
@@ -104,19 +93,19 @@ export class GoNogoComponent implements OnInit {
   }
 
 
-  
+
   proceedtoPreviousStep() {
     this.step -= 1;
   }
 
 
-  
+
   proceedtoNextStep() {
     this.step += 1;
   }
 
 
-  
+
   async startPractice() {
     this.startGameInFullScreen();
     this.resetData();
@@ -129,7 +118,7 @@ export class GoNogoComponent implements OnInit {
   }
 
 
-  
+
   async startActualGame() {
     this.resetData();
     this.proceedtoNextStep();
@@ -141,7 +130,7 @@ export class GoNogoComponent implements OnInit {
   }
 
 
-  
+
   async showStimulus() {
 
     this.reset();
@@ -169,7 +158,7 @@ export class GoNogoComponent implements OnInit {
   }
 
 
-  
+
   generateStimulus() {
     const random = Math.random();
     if (random < 0.5) {
@@ -194,7 +183,7 @@ export class GoNogoComponent implements OnInit {
   }
 
 
-  
+
   async showFeedback() {
     this.feedbackShown = true;
     this.isStimulus = false;
@@ -229,7 +218,7 @@ export class GoNogoComponent implements OnInit {
   }
 
 
-  
+
   async decideToContinue() {
     if (this.isPractice) {
       if (this.currentTrial < this.practiceTrials) {
@@ -244,8 +233,8 @@ export class GoNogoComponent implements OnInit {
         if (this.numberOfBreaks === 0) {
           this.continueGame();
         } else {
-          let breakAtTrailIndices = [];
-          let setSize = this.actualTrials / (this.numberOfBreaks + 1);
+          const breakAtTrailIndices = [];
+          const setSize = this.actualTrials / (this.numberOfBreaks + 1);
           for (let i = 1; i < this.numberOfBreaks + 1; i++) {
             breakAtTrailIndices.push(setSize * i);
           }
@@ -266,7 +255,7 @@ export class GoNogoComponent implements OnInit {
   }
 
 
-  
+
   resume() {
     this.reset();
     this.isBreak = false;
@@ -274,26 +263,26 @@ export class GoNogoComponent implements OnInit {
   }
 
 
-  
+
   async continueGame() {
     await this.wait(this.interTrialDelay);
     this.showStimulus();
   }
 
 
-  
+
   uploadResults() {
   }
 
 
-  
+
   continueAhead() {
     this.router.navigate(['/dashboard']);
   }
 
 
 
-  
+
   reset() {
     this.color = '';
     this.feedback = '';
@@ -302,20 +291,20 @@ export class GoNogoComponent implements OnInit {
   }
 
 
-  
+
   resetData() {
     this.data = [];
     this.totalScore = 0;
   }
 
 
-  
+
   startGameInFullScreen() {
     setFullScreen();
   }
 
 
-  
+
   wait(time: number): Promise<void> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {

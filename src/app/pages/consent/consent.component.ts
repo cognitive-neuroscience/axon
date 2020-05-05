@@ -8,7 +8,7 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 export class ConsentComponent implements OnInit {
 
   @Output()
-  broadcastConsent: EventEmitter<Boolean> = new EventEmitter();
+  broadcastConsent: EventEmitter<boolean> = new EventEmitter();
 
   constructor() { }
 

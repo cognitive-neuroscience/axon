@@ -8,11 +8,12 @@ import { Router } from '@angular/router';
 })
 export class AppComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+  ) { }
 
   ngOnInit() {
     this.router.navigate(['/dashboard']);
-    localStorage.setItem('mapping', Math.random() > 0.5 ? '1' : '2');
   }
 
 }

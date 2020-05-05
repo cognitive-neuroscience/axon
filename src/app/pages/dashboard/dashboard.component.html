@@ -26,7 +26,7 @@
 
             <ng-container matColumnDef="route">
                 <th mat-header-cell *matHeaderCellDef> Actions </th>
-                <td mat-cell *matCellDef="let task"> <button mat-icon-button (click)="run('experiments', task.route)">
+                <td mat-cell *matCellDef="let task"> <button mat-icon-button (click)="run(task.route)">
                         <mat-icon>play_arrow</mat-icon>
                     </button> </td>
             </ng-container>
@@ -61,8 +61,7 @@
 
             <ng-container matColumnDef="route">
                 <th mat-header-cell *matHeaderCellDef> Actions </th>
-                <td mat-cell *matCellDef="let experiment"><button mat-icon-button
-                        (click)="run('experiments', experiment.route)">
+                <td mat-cell *matCellDef="let experiment"><button mat-icon-button (click)="run(experiment.route)">
                         <mat-icon>play_arrow</mat-icon>
                     </button></td>
             </ng-container>

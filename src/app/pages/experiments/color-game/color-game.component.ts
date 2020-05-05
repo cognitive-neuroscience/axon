@@ -96,31 +96,19 @@ export class ColorGameComponent implements OnInit {
     }
   }
 
-  
+
   constructor(
     private router: Router,
     private dataService: DataService
   ) { }
 
 
-  
+
   ngOnInit() {
-    let route_split = this.router.url.split('/');
-    let routePath = route_split[route_split.length - 1];
-    let currentExperiment = this.dataService.getExperimentByRoute(routePath);
-    this.isScored = currentExperiment.isScored
-    this.showFeedbackAfterEveryTrial = currentExperiment.showFeedbackAfterEveryTrial
-    this.showScoreAfterEveryTrial = currentExperiment.showScoreAfterEveryTrial
-    this.numberOfBreaks = currentExperiment.numberOfBreaks
-    this.maxResponseTime = currentExperiment.maxResponseTime
-    this.durationOfFeedback = currentExperiment.durationOfFeedback
-    this.interTrialDelay = currentExperiment.interTrialDelay
-    this.practiceTrials = currentExperiment.practiceTrials
-    this.actualTrials = currentExperiment.actualTrials
   }
 
 
-  
+
   processConsent(consent: Boolean) {
     if (consent) {
       this.proceedtoNextStep();
@@ -130,19 +118,19 @@ export class ColorGameComponent implements OnInit {
   }
 
 
-  
+
   proceedtoPreviousStep() {
     this.step -= 1;
   }
 
 
-  
+
   proceedtoNextStep() {
     this.step += 1;
   }
 
 
-  
+
   async startPractice() {
     this.startGameInFullScreen();
     this.resetData();
@@ -156,7 +144,7 @@ export class ColorGameComponent implements OnInit {
   }
 
 
-  
+
   async startActualGame() {
     this.resetData();
     this.proceedtoNextStep();
@@ -192,7 +180,7 @@ export class ColorGameComponent implements OnInit {
   }
 
 
-  
+
   async showStimulus() {
 
     this.reset();
@@ -219,7 +207,7 @@ export class ColorGameComponent implements OnInit {
     }, this.maxResponseTime);
   }
 
-  
+
   generateStimulus() {
     const color = this.trial_colors[this.currentTrial];
     this.colors = this.colors_all.concat(color);
@@ -251,7 +239,7 @@ export class ColorGameComponent implements OnInit {
     });
   }
 
-  
+
   async showFeedback() {
     this.feedbackShown = true;
     this.isStimulus = false;
@@ -262,8 +250,8 @@ export class ColorGameComponent implements OnInit {
       this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
     }
 
-    let rand = Math.random();
-    let points = rand <= this.trial_reward_probs[this.currentTrial] ? 10 : 1;
+    const rand = Math.random();
+    const points = rand <= this.trial_reward_probs[this.currentTrial] ? 10 : 1;
     this.data[this.data.length - 1].probability = this.trial_reward_probs[this.currentTrial];
     this.data[this.data.length - 1].random = rand;
 
@@ -291,7 +279,7 @@ export class ColorGameComponent implements OnInit {
   }
 
 
-  
+
   async decideToContinue() {
     if (this.isPractice) {
       if (this.currentTrial < this.practiceTrials) {
@@ -306,8 +294,8 @@ export class ColorGameComponent implements OnInit {
         if (this.numberOfBreaks === 0) {
           this.continueGame();
         } else {
-          let breakAtTrailIndices = [];
-          let setSize = this.actualTrials / (this.numberOfBreaks + 1);
+          const breakAtTrailIndices = [];
+          const setSize = this.actualTrials / (this.numberOfBreaks + 1);
           for (let i = 1; i < this.numberOfBreaks + 1; i++) {
             breakAtTrailIndices.push(setSize * i);
           }
@@ -329,7 +317,7 @@ export class ColorGameComponent implements OnInit {
 
 
 
-  
+
   resume() {
     this.reset();
     this.isBreak = false;
@@ -337,26 +325,26 @@ export class ColorGameComponent implements OnInit {
   }
 
 
-  
+
   async continueGame() {
     await this.wait(this.interTrialDelay);
     this.showStimulus();
   }
 
 
-  
+
   uploadResults() {
   }
 
 
-  
+
   continueAhead() {
     this.router.navigate(['/dashboard']);
   }
 
 
 
-  
+
   reset() {
     this.color = '';
     this.feedback = '';
@@ -365,20 +353,20 @@ export class ColorGameComponent implements OnInit {
   }
 
 
-  
+
   resetData() {
     this.data = [];
     this.totalScore = 0;
   }
 
 
-  
+
   startGameInFullScreen() {
     setFullScreen();
   }
 
 
-  
+
   wait(time: number): Promise<void> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {

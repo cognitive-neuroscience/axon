@@ -1,59 +1,40 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Experiment } from 'src/app/models/Experiment';
-import { DataService } from 'src/app/services/data.service';
-import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { DataService } from 'src/app/services/data.service';
 declare function closeFullscreen(): any;
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit {
 
-  tasks: Experiment[] = [];
-  experiments: Experiment[] = [];
-  displayedColumnsForExperiments: string[] = ['title', 'description', 'route'];
-  displayedColumnsForOthers: string[] = ['title', 'description', 'data'];
-  experimentsSubscription: Subscription = new Subscription();
-  questionnairesSubscription: Subscription = new Subscription();
-  workflowsSubscription: Subscription = new Subscription();
+  displayedColumnsForExperiments = ['title', 'description', 'route'];
 
   constructor(
+    private router: Router,
     private dataService: DataService,
-    private router: Router
   ) { }
 
-  async ngOnInit() {
-
+  ngOnInit() {
     try {
-      await closeFullscreen();
+      closeFullscreen();
     } catch (error) {
 
     }
-
-    this.experimentsSubscription = this.dataService.getExperiments().subscribe((results: Experiment[]) => {
-      this.dataService.setExperiments(results);
-      this.tasks = results.filter(result => result.type === 'task').sort((a, b) => {
-        if (a.id > b.id) return 1; else return -1;
-      });
-      this.experiments = results.filter(result => result.type === 'experiment').sort((a, b) => {
-        if (a.id > b.id) return 1; else return -1;
-      });;
-    }, (error) => {
-      console.error(error);
-    });
-
+    this.dataService.retrieveData();
   }
 
-  ngOnDestroy() {
-    this.experimentsSubscription.unsubscribe();
-    this.questionnairesSubscription.unsubscribe();
-    this.workflowsSubscription.unsubscribe();
+  run(path: string) {
+    this.router.navigate([path]);
   }
 
-  run(prefix: string, path: string) {
-    this.router.navigate([`/${prefix}/${path}`]);
+  get tasks() {
+    return (this.dataService.data.data || []).filter(t => t.type === 'task');
+  }
+
+  get experiments() {
+    return (this.dataService.data.data || []).filter(t => t.type === 'experiment');
   }
 
 }

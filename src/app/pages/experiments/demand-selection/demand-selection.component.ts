@@ -10,7 +10,7 @@ import { Matrix } from './matrix';
 })
 export class DemandSelectionComponent implements OnInit {
 
-  // Default Experiment config 
+  // Default Experiment config
   isScored: boolean | number = true;
   showFeedbackAfterEveryTrial: boolean | number = true;
   showScoreAfterEveryTrial: boolean | number = true;
@@ -167,7 +167,7 @@ export class DemandSelectionComponent implements OnInit {
 
     this.posA = 0;
     this.posB = 0;
-    
+
     while (1) {
       this.posA = Math.floor(Math.random() * this.rows.length * this.cols.length) + 1;
       this.posB = Math.floor(Math.random() * this.rows.length * this.cols.length) + 1;
@@ -214,8 +214,8 @@ export class DemandSelectionComponent implements OnInit {
     this.color = color;
     this.number = digit;
     this.data.push({
-      color: color,
-      digit: digit,
+      color,
+      digit,
       actualAnswer: answer,
       userAnswer: '',
       responseTime: 0,
@@ -288,8 +288,8 @@ export class DemandSelectionComponent implements OnInit {
         if (this.numberOfBreaks === 0) {
           this.continueGame();
         } else {
-          let breakAtTrailIndices = [];
-          let setSize = this.actualTrials / (this.numberOfBreaks + 1);
+          const breakAtTrailIndices = [];
+          const setSize = this.actualTrials / (this.numberOfBreaks + 1);
           for (let i = 1; i < this.numberOfBreaks + 1; i++) {
             breakAtTrailIndices.push(setSize * i);
           }

@@ -1,7 +1,7 @@
 {
   "name": "axon",
   "version": "0.1.0",
-  "description": "Dashboard for delivering neuroscience experiments on the web for the Neurodegenration Research Laboratory at The Neuro (formerly Montreal Neurological Institute)",
+  "description": "Dashboard for delivering neuroscience experiments on the web for the Neurodegenration Research Laboratory at The Neuro",
   "main": "src/main.ts",
   "dependencies": {
     "@angular/animations": "~9.1.2",
@@ -32,7 +32,8 @@
     "ng": "ng",
     "start": "ng serve -o",
     "build": "ng build --prod",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "lint-fix": "ng lint --fix=true"
   },
   "repository": {
     "type": "git",

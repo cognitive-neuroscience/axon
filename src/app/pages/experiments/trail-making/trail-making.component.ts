@@ -11,7 +11,6 @@ declare function setFullScreen(): any;
 })
 export class TrailMakingComponent implements OnInit {
 
-
   step: number = 1;
   isScored: number | boolean;
   showFeedbackAfterEveryTrial: number | boolean;
@@ -27,32 +26,17 @@ export class TrailMakingComponent implements OnInit {
   correct: number[] = [];
   sTimeout2;
 
-  
+
   constructor(
     private router: Router,
     private dataService: DataService,
     private snackbar: MatSnackBar
   ) { }
 
-
-  
   ngOnInit() {
-    let route_split = this.router.url.split('/');
-    let routePath = route_split[route_split.length - 1];
-    let currentExperiment = this.dataService.getExperimentByRoute(routePath);
-    this.isScored = currentExperiment.isScored;
-    this.showFeedbackAfterEveryTrial = currentExperiment.showFeedbackAfterEveryTrial;
-    this.showScoreAfterEveryTrial = currentExperiment.showScoreAfterEveryTrial;
-    this.numberOfBreaks = currentExperiment.numberOfBreaks;
-    this.maxResponseTime = currentExperiment.maxResponseTime;
-    this.durationOfFeedback = currentExperiment.durationOfFeedback;
-    this.interTrialDelay = currentExperiment.interTrialDelay;
-    this.practiceTrials = currentExperiment.practiceTrials;
-    this.actualTrials = currentExperiment.actualTrials;
+
   }
 
-
-  
   processConsent(consent: Boolean) {
     if (consent) {
       this.proceedtoNextStep();
@@ -61,14 +45,10 @@ export class TrailMakingComponent implements OnInit {
     }
   }
 
-
-  
   proceedtoPreviousStep() {
     this.step -= 1;
   }
 
-
-  
   proceedtoNextStep() {
     this.step += 1;
   }
@@ -81,13 +61,13 @@ export class TrailMakingComponent implements OnInit {
     if (!this.clicked.includes(number)) {
       this.clicked.push(number);
       if (this.clicked[this.clicked.length - 1] !== this.correct[this.clicked.length - 1]) {
-        let audio = new Audio('/assets/sounds/wrong.mp3');
+        const audio = new Audio('/assets/sounds/wrong.mp3');
         audio.play();
         this.sTimeout = setTimeout(() => {
           this.clicked.pop();
         }, 500);
       } else {
-        let audio = new Audio('/assets/sounds/correct.mp3');
+        const audio = new Audio('/assets/sounds/correct.mp3');
         audio.play();
       }
       try {
@@ -124,24 +104,24 @@ export class TrailMakingComponent implements OnInit {
     }, 240000);
   }
 
-  
+
   uploadResults() {
   }
 
-  
+
   continueAhead() {
     this.router.navigate(['/dashboard']);
   }
 
 
 
-  
+
   startGameInFullScreen() {
     setFullScreen();
   }
 
 
-  
+
   wait(time: number): Promise<void> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {

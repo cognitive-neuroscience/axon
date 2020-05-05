@@ -15,7 +15,7 @@ import * as SetPractice from './stimuli_practice';
 })
 export class NBackComponent implements OnInit {
 
-  // Default Experiment config 
+  // Default Experiment config
   isScored: boolean | number = true;
   showFeedbackAfterEveryTrial: boolean | number = false;
   showScoreAfterEveryTrial: boolean | number = false;
@@ -82,32 +82,20 @@ export class NBackComponent implements OnInit {
     }
   }
 
-  
+
   constructor(
     private router: Router,
     private dataService: DataService
   ) { }
 
 
-  
+
   ngOnInit() {
-    let route_split = this.router.url.split('/');
-    let routePath = route_split[route_split.length - 1];
-    let currentExperiment = this.dataService.getExperimentByRoute(routePath);
-    this.isScored = currentExperiment.isScored;
-    this.showFeedbackAfterEveryTrial = currentExperiment.showFeedbackAfterEveryTrial;
-    this.showScoreAfterEveryTrial = currentExperiment.showScoreAfterEveryTrial;
-    this.numberOfBreaks = currentExperiment.numberOfBreaks;
-    this.maxResponseTime = currentExperiment.maxResponseTime;
-    this.durationOfFeedback = currentExperiment.durationOfFeedback;
-    this.interTrialDelay = currentExperiment.interTrialDelay;
-    this.practiceTrials = currentExperiment.practiceTrials;
-    this.actualTrials = currentExperiment.actualTrials;
     this.set = Math.floor(Math.random() * 4) + 1;
   }
 
 
-  
+
   processConsent(consent: Boolean) {
     if (consent) {
       this.proceedtoNextStep();
@@ -117,18 +105,18 @@ export class NBackComponent implements OnInit {
   }
 
 
-  
+
   proceedtoPreviousStep() {
     this.step -= 1;
   }
 
 
-  
+
   proceedtoNextStep() {
     this.step += 1;
   }
 
-  
+
   async startPractice() {
     this.startGameInFullScreen();
     this.resetData();
@@ -141,7 +129,7 @@ export class NBackComponent implements OnInit {
   }
 
 
-  
+
   async startActualGame() {
     this.resetData();
     this.proceedtoNextStep();
@@ -153,7 +141,7 @@ export class NBackComponent implements OnInit {
   }
 
 
-  
+
   async showStimulus() {
 
     this.reset();
@@ -182,9 +170,9 @@ export class NBackComponent implements OnInit {
   }
 
 
-  
+
   generateStimulus() {
-    let set = this.isPractice ? 0 : this.set;
+    const set = this.isPractice ? 0 : this.set;
     switch (set) {
       case 1:
         this.currentLetter = Set1.set[this.currentTrial - 1].currentLetter;
@@ -219,7 +207,7 @@ export class NBackComponent implements OnInit {
   }
 
 
-  
+
   async showFeedback() {
     this.feedbackShown = true;
     this.isStimulus = false;
@@ -254,7 +242,7 @@ export class NBackComponent implements OnInit {
   }
 
 
-  
+
   async decideToContinue() {
     if (this.isPractice) {
       if (this.currentTrial < this.practiceTrials) {
@@ -269,8 +257,8 @@ export class NBackComponent implements OnInit {
         if (this.numberOfBreaks === 0) {
           this.continueGame();
         } else {
-          let breakAtTrailIndices = [];
-          let setSize = this.actualTrials / (this.numberOfBreaks + 1);
+          const breakAtTrailIndices = [];
+          const setSize = this.actualTrials / (this.numberOfBreaks + 1);
           for (let i = 1; i < this.numberOfBreaks + 1; i++) {
             breakAtTrailIndices.push(setSize * i);
           }
@@ -291,7 +279,7 @@ export class NBackComponent implements OnInit {
   }
 
 
-  
+
   resume() {
     this.reset();
     this.isBreak = false;
@@ -299,26 +287,26 @@ export class NBackComponent implements OnInit {
   }
 
 
-  
+
   async continueGame() {
     await this.wait(this.interTrialDelay);
     this.showStimulus();
   }
 
 
-  
+
   uploadResults() {
   }
 
 
-  
+
   continueAhead() {
     this.router.navigate(['/dashboard']);
   }
 
 
 
-  
+
   reset() {
     this.currentLetter = '';
     this.nback = '';
@@ -328,20 +316,20 @@ export class NBackComponent implements OnInit {
   }
 
 
-  
+
   resetData() {
     this.data = [];
     this.totalScore = 0;
   }
 
 
-  
+
   startGameInFullScreen() {
     setFullScreen();
   }
 
 
-  
+
   wait(time: number): Promise<void> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {

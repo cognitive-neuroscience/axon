@@ -198,8 +198,8 @@ export class TaskSwitchingComponent implements OnInit {
     this.color = color;
     this.number = digit;
     this.data.push({
-      color: color,
-      digit: digit,
+      color,
+      digit,
       actualAnswer: answer,
       userAnswer: '',
       responseTime: 0,
@@ -253,8 +253,8 @@ export class TaskSwitchingComponent implements OnInit {
         if (this.numberOfBreaks === 0) {
           this.continueGame();
         } else {
-          let breakAtTrailIndices = [];
-          let setSize = this.actualTrials / (this.numberOfBreaks + 1);
+          const breakAtTrailIndices = [];
+          const setSize = this.actualTrials / (this.numberOfBreaks + 1);
           for (let i = 1; i < this.numberOfBreaks + 1; i++) {
             breakAtTrailIndices.push(setSize * i);
           }
@@ -279,7 +279,7 @@ export class TaskSwitchingComponent implements OnInit {
     this.isBreak = false;
     this.continueGame();
   }
-  
+
   async continueGame() {
     await this.wait(this.interTrialDelay);
     this.showStimulus();
