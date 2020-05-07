@@ -10,8 +10,12 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
-  login(model): Observable<HttpResponse<any>> {
+  login(model: { email: string, password: string }): Observable<HttpResponse<any>> {
     return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/login', model, { observe: "response" });
+  }
+
+  validateToken(token: string): Observable<HttpResponse<any>> {
+    return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/token', { token }, { observe: "response" });
   }
 
 }

@@ -16,6 +16,7 @@ export class DataService {
     retrieveData() {
         this.http.get('/assets/data/data.json').subscribe((response: Data) => {
             this.experiments = response;
+            localStorage.setItem('mapping', Math.random() > 0.5 ? '1' : '2');
         }, (error) => {
             console.error(error);
         })
