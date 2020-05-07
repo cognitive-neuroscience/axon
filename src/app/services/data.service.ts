@@ -7,7 +7,7 @@ import { Data } from '../models/Data';
 })
 export class DataService {
 
-    data: Data = new Data();
+    experiments: Data = new Data();
 
     constructor(
         private http: HttpClient,
@@ -15,7 +15,7 @@ export class DataService {
 
     retrieveData() {
         this.http.get('/assets/data/data.json').subscribe((response: Data) => {
-            this.data = response;
+            this.experiments = response;
         }, (error) => {
             console.error(error);
         })

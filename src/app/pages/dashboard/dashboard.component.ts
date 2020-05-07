@@ -30,11 +30,11 @@ export class DashboardComponent implements OnInit {
   }
 
   get tasks() {
-    return (this.dataService.data.data || []).filter(t => t.type === 'task');
+    return (this.dataService.experiments.data || []).filter(t => t.type === 'task');
   }
 
   get experiments() {
-    return (this.dataService.data.data || []).filter(t => t.type === 'experiment');
+    return (this.dataService.experiments.data || []).filter(t => t.type === 'experiment');
   }
 
 }

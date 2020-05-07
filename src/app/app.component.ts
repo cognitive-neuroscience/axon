@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/login']);
   }
 
 }
