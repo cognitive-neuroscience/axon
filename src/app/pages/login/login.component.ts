@@ -24,9 +24,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   login() {
-    this.loginSubscription = this.authService.login(this.model).subscribe((response) => {
+    this.loginSubscription = this.authService.login(this.model).subscribe((response: any) => {
       if (response.headers.get('Authorization')) {
         localStorage.setItem('token', response.headers.get('Authorization').split(' ')[1])
+        localStorage.setItem('mapping', response.userID % 2 === 0 ? '1' : '2');
       }
       this.router.navigate(['/dashboard']);
     }, (error: HttpErrorResponse) => {

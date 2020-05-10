@@ -1,13 +1,14 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Matrix } from './matrix';
+import { DataService } from 'src/app/services/data.service';
 declare function setFullScreen(): any;
 @Component({
   selector: 'app-task-switching',
   templateUrl: './task-switching.component.html',
   styleUrls: ['./task-switching.component.scss']
 })
-export class TaskSwitchingComponent implements OnInit {
+export class TaskSwitchingComponent implements OnInit, OnDestroy {
 
   isScored: boolean = false;
   showFeedbackAfterEveryTrial: boolean = false;
@@ -17,7 +18,7 @@ export class TaskSwitchingComponent implements OnInit {
   durationOfFeedback: number = 500;
   interTrialDelay: number = 1000;
   practiceTrials: number = 20;
-  actualTrials: number = 20;
+  actualTrials: number = 125;
 
   step: number = 1;
   color: string = 'transparent';
@@ -32,6 +33,7 @@ export class TaskSwitchingComponent implements OnInit {
   currentTrial: number = 0;
   isResponseAllowed: boolean = false;
   data: {
+    isPractice: number,
     color: string,
     digit: number,
     actualAnswer: string,
@@ -39,7 +41,7 @@ export class TaskSwitchingComponent implements OnInit {
     responseTime: number,
     isCorrect: number,
     score: number,
-    colorMapping: string[]
+    colorMapping: string
   }[] = [];
   timer: {
     started: number,
@@ -64,11 +66,11 @@ export class TaskSwitchingComponent implements OnInit {
       try {
         if (this.data[this.data.length - 1].color === this.colorMapping[0]) {
           this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
+          this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
           this.data[this.data.length - 1].userAnswer = 'GREATER';
         } else {
           this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
+          this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
           this.data[this.data.length - 1].userAnswer = 'EVEN';
         }
         try {
@@ -81,7 +83,10 @@ export class TaskSwitchingComponent implements OnInit {
     }
   }
 
-  constructor( private router: Router) { }
+  constructor(
+    private router: Router,
+    private dataService: DataService,
+  ) { }
 
   ngOnInit() {
   }
@@ -109,13 +114,13 @@ export class TaskSwitchingComponent implements OnInit {
     if (this.isResponseAllowed) {
       this.isResponseAllowed = false;
       try {
-        if (this.data[this.data.length - 1].color === 'blue') {
+        if (this.data[this.data.length - 1].color === this.colorMapping[0]) {
           this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
+          this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
           this.data[this.data.length - 1].userAnswer = 'LESSER';
         } else {
           this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
+          this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
           this.data[this.data.length - 1].userAnswer = 'ODD';
         }
         try {
@@ -198,6 +203,7 @@ export class TaskSwitchingComponent implements OnInit {
     this.color = color;
     this.number = digit;
     this.data.push({
+      isPractice: this.isPractice ? 1 : 0,
       color,
       digit,
       actualAnswer: answer,
@@ -205,7 +211,7 @@ export class TaskSwitchingComponent implements OnInit {
       responseTime: 0,
       isCorrect: 0,
       score: 0,
-      colorMapping: this.colorMapping
+      colorMapping: this.colorMapping.join().toUpperCase()
     });
   }
 
@@ -215,7 +221,7 @@ export class TaskSwitchingComponent implements OnInit {
     this.isResponseAllowed = false;
     if (this.data[this.data.length - 1].responseTime === 0) {
       this.timer.ended = new Date().getTime();
-      this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
+      this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
     }
     if (this.data[this.data.length - 1].actualAnswer === this.data[this.data.length - 1].userAnswer) {
       this.feedback = "Correct";
@@ -247,6 +253,8 @@ export class TaskSwitchingComponent implements OnInit {
         this.proceedtoNextStep();
         await this.wait(2000);
         this.proceedtoNextStep();
+        console.log(this.data);
+        this.uploadResults();
       }
     } else {
       if (this.currentTrial < this.actualTrials) {
@@ -270,6 +278,7 @@ export class TaskSwitchingComponent implements OnInit {
         await this.wait(2000);
         this.proceedtoNextStep();
         console.log(this.data);
+        this.uploadResults();
       }
     }
   }
@@ -286,6 +295,10 @@ export class TaskSwitchingComponent implements OnInit {
   }
 
   uploadResults() {
+    if (this.data.length > 0) {
+      let d = JSON.parse(JSON.stringify(this.data));
+      this.dataService.uploadData('ts', d);
+    }
   }
 
   continueAhead() {
@@ -315,6 +328,14 @@ export class TaskSwitchingComponent implements OnInit {
         resolve();
       }, time);
     });
+  }
+
+  ngOnDestroy() {
+    try {
+      clearTimeout(this.sTimeout);
+    } catch (error) {
+
+    }
   }
 
 }

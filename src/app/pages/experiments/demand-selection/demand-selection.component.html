@@ -344,7 +344,7 @@
         <div *ngIf="isStimulus">
 
             <div (mouseenter)="onHoverCursor($event)" style="cursor: pointer;" *ngIf="showFixation">
-                <img src="/assets/eye.png" style="height: 60px" />
+                <img src="/assets/images/eye.png" style="height: 60px" />
             </div>
 
             <div *ngIf="!showFixation">
@@ -522,7 +522,8 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 13 && block < 5">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between"
+        *ngIf="!isBreak && step === 13 && block < 5">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Intructions</h2>
@@ -584,7 +585,8 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 14 && block < 5">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between"
+        *ngIf="!isBreak && step === 14 && block < 5">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>More Instructions</h2>
@@ -640,7 +642,8 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 15 && block < 5">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between"
+        *ngIf="!isBreak && step === 15 && block < 5">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>More Instructions</h2>
@@ -691,30 +694,33 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 13 && block === 5">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between"
+        *ngIf="!isBreak && step === 13 && block === 5">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Intructions</h2>
         </div>
         <!-- Introduction -->
         <div class="w-100 p-4 uppercase" align="center">
-    
-    
+
+
             <div class="statement">
-                <span>For this part, you should try and figure out which patch is harder and stick with it for the rest of the block</span>
+                <span>For this part, you should try and figure out which patch is harder and stick with it for the rest
+                    of the block</span>
             </div>
-    
+
             <div class="statement">
-                <span>Remember, once you have found and selected the harder patch, your goal is still to make a decision about the number on
-                the screen based on its color, BLUE or YELLOW</span>
+                <span>Remember, once you have found and selected the harder patch, your goal is still to make a decision
+                    about the number on
+                    the screen based on its color, BLUE or YELLOW</span>
             </div>
-    
+
             <div class="statement-final">
                 Click 'NEXT' to proceed
             </div>
-    
+
         </div>
-    
+
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
@@ -740,32 +746,34 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 13 && block === 6">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between"
+        *ngIf="!isBreak && step === 13 && block === 6">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Intructions</h2>
         </div>
         <!-- Introduction -->
         <div class="w-100 p-4 uppercase" align="center">
-    
-    
+
+
             <div class="statement">
-                <span>For this part, you should try and figure out which patch is easier and stick with it for the rest of
+                <span>For this part, you should try and figure out which patch is easier and stick with it for the rest
+                    of
                     the block</span>
             </div>
-    
+
             <div class="statement">
                 <span>Remember, once you have found and selected the easier patch, your goal is still to make a decision
                     about the number on
                     the screen based on its color, BLUE or YELLOW</span>
             </div>
-    
+
             <div class="statement-final">
                 Click 'NEXT' to proceed
             </div>
-    
+
         </div>
-    
+
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
@@ -860,7 +868,7 @@
         <div *ngIf="isStimulus">
 
             <div (mouseenter)="onHoverCursor($event)" style="cursor: pointer;" *ngIf="showFixation">
-                <img src="/assets/eye.png" style="height: 60px" />
+                <img src="/assets/images/eye.png" style="height: 60px" />
             </div>
 
             <div *ngIf="!showFixation">
@@ -902,30 +910,30 @@
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 19">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
-    
+
     <!-- Show block finished message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 20">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Block {{block}} Is Now Complete</h2>
         </div>
-    
+
         <!-- Introduction -->
         <div class="w-100 p-4 uppercase" align="center">
-    
+
             <div class="statement">
                 You got {{totalScore/10}} out of {{actualTrials}} trials correct
             </div>
-    
+
             <br>
-    
-    
+
+
             <div class="statement-final">
                 Click 'NEXT' when you are ready for the next block.
             </div>
-    
+
         </div>
-    
+
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
