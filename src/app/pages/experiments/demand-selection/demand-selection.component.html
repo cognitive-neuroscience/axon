@@ -353,7 +353,7 @@
                         <td style="text-align: center;" *ngFor="let col of cols; let colIndex = index;">
                             <div *ngIf="posA === (rowIndex * 6 + (colIndex + 1))">
                                 <img *ngIf="showPatches" style="height: 150px;"
-                                    (mouseenter)="onHoverPatch($event, 'left')" src="/assets/images/abst01a.png" alt="">
+                                    (mouseenter)="onHoverPatch($event, 'left')" [src]="getImage('a')" alt="">
                                 <div *ngIf="showNumber && hover === 'left'" style="font-size: 50px;"
                                     [style.color]="color">
                                     {{number}}
@@ -361,8 +361,7 @@
                             </div>
                             <div *ngIf="posB === (rowIndex * 6 + (colIndex + 1))">
                                 <img *ngIf="showPatches" style="height: 150px;"
-                                    (mouseenter)="onHoverPatch($event, 'right')" src="/assets/images/abst01b.png"
-                                    alt="">
+                                    (mouseenter)="onHoverPatch($event, 'right')" [src]="getImage('b')" alt="">
                                 <div *ngIf="showNumber && hover === 'right'" style="font-size: 50px;"
                                     [style.color]="color">
                                     {{number}}
@@ -846,7 +845,7 @@
                     </button>
                 </div>
                 <div>
-                    <button mat-raised-button color="primary" (click)="startActualGame(5)">
+                    <button mat-raised-button color="primary" (click)="startActualGame()">
                         START
                         &nbsp;
                         <mat-icon>
@@ -877,7 +876,7 @@
                         <td style="text-align: center;" *ngFor="let col of cols; let colIndex = index;">
                             <div *ngIf="posA === (rowIndex * 6 + (colIndex + 1))">
                                 <img *ngIf="showPatches" style="height: 150px;"
-                                    (mouseenter)="onHoverPatch($event, 'left')" src="/assets/images/abst01a.png" alt="">
+                                    (mouseenter)="onHoverPatch($event, 'left')" [src]="getImage('a')" alt="">
                                 <div *ngIf="showNumber && hover === 'left'" style="font-size: 50px;"
                                     [style.color]="color">
                                     {{number}}
@@ -885,8 +884,7 @@
                             </div>
                             <div *ngIf="posB === (rowIndex * 6 + (colIndex + 1))">
                                 <img *ngIf="showPatches" style="height: 150px;"
-                                    (mouseenter)="onHoverPatch($event, 'right')" src="/assets/images/abst01b.png"
-                                    alt="">
+                                    (mouseenter)="onHoverPatch($event, 'right')" [src]="getImage('b')" alt="">
                                 <div *ngIf="showNumber && hover === 'right'" style="font-size: 50px;"
                                     [style.color]="color">
                                     {{number}}

@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { Matrix } from './matrix';
 import { DataService } from 'src/app/services/data.service';
@@ -8,7 +8,7 @@ declare function setFullScreen(): any;
   templateUrl: './task-switching.component.html',
   styleUrls: ['./task-switching.component.scss']
 })
-export class TaskSwitchingComponent implements OnInit, OnDestroy {
+export class TaskSwitchingComponent implements OnInit {
 
   isScored: boolean = false;
   showFeedbackAfterEveryTrial: boolean = false;
@@ -51,7 +51,6 @@ export class TaskSwitchingComponent implements OnInit, OnDestroy {
       ended: 0
     };
   showFixation: boolean = false;
-  sTimeout: any;
   feedbackShown: boolean = false;
   matrix = {
     colors: [],
@@ -72,11 +71,6 @@ export class TaskSwitchingComponent implements OnInit, OnDestroy {
           this.timer.ended = new Date().getTime();
           this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
           this.data[this.data.length - 1].userAnswer = 'EVEN';
-        }
-        try {
-          clearTimeout(this.sTimeout);
-          this.showFeedback();
-        } catch (error) {
         }
       } catch (error) {
       }
@@ -122,11 +116,6 @@ export class TaskSwitchingComponent implements OnInit, OnDestroy {
           this.timer.ended = new Date().getTime();
           this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
           this.data[this.data.length - 1].userAnswer = 'ODD';
-        }
-        try {
-          clearTimeout(this.sTimeout);
-          this.showFeedback();
-        } catch (error) {
         }
       } catch (error) {
       }
@@ -175,12 +164,6 @@ export class TaskSwitchingComponent implements OnInit, OnDestroy {
     this.timer.started = new Date().getTime();
     this.timer.ended = 0;
     console.log(this.isPractice ? `Practice trial: ${this.currentTrial}` : `Actual trial: ${this.currentTrial}`);
-    // This is the delay between showing the stimulus and showing the feedback
-    this.sTimeout = setTimeout(() => {
-      if (!this.feedbackShown) {
-        this.showFeedback();
-      }
-    }, this.maxResponseTime);
   }
 
   generateStimulus() {
@@ -328,14 +311,6 @@ export class TaskSwitchingComponent implements OnInit, OnDestroy {
         resolve();
       }, time);
     });
-  }
-
-  ngOnDestroy() {
-    try {
-      clearTimeout(this.sTimeout);
-    } catch (error) {
-
-    }
   }
 
 }
