@@ -18,14 +18,31 @@
                     <mat-icon matSuffix>vpn_key</mat-icon>
                 </mat-form-field>
                 <br>
-                <div align="center" matRipple matRippleColor="#ffffff33">
+                <div *ngIf="mode === 'register'">
+                    <mat-form-field floatLabel="always">
+                        <mat-placeholder style="text-transform: uppercase;">Confirm Password</mat-placeholder>
+                        <input autocomplete="off" type="password" matInput name="confirm_password"
+                            [(ngModel)]="model.confirmPassword">
+                        <mat-icon matSuffix>vpn_key</mat-icon>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="mode === 'login'" align="center" matRipple matRippleColor="#ffffff33">
                     <button class="btn-block btn-sm rounded-btn" mat-raised-button color="primary"
-                        style="text-transform: uppercase;" name="login" (click)="login()">Login</button>
+                        style="text-transform: uppercase;" name="login" (click)="login()">Sign In</button>
+                </div>
+                <div *ngIf="mode === 'register'" align="center" matRipple matRippleColor="#ffffff33">
+                    <button class="btn-block btn-sm rounded-btn" [disabled]="model.password !== model.confirmPassword"
+                        mat-raised-button color="primary" style="text-transform: uppercase;" name="register"
+                        (click)="register()">Register</button>
                 </div>
                 <br>
-                <div style=" font-weight: 300; font-size: 13px;">
+                <div *ngIf="mode === 'login'" style=" font-weight: 300; font-size: 13px;">
                     <a style="color:inherit; text-decoration:underline; background-color: transparent;"
-                        href="javascript:void(0)">Register</a>
+                        href="javascript:void(0)" (click)="setMode('register')">Sign Up</a>
+                </div>
+                <div *ngIf="mode === 'register'" style=" font-weight: 300; font-size: 13px;">
+                    <a style="color:inherit; text-decoration:underline; background-color: transparent;"
+                        href="javascript:void(0)" (click)="setMode('login')">Sign In</a>
                 </div>
                 <div style=" font-weight: 300; font-size: 13px;">
                     <a style="color:inherit; text-decoration:underline; background-color: transparent;"

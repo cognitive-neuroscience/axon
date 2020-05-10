@@ -14,6 +14,10 @@ export class AuthService {
     return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/login', model, { observe: "response" });
   }
 
+  register(model: { email: string, password: string }): Observable<HttpResponse<any>> {
+    return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/users', model, { observe: "response" });
+  }
+
   validateToken(token: string): Observable<HttpResponse<any>> {
     return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/token', { token }, { observe: "response" });
   }
