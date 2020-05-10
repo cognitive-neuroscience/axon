@@ -51,7 +51,7 @@
         {
             "title": "TS & DST",
             "description": "Description of TS & DST",
-            "route": "/experiments/dst",
+            "route": "/experiments/ts",
             "type": "experiment"
         },
         {

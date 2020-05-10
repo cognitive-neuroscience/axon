@@ -72,6 +72,7 @@ export class TaskSwitchingComponent implements OnInit {
           this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
           this.data[this.data.length - 1].userAnswer = 'EVEN';
         }
+        this.showFeedback();
       } catch (error) {
       }
     }
@@ -117,6 +118,7 @@ export class TaskSwitchingComponent implements OnInit {
           this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
           this.data[this.data.length - 1].userAnswer = 'ODD';
         }
+        this.showFeedback();
       } catch (error) {
       }
     }
