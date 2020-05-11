@@ -26,12 +26,20 @@
                         <mat-icon matSuffix>vpn_key</mat-icon>
                     </mat-form-field>
                 </div>
+                <div *ngIf="mode === 'register'">
+                    <mat-form-field floatLabel="always">
+                        <mat-placeholder style="text-transform: uppercase;">Code</mat-placeholder>
+                        <input autocomplete="off" type="text" matInput name="setCode" [(ngModel)]="model.setCode">
+                        <mat-icon matSuffix>insert_link</mat-icon>
+                    </mat-form-field>
+                </div>
                 <div *ngIf="mode === 'login'" align="center" matRipple matRippleColor="#ffffff33">
                     <button class="btn-block btn-sm rounded-btn" mat-raised-button color="primary"
                         style="text-transform: uppercase;" name="login" (click)="login()">Sign In</button>
                 </div>
                 <div *ngIf="mode === 'register'" align="center" matRipple matRippleColor="#ffffff33">
-                    <button class="btn-block btn-sm rounded-btn" [disabled]="model.password !== model.confirmPassword"
+                    <button class="btn-block btn-sm rounded-btn"
+                        [disabled]="(model.password !== model.confirmPassword) || (model.password === '')"
                         mat-raised-button color="primary" style="text-transform: uppercase;" name="register"
                         (click)="register()">Register</button>
                 </div>

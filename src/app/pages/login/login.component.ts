@@ -37,12 +37,13 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.router.navigate(['/dashboard']);
     }, (error: HttpErrorResponse) => {
       console.error(error);
+      this.snackbar.open(error.error.error, '', { duration: 3000 });
     });
   }
 
   register() {
-    const { email, password } = this.model;
-    this.registerSubscription = this.authService.register({ email, password }).subscribe((response: any) => {
+    const { email, password, setCode } = this.model;
+    this.registerSubscription = this.authService.register({ email, password, setCode }).subscribe((response: any) => {
       this.login();
     }, (error: HttpErrorResponse) => {
       console.error(error);
