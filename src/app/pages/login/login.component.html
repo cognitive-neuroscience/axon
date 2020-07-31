@@ -35,11 +35,12 @@
                 </div>
                 <div *ngIf="mode === 'login'" align="center" matRipple matRippleColor="#ffffff33">
                     <button class="btn-block btn-sm rounded-btn" mat-raised-button color="primary"
+                        [disabled]="(!model.password || !model.email)"
                         style="text-transform: uppercase;" name="login" (click)="login()">Sign In</button>
                 </div>
                 <div *ngIf="mode === 'register'" align="center" matRipple matRippleColor="#ffffff33">
                     <button class="btn-block btn-sm rounded-btn"
-                        [disabled]="(model.password !== model.confirmPassword) || (model.password === '')"
+                        [disabled]="(model.password !== model.confirmPassword) || (!model.password)"
                         mat-raised-button color="primary" style="text-transform: uppercase;" name="register"
                         (click)="register()">Register</button>
                 </div>

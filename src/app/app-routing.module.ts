@@ -15,11 +15,19 @@ import { FingerTappingTaskComponent } from './pages/experiments/finger-tapping-t
 import { NBackComponent } from './pages/experiments/n-back/n-back.component';
 import { StroopTaskComponent } from './pages/experiments/stroop-task/stroop-task.component';
 import { TrailMakingComponent } from './pages/experiments/trail-making/trail-making.component';
+import { ViewExperimentsComponent } from './pages/dashboard/view-experiments/view-experiments.component';
+import { ViewTasksComponent } from './pages/dashboard/view-tasks/view-tasks.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: '', redirectTo: '/dashboard/experiments', pathMatch: 'full' },
+  { path: 'dashboard', component: DashboardComponent,
+    children: [
+      { path: '', redirectTo: 'experiments', pathMatch: 'full' },
+      { path: 'experiments', component: ViewExperimentsComponent },
+      { path: 'tasks', component: ViewTasksComponent }
+    ] 
+  },
   { path: 'login', component: LoginComponent },
   { path: 'experiments/color-game', component: ColorGameComponent },
   { path: 'experiments/shape-game', component: ShapeGameComponent },

@@ -23,6 +23,9 @@ import { NBackComponent } from './pages/experiments/n-back/n-back.component';
 import { StroopTaskComponent } from './pages/experiments/stroop-task/stroop-task.component';
 import { SmileyFaceComponent } from './pages/experiments/smiley-face/smiley-face.component';
 import { TrailMakingComponent } from './pages/experiments/trail-making/trail-making.component';
+import { ViewTasksComponent } from './pages/dashboard/view-tasks/view-tasks.component';
+import { ViewExperimentsComponent } from './pages/dashboard/view-experiments/view-experiments.component';
+import { NavbarComponent } from './pages/dashboard/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +45,10 @@ import { TrailMakingComponent } from './pages/experiments/trail-making/trail-mak
     NBackComponent,
     StroopTaskComponent,
     SmileyFaceComponent,
-    TrailMakingComponent
+    TrailMakingComponent,
+    ViewTasksComponent,
+    ViewExperimentsComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

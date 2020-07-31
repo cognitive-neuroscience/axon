@@ -1,0 +1,35 @@
+.card-container {
+    width: 25%;
+    padding: 1%;
+    box-sizing: border-box;
+}
+
+mat-card {
+    height: 100%;
+    display: flex;              // to help keep footer stick to bottom of card
+    flex-direction: column;     // to help keep footer stick to bottom of card
+}
+
+.mat-card-footer {
+    background-color: #f1f1f1;
+    padding: 4%;
+}
+
+.mat-card-title {
+    display: flex;
+    justify-content: space-between;
+}
+
+.mat-card-header {
+    flex-shrink: 0;             // to help keep footer stick to bottom of card
+}
+
+.mat-card-content {
+    flex-grow: 1;               // to help keep footer stick to bottom of card
+    overflow: auto;             // to help keep footer stick to bottom of card
+}
+
+.max-list-height {
+    max-height: 20vh;
+    overflow-y: scroll;
+}
