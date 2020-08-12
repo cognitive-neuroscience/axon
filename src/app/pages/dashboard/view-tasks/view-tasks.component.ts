@@ -10,14 +10,11 @@ import { Task } from 'src/app/models/Task';
 })
 export class ViewTasksComponent implements OnInit {
 
-  private readonly COMPLETED_TASKS: string[] = [
-    "Stroop Task",
-    "TS & DST",
-  ]
+  completedTasks: string[] = []
 
   displayedColumnsForExperiments = ['title', 'description', 'route'];
 
-  tasklist: Task[];
+  tasklist: Task[] = []
 
   constructor(
     private router: Router,
@@ -25,8 +22,14 @@ export class ViewTasksComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.tasklist = [];
+    this.getCompletedTasklist();
     this.getTasklist();
+  }
+
+  private getCompletedTasklist(): void {
+    this.tasklistService.getCompletedTaslist().subscribe(completedTasklist => {
+      this.completedTasks = completedTasklist
+    })
   }
 
   private getTasklist(): void {
@@ -48,7 +51,7 @@ export class ViewTasksComponent implements OnInit {
   }
 
   taskIsComplete(task: string): boolean {
-    return this.COMPLETED_TASKS.includes(task) ? true : false
+    return this.completedTasks.includes(task) ? true : false
   }
 
 }

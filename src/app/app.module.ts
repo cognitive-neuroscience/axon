@@ -14,7 +14,7 @@ import { SimonTaskPrelimComponent } from './pages/experiments/simon-task-prelim/
 import { SimonTaskFinalComponent } from './pages/experiments/simon-task-final/simon-task-final.component';
 import { ConsentComponent } from './pages/consent/consent.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './modules/material/material.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppHttpInterceptor } from './AppHttpInterceptor';
@@ -26,6 +26,7 @@ import { TrailMakingComponent } from './pages/experiments/trail-making/trail-mak
 import { ViewTasksComponent } from './pages/dashboard/view-tasks/view-tasks.component';
 import { ViewExperimentsComponent } from './pages/dashboard/view-experiments/view-experiments.component';
 import { NavbarComponent } from './pages/dashboard/navbar/navbar.component';
+import { CreateExperimentDialogComponent } from './pages/dashboard/view-experiments/create-experiment-dialog/create-experiment-dialog.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { NavbarComponent } from './pages/dashboard/navbar/navbar.component';
     TrailMakingComponent,
     ViewTasksComponent,
     ViewExperimentsComponent,
-    NavbarComponent
+    NavbarComponent,
+    CreateExperimentDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,7 +58,8 @@ import { NavbarComponent } from './pages/dashboard/navbar/navbar.component';
     BrowserAnimationsModule,
     FormsModule,
     MaterialModule,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule
   ],
   providers: [
     {

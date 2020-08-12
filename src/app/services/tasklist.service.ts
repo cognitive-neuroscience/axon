@@ -9,12 +9,18 @@ import { map } from 'rxjs/operators';
 })
 export class TasklistService {
 
+    private readonly route = "/assets/data"
+
     constructor(private http: HttpClient) {}
 
     getTasklist(): Observable<Task[]> {
-        return this.http.get('/assets/data/tasklist.json').pipe(
+        return this.http.get(`${this.route}/tasklist.json`).pipe(
             map((tasklist: { tasks: Task[]}) => tasklist.tasks)
         )
+    }
+
+    getCompletedTaslist(): Observable<string[]> {
+        return this.http.get(`${this.route}/completedtasklist.json`) as Observable<string[]>
     }
 
 }

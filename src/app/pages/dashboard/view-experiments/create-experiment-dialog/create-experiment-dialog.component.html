@@ -1,0 +1,31 @@
+<div class="p-3">
+    <div>
+        <h3>Create a new experiment</h3>
+        <hr>
+    </div>
+    <div class="py-3" [formGroup]="experimentForm">
+        <mat-form-field class="w-100">
+            <mat-label>Experiment Name</mat-label>
+            <input required formControlName="name" matInput type="text" placeholder="My experiment">
+            <mat-error *ngIf="experimentForm.get('name')?.hasError('required')">This is required</mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field class="w-100">
+            <mat-label>Description</mat-label>
+            <textarea formControlName="description" matInput type="text"></textarea>
+            <mat-error *ngIf="experimentForm.get('description')?.hasError('maxlength')">Max 255 characters</mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field class="w-100">
+            <mat-label>Select a task</mat-label>
+            <mat-select formControlName="tasks" required>
+                <mat-option *ngFor="let task of tasks" [disabled]="!taskIsComplete(task.title)" [value]="task.title">{{ task.title }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="experimentForm.get('tasks')?.hasError('required')">This is required</mat-error>
+        </mat-form-field>
+    </div>
+    <div class="d-flex flex-column">
+        <button (click)="sendDataToParent()" class="btn btn-primary w-100 mb-2" [disabled]="!experimentForm.valid">Create</button>
+        <button mat-dialog-close class="btn btn-danger w-100">Close</button>
+    </div>
+</div>

@@ -1,131 +1,29 @@
 import { Injectable } from "@angular/core";
 import { Observable, of } from 'rxjs';
 import { Experiment } from '../models/Experiment';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: "root"
 })
 export class ExperimentsService {
 
-    mockExperiments: Experiment[] = [
-        {
-            name: "Experiment 1",
-            code: "349YNRRR",
-            description: "My experiment 1",
-            tasks: [
-                {
-                    "title": "Stroop Task",
-                    "description": "Description of Stroop Task",
-                    "route": "/experiments/stroop",
-                    "type": "NAB"
-                }
-            ]
-        },
-        {
-            name: "Experiment 2",
-            code: "XYE44589",
-            description: "My experiment 1",
-            tasks: [
-                {
-                    "title": "Stroop Task",
-                    "description": "Description of Stroop Task",
-                    "route": "/experiments/stroop",
-                    "type": "NAB"
-                },
-                {
-                    "title": "Stroop Task",
-                    "description": "Description of Stroop Task",
-                    "route": "/experiments/stroop",
-                    "type": "NAB"
-                },
-                {
-                    "title": "Stroop Task",
-                    "description": "Description of Stroop Task",
-                    "route": "/experiments/stroop",
-                    "type": "NAB"
-                },
-            ]
-        },
-        {
-            name: "Experiment 3",
-            code: "293FN223",
-            description: "My experiment 1",
-            tasks: [
-                {
-                    "title": "Stroop Task",
-                    "description": "Description of Stroop Task",
-                    "route": "/experiments/stroop",
-                    "type": "NAB"
-                }
-            ]
-        },
-        {
-            name: "Experiment 4",
-            code: "0GN93409",
-            description: "My experiment 1",
-            tasks: [
-                {
-                    "title": "Stroop Task",
-                    "description": "Description of Stroop Task",
-                    "route": "/experiments/stroop",
-                    "type": "NAB"
-                },
-                {
-                    "title": "Stroop Task",
-                    "description": "Description of Stroop Task",
-                    "route": "/experiments/stroop",
-                    "type": "NAB"
-                }
-            ]
-        },
-        {
-            name: "Experiment 5",
-            code: "023N0N03",
-            description: "My experiment 1",
-            tasks: [
-                {
-                    "title": "Stroop Task",
-                    "description": "Description of Stroop Task",
-                    "route": "/experiments/stroop",
-                    "type": "NAB"
-                },
-                {
-                    "title": "Stroop Task",
-                    "description": "Description of Stroop Task",
-                    "route": "/experiments/stroop",
-                    "type": "NAB"
-                },
-                {
-                    "title": "Stroop Task",
-                    "description": "Description of Stroop Task",
-                    "route": "/experiments/stroop",
-                    "type": "NAB"
-                },
-                {
-                    "title": "Stroop Task",
-                    "description": "Description of Stroop Task",
-                    "route": "/experiments/stroop",
-                    "type": "NAB"
-                }
-            ]
-        },
-        {
-            name: "Experiment 6",
-            code: "WEFIWN3",
-            description: "My experiment 1",
-            tasks: [
-                {
-                    "title": "Stroop Task",
-                    "description": "Description of Stroop Task",
-                    "route": "/experiments/stroop",
-                    "type": "NAB"
-                }
-            ]
-        }
-    ]
+    constructor(private _http: HttpClient) {}
 
-    getExperiments(): Observable<Experiment[]> {
-        return of(this.mockExperiments);
+    getExperiments(): Observable<any> {
+        // return of(this.mockExperiments);
+        return this._http.get(`${environment.apiBaseURL}/experiments`)
     }
 
+    createExperiment(experiment: Experiment): Observable<any> {
+        let exp = experiment["experiment"]
+        console.log(JSON.stringify(exp));
+        
+        return this._http.post<HttpResponse<any>>(`${environment.apiBaseURL}/experiments`, exp, {observe: "response"})
+    }
+
+    deleteExperiment(code): Observable<any> {
+        return this._http.delete<HttpResponse<any>>(`${environment.apiBaseURL}/experiments/${code}`, {observe: "response"})
+    }
 }
