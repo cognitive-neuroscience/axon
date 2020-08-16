@@ -17,7 +17,7 @@ import { StroopTaskComponent } from './pages/experiments/stroop-task/stroop-task
 import { TrailMakingComponent } from './pages/experiments/trail-making/trail-making.component';
 import { ViewExperimentsComponent } from './pages/dashboard/view-experiments/view-experiments.component';
 import { ViewTasksComponent } from './pages/dashboard/view-tasks/view-tasks.component';
-
+import { MturkLoginComponent } from './pages/mturk-login/mturk-login.component'
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard/experiments', pathMatch: 'full' },
@@ -28,7 +28,7 @@ const routes: Routes = [
       { path: 'tasks', component: ViewTasksComponent }
     ] 
   },
-  { path: 'login', component: LoginComponent },
+  { path: 'login', component: MturkLoginComponent },
   { path: 'experiments/color-game', component: ColorGameComponent },
   { path: 'experiments/shape-game', component: ShapeGameComponent },
   { path: 'experiments/go-nogo', component: GoNogoComponent },

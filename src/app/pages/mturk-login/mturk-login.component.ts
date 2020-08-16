@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MturkLoginComponent implements OnInit {
 
+  workerId: string;
+
   constructor() { }
 
   ngOnInit(): void {

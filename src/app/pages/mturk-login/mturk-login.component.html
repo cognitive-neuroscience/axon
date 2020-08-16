@@ -1,1 +1,22 @@
-<p>mturk-login works!</p>
+<div class="d-flex flex-row justify-content-center align-items-center h-100 w-100">
+
+    <div class="left-login-screen">
+        <div class="text-center">
+            <img src="/assets/logo/lablogo.png" alt="Sharplab Logo">
+            <div class="w-75 mx-auto">
+                <h2 class="welcome-header">Welcome to the Sharplab</h2>
+            </div>
+        </div>
+    </div>
+    <div class="right-login-screen">
+        <div class="w-75">
+            <mat-form-field class="w-100" style="font-size: 2rem;">
+                <mat-label>Enter your WorkerID</mat-label>
+                <input matInput [(ngModel)]="workerId" type="text" placeholder="ABCDEFG12345">
+            </mat-form-field>
+            <br>
+            <button *ngIf="workerId" class="btn btn-primary" style="font-size: 1.5rem; position: absolute;">continue</button>
+        </div>
+    </div>
+
+</div>

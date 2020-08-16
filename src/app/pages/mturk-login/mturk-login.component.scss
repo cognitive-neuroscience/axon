@@ -1,0 +1,21 @@
+.left-login-screen {
+    display: flex;
+    width: 40%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: #19a5e8a6;
+}
+
+.right-login-screen {
+    display: flex;
+    width: 60%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome-header {
+    color: white;
+    font-weight: 100;
+}
