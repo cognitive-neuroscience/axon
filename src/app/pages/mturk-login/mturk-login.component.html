@@ -10,12 +10,29 @@
     </div>
     <div class="right-login-screen">
         <div class="w-75">
-            <mat-form-field class="w-100" style="font-size: 2rem;">
-                <mat-label>Enter your WorkerID</mat-label>
-                <input matInput [(ngModel)]="workerId" type="text" placeholder="ABCDEFG12345">
-            </mat-form-field>
-            <br>
-            <button *ngIf="workerId" class="btn btn-primary" style="font-size: 1.5rem; position: absolute;">continue</button>
+            <form #f="ngForm">
+                <mat-form-field class="w-100">
+                    <mat-label>Enter your worker ID</mat-label>
+                    <!-- capitalize all input -->
+                    <!-- workerId is tied to the string input, workerid is tied to the model -->
+                    <input  (ngModelChange)="workerId = $event.toUpperCase()" 
+                            matInput 
+                            [ngModel]="workerId" 
+                            #workerid="ngModel" 
+                            name="workerid" 
+                            type="text" 
+                            placeholder="ABCDEFG12345" 
+                            required>
+                    <mat-error *ngIf="workerid.invalid">This is required</mat-error>
+                </mat-form-field>
+                <mat-form-field class="w-100" *ngIf="!urlContainsCode">
+                    <mat-label>Enter the experiment code</mat-label>
+                    <input matInput type="text" [(ngModel)]="experimentCode" #code="ngModel" name="experimentCode" required>
+                    <mat-error *ngIf="code.invalid">This is required</mat-error>
+                </mat-form-field>
+                <br>
+                <button *ngIf="f.valid" class="btn btn-primary" style="font-size: 1.5rem; position: absolute;">continue</button>
+            </form>
         </div>
     </div>
 
