@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TasklistService } from 'src/app/services/tasklist.service';
-import { Task } from 'src/app/models/Task';
+import { Task, TaskRoute } from 'src/app/models/Task';
 
 @Component({
   selector: 'app-view-tasks',
@@ -10,9 +10,12 @@ import { Task } from 'src/app/models/Task';
 })
 export class ViewTasksComponent implements OnInit {
 
-  completedTasks: string[] = []
+  // contains Ids of completed tasks
+  completedTasks: number[] = []
 
   displayedColumnsForExperiments = ['title', 'description', 'route'];
+
+  taskRoutes: TaskRoute[] = []
 
   tasklist: Task[] = []
 
@@ -24,34 +27,45 @@ export class ViewTasksComponent implements OnInit {
   ngOnInit() {
     this.getCompletedTasklist();
     this.getTasklist();
+    this.getTaskRoutes();
   }
 
   private getCompletedTasklist(): void {
-    this.tasklistService.getCompletedTaslist().subscribe(completedTasklist => {
-      this.completedTasks = completedTasklist
+    this.tasklistService.completedTaskList.subscribe(completedTasks => {
+      this.completedTasks = completedTasks
     })
   }
 
   private getTasklist(): void {
-    this.tasklistService.getTasklist().subscribe(receivedTasklist => {
-      this.tasklist = receivedTasklist
+    this.tasklistService.taskList.subscribe(tasks => {
+      this.tasklist = tasks
     })
   }
 
-  run(path: string) {
-    this.router.navigate([path]);
+  private getTaskRoutes(): void {
+    this.tasklistService.taskRouteList.subscribe(taskRoutes => {
+      this.taskRoutes = taskRoutes
+    })
   }
 
-  get tasks() {
-    return this.tasklist.filter(t => t.type === 'NAB')
+  run(task: Task) {
+    const taskRoute = this.taskRoutes.find(route => route.id === task.id)
+    if(taskRoute) {
+      this.router.navigate([taskRoute.route]);
+    }
+  }
+
+  get tasks() {    
+    return this.tasklist ? this.tasklist.filter(t => t.type === 'NAB') : []
   }
 
   get experiments() {
-    return this.tasklist.filter(t => t.type === 'experimental');
+    return this.tasklist ? this.tasklist.filter(t => t.type === 'experimental') : []
   }
 
-  taskIsComplete(task: string): boolean {
-    return this.completedTasks.includes(task) ? true : false
+  taskIsComplete(task: Task): boolean {
+    if(!this.completedTasks || !task || !task.id) return false
+    return this.completedTasks.includes(task.id) ? true : false
   }
 
 }

@@ -29,21 +29,21 @@ export class CreateExperimentDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getTasklist()
-    this.getCompletedTasklist()
+  //   this.getTasklist()
+  //   this.getCompletedTasklist()
   }
 
-  private getCompletedTasklist(): void {
-    this.tasklistService.getCompletedTaslist().subscribe(completedTasklist => {
-      this.completedTasks = completedTasklist
-    })
-  }
+  // private getCompletedTasklist(): void {
+  //   this.tasklistService.getCompletedTaslist().subscribe(completedTasklist => {
+  //     this.completedTasks = completedTasklist
+  //   })
+  // }
 
-  private getTasklist(): void {
-    this.tasklistService.getTasklist().subscribe(receivedTasklist => {
-      this.tasks = receivedTasklist
-    })
-  }
+  // private getTasklist(): void {
+  //   this.tasklistService.getTasklist().subscribe(receivedTasklist => {
+  //     this.tasks = receivedTasklist
+  //   })
+  // }
 
   sendDataToParent() {
     const assocTask = this.tasks.find(task => {

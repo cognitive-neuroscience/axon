@@ -18,6 +18,8 @@ export class MturkLoginComponent implements OnInit {
     this._getQueryParams()
   }
 
+  // If the url contains an experiment shortcode then we get it here.
+  // Otherwise the user will be prompted to enter their own shortcode.
   private _getQueryParams() {
     this._route.queryParams.subscribe(params => {
       const urlCode = params['code']
@@ -30,6 +32,11 @@ export class MturkLoginComponent implements OnInit {
 
   startExperiment() {
     // call task manager service to start the experiment
+
   }
+
+  // private experimentCodeIsValid(): boolean {
+    
+  // }
 
 }

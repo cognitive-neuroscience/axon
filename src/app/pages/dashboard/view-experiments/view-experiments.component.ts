@@ -29,7 +29,9 @@ export class ViewExperimentsComponent implements OnInit {
     const dialogRef = this.dialog.open(CreateExperimentDialogComponent)
 
     dialogRef.afterClosed().subscribe((data: Experiment) => {
-      if(data) this._createExperiment(data);
+      console.log(data);
+      
+      // if(data) this._createExperiment(data);
     })
   }
 

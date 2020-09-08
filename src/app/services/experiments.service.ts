@@ -18,8 +18,6 @@ export class ExperimentsService {
 
     createExperiment(experiment: Experiment): Observable<any> {
         let exp = experiment["experiment"]
-        console.log(JSON.stringify(exp));
-        
         return this._http.post<HttpResponse<any>>(`${environment.apiBaseURL}/experiments`, exp, {observe: "response"})
     }
 

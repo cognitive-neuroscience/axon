@@ -1,70 +1,46 @@
-{
-    "tasks": [
-        {
-            "title": "Go-NoGo",
-            "description": "Description of Go-NoGo Task",
-            "route": "/experiments/go-nogo",
-            "type": "NAB"
-        },
-        {
-            "title": "Digit Span",
-            "description": "Description of Digit Span Task",
-            "route": "/experiments/digit-span",
-            "type": "NAB"
-        },
-        {
-            "title": "Finger Tapping Task",
-            "description": "Description of Finger Tapping Task",
-            "route": "/experiments/ftt",
-            "type": "NAB"
-        },
-        {
-            "title": "N-Back",
-            "description": "Description of N-Back Task",
-            "route": "/experiments/n-back",
-            "type": "NAB"
-        },
-        {
-            "title": "Stroop Task",
-            "description": "Description of Stroop Task",
-            "route": "/experiments/stroop",
-            "type": "NAB"
-        },
-        {
-            "title": "Trail Making",
-            "description": "Description of Trail Making Task",
-            "route": "/experiments/trail-making",
-            "type": "NAB"
-        },
-        {
-            "title": "Color Game",
-            "description": "Description of Color Game",
-            "route": "/experiments/color-game",
-            "type": "experimental"
-        },
-        {
-            "title": "Shape Game",
-            "description": "Description of Shape Game",
-            "route": "/experiments/trail-making",
-            "type": "experimental"
-        },
-        {
-            "title": "TS & DST",
-            "description": "Description of TS & DST",
-            "route": "/experiments/ts",
-            "type": "experimental"
-        },
-        {
-            "title": "Simon Task",
-            "description": "Description of Simon Task",
-            "route": "/experiments/simon-1",
-            "type": "experimental"
-        },
-        {
-            "title": "Smiley Face",
-            "description": "Description of Smiley Face Game",
-            "route": "/experiments/trail-making",
-            "type": "experimental"
-        }
-    ]
-}
+[
+    {
+        "id": 1,
+        "route": "/experiments/go-nogo"
+    },
+    {
+        "id": 2,
+        "route": "/experiments/digit-span"
+    },
+    {
+        "id": 3,
+        "route": "/experiments/ftt"
+    },
+    {
+        "id": 4,
+        "route": "/experiments/n-back"
+    },
+    {
+        "id": 5,
+        "route": "/experiments/stroop"
+    },
+    {
+        "id": 6,
+        "route": "/experiments/trail-making"
+    },
+    {
+        "id": 7,
+        "route": "/experiments/color-game"
+    },
+    {
+        "id": 8,
+        "route": "/experiments/shape-game"
+    },
+    {
+        "id": 9,
+        "route": "/experiments/ts"
+    },
+    {
+        "id": 10,
+        "route": "/experiments/simon-1"
+    },
+    {
+        "id": 11,
+        "route": "/experiments/smiley-face"
+    }
+]
