@@ -19,7 +19,7 @@
         <mat-form-field class="w-100">
             <mat-label>Select a task</mat-label>
             <mat-select formControlName="tasks" required>
-                <mat-option *ngFor="let task of tasks" [disabled]="!taskIsComplete(task.title)" [value]="task.title">{{ task.title }}</mat-option>
+                <mat-option *ngFor="let task of tasks" [disabled]="!taskIsComplete(task)" [value]="task.title">{{ task.title }}</mat-option>
             </mat-select>
             <mat-error *ngIf="experimentForm.get('tasks')?.hasError('required')">This is required</mat-error>
         </mat-form-field>

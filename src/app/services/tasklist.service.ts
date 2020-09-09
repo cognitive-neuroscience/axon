@@ -26,7 +26,7 @@ export class TasklistService {
     constructor(private http: HttpClient) {
         this._taskBehaviorSubject = new BehaviorSubject(null);
         this.taskList = this._taskBehaviorSubject.asObservable();
-        this._updateTaskBehaviorSubject()
+        this.updateTasks()
 
         this._taskRouteBehaviorSubject = new BehaviorSubject(null);
         this.taskRouteList = this._taskRouteBehaviorSubject.asObservable();
@@ -37,7 +37,7 @@ export class TasklistService {
         this._updateCompletedTaskBehaviorSubject()
     }
 
-    private _updateTaskBehaviorSubject() {
+    public updateTasks() {
         this._getTasks().subscribe((tasks: Task[]) => {
             this._taskBehaviorSubject.next(tasks)
         })

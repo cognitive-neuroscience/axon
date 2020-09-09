@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, of } from 'rxjs';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 import { Experiment } from '../models/Experiment';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -9,11 +9,20 @@ import { environment } from 'src/environments/environment';
 })
 export class ExperimentsService {
 
-    constructor(private _http: HttpClient) {}
+    private _experimentBehaviorSubject: BehaviorSubject<Experiment[]>;
 
-    getExperiments(): Observable<any> {
-        // return of(this.mockExperiments);
-        return this._http.get(`${environment.apiBaseURL}/experiments`)
+    public experiments: Observable<Experiment[]>;
+
+    constructor(private _http: HttpClient) {
+        this._experimentBehaviorSubject = new BehaviorSubject(null);
+        this.experiments = this._experimentBehaviorSubject.asObservable();
+        this.updateExperiments();
+    }
+
+    updateExperiments(): void {
+        this._getExperiments().subscribe(experiments => {
+            this._experimentBehaviorSubject.next(experiments)
+        })
     }
 
     createExperiment(experiment: Experiment): Observable<any> {
@@ -23,5 +32,9 @@ export class ExperimentsService {
 
     deleteExperiment(code): Observable<any> {
         return this._http.delete<HttpResponse<any>>(`${environment.apiBaseURL}/experiments/${code}`, {observe: "response"})
+    }
+
+    private _getExperiments(): Observable<Experiment[]> {
+        return this._http.get<Experiment[]>(`${environment.apiBaseURL}/experiments`)
     }
 }

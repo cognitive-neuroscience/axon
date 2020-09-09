@@ -14,7 +14,7 @@ export class CreateExperimentDialogComponent implements OnInit {
 
   tasks: Task[] = [];
 
-  completedTasks: string[] = [];
+  completedTasks: number[] = [];
 
   experimentForm = this.fb.group({
     name: ['', Validators.required],
@@ -29,26 +29,27 @@ export class CreateExperimentDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-  //   this.getTasklist()
-  //   this.getCompletedTasklist()
+    this.getTasklist()
+    this.getCompletedTasklist()
   }
 
-  // private getCompletedTasklist(): void {
-  //   this.tasklistService.getCompletedTaslist().subscribe(completedTasklist => {
-  //     this.completedTasks = completedTasklist
-  //   })
-  // }
+  private getCompletedTasklist(): void {
+    this.tasklistService.completedTaskList.subscribe(completedTasks => {
+      this.completedTasks = completedTasks
+    })
+  }
 
-  // private getTasklist(): void {
-  //   this.tasklistService.getTasklist().subscribe(receivedTasklist => {
-  //     this.tasks = receivedTasklist
-  //   })
-  // }
+  private getTasklist(): void {
+    this.tasklistService.taskList.subscribe(tasklist => {
+      this.tasks = tasklist
+    })
+  }
 
+  // TODO: implement multiple ordered task selection
   sendDataToParent() {
     const assocTask = this.tasks.find(task => {
-      const selectedTask = this.experimentForm.get("tasks").value
-      return task.title === selectedTask;
+      const selectedTaskName = this.experimentForm.get("tasks").value
+      return task.title === selectedTaskName;
     })
 
     const experiment = new Experiment(
@@ -62,7 +63,12 @@ export class CreateExperimentDialogComponent implements OnInit {
     this.dialogRef.close({experiment})
   }
 
-  taskIsComplete(task: string): boolean {
-    return this.completedTasks.includes(task) ? true : false
+  taskIsComplete(task: Task): boolean {
+
+    if(this.completedTasks) {
+      return this.completedTasks.includes(task.id) ? true : false
+    } else {
+      return false
+    }
   }
 }

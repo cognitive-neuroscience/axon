@@ -13,8 +13,8 @@ import { Task } from 'src/app/models/Task';
 export class ViewExperimentsComponent implements OnInit {
 
   constructor(
-    private _experimentsService: ExperimentsService,
-    public dialog: MatDialog
+    private experimentsService: ExperimentsService,
+    public dialog: MatDialog,
   ) { }
 
   experiments: Experiment[] = [];
@@ -28,28 +28,30 @@ export class ViewExperimentsComponent implements OnInit {
   openCreateExperimentDialog() {
     const dialogRef = this.dialog.open(CreateExperimentDialogComponent)
 
-    dialogRef.afterClosed().subscribe((data: Experiment) => {
-      console.log(data);
-      
-      // if(data) this._createExperiment(data);
+    dialogRef.afterClosed().subscribe((data: Experiment) => {      
+      if(data) this._createExperiment(data);
     })
   }
 
+  private updateExperiments() {
+    this.experimentsService.updateExperiments()
+  }
+
   private _createExperiment(experiment: Experiment) {
-    this._experimentsService.createExperiment(experiment).subscribe(done => {
-      this.getExperiments()
+    this.experimentsService.createExperiment(experiment).subscribe(() => {
+      this.updateExperiments()
     })
   }
 
   getExperiments() {
-    this._experimentsService.getExperiments().subscribe((experiments) => {
+    this.experimentsService.experiments.subscribe(experiments => {
       this.experiments = experiments
     })
   }
 
   deleteExperiment(code: string) {
-    this._experimentsService.deleteExperiment(code).subscribe(data => {
-      this.getExperiments()
+    this.experimentsService.deleteExperiment(code).subscribe(data => {
+      this.updateExperiments()
       // add toast
     })
   }
