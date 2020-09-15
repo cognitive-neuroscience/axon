@@ -15,6 +15,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const modules = [
   MatInputModule,
@@ -31,7 +32,8 @@ const modules = [
   MatToolbarModule,
   MatTableModule,
   MatCardModule,
-  MatListModule
+  MatListModule,
+  MatTooltipModule
 ];
 
 @NgModule({

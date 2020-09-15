@@ -6,56 +6,49 @@
                     <img class="logo" src="assets/logo/logo.png" alt="">
                 </div>
                 <br>
-                <mat-form-field floatLabel="always">
-                    <mat-placeholder style="text-transform: uppercase;">Email</mat-placeholder>
-                    <input autocomplete="off" type="email" matInput [(ngModel)]="model.email">
-                    <mat-icon matSuffix>email</mat-icon>
-                </mat-form-field>
-                <br>
-                <mat-form-field floatLabel="always">
-                    <mat-placeholder style="text-transform: uppercase;">Password</mat-placeholder>
-                    <input autocomplete="off" type="password" matInput name="password" [(ngModel)]="model.password">
-                    <mat-icon matSuffix>vpn_key</mat-icon>
-                </mat-form-field>
-                <br>
-                <div *ngIf="mode === 'register'">
-                    <mat-form-field floatLabel="always">
-                        <mat-placeholder style="text-transform: uppercase;">Confirm Password</mat-placeholder>
-                        <input autocomplete="off" type="password" matInput name="confirm_password"
-                            [(ngModel)]="model.confirmPassword">
+                <div [formGroup]="loginForm" (keyup.enter)="login()">
+                    <mat-form-field class="py-1" floatLabel="always">
+                        <mat-label>EMAIL</mat-label>
+                        <mat-icon matSuffix>email</mat-icon>
+                        <input matInput formControlName="email" type="email" placeholder="example@domain.com">
+                        <mat-error *ngIf="loginForm.get('email')?.hasError('required')">This is required</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="py-1" floatLabel="always">
+                        <mat-label>PASSWORD</mat-label>
                         <mat-icon matSuffix>vpn_key</mat-icon>
+                        <input type="text" formControlName="password" #password type="password" matInput placeholder="my-strong-password">
+                        <mat-error *ngIf="loginForm.get('password')?.hasError('required')">This is required</mat-error>
                     </mat-form-field>
-                </div>
-                <div *ngIf="mode === 'register'">
-                    <mat-form-field floatLabel="always">
-                        <mat-placeholder style="text-transform: uppercase;">Code</mat-placeholder>
-                        <input autocomplete="off" type="text" matInput name="setCode" [(ngModel)]="model.setCode">
-                        <mat-icon matSuffix>insert_link</mat-icon>
+                    <mat-form-field *ngIf="mode === 'REGISTER'" class="py-1" floatLabel="always">
+                        <mat-label>CONFIRM PASSWORD</mat-label>
+                        <mat-icon matSuffix>vpn_key</mat-icon>
+                        <input type="text" formControlName="confirmPassword" type="password" matInput placeholder="my-strong-password">
+                        <!-- <mat-error *ngIf="loginForm.get('confirmPassword')?.hasError('required')">This is required</mat-error> -->
+                        <mat-error *ngIf="loginForm.hasError('passwordMatch')">Passwords must match!</mat-error>
                     </mat-form-field>
-                </div>
-                <div *ngIf="mode === 'login'" align="center" matRipple matRippleColor="#ffffff33">
-                    <button class="btn-block btn-sm rounded-btn" mat-raised-button color="primary"
-                        [disabled]="(!model.password || !model.email)"
-                        style="text-transform: uppercase;" name="login" (click)="login()">Sign In</button>
-                </div>
-                <div *ngIf="mode === 'register'" align="center" matRipple matRippleColor="#ffffff33">
-                    <button class="btn-block btn-sm rounded-btn"
-                        [disabled]="(model.password !== model.confirmPassword) || (!model.password)"
-                        mat-raised-button color="primary" style="text-transform: uppercase;" name="register"
-                        (click)="register()">Register</button>
-                </div>
-                <br>
-                <div *ngIf="mode === 'login'" style=" font-weight: 300; font-size: 13px;">
-                    <a style="color:inherit; text-decoration:underline; background-color: transparent;"
-                        href="javascript:void(0)" (click)="setMode('register')">Sign Up</a>
-                </div>
-                <div *ngIf="mode === 'register'" style=" font-weight: 300; font-size: 13px;">
-                    <a style="color:inherit; text-decoration:underline; background-color: transparent;"
-                        href="javascript:void(0)" (click)="setMode('login')">Sign In</a>
-                </div>
-                <div style=" font-weight: 300; font-size: 13px;">
-                    <a style="color:inherit; text-decoration:underline; background-color: transparent;"
-                        href="javascript:void(0)">Forgot Password</a>
+                    <div matRipple matRippleColor="#ffffff33">
+                        <button (click)="handleClick()"
+                                class="btn-block btn-sm rounded-btn" 
+                                mat-raised-button  
+                                color="primary"
+                                [disabled]="!loginForm.valid">
+                            {{ mode === "LOGIN" ? "SIGN IN" : "SIGN UP" }}
+                        </button>
+                    </div>
+                    <div>
+                        <div *ngIf="mode === 'LOGIN'" style=" font-weight: 300; font-size: 13px;">
+                            <a style="color:inherit; text-decoration:underline; background-color: transparent;"
+                                href="javascript:void(0)" (click)="setMode('REGISTER')">Sign Up</a>
+                        </div>
+                        <div *ngIf="mode === 'REGISTER'" style=" font-weight: 300; font-size: 13px;">
+                            <a style="color:inherit; text-decoration:underline; background-color: transparent;"
+                                href="javascript:void(0)" (click)="setMode('LOGIN')">Sign In</a>
+                        </div>
+                        <div style=" font-weight: 300; font-size: 13px;">
+                            <a style="color:inherit; text-decoration:underline; background-color: transparent;"
+                                href="javascript:void(0)">Forgot Password</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </mat-card>
@@ -64,3 +57,29 @@
 
 <div class="vector" style="background: linear-gradient(145deg,#3f51b5,#3f51b5)">
 </div>
+
+
+
+
+
+<!--     <div class="py-3" [formGroup]="experimentForm">
+        <mat-form-field class="w-100">
+            <mat-label>Experiment Name</mat-label>
+            <input required formControlName="name" matInput type="text" placeholder="My experiment">
+            <mat-error *ngIf="experimentForm.get('name')?.hasError('required')">This is required</mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field class="w-100">
+            <mat-label>Description</mat-label>
+            <textarea formControlName="description" matInput type="text"></textarea>
+            <mat-error *ngIf="experimentForm.get('description')?.hasError('maxlength')">Max 255 characters</mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field class="w-100">
+            <mat-label>Select a task</mat-label>
+            <mat-select formControlName="tasks" required>
+                <mat-option *ngFor="let task of tasks" [disabled]="!taskIsComplete(task)" [value]="task.title">{{ task.title }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="experimentForm.get('tasks')?.hasError('required')">This is required</mat-error>
+        </mat-form-field>
+    </div> -->

@@ -1,10 +1,25 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { LoginCredentials } from 'src/app/models/LoginCredentials';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { LoginCredentials } from 'src/app/models/Login';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoginMode } from 'src/app/models/InternalDTOs';
+import { throwIfEmpty } from 'rxjs/operators';
+
+function passwordMatchingValidator(fg: FormGroup): {[key: string]: string} | null {
+  if(fg.controls.password.value !== fg.controls.confirmPassword.value) {
+    const err = {
+      "passwordMatch": "Passwords don't match"
+    }
+    fg.controls.confirmPassword.setErrors(err)
+    return err
+  } else {
+    return null
+  }
+}
 
 @Component({
   selector: 'app-login',
@@ -13,41 +28,64 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-  mode = "login";
+  mode: LoginMode = LoginMode.LOGIN;
   model: LoginCredentials = new LoginCredentials();
+
+  loginForm = this.fb.group(
+    {
+      email: ["", Validators.required],
+      password: ["", Validators.required],
+      confirmPassword: [""],
+    }
+  )
+
+  handleClick() {
+    if(this.mode === LoginMode.LOGIN) {
+      this.login()
+    } else {
+      this.register()
+    }
+  }
+
   loginSubscription: Subscription = new Subscription();
   registerSubscription: Subscription = new Subscription();
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private snackbar: MatSnackBar,
+    private snackbarService: SnackbarService,
+    private fb: FormBuilder
   ) { }
 
   ngOnInit() {
   }
 
   login() {
-    const { email, password } = this.model;
-    this.loginSubscription = this.authService.login({ email, password }).subscribe((response: any) => {
+    const email = this.loginForm.controls.email.value
+    const password = this.loginForm.controls.password.value
+
+    this.loginSubscription = this.authService.login(email, password).subscribe((response: HttpResponse<LoginCredentials>) => {
       if (response.headers.get('Authorization')) {
-        localStorage.setItem('token', response.headers.get('Authorization').split(' ')[1])
-        localStorage.setItem('mapping', response.userID % 2 === 0 ? '1' : '2');
+        const tokenString = response.headers.get("Authorization").split(" ")[1]
+        localStorage.setItem('token', tokenString)
       }
       this.router.navigate(['/dashboard']);
     }, (error: HttpErrorResponse) => {
       console.error(error);
-      this.snackbar.open(error.error.error, '', { duration: 3000 });
+      this.snackbarService.openSnackbar(error.error)
     });
   }
 
   register() {
-    const { email, password, setCode } = this.model;
-    this.registerSubscription = this.authService.register({ email, password, setCode }).subscribe((response: any) => {
-      this.login();
+    const email = this.loginForm.controls.email.value
+    const password = this.loginForm.controls.password.value
+
+    this.registerSubscription = this.authService.register(email, password).subscribe((response: HttpResponse<LoginCredentials>) => {
+      this.mode = LoginMode.LOGIN
+      this.snackbarService.openSnackbar("Successfully created account! Please login with your credentials")
     }, (error: HttpErrorResponse) => {
       console.error(error);
-      this.snackbar.open(error.error.message, '', { duration: 3000 });
+      this.snackbarService.openSnackbar(error.error)
     });
   }
 
@@ -56,8 +94,20 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.registerSubscription.unsubscribe();
   }
 
-  setMode(mode: string) {
-    this.mode = mode;
+  setMode(mode: "LOGIN" | "REGISTER") {
+    this.mode = mode === "LOGIN" ? LoginMode.LOGIN : LoginMode.REGISTER
+
+    this.handleConfirmPasswordValidators()
+  }
+
+  private handleConfirmPasswordValidators() {
+    if(this.mode === LoginMode.REGISTER) {
+      this.loginForm.reset()
+      this.loginForm.setValidators(passwordMatchingValidator)
+    } else {
+      this.loginForm.clearValidators()
+      this.loginForm.reset()
+    }
   }
 
 }

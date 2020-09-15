@@ -28,6 +28,7 @@ import { ViewExperimentsComponent } from './pages/dashboard/view-experiments/vie
 import { NavbarComponent } from './pages/dashboard/navbar/navbar.component';
 import { CreateExperimentDialogComponent } from './pages/dashboard/view-experiments/create-experiment-dialog/create-experiment-dialog.component';
 import { MturkLoginComponent } from './pages/mturk-login/mturk-login.component';
+import { SnackbarComponent } from './services/snackbar/snackbar.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { MturkLoginComponent } from './pages/mturk-login/mturk-login.component';
     NavbarComponent,
     CreateExperimentDialogComponent,
     MturkLoginComponent,
+    SnackbarComponent,
   ],
   imports: [
     BrowserModule,

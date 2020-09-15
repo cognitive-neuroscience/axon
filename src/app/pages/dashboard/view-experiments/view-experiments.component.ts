@@ -4,6 +4,7 @@ import { ExperimentsService } from 'src/app/services/experiments.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateExperimentDialogComponent } from './create-experiment-dialog/create-experiment-dialog.component';
 import { Task } from 'src/app/models/Task';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-view-experiments',
@@ -50,7 +51,8 @@ export class ViewExperimentsComponent implements OnInit {
   }
 
   deleteExperiment(code: string) {
-    this.experimentsService.deleteExperiment(code).subscribe(data => {
+    this.experimentsService.deleteExperiment(code).subscribe((data: HttpResponse<any>) => {
+      console.log(data);
       this.updateExperiments()
       // add toast
     })

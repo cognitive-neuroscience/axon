@@ -10,12 +10,24 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
-  login(model: { email: string, password: string }): Observable<HttpResponse<any>> {
-    return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/login', model, { observe: "response" });
+  login(email: string, password: string): Observable<HttpResponse<any>> {
+    const obj = {
+      email: email,
+      password: password
+    }
+    console.log(obj);
+    
+    return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/login', obj, { observe: "response" });
   }
 
-  register(model: { email: string, password: string, setCode: string }): Observable<HttpResponse<any>> {
-    return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/users', model, { observe: "response" });
+  register(email: string, password: string): Observable<HttpResponse<any>> {
+    const obj = {
+      email: email,
+      password: password
+    }
+    console.log(obj);
+    
+    return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/users', obj, { observe: "response" });
   }
 
   validateToken(token: string): Observable<HttpResponse<any>> {

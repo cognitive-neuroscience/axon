@@ -28,7 +28,8 @@ const routes: Routes = [
       { path: 'tasks', component: ViewTasksComponent }
     ] 
   },
-  { path: 'mturk/login', component: MturkLoginComponent },
+  { path: 'login/mturk', component: MturkLoginComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'experiments/color-game', component: ColorGameComponent },
   { path: 'experiments/shape-game', component: ShapeGameComponent },
   { path: 'experiments/go-nogo', component: GoNogoComponent },
