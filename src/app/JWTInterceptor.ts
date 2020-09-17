@@ -12,7 +12,7 @@ import { tap } from "rxjs/operators";
 import { LocalStorageService } from './services/localStorage.service';
 
 @Injectable()
-export class AppHttpInterceptor implements HttpInterceptor {
+export class JWTInterceptor implements HttpInterceptor {
 
     constructor(
         private router: Router,

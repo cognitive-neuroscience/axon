@@ -17,7 +17,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './modules/material/material.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AppHttpInterceptor } from './AppHttpInterceptor';
+import { JWTInterceptor } from './JWTInterceptor';
 import { FingerTappingTaskComponent } from './pages/tasks/finger-tapping-task/finger-tapping-task.component';
 import { NBackComponent } from './pages/tasks/n-back/n-back.component';
 import { StroopTaskComponent } from './pages/tasks/stroop-task/stroop-task.component';
@@ -68,7 +68,7 @@ import { SnackbarComponent } from './services/snackbar/snackbar.component';
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: AppHttpInterceptor,
+      useClass: JWTInterceptor,
       multi: true,
     }
   ],
