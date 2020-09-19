@@ -6,7 +6,7 @@
                     <img class="logo" src="assets/logo/logo.png" alt="">
                 </div>
                 <br>
-                <div [formGroup]="loginForm" (keyup.enter)="login()">
+                <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                     <mat-form-field class="py-1" floatLabel="always">
                         <mat-label>EMAIL</mat-label>
                         <mat-icon matSuffix>email</mat-icon>
@@ -23,11 +23,10 @@
                         <mat-label>CONFIRM PASSWORD</mat-label>
                         <mat-icon matSuffix>vpn_key</mat-icon>
                         <input type="text" formControlName="confirmPassword" type="password" matInput placeholder="my-strong-password">
-                        <!-- <mat-error *ngIf="loginForm.get('confirmPassword')?.hasError('required')">This is required</mat-error> -->
                         <mat-error *ngIf="loginForm.hasError('passwordMatch')">Passwords must match!</mat-error>
                     </mat-form-field>
-                    <div matRipple matRippleColor="#ffffff33">
-                        <button (click)="handleClick()"
+                    <div matRipple matRippleColor="#ffffff33" class="my-3">
+                        <button type="submit"
                                 class="btn-block btn-sm rounded-btn" 
                                 mat-raised-button  
                                 color="primary"
@@ -49,7 +48,7 @@
                                 href="javascript:void(0)">Forgot Password</a>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </mat-card>
     </div>
@@ -57,29 +56,3 @@
 
 <div class="vector" style="background: linear-gradient(145deg,#3f51b5,#3f51b5)">
 </div>
-
-
-
-
-
-<!--     <div class="py-3" [formGroup]="experimentForm">
-        <mat-form-field class="w-100">
-            <mat-label>Experiment Name</mat-label>
-            <input required formControlName="name" matInput type="text" placeholder="My experiment">
-            <mat-error *ngIf="experimentForm.get('name')?.hasError('required')">This is required</mat-error>
-        </mat-form-field>
-        <br>
-        <mat-form-field class="w-100">
-            <mat-label>Description</mat-label>
-            <textarea formControlName="description" matInput type="text"></textarea>
-            <mat-error *ngIf="experimentForm.get('description')?.hasError('maxlength')">Max 255 characters</mat-error>
-        </mat-form-field>
-        <br>
-        <mat-form-field class="w-100">
-            <mat-label>Select a task</mat-label>
-            <mat-select formControlName="tasks" required>
-                <mat-option *ngFor="let task of tasks" [disabled]="!taskIsComplete(task)" [value]="task.title">{{ task.title }}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="experimentForm.get('tasks')?.hasError('required')">This is required</mat-error>
-        </mat-form-field>
-    </div> -->

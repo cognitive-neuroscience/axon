@@ -20,13 +20,13 @@ import { ViewTasksComponent } from './pages/dashboard/view-tasks/view-tasks.comp
 import { MturkLoginComponent } from './pages/mturk-login/mturk-login.component'
 
 const routes: Routes = [
-  { path: '', redirectTo: '/dashboard/experiments', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent,
     children: [
       { path: '', redirectTo: 'experiments', pathMatch: 'full' },
       { path: 'experiments', component: ViewExperimentsComponent },
       { path: 'tasks', component: ViewTasksComponent }
-    ] 
+    ]
   },
   { path: 'login/mturk', component: MturkLoginComponent },
   { path: 'login', component: LoginComponent },

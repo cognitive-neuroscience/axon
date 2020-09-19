@@ -5,9 +5,8 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LoginCredentials } from 'src/app/models/Login';
 import { SnackbarService } from 'src/app/services/snackbar.service';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginMode } from 'src/app/models/InternalDTOs';
-import { throwIfEmpty } from 'rxjs/operators';
 
 function passwordMatchingValidator(fg: FormGroup): {[key: string]: string} | null {
   if(fg.controls.password.value !== fg.controls.confirmPassword.value) {
@@ -28,6 +27,8 @@ function passwordMatchingValidator(fg: FormGroup): {[key: string]: string} | nul
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
+  private readonly REGISTER_SUCCESS_STR = "User successfully created! Use your credentials to login."
+
   mode: LoginMode = LoginMode.LOGIN;
   model: LoginCredentials = new LoginCredentials();
 
@@ -39,7 +40,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   )
 
-  handleClick() {
+  onSubmit() {
+    console.log("handling");
+    
     if(this.mode === LoginMode.LOGIN) {
       this.login()
     } else {
@@ -72,7 +75,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.router.navigate(['/dashboard']);
     }, (error: HttpErrorResponse) => {
       console.error(error);
-      this.snackbarService.openSnackbar(error.error)
+      this.snackbarService.openErrorSnackbar(error.error)
     });
   }
 
@@ -82,10 +85,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.registerSubscription = this.authService.register(email, password).subscribe((response: HttpResponse<LoginCredentials>) => {
       this.mode = LoginMode.LOGIN
-      this.snackbarService.openSnackbar("Successfully created account! Please login with your credentials")
+      this.snackbarService.openSuccessSnackbar(this.REGISTER_SUCCESS_STR)
     }, (error: HttpErrorResponse) => {
       console.error(error);
-      this.snackbarService.openSnackbar(error.error)
+      this.snackbarService.openErrorSnackbar(error.error)
     });
   }
 

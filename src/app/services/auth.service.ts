@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { LocalStorageService } from './localStorage.service';
+import { map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private localStorageService: LocalStorageService) { }
 
   login(email: string, password: string): Observable<HttpResponse<any>> {
     const obj = {
@@ -30,8 +32,22 @@ export class AuthService {
     return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/users', obj, { observe: "response" });
   }
 
+  // backend validates token in header so payload doesn't actually matter
+  // TODO: refactor this
   validateToken(token: string): Observable<HttpResponse<any>> {
-    return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/token', { token }, { observe: "response" });
+    const obj = {
+      token: token
+    }
+    return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/token', obj, { observe: "response" });
+  }
+
+  isAuthenticated(): Observable<boolean> {
+    const token = this.localStorageService.getItemFromLocalStorage("token");
+    if(!token) return of(false)
+
+    return this.validateToken(token).pipe(
+      map(ok => ok.body)
+    )
   }
 
 }

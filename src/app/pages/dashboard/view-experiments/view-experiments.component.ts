@@ -5,6 +5,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { CreateExperimentDialogComponent } from './create-experiment-dialog/create-experiment-dialog.component';
 import { Task } from 'src/app/models/Task';
 import { HttpResponse } from '@angular/common/http';
+import { ConfirmationService } from '../../../services/confirmation.service';
+import { SnackbarService } from '../../../services/snackbar.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-view-experiments',
@@ -16,6 +19,9 @@ export class ViewExperimentsComponent implements OnInit {
   constructor(
     private experimentsService: ExperimentsService,
     public dialog: MatDialog,
+    private confirmationService: ConfirmationService,
+    private snackbarService: SnackbarService,
+    private authService: AuthService
   ) { }
 
   experiments: Experiment[] = [];
@@ -27,7 +33,7 @@ export class ViewExperimentsComponent implements OnInit {
   }
 
   openCreateExperimentDialog() {
-    const dialogRef = this.dialog.open(CreateExperimentDialogComponent)
+    const dialogRef = this.dialog.open(CreateExperimentDialogComponent, {width: "30%"})
 
     dialogRef.afterClosed().subscribe((data: Experiment) => {      
       if(data) this._createExperiment(data);
@@ -50,11 +56,16 @@ export class ViewExperimentsComponent implements OnInit {
     })
   }
 
-  deleteExperiment(code: string) {
+  onDelete(code: string) {
+    this.confirmationService.openConfirmationDialog(`Are you sure you want to delete experiment ${code}?`).subscribe(ok => {
+      if(ok) this.deleteExperiment(code)
+    })
+  }
+
+  private deleteExperiment(code: string) {
     this.experimentsService.deleteExperiment(code).subscribe((data: HttpResponse<any>) => {
-      console.log(data);
-      this.updateExperiments()
-      // add toast
+      this.updateExperiments();
+      this.snackbarService.openSuccessSnackbar(`Successfully deleted experiment ${code}`)
     })
   }
 
