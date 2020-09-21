@@ -4,6 +4,11 @@ export enum SnackbarType {
     INFO = "INFO"
 }
 
+export enum Role {
+    ADMIN = "ADMIN",
+    PARTICIPANT = "PARTICIPANT"
+}
+
 export class ConfirmationDialogMessage {
     message: string
 

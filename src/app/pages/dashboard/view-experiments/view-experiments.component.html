@@ -7,15 +7,15 @@
     </div>
 
     <div class="d-flex flex-wrap">
-        <div class="card-container" *ngFor="let experiment of experiments">
+        <div class="card-container" *ngFor="let experiment of experiments | async">
             <mat-card>
                 <mat-card-title>{{ experiment.name }} <mat-icon>science</mat-icon> </mat-card-title>
-                <mat-card-subtitle>{{ experiment.description }}</mat-card-subtitle>
+                <mat-card-subtitle>{{ experiment.description ? experiment.description : 'No description' }}</mat-card-subtitle>
                 <hr>
                 <mat-card-content>
 
                     <div>
-                        <h5>Tasks</h5>
+                        <h3>Tasks</h3>
                         <div class="max-list-height">
                             <mat-list role="list">
                                 <mat-list-item style="justify-content: center;" role="listitem" *ngFor="let task of experiment.tasks">{{ task.title }}</mat-list-item>

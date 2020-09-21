@@ -1,20 +1,22 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Task } from 'src/app/models/Task';
 import { MatDialogRef } from '@angular/material/dialog';
 import { TasklistService } from 'src/app/services/tasklist.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Experiment } from 'src/app/models/Experiment';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-create-experiment-dialog',
   templateUrl: './create-experiment-dialog.component.html',
   styleUrls: ['./create-experiment-dialog.component.scss']
 })
-export class CreateExperimentDialogComponent implements OnInit {
+export class CreateExperimentDialogComponent implements OnInit, OnDestroy {
 
   tasks: Task[] = [];
-
   completedTasks: number[] = [];
+
+  private subscriptions: Subscription[] = [];
 
   experimentForm = this.fb.group({
     name: ['', Validators.required],
@@ -34,15 +36,19 @@ export class CreateExperimentDialogComponent implements OnInit {
   }
 
   private getCompletedTasklist(): void {
-    this.tasklistService.completedTaskList.subscribe(completedTasks => {
-      this.completedTasks = completedTasks
-    })
+    this.subscriptions.push(
+      this.tasklistService.completedTaskList.subscribe(completedTasks => {
+        this.completedTasks = completedTasks
+      })
+    )
   }
 
   private getTasklist(): void {
-    this.tasklistService.taskList.subscribe(tasklist => {
-      this.tasks = tasklist
-    })
+    this.subscriptions.push(
+        this.tasklistService.taskList.subscribe(tasklist => {
+        this.tasks = tasklist
+      })
+    )
   }
 
   // TODO: implement multiple ordered task selection
@@ -56,19 +62,20 @@ export class CreateExperimentDialogComponent implements OnInit {
       this.experimentForm.get("name").value,
       null,
       this.experimentForm.get("description").value,
-      [
-        assocTask
-      ]
+      [assocTask]
     )
     this.dialogRef.close({experiment})
   }
 
   taskIsComplete(task: Task): boolean {
-
     if(this.completedTasks) {
       return this.completedTasks.includes(task.id) ? true : false
     } else {
       return false
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe())
   }
 }

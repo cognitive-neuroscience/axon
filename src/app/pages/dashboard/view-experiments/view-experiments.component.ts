@@ -8,6 +8,7 @@ import { HttpResponse } from '@angular/common/http';
 import { ConfirmationService } from '../../../services/confirmation.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { AuthService } from '../../../services/auth.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-view-experiments',
@@ -24,12 +25,10 @@ export class ViewExperimentsComponent implements OnInit {
     private authService: AuthService
   ) { }
 
-  experiments: Experiment[] = [];
-
-  tasks: Task[] = [];
+  experiments: Observable<Experiment[]>;
 
   ngOnInit(): void {
-    this.getExperiments();
+    this.experiments = this.experimentsService.experiments
   }
 
   openCreateExperimentDialog() {
@@ -47,12 +46,6 @@ export class ViewExperimentsComponent implements OnInit {
   private _createExperiment(experiment: Experiment) {
     this.experimentsService.createExperiment(experiment).subscribe(() => {
       this.updateExperiments()
-    })
-  }
-
-  getExperiments() {
-    this.experimentsService.experiments.subscribe(experiments => {
-      this.experiments = experiments
     })
   }
 
