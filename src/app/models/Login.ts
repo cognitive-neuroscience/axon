@@ -5,3 +5,10 @@ export class LoginCredentials {
     id: number;
     role: string;
 }
+
+export class JWT {
+    UserID: string;
+    Email: string;
+    Role: string;
+    exp: number
+}

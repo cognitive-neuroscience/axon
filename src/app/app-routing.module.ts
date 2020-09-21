@@ -18,10 +18,16 @@ import { TrailMakingComponent } from './pages/tasks/trail-making/trail-making.co
 import { ViewExperimentsComponent } from './pages/dashboard/view-experiments/view-experiments.component';
 import { ViewTasksComponent } from './pages/dashboard/view-tasks/view-tasks.component';
 import { MturkLoginComponent } from './pages/mturk-login/mturk-login.component'
+import { Role } from './models/InternalDTOs';
+import { CanActivateRouteGuard } from './CanActivateRouteGuard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent,
+  { 
+    path: 'dashboard', 
+    component: DashboardComponent, 
+    data: { role: [Role.ADMIN] },
+    canActivate: [CanActivateRouteGuard],
     children: [
       { path: '', redirectTo: 'experiments', pathMatch: 'full' },
       { path: 'experiments', component: ViewExperimentsComponent },

@@ -3,7 +3,9 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable, of } from 'rxjs';
 import { LocalStorageService } from './localStorage.service';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import jwt_decode from 'jwt-decode';
+import { JWT } from '../models/Login';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +44,7 @@ export class AuthService {
   }
 
   isAuthenticated(): Observable<boolean> {
-    const token = this.localStorageService.getItemFromLocalStorage("token");
+    const token = this.localStorageService.getTokenFromLocalStorage();
     if(!token) return of(false)
 
     return this.validateToken(token).pipe(
@@ -50,4 +52,8 @@ export class AuthService {
     )
   }
 
+  decodeToken(token: string): JWT {
+    const decodedToken: JWT = jwt_decode(token)
+    return decodedToken
+  }
 }

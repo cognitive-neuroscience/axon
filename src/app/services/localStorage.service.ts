@@ -5,12 +5,15 @@ import { Injectable } from '@angular/core';
 })
 export class LocalStorageService {
 
-    setLocalStorage(key: string, value: string): void {
-        localStorage.setItem(key, value);
+    TOKEN = "token"
+
+    setTokenInLocalStorage(token: string): void {
+        localStorage.setItem(this.TOKEN, token)
     }
 
-    getItemFromLocalStorage(key: string): string {
-        return localStorage.getItem(key)
+    // returns null if no token
+    getTokenFromLocalStorage(): string {
+        return localStorage.getItem(this.TOKEN)
     }
 
     clearLocalStorage(): void {

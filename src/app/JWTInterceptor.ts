@@ -20,7 +20,7 @@ export class JWTInterceptor implements HttpInterceptor {
     ) { }
 
     public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const token = this.localStorageService.getItemFromLocalStorage("token")
+        const token = this.localStorageService.getTokenFromLocalStorage()
         if (token) {
             const clonedReq = request.clone({
                 headers: request.headers.set("Authorization", "Bearer " + token)
