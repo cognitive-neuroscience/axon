@@ -29,6 +29,7 @@ function passwordMatchingValidator(fg: FormGroup): {[key: string]: string} | nul
 export class LoginComponent implements OnInit, OnDestroy {
 
   private readonly REGISTER_SUCCESS_STR = "User successfully created! Use your credentials to login."
+  private readonly LOGIN_SUCCESS_STR = "Successfully logged in!"
 
   mode: LoginMode = LoginMode.LOGIN;
   model: LoginCredentials = new LoginCredentials();
@@ -44,8 +45,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   )
 
   onSubmit() {
-    console.log("handling");
-    
     if(this.mode === LoginMode.LOGIN) {
       this.login()
     } else {
@@ -80,9 +79,10 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.localStorageService.setTokenInLocalStorage(tokenString)
         }
         this.router.navigate(['/dashboard']);
+        this.snackbarService.openSuccessSnackbar(this.LOGIN_SUCCESS_STR)
       }, (error: HttpErrorResponse) => {
         console.error(error);
-        this.snackbarService.openErrorSnackbar(error.error)
+        this.snackbarService.openErrorSnackbar(error.error.message)
       })
     )
   }

@@ -8,41 +8,46 @@
     <!-- Show welcome message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
 
-        <!-- Heading -->
+        <!-- Introduction -->
         <div class="w-100 p-4 uppercase" align="center">
-            <h2>Welcome to Stroop Task</h2>
+            <div>
+                <img src="../../../../assets/images/instructions/strooptask/1.png" alt="Stroop task instructions">
+            </div>
         </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show examples page -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 3">
 
         <!-- Introduction -->
         <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="title">
-                <h2 class="mat-h2">
-                    Read the instructions carefully
-                </h2>
+            <div>
+                <img src="../../../../assets/images/instructions/strooptask/2.png" alt="Stroop task instructions">
             </div>
-
-            <div class="statement">
-                In this task, you will be presented with different words for colors (eg. 'BLUE') printed in different
-                color font.
-            </div>
-
-            <div class="statement">
-                It's your goal to respond to the color of the font that the word is printed in, not the word itself.
-            </div>
-
-            <div class="statement">
-                1 = 'RED'
-                <br>
-                2 = 'BLUE'
-                <br>
-                3 = 'GREEN'
-            </div>
-
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-
         </div>
 
         <!-- Navigation buttons -->
@@ -71,33 +76,13 @@
     </div>
 
     <!-- Show practice round message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 3">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Practice Round</h2>
-        </div>
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 4">
 
         <!-- Introduction -->
         <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <h4>Let's Practice</h4>
+            <div>
+                <img src="../../../../assets/images/instructions/strooptask/3.png" alt="Stroop task instructions">
             </div>
-
-            <div class="statement">
-                Good luck ! You will have very little time to respond, so be ready.
-            </div>
-
-            <br>
-
-            <div class="statement">
-                The game will launch in fullscreen
-            </div>
-
-            <div class="statement-final">
-                Click 'START' when you are ready for the practice round
-            </div>
-
         </div>
 
         <!-- Navigation buttons -->
@@ -126,12 +111,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 4">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 5">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start Practice Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 5">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 6">
 
         <div *ngIf="isStimulus">
             <div [style.color]="color">
@@ -153,38 +138,25 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 6">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 7">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 7">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Practice Round Is Now Complete</h2>
-        </div>
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 8">
 
         <!-- Introduction -->
         <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <h4>You will now play the actual game</h4>
+            <div>
+                <img src="../../../../assets/images/instructions/strooptask/4.png" alt="Stroop task instructions">
             </div>
+        </div>
 
-            <div *ngIf="isScored" class="statement">
-                You will earn 10 cents for every right answer
-            </div>
-
-            <div *ngIf="isScored" class="statement">
-                Good luck !
-            </div>
-
+        <div>
             <br>
-
             <div class="statement-final">
                 Click 'START' when you are ready for the actual game
             </div>
-
         </div>
 
         <!-- Navigation buttons -->
@@ -213,12 +185,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start Actual Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 10">
 
         <div *ngIf="isStimulus">
             <div [style.color]="color">
@@ -244,12 +216,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 10">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 11">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 11">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 12">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Game has finished</h2>
