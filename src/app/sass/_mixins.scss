@@ -1,4 +1,7 @@
-@mixin for-small-desktop {
+@mixin for-small-device-only {
+    @media (max-width: 899px) { @content; }
+}
+@mixin for-small-desktop-only {
     @media (min-width: 900px) and (max-width: 1199px) { @content; }
 }
 @mixin for-desktop-up {
