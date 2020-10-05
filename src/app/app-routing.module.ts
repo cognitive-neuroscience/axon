@@ -20,13 +20,14 @@ import { ViewTasksComponent } from './pages/dashboard/view-tasks/view-tasks.comp
 import { MturkLoginComponent } from './pages/mturk-login/mturk-login.component'
 import { Role } from './models/InternalDTOs';
 import { CanActivateRouteGuard } from './CanActivateRouteGuard';
+import { FinalPageComponent } from './pages/participant/final-page/final-page.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'login/mturk', pathMatch: 'full' },
   { 
     path: 'dashboard', 
     component: DashboardComponent, 
-    data: { role: [Role.ADMIN] },
+    data: { roles: [Role.ADMIN] },
     canActivate: [CanActivateRouteGuard],
     children: [
       { path: '', redirectTo: 'experiments', pathMatch: 'full' },
@@ -49,7 +50,8 @@ const routes: Routes = [
   { path: 'experiments/n-back', component: NBackComponent },
   { path: 'experiments/stroop', component: StroopTaskComponent },
   { path: 'experiments/trail-making', component: TrailMakingComponent },
-  { path: '**', redirectTo: '/login', pathMatch: 'full' }
+  { path: 'complete', component: FinalPageComponent },
+  { path: '**', redirectTo: '/login/mturk', pathMatch: 'full' }
 ];
 
 @NgModule({

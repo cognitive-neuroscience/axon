@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { TaskData } from '../models/TaskData';
+import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -11,16 +13,10 @@ export class DataService {
         private http: HttpClient,
     ) { }
 
-    uploadData(experiment: string, data: any) {
-        this.http.post(`${environment.apiBaseURL}/upload?experiment=${experiment}`, data, {
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem('token')
-            }
-        }).subscribe((response: any) => {
-            console.log('Data Uploaded');
-        }, (error) => {
-            console.error(error);
-        })
+    // TaskData polymorphic object used for all task data
+    uploadData(experimentCode: string, taskName: string, taskData: TaskData[]): Observable<HttpResponse<any>> {
+        console.log(taskData);
+        return this.http.post(`${environment.apiBaseURL}/upload/${experimentCode}/${taskName}`, taskData, { observe: "response"})
     }
 
 }

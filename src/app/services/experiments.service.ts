@@ -1,22 +1,32 @@
 import { Injectable } from "@angular/core";
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Experiment } from '../models/Experiment';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { map } from 'rxjs/operators';
+import { AuthService } from './auth.service';
+import { Role } from '../models/InternalDTOs';
 
 @Injectable({
     providedIn: "root"
 })
 export class ExperimentsService {
+    /**
+     * This service is in charge of handling the CRUD operations of experiments
+     * from the ADMIN's perspective.
+     */
 
     private _experimentBehaviorSubject: BehaviorSubject<Experiment[]>;
 
     public experiments: Observable<Experiment[]>;
 
-    constructor(private _http: HttpClient) {
+    constructor(private _http: HttpClient, private authService: AuthService) {
+        const jwt = this.authService.getDecodedToken()
+        const role = jwt ? jwt.Role : null
+
         this._experimentBehaviorSubject = new BehaviorSubject(null);
         this.experiments = this._experimentBehaviorSubject.asObservable();
-        this.updateExperiments();
+        if(role && role === Role.ADMIN) this.updateExperiments();
     }
 
     updateExperiments(): void {
@@ -25,13 +35,19 @@ export class ExperimentsService {
         })
     }
 
-    createExperiment(experiment: Experiment): Observable<any> {
-        let exp = experiment["experiment"]
-        return this._http.post<HttpResponse<any>>(`${environment.apiBaseURL}/experiments`, exp, {observe: "response"})
+    getExperiment(code: string): Observable<Experiment> {
+        return this._http.get<Experiment>(`${environment.apiBaseURL}/experiments/${code}`, {observe: "response"}).pipe(
+            map(res => res.body as Experiment)
+        )
     }
 
-    deleteExperiment(code): Observable<any> {
-        return this._http.delete<HttpResponse<any>>(`${environment.apiBaseURL}/experiments/${code}`, {observe: "response"})
+    createExperiment(experiment: Experiment): Observable<any> {
+        let exp = experiment["experiment"]
+        return this._http.post(`${environment.apiBaseURL}/experiments`, exp, {observe: "response"})
+    }
+
+    deleteExperiment(code: string): Observable<any> {
+        return this._http.delete(`${environment.apiBaseURL}/experiments/${code}`, {observe: "response"})
     }
 
     private _getExperiments(): Observable<Experiment[]> {

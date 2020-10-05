@@ -13,6 +13,7 @@
     height: 100%;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 }
 
 .welcome-header {
@@ -22,4 +23,10 @@
 
 mat-form-field {
     font-size: 2rem;
+}
+
+.bottom-note {
+    position: absolute; 
+    bottom: 10px; 
+    margin: 0 10%;
 }

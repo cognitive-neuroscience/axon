@@ -282,7 +282,7 @@ export class TaskSwitchingComponent implements OnInit {
   uploadResults() {
     if (this.data.length > 0) {
       let d = JSON.parse(JSON.stringify(this.data));
-      this.dataService.uploadData('ts', d);
+      // this.dataService.uploadData('ts', d);
     }
   }
 

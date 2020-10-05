@@ -7,21 +7,9 @@ import { AuthService } from './services/auth.service';
   template: `<router-outlet></router-outlet>`,
   styles: []
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
 
   constructor(
-    private router: Router,
-    private authService: AuthService,
   ) { }
-
-  ngOnInit() {
-    // this.router.navigate(['/login']);
-    // let token = localStorage.getItem('token');
-    // if (token) {
-    //   this.authService.validateToken(token).subscribe((response) => {
-    //     this.router.navigate(['/dashboard'])
-    //   });
-    // }
-  }
 
 }

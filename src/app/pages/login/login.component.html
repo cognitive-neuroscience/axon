@@ -10,8 +10,9 @@
                     <mat-form-field class="py-1" floatLabel="always">
                         <mat-label>EMAIL</mat-label>
                         <mat-icon matSuffix>email</mat-icon>
-                        <input matInput formControlName="email" type="email" placeholder="example@domain.com">
+                        <input matInput formControlName="email" type="email" placeholder="example@domain.com" email required>
                         <mat-error *ngIf="loginForm.get('email')?.hasError('required')">This is required</mat-error>
+                        <mat-error *ngIf="loginForm.get('email')?.hasError('email')">This must be a valid email</mat-error>
                     </mat-form-field>
                     <mat-form-field class="py-1" floatLabel="always">
                         <mat-label>PASSWORD</mat-label>

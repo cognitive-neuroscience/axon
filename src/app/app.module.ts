@@ -30,6 +30,7 @@ import { CreateExperimentDialogComponent } from './pages/dashboard/view-experime
 import { MturkLoginComponent } from './pages/mturk-login/mturk-login.component';
 import { SnackbarComponent } from './services/snackbar/snackbar.component';
 import { ConfirmationComponent } from './services/confirmation/confirmation.component';
+import { FinalPageComponent } from './pages/participant/final-page/final-page.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { ConfirmationComponent } from './services/confirmation/confirmation.comp
     MturkLoginComponent,
     SnackbarComponent,
     ConfirmationComponent,
+    FinalPageComponent,
   ],
   imports: [
     BrowserModule,

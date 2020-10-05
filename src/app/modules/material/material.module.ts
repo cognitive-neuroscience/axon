@@ -1,4 +1,5 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,7 +34,8 @@ const modules = [
   MatTableModule,
   MatCardModule,
   MatListModule,
-  MatTooltipModule
+  MatTooltipModule,
+  ClipboardModule,
 ];
 
 @NgModule({

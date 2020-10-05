@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LocalStorageService } from 'src/app/services/localStorage.service';
+import { SessionStorageService } from 'src/app/services/sessionStorage.service';
 
 @Component({
   selector: 'app-navbar',
@@ -10,7 +10,7 @@ import { LocalStorageService } from 'src/app/services/localStorage.service';
 export class NavbarComponent implements OnInit {
 
   constructor(
-    private localStorageService: LocalStorageService,
+    private sessionStorageService: SessionStorageService,
     private router: Router
   ) { }
 
@@ -18,7 +18,7 @@ export class NavbarComponent implements OnInit {
   }
 
   logout() {
-    this.localStorageService.clearLocalStorage()
+    this.sessionStorageService.clearSessionStorage()
     this.router.navigate(['/login'])
   }
 

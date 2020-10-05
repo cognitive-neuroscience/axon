@@ -1,9 +1,10 @@
-import { Injectable, OnInit } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Task, TaskRoute } from '../models/Task';
-import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { AuthService } from './auth.service';
+import { Role } from '../models/InternalDTOs';
 
 @Injectable({
     providedIn: "root"
@@ -23,10 +24,13 @@ export class TasklistService {
     private readonly route = "/assets/data"
 
     // init the behavior subjects
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private authService: AuthService) {
+        const jwt = this.authService.getDecodedToken()
+        const role = jwt ? jwt.Role : null
+
         this._taskBehaviorSubject = new BehaviorSubject(null);
         this.taskList = this._taskBehaviorSubject.asObservable();
-        this.updateTasks()
+        if(role && role === Role.ADMIN) this.updateTasks()
 
         this._taskRouteBehaviorSubject = new BehaviorSubject(null);
         this.taskRouteList = this._taskRouteBehaviorSubject.asObservable();

@@ -6,6 +6,12 @@ import * as Set1 from './stimuli_1_1';
 import * as Set2 from './stimuli_2_1';
 import * as Set3 from './stimuli_3_1';
 import * as Set4 from './stimuli_4_1';
+import { TaskManagerService } from '../../../services/task-manager.service';
+import { StroopTask } from '../../../models/TaskData';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AuthService } from '../../../services/auth.service';
+import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({
   selector: 'app-stroop-task',
@@ -15,6 +21,7 @@ import * as Set4 from './stimuli_4_1';
 export class StroopTaskComponent implements OnInit {
 
   // Default Experiment config
+  userID: string;
   isScored: boolean | number = true;
   showFeedbackAfterEveryTrial: boolean | number = false;
   showScoreAfterEveryTrial: boolean | number = false;
@@ -22,8 +29,8 @@ export class StroopTaskComponent implements OnInit {
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 10;
-  actualTrials: number = 120;
+  practiceTrials: number = 3;
+  actualTrials: number = 3;
 
   step: number = 1;
   color: string = '';
@@ -36,15 +43,7 @@ export class StroopTaskComponent implements OnInit {
   isBreak: boolean = false;
   currentTrial: number = 0;
   isResponseAllowed: boolean = false;
-  data: {
-    actualAnswer: string,
-    userAnswer: string,
-    isCongruent: number,
-    responseTime: number,
-    isCorrect: number,
-    score: number,
-    set: number
-  }[] = [];
+  data: StroopTask[] = [];
   timer: {
     started: number,
     ended: number
@@ -85,13 +84,18 @@ export class StroopTaskComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private dataService: DataService
+    private dataService: DataService,
+    private taskManager: TaskManagerService,
+    private snackbarService: SnackbarService,
+    private authService: AuthService
   ) { }
 
 
 
   ngOnInit() {
     this.set = Math.floor(Math.random() * 4) + 1;
+    const jwt = this.authService.getDecodedToken()
+    this.userID = jwt.UserID
   }
 
 
@@ -100,7 +104,7 @@ export class StroopTaskComponent implements OnInit {
     if (consent) {
       this.proceedtoNextStep();
     } else {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/login/mturk']);
     }
   }
 
@@ -192,12 +196,14 @@ export class StroopTaskComponent implements OnInit {
     }
 
     this.data.push({
+      userID: this.userID,
+      trial: this.currentTrial,
       actualAnswer: this.color,
       userAnswer: 'NA',
-      isCongruent: this.color === this.text ? 1 : 0,
-      responseTime: 0,
-      isCorrect: 0,
-      score: 0,
+      isCongruent: this.color === this.text ? true : false,
+      responseTime: null,
+      isCorrect: null,
+      score: null,
       set: this.set
     });
   }
@@ -216,7 +222,7 @@ export class StroopTaskComponent implements OnInit {
 
     if (this.data[this.data.length - 1].actualAnswer === this.data[this.data.length - 1].userAnswer) {
       this.feedback = "Correct";
-      this.data[this.data.length - 1].isCorrect = 1;
+      this.data[this.data.length - 1].isCorrect = true;
       this.data[this.data.length - 1].score = 10;
       this.scoreForSpecificTrial = 10;
       this.totalScore += 10;
@@ -226,7 +232,7 @@ export class StroopTaskComponent implements OnInit {
       } else {
         this.feedback = "Incorrect";
       }
-      this.data[this.data.length - 1].isCorrect = 0;
+      this.data[this.data.length - 1].isCorrect = false;
       this.data[this.data.length - 1].score = 0;
       this.scoreForSpecificTrial = 0;
     }
@@ -267,9 +273,18 @@ export class StroopTaskComponent implements OnInit {
         }
       } else {
         this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
         console.log(this.data);
+        this.uploadResults(this.data).subscribe(ok => {
+          if(ok) {
+            this.proceedtoNextStep();
+          } else {
+            console.error("There was an error uploading the results")
+            this.snackbarService.openErrorSnackbar("There was an error uploading the results")
+          }
+        }, err => {
+          this.router.navigate(['/login/mturk'])
+          this.snackbarService.openErrorSnackbar("There was an error")
+        })
       }
     }
   }
@@ -291,13 +306,17 @@ export class StroopTaskComponent implements OnInit {
 
 
 
-  uploadResults() {
+  uploadResults(data: StroopTask[]): Observable<boolean> {
+    const experimentCode = this.taskManager.getExperimentCode()
+    return this.dataService.uploadData(experimentCode, "Stroop Task", data).pipe(
+      map(ok => ok.ok)
+    )
   }
 
 
 
   continueAhead() {
-    this.router.navigate(['/dashboard']);
+    this.taskManager.nextExperiment()
   }
 
 

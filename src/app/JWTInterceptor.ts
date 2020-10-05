@@ -9,18 +9,18 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
-import { LocalStorageService } from './services/localStorage.service';
+import { SessionStorageService } from './services/sessionStorage.service';
 
 @Injectable()
 export class JWTInterceptor implements HttpInterceptor {
 
     constructor(
         private router: Router,
-        private localStorageService: LocalStorageService
+        private sessionStorageService: SessionStorageService
     ) { }
 
     public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const token = this.localStorageService.getTokenFromLocalStorage()
+        const token = this.sessionStorageService.getTokenFromSessionStorage()
         if (token) {
             const clonedReq = request.clone({
                 headers: request.headers.set("Authorization", "Bearer " + token)

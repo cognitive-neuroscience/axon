@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LoginCredentials } from 'src/app/models/Login';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginMode, Role } from 'src/app/models/InternalDTOs';
-import { LocalStorageService } from '../../services/localStorage.service';
+import { SessionStorageService } from '../../services/sessionStorage.service';
 
 function passwordMatchingValidator(fg: FormGroup): {[key: string]: string} | null {
   if(fg.controls.password.value !== fg.controls.confirmPassword.value) {
@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   loginForm = this.fb.group(
     {
-      email: ["", Validators.required],
+      email: ["", Validators.compose([Validators.email, Validators.required])],
       password: ["", Validators.required],
       confirmPassword: [""],
     }
@@ -52,15 +52,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
-  loginSubscription: Subscription = new Subscription();
-  registerSubscription: Subscription = new Subscription();
-
   constructor(
     private authService: AuthService,
     private router: Router,
     private snackbarService: SnackbarService,
     private fb: FormBuilder,
-    private localStorageService: LocalStorageService,
+    private sessionStorageService: SessionStorageService,
     private route: Router
   ) { }
 
@@ -73,10 +70,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     const password = this.loginForm.controls.password.value
 
     this.subscriptions.push(
-      this.loginSubscription = this.authService.login(email, password).subscribe((response: HttpResponse<LoginCredentials>) => {
+      this.authService.login(email, password).subscribe((response: HttpResponse<LoginCredentials>) => {
         if (response.headers.get('Authorization')) {
           const tokenString = response.headers.get("Authorization").split(" ")[1]
-          this.localStorageService.setTokenInLocalStorage(tokenString)
+          this.sessionStorageService.setTokenInSessionStorage(tokenString)
         }
         this.router.navigate(['/dashboard']);
         this.snackbarService.openSuccessSnackbar(this.LOGIN_SUCCESS_STR)
@@ -92,12 +89,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     const password = this.loginForm.controls.password.value
 
     this.subscriptions.push(
-      this.registerSubscription = this.authService.register(email, password).subscribe((response: HttpResponse<LoginCredentials>) => {
+      this.authService.register(email, password).subscribe((response: HttpResponse<LoginCredentials>) => {
         this.mode = LoginMode.LOGIN
         this.snackbarService.openSuccessSnackbar(this.REGISTER_SUCCESS_STR)
       }, (error: HttpErrorResponse) => {
         console.error(error);
-        this.snackbarService.openErrorSnackbar(error.error)
+        this.snackbarService.openErrorSnackbar(error.error.message)
       })
     )
   }
@@ -127,21 +124,22 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.authService.isAuthenticated().subscribe(isValid => {
         // if isValid, token exists in localStorage
         // if not valid, clear local storage
-        isValid ? this.handleNavigate() : this.localStorageService.clearLocalStorage()
+        isValid ? this.handleNavigate() : this.sessionStorageService.clearSessionStorage()
       })
     )
   }
 
   private handleNavigate() {
-    const token = this.localStorageService.getTokenFromLocalStorage()
-    const jwt = this.authService.decodeToken(token)
-    switch (jwt.Role) {
+    const jwt = this.authService.getDecodedToken()
+    const role = jwt ? jwt.Role : null
+    switch (role) {
       case Role.ADMIN:
         this.route.navigate(['/dashboard/experiments'])
         break;
       case Role.PARTICIPANT:
-        console.log("NEED TO NAVIGATE TO PARTICIPANT HOME PAGE");
-        // this.route.navigate(['/'])
+        // this.snackbarService.openSuccessSnackbar("Route to proper task!")
+        console.info("Routing to proper task")
+        // this.taskManagerService.startExperiment()
         break;
       default:
         break;

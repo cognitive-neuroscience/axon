@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable, of } from 'rxjs';
-import { LocalStorageService } from './localStorage.service';
+import { SessionStorageService } from './sessionStorage.service';
 import { map } from 'rxjs/operators';
 import jwt_decode from 'jwt-decode';
 import { JWT } from '../models/Login';
@@ -12,7 +12,7 @@ import { JWT } from '../models/Login';
 })
 export class AuthService {
 
-  constructor(private http: HttpClient, private localStorageService: LocalStorageService) { }
+  constructor(private http: HttpClient, private sessionStorageService: SessionStorageService) { }
 
   login(email: string, password: string): Observable<HttpResponse<any>> {
     const obj = {
@@ -24,13 +24,19 @@ export class AuthService {
     return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/login', obj, { observe: "response" });
   }
 
+  loginTurker(id: string, expCode: string): Observable<HttpResponse<any>> {
+    const obj = {
+      id: id,
+      code: expCode
+    }
+    return this.http.post<HttpResponse<any>>(`${environment.apiBaseURL}/login/turker`, obj, { observe: "response" });
+  }
+
   register(email: string, password: string): Observable<HttpResponse<any>> {
     const obj = {
       email: email,
       password: password
     }
-    console.log(obj);
-    
     return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/users', obj, { observe: "response" });
   }
 
@@ -44,7 +50,7 @@ export class AuthService {
   }
 
   isAuthenticated(): Observable<boolean> {
-    const token = this.localStorageService.getTokenFromLocalStorage();
+    const token = this.sessionStorageService.getTokenFromSessionStorage();
     if(!token) return of(false)
 
     return this.validateToken(token).pipe(
@@ -52,8 +58,13 @@ export class AuthService {
     )
   }
 
-  decodeToken(token: string): JWT {
-    const decodedToken: JWT = jwt_decode(token)
-    return decodedToken
+  getDecodedToken(): JWT {
+    const token = this.sessionStorageService.getTokenFromSessionStorage()
+    if(token) {
+      const decodedToken: JWT = jwt_decode(token)
+      return decodedToken
+    }
+    console.error("No token")
+    return null
   }
 }

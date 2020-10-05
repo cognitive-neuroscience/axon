@@ -350,7 +350,7 @@ export class DemandSelectionComponent implements OnInit {
   uploadResults() {
     if (this.data.length > 0) {
       let d = JSON.parse(JSON.stringify(this.data));
-      this.dataService.uploadData('dst', d);
+      // this.dataService.uploadData('dst', d);
     }
   }
 

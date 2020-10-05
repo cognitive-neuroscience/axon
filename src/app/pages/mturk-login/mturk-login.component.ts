@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { SnackbarService } from '../../services/snackbar.service';
+import { AuthService } from '../../services/auth.service';
+import { TaskManagerService } from '../../services/task-manager.service';
+import { SessionStorageService } from '../../services/sessionStorage.service';
 
 @Component({
   selector: 'app-mturk-login',
@@ -12,7 +16,13 @@ export class MturkLoginComponent implements OnInit {
   experimentCode: string = "";
   urlContainsCode: boolean = false;
 
-  constructor(private _route: ActivatedRoute) { }
+  constructor(
+    private _route: ActivatedRoute, 
+    private _snackbarService: SnackbarService,
+    private _authService: AuthService,
+    private _taskManager: TaskManagerService,
+    private _sessionStorageService: SessionStorageService
+  ) { }
 
   ngOnInit(): void {
     this._getQueryParams()
@@ -30,13 +40,18 @@ export class MturkLoginComponent implements OnInit {
     })
   }
 
-  startExperiment() {
-    // call task manager service to start the experiment
-
+  onRegister() {
+    // sets JWT and records worker in DB
+    this._authService.loginTurker(this.workerId, this.experimentCode).subscribe((response) => {
+      this._snackbarService.openSuccessSnackbar("Registered: " + this.workerId)
+      if (response.headers.get('Authorization')) {
+        const tokenString = response.headers.get("Authorization").split(" ")[1]
+        this._sessionStorageService.setTokenInSessionStorage(tokenString)
+        this._sessionStorageService.setExperimentCodeInSessionStorage(this.experimentCode)
+      }
+      this._taskManager.startExperiment(this.experimentCode)
+    }, (err) => {
+      this._snackbarService.openErrorSnackbar(err.error.message)
+    })
   }
-
-  // private experimentCodeIsValid(): boolean {
-    
-  // }
-
 }
