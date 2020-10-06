@@ -49,7 +49,7 @@ export class MturkLoginComponent implements OnInit {
         this._sessionStorageService.setTokenInSessionStorage(tokenString)
         this._sessionStorageService.setExperimentCodeInSessionStorage(this.experimentCode)
       }
-      this._taskManager.startExperiment(this.experimentCode)
+      this._taskManager.startExperiment()
     }, (err) => {
       this._snackbarService.openErrorSnackbar(err.error.message)
     })

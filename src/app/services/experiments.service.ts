@@ -21,6 +21,7 @@ export class ExperimentsService {
     public experiments: Observable<Experiment[]>;
 
     constructor(private _http: HttpClient, private authService: AuthService) {
+        // do not get all experiments if role is not auth as it will result in HTTP forbidden
         const jwt = this.authService.getDecodedToken()
         const role = jwt ? jwt.Role : null
 

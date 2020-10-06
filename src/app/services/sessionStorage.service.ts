@@ -5,8 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class SessionStorageService {
 
-    TOKEN = "token"
-    CODE = "code"
+    private TOKEN = "token"
+    private CODE = "code"
 
     setTokenInSessionStorage(token: string): void {
         sessionStorage.setItem(this.TOKEN, token)

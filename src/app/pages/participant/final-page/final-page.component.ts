@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { SnackbarService } from '../../../services/snackbar.service';
-import { Observable } from 'rxjs';
 import { UserService } from '../../../services/user.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
 import { AuthService } from '../../../services/auth.service';
+import { Router } from '@angular/router';
+import { SessionStorageService } from '../../../services/sessionStorage.service';
 
 @Component({
   selector: 'app-final-page',
@@ -16,7 +17,9 @@ export class FinalPageComponent implements OnInit {
     private _snackbar: SnackbarService, 
     private _userService: UserService, 
     private _taskManager: TaskManagerService, 
-    private _authService: AuthService
+    private _authService: AuthService,
+    private _router: Router,
+    private _sessionStorage: SessionStorageService
   ) { }
 
   shouldShowCopiedMessage: boolean = false
@@ -31,12 +34,27 @@ export class FinalPageComponent implements OnInit {
 
   getCompletionCode(userId: string, expCode: string) {
     this._userService.getCompletionCode(userId, expCode).subscribe((completionCode) => {
+      // user navigated to complete without finishing
+      if(!completionCode) {
+        this.handleErr()
+      }
       this.completionCode = completionCode
     })
   }
 
+  handleErr() {
+    this._sessionStorage.clearSessionStorage()
+    this._snackbar.openErrorSnackbar("Tasks not complete")
+    this._router.navigate(['/login/mturk'])
+  }
+
   showCopiedMessage() {
     this._snackbar.openSuccessSnackbar("Copied to clipboard!")
+  }
+
+  logout() {
+    this._sessionStorage.clearSessionStorage()
+    this._router.navigate(['/login/mturk'])
   }
 
 }

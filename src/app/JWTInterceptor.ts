@@ -15,7 +15,6 @@ import { SessionStorageService } from './services/sessionStorage.service';
 export class JWTInterceptor implements HttpInterceptor {
 
     constructor(
-        private router: Router,
         private sessionStorageService: SessionStorageService
     ) { }
 
@@ -33,7 +32,6 @@ export class JWTInterceptor implements HttpInterceptor {
                 })
             )
         } else {
-            console.error("No token")
             return next.handle(request)
         }
     }

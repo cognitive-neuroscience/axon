@@ -64,7 +64,6 @@ export class AuthService {
       const decodedToken: JWT = jwt_decode(token)
       return decodedToken
     }
-    console.error("No token")
     return null
   }
 }

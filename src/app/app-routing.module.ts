@@ -21,6 +21,7 @@ import { MturkLoginComponent } from './pages/mturk-login/mturk-login.component'
 import { Role } from './models/InternalDTOs';
 import { CanActivateRouteGuard } from './CanActivateRouteGuard';
 import { FinalPageComponent } from './pages/participant/final-page/final-page.component';
+import { ExperimentRouteGuard } from './ExperimentRouteGuard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login/mturk', pathMatch: 'full' },
@@ -48,7 +49,7 @@ const routes: Routes = [
   { path: 'experiments/smiley-face', component: SmileyFaceComponent },
   { path: 'experiments/ftt', component: FingerTappingTaskComponent },
   { path: 'experiments/n-back', component: NBackComponent },
-  { path: 'experiments/stroop', component: StroopTaskComponent },
+  { path: 'experiments/stroop', component: StroopTaskComponent, canActivate: [ExperimentRouteGuard] },
   { path: 'experiments/trail-making', component: TrailMakingComponent },
   { path: 'complete', component: FinalPageComponent },
   { path: '**', redirectTo: '/login/mturk', pathMatch: 'full' }

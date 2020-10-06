@@ -36,12 +36,19 @@ export class TaskManagerService {
     // 3. when finished, the task will call taskFinished and we increment the task number
     // 4. repeat until we are out of tasks. Display completion code
 
-    startExperiment(code: string) {
+    startExperiment() {
+        const code = this._sessionStorageService.getExperimentCodeFromSessionStorage()
+        if(!code) this.handleErr()
         this._experimentService.getExperiment(code).subscribe(experiment => {
             this._experiment = experiment
-            const tasks = this._experiment.tasks
             this.nextExperiment()
         })
+    }
+
+    handleErr() {
+        this._sessionStorageService.clearSessionStorage()
+        this._router.navigate(['/mturk/login'])
+        this._snackbarService.openErrorSnackbar("There was an error. Please contact the sharplab")
     }
 
     private _routeToTask(task: Task) {
@@ -73,10 +80,17 @@ export class TaskManagerService {
         } else {
             const jwt = this._authService.getDecodedToken()
             const userID = jwt ? jwt.UserID : ""
-            const experimentCode = this._experiment.code
+            const experimentCode = this._sessionStorageService.getExperimentCodeFromSessionStorage()
             this._userService.markUserAsComplete(userID, experimentCode).subscribe((data) => {
                 this._routeToFinalPage()
+            }, err => {
+                this.handleErr()
+                return
             })
         }
+    }
+
+    hasExperiment(): boolean {
+        return this._experiment ? true : false
     }
 }
