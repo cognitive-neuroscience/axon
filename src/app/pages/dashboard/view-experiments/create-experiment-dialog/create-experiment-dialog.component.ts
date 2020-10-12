@@ -1,10 +1,10 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Task } from 'src/app/models/Task';
 import { MatDialogRef } from '@angular/material/dialog';
 import { TasklistService } from 'src/app/services/tasklist.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Experiment } from 'src/app/models/Experiment';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SnackbarService } from '../../../../services/snackbar.service';
 
@@ -45,6 +45,7 @@ export class CreateExperimentDialogComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.tasklistService.updateTasks()
     this.getTasklist()
     this.getCompletedTasklist()
     this.subscriptions.push(

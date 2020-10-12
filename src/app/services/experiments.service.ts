@@ -21,19 +21,19 @@ export class ExperimentsService {
     public experiments: Observable<Experiment[]>;
 
     constructor(private _http: HttpClient, private authService: AuthService) {
-        // do not get all experiments if role is not auth as it will result in HTTP forbidden
-        const jwt = this.authService.getDecodedToken()
-        const role = jwt ? jwt.Role : null
-
         this._experimentBehaviorSubject = new BehaviorSubject(null);
         this.experiments = this._experimentBehaviorSubject.asObservable();
-        if(role && role === Role.ADMIN) this.updateExperiments();
     }
 
     updateExperiments(): void {
-        this._getExperiments().subscribe(experiments => {
-            this._experimentBehaviorSubject.next(experiments)
-        })
+        // do not get all experiments if role is not auth as it will result in HTTP forbidden
+        const jwt = this.authService.getDecodedToken()
+        const role = jwt ? jwt.Role : null
+        if(role && role === Role.ADMIN) {
+            this._getExperiments().subscribe(experiments => {
+                this._experimentBehaviorSubject.next(experiments)
+            })
+        }
     }
 
     getExperiment(code: string): Observable<Experiment> {

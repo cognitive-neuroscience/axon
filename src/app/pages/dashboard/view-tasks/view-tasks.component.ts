@@ -25,6 +25,7 @@ export class ViewTasksComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.tasklistService.updateTasks()
     this.getCompletedTasklist();
     this.getTasklist();
     this.getTaskRoutes();

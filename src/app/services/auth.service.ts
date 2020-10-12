@@ -12,15 +12,14 @@ import { JWT } from '../models/Login';
 })
 export class AuthService {
 
-  constructor(private http: HttpClient, private sessionStorageService: SessionStorageService) { }
+  constructor(private http: HttpClient, private sessionStorageService: SessionStorageService) {
+  }
 
   login(email: string, password: string): Observable<HttpResponse<any>> {
     const obj = {
       email: email,
       password: password
     }
-    console.log(obj);
-    
     return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/login', obj, { observe: "response" });
   }
 

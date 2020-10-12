@@ -3,11 +3,9 @@ import { Experiment } from 'src/app/models/Experiment';
 import { ExperimentsService } from 'src/app/services/experiments.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateExperimentDialogComponent } from './create-experiment-dialog/create-experiment-dialog.component';
-import { Task } from 'src/app/models/Task';
 import { HttpResponse } from '@angular/common/http';
 import { ConfirmationService } from '../../../services/confirmation.service';
 import { SnackbarService } from '../../../services/snackbar.service';
-import { AuthService } from '../../../services/auth.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -22,13 +20,13 @@ export class ViewExperimentsComponent implements OnInit {
     public dialog: MatDialog,
     private confirmationService: ConfirmationService,
     private snackbarService: SnackbarService,
-    private authService: AuthService
   ) { }
 
   experiments: Observable<Experiment[]>;
 
   ngOnInit(): void {
     this.experiments = this.experimentsService.experiments
+    this.updateExperiments()
   }
 
   openCreateExperimentDialog() {

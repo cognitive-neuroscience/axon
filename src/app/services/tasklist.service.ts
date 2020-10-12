@@ -25,12 +25,9 @@ export class TasklistService {
 
     // init the behavior subjects
     constructor(private http: HttpClient, private authService: AuthService) {
-        const jwt = this.authService.getDecodedToken()
-        const role = jwt ? jwt.Role : null
 
         this._taskBehaviorSubject = new BehaviorSubject(null);
         this.taskList = this._taskBehaviorSubject.asObservable();
-        if(role && role === Role.ADMIN) this.updateTasks()
 
         this._taskRouteBehaviorSubject = new BehaviorSubject(null);
         this.taskRouteList = this._taskRouteBehaviorSubject.asObservable();
@@ -42,9 +39,14 @@ export class TasklistService {
     }
 
     public updateTasks() {
-        this._getTasks().subscribe((tasks: Task[]) => {
-            this._taskBehaviorSubject.next(tasks)
-        })
+        const jwt = this.authService.getDecodedToken()
+        const role = jwt ? jwt.Role : null
+
+        if(role && role === Role.ADMIN) {
+            this._getTasks().subscribe((tasks: Task[]) => {
+                this._taskBehaviorSubject.next(tasks)
+            })
+        }
     }
 
     private _updateTaskRouteBehaviorSubject() {
