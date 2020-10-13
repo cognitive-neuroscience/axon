@@ -71,9 +71,12 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.authService.login(email, password).subscribe((response: HttpResponse<LoginCredentials>) => {
-        if (response.headers.get('Authorization')) {
-          const tokenString = response.headers.get("Authorization").split(" ")[1]
-          this.sessionStorageService.setTokenInSessionStorage(tokenString)
+        const token = response.headers.get("Authorization")        
+        if (token) {
+          this.sessionStorageService.setTokenInSessionStorage(token.split(" ")[1])
+        } else {
+          this.snackbarService.openErrorSnackbar("Something went wrong")
+          return
         }
         this.router.navigate(['/dashboard']);
         this.snackbarService.openSuccessSnackbar(this.LOGIN_SUCCESS_STR)

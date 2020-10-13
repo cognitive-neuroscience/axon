@@ -15,7 +15,6 @@ export class DataService {
 
     // TaskData polymorphic object used for all task data
     uploadData(experimentCode: string, taskName: string, taskData: TaskData[]): Observable<HttpResponse<any>> {
-        console.log(taskData);
         return this.http.post(`${environment.apiBaseURL}/upload/${experimentCode}/${taskName}`, taskData, { observe: "response"})
     }
 

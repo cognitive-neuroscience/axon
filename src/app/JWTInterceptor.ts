@@ -26,7 +26,7 @@ export class JWTInterceptor implements HttpInterceptor {
             })
             return next.handle(clonedReq).pipe(
                 tap((event: HttpEvent<any>) => {
-                    console.log(`${clonedReq.method}: ${clonedReq.url}`);
+                    // console.log(`${clonedReq.method}: ${clonedReq.url}`);
                 }, (err) => {
                     console.error(err) 
                 })

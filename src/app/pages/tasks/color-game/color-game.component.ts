@@ -310,7 +310,6 @@ export class ColorGameComponent implements OnInit {
         this.proceedtoNextStep();
         await this.wait(2000);
         this.proceedtoNextStep();
-        console.log(this.data);
       }
     }
   }

@@ -15,6 +15,8 @@ import { Observable } from 'rxjs';
 })
 export class ViewExperimentsComponent implements OnInit {
 
+  LINK = "https://psharplab.campus.mcgill.ca/#/login/mturk?code="
+
   constructor(
     private experimentsService: ExperimentsService,
     public dialog: MatDialog,
