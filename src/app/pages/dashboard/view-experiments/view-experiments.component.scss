@@ -4,6 +4,15 @@
     box-sizing: border-box;
 }
 
+.link {
+    overflow-wrap: break-word;
+    display: block;
+    background-color: gray;
+    border-radius: 20px;
+    color: white;
+    padding: 3%;
+}
+
 mat-card {
     height: 100%;
     display: flex;              // to help keep footer stick to bottom of card

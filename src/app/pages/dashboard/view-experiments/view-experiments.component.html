@@ -26,7 +26,9 @@
                 </mat-card-content>
                 <mat-card-footer>
                     <div class="text-center py-3">
-                        <span>Link to experiment: {{ LINK }}{{ experiment.code }}</span>
+                        <span>Link to experiment: 
+                            <span class="link">{{ LINK }}{{ experiment.code }}</span>
+                        </span>
                     </div>
                     <div>
                         <button (click)="onDelete(experiment.code)" class="btn btn-danger w-100">Delete Experiment</button>
