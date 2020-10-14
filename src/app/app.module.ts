@@ -31,6 +31,7 @@ import { MturkLoginComponent } from './pages/mturk-login/mturk-login.component';
 import { SnackbarComponent } from './services/snackbar/snackbar.component';
 import { ConfirmationComponent } from './services/confirmation/confirmation.component';
 import { FinalPageComponent } from './pages/participant/final-page/final-page.component';
+import { DataComponent } from './pages/dashboard/data/data.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { FinalPageComponent } from './pages/participant/final-page/final-page.co
     SnackbarComponent,
     ConfirmationComponent,
     FinalPageComponent,
+    DataComponent,
   ],
   imports: [
     BrowserModule,

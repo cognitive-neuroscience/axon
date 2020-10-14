@@ -22,6 +22,7 @@ import { Role } from './models/InternalDTOs';
 import { CanActivateRouteGuard } from './CanActivateRouteGuard';
 import { FinalPageComponent } from './pages/participant/final-page/final-page.component';
 import { ExperimentRouteGuard } from './ExperimentRouteGuard';
+import { DataComponent } from './pages/dashboard/data/data.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login/mturk', pathMatch: 'full' },
@@ -33,7 +34,8 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'experiments', pathMatch: 'full' },
       { path: 'experiments', component: ViewExperimentsComponent },
-      { path: 'tasks', component: ViewTasksComponent }
+      { path: 'tasks', component: ViewTasksComponent },
+      { path: 'data', component: DataComponent }
     ]
   },
   { path: 'login/mturk', component: MturkLoginComponent },

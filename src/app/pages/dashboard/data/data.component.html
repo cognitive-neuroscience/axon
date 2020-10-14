@@ -1,0 +1,21 @@
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between">
+        <h2 class="mb-5">Download table as spreadsheet</h2>
+    </div>
+
+    <div class="d-flex flex-wrap mb-5">
+        <mat-form-field class="w-75">
+            <mat-label>Select a table</mat-label>
+            <mat-select [(ngModel)]="selectedTableName">
+                <mat-option [value]="tableName" *ngFor="let tableName of tableNames | async">{{ tableName }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="w-75" *ngIf="selectedTableName">
+        <button (click)="downloadFile()" class="btn btn-primary w-25">
+            Download 
+            <mat-icon>vertical_align_bottom</mat-icon>
+        </button>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataService } from 'src/app/services/data.service';
+import { UploadDataService } from 'src/app/services/uploadData.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 declare function setFullScreen(): any;
 
@@ -29,7 +29,7 @@ export class TrailMakingComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private dataService: DataService,
+    private uploadDataService: UploadDataService,
     private snackbar: MatSnackBar
   ) { }
 

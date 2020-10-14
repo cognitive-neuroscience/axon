@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
-export class DataService {
+export class UploadDataService {
 
     constructor(
         private http: HttpClient,

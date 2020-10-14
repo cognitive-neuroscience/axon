@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataService } from 'src/app/services/data.service';
+import { UploadDataService } from 'src/app/services/uploadData.service';
 declare function setFullScreen(): any;
 
 @Component({
@@ -73,7 +73,7 @@ export class GoNogoComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private dataService: DataService
+    private uploadDataService: UploadDataService
   ) { }
 
 
