@@ -93,6 +93,10 @@ export class StroopTaskComponent implements OnInit {
 
 
   ngOnInit() {
+    if(!this.taskManager.hasExperiment()) {
+      this.router.navigate(['/login/mturk'])
+      this.snackbarService.openErrorSnackbar("Refresh has occurred")
+    }
     this.set = Math.floor(Math.random() * 4) + 1;
     const jwt = this.authService.getDecodedToken()
     this.userID = jwt.UserID
@@ -278,12 +282,14 @@ export class StroopTaskComponent implements OnInit {
           if(ok) {
             this.proceedtoNextStep();
           } else {
-            console.error("There was an error uploading the results")
-            this.snackbarService.openErrorSnackbar("There was an error uploading the results")
+            this.router.navigate(['/login/mturk'])
+            console.error("There was an error uploading the results");
+            this.snackbarService.openErrorSnackbar("There was an error uploading the results");
           }
         }, err => {
           this.router.navigate(['/login/mturk'])
-          this.snackbarService.openErrorSnackbar("There was an error")
+          console.log("There was an error uploading the results");
+          this.snackbarService.openErrorSnackbar("There was an error uploading the results");
         })
       }
     }

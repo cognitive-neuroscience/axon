@@ -8,40 +8,9 @@
     <!-- Show welcome message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
 
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Welcome to N-back Task</h2>
-        </div>
-
         <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="title">
-                <h2 class="mat-h2">
-                    Read the instructions carefully
-                </h2>
-            </div>
-
-            <div class="statement">
-                In this task, you will be presented with letters, one at a time (not scrolling).
-            </div>
-
-            <div class="statement">
-                You have to decide for each letter if it is the same as the one that was presented 2 trials ago.
-            </div>
-
-            <div class="statement">
-                You have to press:
-                <br>
-                <b>LEFT ARROW</b>, if the letter presented is <b>not same</b> as the one that was presented 2 trials ago
-                <br>
-                <b>RIGHT ARROW</b>, if the letter presented is <b>same</b> as the one that was presented 2 trials ago
-            </div>
-
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="../../../../assets/images/instructions/nback/1.png" alt="">
         </div>
 
         <!-- Navigation buttons -->
@@ -71,32 +40,137 @@
 
     <!-- Show practice round message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 3">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Practice Round</h2>
+        <!-- Show example page part 1 -->
+        <div class="w-100 px-4 instructions uppercase" align="center">
+            <img src="../../../../assets/images/instructions/nback/2.png" alt="Instructions image" class="w-100">
         </div>
 
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <h4>Let's Practice</h4>
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
             </div>
+        </div>
+    </div>
 
-            <div class="statement">
-                Good luck ! You will have very little time to respond, so be ready.
+    <!-- Show practice round message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 4">
+        <!-- Show example page part 2 -->
+        <div class="w-100 px-4 instructions uppercase" align="center">
+            <img src="../../../../assets/images/instructions/nback/3.png" alt="Instructions image" class="w-100">
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
             </div>
+        </div>
+    </div>
 
-            <br>
+    <!-- Show practice round message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 5">
+        <!-- Show example page part 3 -->
+        <div class="w-100 px-4 instructions uppercase" align="center">
+            <img src="../../../../assets/images/instructions/nback/4.png" alt="Instructions image" class="w-100">
+        </div>
 
-            <div class="statement">
-                The game will launch in fullscreen
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
             </div>
+        </div>
+    </div>
 
-            <div class="statement-final">
-                Click 'START' when you are ready for the practice round
+    <!-- Show practice round message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 6">
+        <!-- Show example page part 4 -->
+        <div class="w-100 px-4 instructions uppercase" align="center">
+            <img src="../../../../assets/images/instructions/nback/5.png" alt="Instructions image" class="w-100">
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
             </div>
+        </div>
+    </div>
 
+    <!-- Show practice round message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 7">
+        <!-- Show example page part 5 -->
+        <div class="w-100 px-4 instructions uppercase" align="center">
+            <img src="../../../../assets/images/instructions/nback/6.png" alt="Instructions image" class="w-100">
         </div>
 
         <!-- Navigation buttons -->
@@ -125,12 +199,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 4">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start Practice Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 5">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
 
         <div *ngIf="isStimulus">
             <div>
@@ -152,39 +226,18 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 6">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 10">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 7">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Practice Round Is Now Complete</h2>
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 11">
+
+        <!-- Practice round complete -->
+        <div class="w-100 px-4 instructions uppercase" align="center">
+            <img src="../../../../assets/images/instructions/nback/7.png" alt="Instructions image" class="w-100">
         </div>
 
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <h4>You will now play the actual game</h4>
-            </div>
-
-            <div *ngIf="isScored" class="statement">
-                You will earn 10 cents for every right answer
-            </div>
-
-            <div *ngIf="isScored" class="statement">
-                Good luck !
-            </div>
-
-            <br>
-
-            <div class="statement-final">
-                Click 'START' when you are ready for the actual game
-            </div>
-
-        </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
@@ -212,12 +265,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 12">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start Actual Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 13">
 
         <div *ngIf="isStimulus">
             <div>
@@ -243,12 +296,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 10">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 14">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 11">
+    <!-- Show Game Finished message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 15">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Game has finished</h2>
@@ -258,7 +311,7 @@
         <div class="w-100 p-4 uppercase" align="center">
 
             <div class="statement">
-                <h4>Congratulations ! You have finished the game successfully</h4>
+                <h4>Congratulations! You have finished the game successfully</h4>
             </div>
 
             <div class="statement" *ngIf="isScored">

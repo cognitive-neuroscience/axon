@@ -3,6 +3,7 @@ import { DownloadDataService } from '../../../services/downloadData.service';
 import { Observable } from 'rxjs';
 import { SessionStorageService } from '../../../services/sessionStorage.service';
 import { ExcelService } from 'src/app/services/excel.service';
+import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({
   selector: 'app-data',
@@ -16,7 +17,8 @@ export class DataComponent implements OnInit {
   constructor(
     private _downloadDataService: DownloadDataService, 
     private _sessionStorage: SessionStorageService,
-    private excelService: ExcelService
+    private excelService: ExcelService,
+    private snackbarService: SnackbarService
   ) { }
 
   ngOnInit(): void {
@@ -30,9 +32,14 @@ export class DataComponent implements OnInit {
       const experimentCode = splitSelectedTable[1]
       const taskName = splitSelectedTable[3]
       this._downloadDataService.getTableData(experimentCode, taskName).subscribe(data => {
-        console.log(data);
-        
-        this.excelService.exportAsExcel(data, this.selectedTableName)
+        if(!data) {
+          this.snackbarService.openErrorSnackbar("Could not get data")
+        } else {
+          this.excelService.exportAsExcel(data, this.selectedTableName)
+        }
+      }, err => {
+        console.error(err)
+        this.snackbarService.openErrorSnackbar("Could not get data")
       })
     }
   }

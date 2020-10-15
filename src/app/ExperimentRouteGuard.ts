@@ -23,7 +23,8 @@ export class ExperimentRouteGuard implements CanActivate {
         } else {
             this._router.navigate(['/mturk/login'])
             this._sessionStorage.clearSessionStorage()
-            this._snackbarService.openErrorSnackbar("Access not allowed", "", 5000)
+            console.error("The page was refreshed or access is forbidden")
+            this._snackbarService.openErrorSnackbar("There was an error", "", 5000)
             return false
         }
     }

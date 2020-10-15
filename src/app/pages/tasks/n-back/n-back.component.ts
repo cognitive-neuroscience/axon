@@ -1,5 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { NBack } from 'src/app/models/TaskData';
 import { UploadDataService } from 'src/app/services/uploadData.service';
 declare function setFullScreen(): any;
 import * as Set1 from './stimuli_1_1';
@@ -7,6 +9,10 @@ import * as Set2 from './stimuli_2_1';
 import * as Set3 from './stimuli_3_1';
 import * as Set4 from './stimuli_4_1';
 import * as SetPractice from './stimuli_practice';
+import { TaskManagerService } from '../../../services/task-manager.service';
+import { map } from 'rxjs/operators';
+import { AuthService } from '../../../services/auth.service';
+import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({
   selector: 'app-n-back',
@@ -16,6 +22,7 @@ import * as SetPractice from './stimuli_practice';
 export class NBackComponent implements OnInit {
 
   // Default Experiment config
+  userID: string = ""
   isScored: boolean | number = true;
   showFeedbackAfterEveryTrial: boolean | number = false;
   showScoreAfterEveryTrial: boolean | number = false;
@@ -23,8 +30,8 @@ export class NBackComponent implements OnInit {
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 20;
-  actualTrials: number = 125;
+  practiceTrials: number = 3;
+  actualTrials: number = 3;
 
   step: number = 1;
   feedback: string = '';
@@ -35,14 +42,7 @@ export class NBackComponent implements OnInit {
   isBreak: boolean = false;
   currentTrial: number = 0;
   isResponseAllowed: boolean = false;
-  data: {
-    actualAnswer: string,
-    userAnswer: string,
-    responseTime: number,
-    isCorrect: number,
-    score: number,
-    set: number
-  }[] = [];
+  data: NBack[] = [];
   timer: {
     started: number,
     ended: number
@@ -85,13 +85,22 @@ export class NBackComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private uploadDataService: UploadDataService
+    private uploadDataService: UploadDataService,
+    private taskManager: TaskManagerService,
+    private authService: AuthService,
+    private snackbarService: SnackbarService
   ) { }
 
 
 
   ngOnInit() {
+    if(!this.taskManager.hasExperiment()) {
+      this.router.navigate(['/login/mturk'])
+      this.snackbarService.openErrorSnackbar("Refresh has occurred")
+    }
     this.set = Math.floor(Math.random() * 4) + 1;
+    const jwt = this.authService.getDecodedToken()
+    this.userID = jwt.UserID
   }
 
 
@@ -100,7 +109,7 @@ export class NBackComponent implements OnInit {
     if (consent) {
       this.proceedtoNextStep();
     } else {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/login/mturk']);
     }
   }
 
@@ -197,10 +206,12 @@ export class NBackComponent implements OnInit {
     }
 
     this.data.push({
+      trial: this.currentTrial,
+      userID: this.userID,
       actualAnswer: this.currentLetter === this.nback ? 'YES' : 'NO',
       userAnswer: 'NA',
       responseTime: 0,
-      isCorrect: 0,
+      isCorrect: false,
       score: 0,
       set: this.set
     });
@@ -220,7 +231,7 @@ export class NBackComponent implements OnInit {
 
     if (this.data[this.data.length - 1].actualAnswer === this.data[this.data.length - 1].userAnswer) {
       this.feedback = "Correct";
-      this.data[this.data.length - 1].isCorrect = 1;
+      this.data[this.data.length - 1].isCorrect = true;
       this.data[this.data.length - 1].score = 10;
       this.scoreForSpecificTrial = 10;
       this.totalScore += 10;
@@ -230,7 +241,7 @@ export class NBackComponent implements OnInit {
       } else {
         this.feedback = "Incorrect";
       }
-      this.data[this.data.length - 1].isCorrect = 0;
+      this.data[this.data.length - 1].isCorrect = false;
       this.data[this.data.length - 1].score = 0;
       this.scoreForSpecificTrial = 0;
     }
@@ -270,10 +281,20 @@ export class NBackComponent implements OnInit {
           }
         }
       } else {
-        this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
-        console.log(this.data);
+        this.proceedtoNextStep()
+        this.uploadResults(this.data).subscribe(ok => {
+          if(ok) {
+            this.proceedtoNextStep()
+          } else {
+            this.router.navigate(['/login/mturk'])
+            console.error("There was an error uploading the results")
+            this.snackbarService.openErrorSnackbar("There was an error uploading the results")
+          }
+        }, err => {
+          this.router.navigate(['/login/mturk'])
+          console.error("There was an error uploading the results")
+          this.snackbarService.openErrorSnackbar("There was an error uploading the results")
+        })
       }
     }
   }
@@ -295,13 +316,18 @@ export class NBackComponent implements OnInit {
 
 
 
-  uploadResults() {
+  uploadResults(data: NBack[]): Observable<boolean> {
+    const experimentCode = this.taskManager.getExperimentCode()
+    return this.uploadDataService.uploadData(experimentCode, "N Back", data).pipe(
+      map(ok => ok.ok)
+    )
   }
 
 
 
+
   continueAhead() {
-    this.router.navigate(['/dashboard']);
+    this.taskManager.nextExperiment()
   }
 
 

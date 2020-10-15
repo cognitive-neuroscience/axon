@@ -7,7 +7,7 @@
         <div class="completion-code">
             <span style="cursor: pointer;" #tooltip="matTooltip" (click)="showCopiedMessage()" matTooltip="copy to clipboard" [cdkCopyToClipboard]="completionCode">{{ completionCode }}</span>
         </div>
-        <p style="color: red">Note: You will not be able to see this page again once you close the page, so please make sure you copy the completion code</p>
+        <p style="color: red">Note: You will not be able to see this again once you close the page, so please make sure you copy the completion code</p>
         <div>
             <button class="btn btn-danger w-100" (click)="logout()">Exit</button>
         </div>

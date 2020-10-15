@@ -27,7 +27,7 @@
                 <mat-card-footer>
                     <div class="text-center py-3">
                         <span>Link to experiment: 
-                            <span class="link">{{ LINK }}{{ experiment.code }}</span>
+                            <span style="cursor: pointer;" (click)="showCopiedMessage()" [cdkCopyToClipboard]="LINK + experiment.code" class="link">{{ LINK }}{{ experiment.code }}</span>
                         </span>
                     </div>
                     <div>

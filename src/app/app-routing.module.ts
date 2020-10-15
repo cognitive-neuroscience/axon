@@ -50,7 +50,7 @@ const routes: Routes = [
   { path: 'experiments/simon-2', component: SimonTaskFinalComponent },
   { path: 'experiments/smiley-face', component: SmileyFaceComponent },
   { path: 'experiments/ftt', component: FingerTappingTaskComponent },
-  { path: 'experiments/n-back', component: NBackComponent },
+  { path: 'experiments/n-back', component: NBackComponent, canActivate: [ExperimentRouteGuard] },
   { path: 'experiments/stroop', component: StroopTaskComponent, canActivate: [ExperimentRouteGuard] },
   { path: 'experiments/trail-making', component: TrailMakingComponent },
   { path: 'complete', component: FinalPageComponent },

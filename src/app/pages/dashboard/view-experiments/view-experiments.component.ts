@@ -62,4 +62,8 @@ export class ViewExperimentsComponent implements OnInit {
     })
   }
 
+  showCopiedMessage() {
+    this.snackbarService.openSuccessSnackbar("Copied to clipboard")
+  }
+
 }

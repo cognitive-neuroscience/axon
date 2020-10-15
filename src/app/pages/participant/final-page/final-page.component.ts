@@ -55,6 +55,7 @@ export class FinalPageComponent implements OnInit {
   logout() {
     this._sessionStorage.clearSessionStorage()
     this._router.navigate(['/login/mturk'])
+    this._snackbar.openSuccessSnackbar("Thanks for taking part in our study!")
   }
 
 }
