@@ -1,12 +1,7 @@
 <div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
 
-    <!-- Initial screen to get participant's consent -->
-    <div class="full-box" *ngIf="!isBreak && step === 1">
-        <app-consent (broadcastConsent)="processConsent($event)"></app-consent>
-    </div>
-
     <!-- Show welcome message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 1">
 
         <!-- Introduction -->
         <div class="w-100 px-4 uppercase instructions" align="center">
@@ -17,7 +12,7 @@
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -39,7 +34,7 @@
     </div>
 
     <!-- Show practice round message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 3">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
         <!-- Show example page part 1 -->
         <div class="w-100 px-4 instructions uppercase" align="center">
             <img src="../../../../assets/images/instructions/nback/2.png" alt="Instructions image" class="w-100">
@@ -71,7 +66,7 @@
     </div>
 
     <!-- Show practice round message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 4">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 3">
         <!-- Show example page part 2 -->
         <div class="w-100 px-4 instructions uppercase" align="center">
             <img src="../../../../assets/images/instructions/nback/3.png" alt="Instructions image" class="w-100">
@@ -103,7 +98,7 @@
     </div>
 
     <!-- Show practice round message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 5">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 4">
         <!-- Show example page part 3 -->
         <div class="w-100 px-4 instructions uppercase" align="center">
             <img src="../../../../assets/images/instructions/nback/4.png" alt="Instructions image" class="w-100">
@@ -135,7 +130,7 @@
     </div>
 
     <!-- Show practice round message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 6">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 5">
         <!-- Show example page part 4 -->
         <div class="w-100 px-4 instructions uppercase" align="center">
             <img src="../../../../assets/images/instructions/nback/5.png" alt="Instructions image" class="w-100">
@@ -167,7 +162,7 @@
     </div>
 
     <!-- Show practice round message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 7">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 6">
         <!-- Show example page part 5 -->
         <div class="w-100 px-4 instructions uppercase" align="center">
             <img src="../../../../assets/images/instructions/nback/6.png" alt="Instructions image" class="w-100">
@@ -199,12 +194,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 7">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start Practice Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
 
         <div *ngIf="isStimulus">
             <div>
@@ -226,12 +221,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 10">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 11">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 10">
 
         <!-- Practice round complete -->
         <div class="w-100 px-4 instructions uppercase" align="center">
@@ -243,7 +238,7 @@
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -265,12 +260,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 12">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 11">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start Actual Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 13">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 12">
 
         <div *ngIf="isStimulus">
             <div>
@@ -296,12 +291,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 14">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 13">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show Game Finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 15">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 14">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Game has finished</h2>
@@ -315,7 +310,7 @@
             </div>
 
             <div class="statement" *ngIf="isScored">
-                Your earnings in this game is : {{totalScore}} cent(s)
+                Your earnings in this game is : {{totalScore}} point(s)
             </div>
 
             <br>
@@ -334,7 +329,7 @@
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -383,7 +378,7 @@
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>

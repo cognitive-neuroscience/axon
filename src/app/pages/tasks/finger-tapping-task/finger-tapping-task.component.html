@@ -1,11 +1,7 @@
 <div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
-    <!-- Initial screen to get participant's consent -->
-    <div class="full-box" *ngIf="!isBreak && step === 1">
-        <app-consent (broadcastConsent)="processConsent($event)"></app-consent>
-    </div>
 
     <!-- Show welcome message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 1">
 
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
@@ -56,7 +52,7 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 3">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
 
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
@@ -109,7 +105,7 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 4">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 3">
 
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
@@ -159,7 +155,7 @@
     </div>
 
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 5">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 4">
 
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
@@ -214,7 +210,7 @@
     </div>
 
     <div class="full-box d-flex flex-column align-items-center justify-content-between"
-        *ngIf="!isBreak && (step === 6 || step === 10 || step === 14 || step === 18 || step === 22 || step === 26)">
+        *ngIf="!isBreak && (step === 5 || step === 9 || step === 13 || step === 17 || step === 21 || step === 25)">
 
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
@@ -272,7 +268,7 @@
     </div>
 
     <div class="full-box d-flex flex-column align-items-center justify-content-center"
-        *ngIf="!isBreak && (step === 7 || step === 11 || step === 15 || step === 19 || step === 23 || step === 27)">
+        *ngIf="!isBreak && (step === 6 || step === 10 || step === 14 || step === 18 || step === 22 || step === 26)">
 
         <div>
             <div class="statement" style="font-size: 60px;">{{time2}}</div>
@@ -282,7 +278,7 @@
 
 
     <div class="full-box d-flex flex-column align-items-center justify-content-between"
-        *ngIf="!isBreak && (step === 8 || step === 12 || step === 16 || step === 20 || step === 24 || step === 28)">
+        *ngIf="!isBreak && (step === 7 || step === 11 || step === 15 || step === 19 || step === 23 || step === 27)">
 
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Begin Tapping</h2>
@@ -300,7 +296,7 @@
     </div>
 
     <div class="full-box d-flex flex-column align-items-center justify-content-between"
-        *ngIf="isBreak && (step === 9 || step === 13 || step === 17 || step === 21 || step === 25 || step === 29)">
+        *ngIf="isBreak && (step === 8 || step === 12 || step === 16 || step === 20 || step === 24 || step === 28)">
 
         <div class="w-100 p-4 uppercase" align="center">
         </div>
@@ -351,12 +347,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 30">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 29">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 31">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 30">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Game has finished</h2>

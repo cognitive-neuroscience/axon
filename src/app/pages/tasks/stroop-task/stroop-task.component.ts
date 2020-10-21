@@ -12,6 +12,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
 import { SnackbarService } from '../../../services/snackbar.service';
+import { Role } from 'src/app/models/InternalDTOs';
 
 @Component({
   selector: 'app-stroop-task',
@@ -29,8 +30,8 @@ export class StroopTaskComponent implements OnInit {
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 3;
-  actualTrials: number = 3;
+  practiceTrials: number = 10;
+  actualTrials: number = 60;
 
   step: number = 1;
   color: string = '';
@@ -93,23 +94,14 @@ export class StroopTaskComponent implements OnInit {
 
 
   ngOnInit() {
-    if(!this.taskManager.hasExperiment()) {
+    const decodedToken = this.authService.getDecodedToken()
+    if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {
       this.router.navigate(['/login/mturk'])
       this.snackbarService.openErrorSnackbar("Refresh has occurred")
     }
     this.set = Math.floor(Math.random() * 4) + 1;
     const jwt = this.authService.getDecodedToken()
     this.userID = jwt.UserID
-  }
-
-
-
-  processConsent(consent: Boolean) {
-    if (consent) {
-      this.proceedtoNextStep();
-    } else {
-      this.router.navigate(['/login/mturk']);
-    }
   }
 
 

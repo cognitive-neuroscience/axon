@@ -20,8 +20,8 @@ export class FingerTappingTaskComponent implements OnInit {
   maxResponseTime: number;
   durationOfFeedback: number;
   interTrialDelay: number;
-  practiceTrials: number;
-  actualTrials: number;
+  practiceTrials: number = 10;
+  actualTrials: number = 20;
   keyA: string;
   keyB: string;
   block: number = 0;
@@ -86,16 +86,6 @@ export class FingerTappingTaskComponent implements OnInit {
     }
     this.lastKey = this.keyB;
     this.hand = Math.random() > 0.5 ? 'L' : 'R';
-  }
-
-
-
-  processConsent(consent: Boolean) {
-    if (consent) {
-      this.proceedtoNextStep();
-    } else {
-      this.router.navigate(['/dashboard']);
-    }
   }
 
 

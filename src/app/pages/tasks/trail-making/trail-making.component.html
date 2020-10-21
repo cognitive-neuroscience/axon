@@ -1,11 +1,7 @@
 <div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
-    <!-- Initial screen to get participant's consent -->
-    <div class="full-box" *ngIf="step === 1">
-        <app-consent (broadcastConsent)="processConsent($event)"></app-consent>
-    </div>
 
     <!-- Show welcome message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 2">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 1">
 
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
@@ -61,7 +57,7 @@
     </div>
 
     <!-- Show practice round message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 3">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 2">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Practice Round</h2>
@@ -116,11 +112,11 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 4">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 3">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 5">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 4">
 
         <div align="center">
             <table>
@@ -210,9 +206,8 @@
 
     </div>
 
-
     <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 6">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 5">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Practice Round Is Now Complete</h2>
@@ -271,11 +266,11 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 7">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 6">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 8">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 7">
 
         <div align="center">
             <table>
@@ -463,7 +458,7 @@
     </div>
 
     <!-- Show welcome message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 9">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 8">
 
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
@@ -520,7 +515,7 @@
     </div>
 
     <!-- Show practice round message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 10">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 9">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Practice Round</h2>
@@ -575,11 +570,11 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 11">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 10">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 12">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 11">
 
         <div align="center">
             <table>
@@ -671,7 +666,7 @@
 
 
     <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 13">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 12">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Practice Round Is Now Complete</h2>
@@ -730,11 +725,11 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 14">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 13">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 15">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 14">
 
         <div align="center">
             <table>
@@ -922,7 +917,7 @@
     </div>
 
     <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 16">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 15">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Game has finished</h2>

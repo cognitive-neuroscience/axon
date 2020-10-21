@@ -64,9 +64,11 @@ export class ViewTasksComponent implements OnInit {
     return this.tasklist ? this.tasklist.filter(t => t.type === 'experimental') : []
   }
 
+  // applies styling and disabled incomplete tasks. For now, we want to make them accessible
   taskIsComplete(task: Task): boolean {
-    if(!this.completedTasks || !task || !task.id) return false
-    return this.completedTasks.includes(task.id) ? true : false
+    return true
+    // if(!this.completedTasks || !task || !task.id) return false
+    // return this.completedTasks.includes(task.id) ? true : false
   }
 
 }

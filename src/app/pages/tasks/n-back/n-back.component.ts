@@ -13,6 +13,7 @@ import { TaskManagerService } from '../../../services/task-manager.service';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
 import { SnackbarService } from '../../../services/snackbar.service';
+import { Role } from 'src/app/models/InternalDTOs';
 
 @Component({
   selector: 'app-n-back',
@@ -30,8 +31,8 @@ export class NBackComponent implements OnInit {
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 3;
-  actualTrials: number = 3;
+  practiceTrials: number = 10;
+  actualTrials: number = 60;
 
   step: number = 1;
   feedback: string = '';
@@ -94,7 +95,8 @@ export class NBackComponent implements OnInit {
 
 
   ngOnInit() {
-    if(!this.taskManager.hasExperiment()) {
+    const decodedToken = this.authService.getDecodedToken()
+    if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {
       this.router.navigate(['/login/mturk'])
       this.snackbarService.openErrorSnackbar("Refresh has occurred")
     }
@@ -102,17 +104,6 @@ export class NBackComponent implements OnInit {
     const jwt = this.authService.getDecodedToken()
     this.userID = jwt.UserID
   }
-
-
-
-  processConsent(consent: Boolean) {
-    if (consent) {
-      this.proceedtoNextStep();
-    } else {
-      this.router.navigate(['/login/mturk']);
-    }
-  }
-
 
 
   proceedtoPreviousStep() {

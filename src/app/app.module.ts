@@ -12,7 +12,7 @@ import { DemandSelectionComponent } from './pages/tasks/demand-selection/demand-
 import { TaskSwitchingComponent } from './pages/tasks/task-switching/task-switching.component';
 import { SimonTaskPrelimComponent } from './pages/tasks/simon-task-prelim/simon-task-prelim.component';
 import { SimonTaskFinalComponent } from './pages/tasks/simon-task-final/simon-task-final.component';
-import { ConsentComponent } from './pages/consent/consent.component';
+import { ConsentComponent } from './services/consent/consent.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './modules/material/material.module';

@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import { UserService } from './user.service';
 import { AuthService } from './auth.service';
 import { SessionStorageService } from './sessionStorage.service';
+import { ConsentService } from './consentService';
+import { ConfirmationService } from './confirmation.service';
 
 @Injectable({
     providedIn: "root"
@@ -28,7 +30,9 @@ export class TaskManagerService {
         private _router: Router,
         private _userService: UserService,
         private _authService: AuthService,
-        private _sessionStorageService: SessionStorageService
+        private _sessionStorageService: SessionStorageService,
+        private _consentService: ConsentService,
+        private _confirmationService: ConfirmationService
     ) {}
 
     // 1. call startExperiment, which gets experiment from backend DB and extracts tasks
@@ -41,7 +45,28 @@ export class TaskManagerService {
         if(!code) this.handleErr()
         this._experimentService.getExperiment(code).subscribe(experiment => {
             this._experiment = experiment
-            this.nextExperiment()
+            this.getConsent()
+        }, err => {
+            console.error(err)
+            this.handleErr()
+        })
+    }
+
+    private getConsent() {
+        this._router.navigate(['/consent'])
+        this._consentService.consentSubject.subscribe(accepted => {
+            if(accepted) {
+                this.nextExperiment()
+            } else {
+                const msg = "Are you sure you want to quit? You will not be able to register again."
+                this._confirmationService.openConfirmationDialog(msg).subscribe(ok => {
+                    if(ok) {
+                        this._sessionStorageService.clearSessionStorage()
+                        this._router.navigate(['/login/mturk'])
+                        this._snackbarService.openInfoSnackbar("Experiment was cancelled.")
+                    }
+                })
+            }
         })
     }
 

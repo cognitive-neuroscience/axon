@@ -86,14 +86,6 @@ export class TaskSwitchingComponent implements OnInit {
   ngOnInit() {
   }
 
-  processConsent(consent: Boolean) {
-    if (consent) {
-      this.proceedtoNextStep();
-    } else {
-      this.router.navigate(['/dashboard']);
-    }
-  }
-
   proceedtoPreviousStep(steps = 1) {
     if (steps > 1) {
       this.fRepeat = false;

@@ -79,17 +79,6 @@ export class GoNogoComponent implements OnInit {
 
 
   ngOnInit() {
-
-  }
-
-
-
-  processConsent(consent: Boolean) {
-    if (consent) {
-      this.proceedtoNextStep();
-    } else {
-      this.router.navigate(['/dashboard']);
-    }
   }
 
 

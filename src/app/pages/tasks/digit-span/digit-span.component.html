@@ -1,12 +1,7 @@
 <div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
 
-    <!-- Initial screen to get participant's consent -->
-    <div class="full-box" *ngIf="!isBreak && step === 1">
-        <app-consent (broadcastConsent)="processConsent($event)"></app-consent>
-    </div>
-
     <!-- Show welcome message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 1">
 
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
@@ -62,7 +57,7 @@
     </div>
 
     <!-- Show practice round message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 3">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Practice Round</h2>
@@ -118,12 +113,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 4">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 3">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start Practice Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 5">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 4">
 
         <div *ngIf="isStimulus">
             <div style="font-size: 50px;">
@@ -194,12 +189,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 6">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 5">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 7">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 6">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Practice Round Is Now Complete</h2>
@@ -259,12 +254,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 7">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start Actual Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
         <div *ngIf="isStimulus">
             <div style="font-size: 50px;">
                 {{digitShown}}
@@ -338,12 +333,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 10">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 11">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 10">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Game has finished</h2>

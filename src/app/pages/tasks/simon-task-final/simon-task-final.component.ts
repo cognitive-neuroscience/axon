@@ -109,16 +109,6 @@ export class SimonTaskFinalComponent implements OnInit {
 
 
 
-  processConsent(consent: Boolean) {
-    if (consent) {
-      this.proceedtoNextStep();
-    } else {
-      this.router.navigate(['/dashboard']);
-    }
-  }
-
-
-
   proceedtoPreviousStep() {
     this.step -= 1;
   }
