@@ -24,6 +24,7 @@ import { FinalPageComponent } from './pages/participant/final-page/final-page.co
 import { ExperimentRouteGuard } from './ExperimentRouteGuard';
 import { DataComponent } from './pages/dashboard/data/data.component';
 import { ConsentComponent } from './services/consent/consent.component';
+import { MturkQuestionnaireComponent } from './pages/questionnaires/mturk-questionnaire/mturk-questionnaire.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login/mturk', pathMatch: 'full' },
@@ -40,6 +41,7 @@ const routes: Routes = [
     ]
   },
   { path: 'login/mturk', component: MturkLoginComponent },
+  { path: 'questionnaire/mturk', component: MturkQuestionnaireComponent },
   { path: 'login', component: LoginComponent },
   { path: 'consent', component: ConsentComponent },
   { path: 'experiments/color-game', component: ColorGameComponent },

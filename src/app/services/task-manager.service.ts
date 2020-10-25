@@ -56,7 +56,7 @@ export class TaskManagerService {
         this._router.navigate(['/consent'])
         this._consentService.consentSubject.subscribe(accepted => {
             if(accepted) {
-                this.nextExperiment()
+                this.showMturkQuestionnaire()
             } else {
                 const msg = "Are you sure you want to quit? You will not be able to register again."
                 this._confirmationService.openConfirmationDialog(msg).subscribe(ok => {
@@ -68,6 +68,10 @@ export class TaskManagerService {
                 })
             }
         })
+    }
+
+    private showMturkQuestionnaire() {
+        this._router.navigate(['/questionnaire/mturk'])
     }
 
     handleErr() {

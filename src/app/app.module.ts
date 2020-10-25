@@ -32,6 +32,7 @@ import { SnackbarComponent } from './services/snackbar/snackbar.component';
 import { ConfirmationComponent } from './services/confirmation/confirmation.component';
 import { FinalPageComponent } from './pages/participant/final-page/final-page.component';
 import { DataComponent } from './pages/dashboard/data/data.component';
+import { MturkQuestionnaireComponent } from './pages/questionnaires/mturk-questionnaire/mturk-questionnaire.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { DataComponent } from './pages/dashboard/data/data.component';
     ConfirmationComponent,
     FinalPageComponent,
     DataComponent,
+    MturkQuestionnaireComponent,
   ],
   imports: [
     BrowserModule,

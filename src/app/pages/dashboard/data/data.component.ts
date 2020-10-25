@@ -36,6 +36,11 @@ export class DataComponent implements OnInit {
       // in the case of tables like "experiment_user"
       firstPart = splitSelectedTable[0]
       secondPart = splitSelectedTable[1]
+    } else if(splitSelectedTable.length == 3) {
+      // TODO: refactor this
+      // in the case of tables like "mturk_questionnaire_responses"
+      firstPart = splitSelectedTable[0]
+      secondPart = splitSelectedTable[1]
     } else if(splitSelectedTable.length == 4) {
       // for normal data tables of the form "experiment_<code>_task_<taskname>"
       firstPart = splitSelectedTable[1]
