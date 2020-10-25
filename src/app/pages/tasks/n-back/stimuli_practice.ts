@@ -1,102 +1,77 @@
 export const set = [
     {
         "trial": 1,
-        "currentLetter": "F",
+        "currentLetter": "G",
         "nback": null
     },
     {
         "trial": 2,
-        "currentLetter": "R",
+        "currentLetter": "L",
         "nback": null
     },
     {
         "trial": 3,
-        "currentLetter": "J",
-        "nback": "F"
-    },
-    {
-        "trial": 4,
-        "currentLetter": "T",
-        "nback": "R"
-    },
-    {
-        "trial": 5,
-        "currentLetter": "G",
-        "nback": "J"
-    },
-    {
-        "trial": 6,
-        "currentLetter": "M",
-        "nback": "T"
-    },
-    {
-        "trial": 7,
-        "currentLetter": "J",
+        "currentLetter": "E",
         "nback": "G"
     },
     {
-        "trial": 8,
-        "currentLetter": "E",
-        "nback": "M"
+        "trial": 4,
+        "currentLetter": "L",
+        "nback": "L"
     },
     {
-        "trial": 9,
-        "currentLetter": "P",
-        "nback": "J"
-    },
-    {
-        "trial": 10,
-        "currentLetter": "O",
+        "trial": 5,
+        "currentLetter": "A",
         "nback": "E"
     },
     {
-        "trial": 11,
-        "currentLetter": "I",
-        "nback": "P"
+        "trial": 6,
+        "currentLetter": "Q",
+        "nback": "L"
     },
     {
-        "trial": 12,
-        "currentLetter": "J",
-        "nback": "O"
-    },
-    {
-        "trial": 13,
-        "currentLetter": "I",
-        "nback": "I"
-    },
-    {
-        "trial": 14,
-        "currentLetter": "A",
-        "nback": "J"
-    },
-    {
-        "trial": 15,
-        "currentLetter": "P",
-        "nback": "I"
-    },
-    {
-        "trial": 16,
-        "currentLetter": "D",
+        "trial": 7,
+        "currentLetter": "V",
         "nback": "A"
     },
     {
-        "trial": 17,
-        "currentLetter": "F",
-        "nback": "P"
-    },
-    {
-        "trial": 18,
+        "trial": 8,
         "currentLetter": "Q",
-        "nback": "D"
-    },
-    {
-        "trial": 19,
-        "currentLetter": "I",
-        "nback": "F"
-    },
-    {
-        "trial": 20,
-        "currentLetter": "K",
         "nback": "Q"
+    },
+    {
+        "trial": 9,
+        "currentLetter": "I",
+        "nback": "V"
+    },
+    {
+        "trial": 10,
+        "currentLetter": "L",
+        "nback": "Q"
+    },
+    {
+        "trial": 11,
+        "currentLetter": "T",
+        "nback": "I"
+    },
+    {
+        "trial": 12,
+        "currentLetter": "V",
+        "nback": "L"
+    },
+    {
+        "trial": 13,
+        "currentLetter": "P",
+        "nback": "T"
+    },
+    {
+        "trial": 14,
+        "currentLetter": "V",
+        "nback": "V"
+    },
+    {
+        "trial": 15,
+        "currentLetter": "B",
+        "nback": "P"
     }
 ]

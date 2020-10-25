@@ -6,8 +6,9 @@ import * as Set1 from './stimuli_1_1';
 import * as Set2 from './stimuli_2_1';
 import * as Set3 from './stimuli_3_1';
 import * as Set4 from './stimuli_4_1';
+import * as PracticeSet from './stimuli_practice';
 import { TaskManagerService } from '../../../services/task-manager.service';
-import { StroopTask } from '../../../models/TaskData';
+import { StroopTask, StroopTaskStimuli } from '../../../models/TaskData';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
@@ -30,8 +31,8 @@ export class StroopTaskComponent implements OnInit {
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 10;
-  actualTrials: number = 60;
+  practiceTrials: number = 15;
+  actualTrials: number = 120;
 
   step: number = 1;
   color: string = '';
@@ -172,24 +173,29 @@ export class StroopTaskComponent implements OnInit {
 
 
   generateStimulus() {
-    switch (this.set) {
+    const setNum = this.isPractice ? 0 : this.set
+    let selectedSet: StroopTaskStimuli;
+
+    switch (setNum) {
       case 1:
-        this.color = Set1.set[this.currentTrial - 1 + (this.isPractice ? 0 : 10)].color;
-        this.text = Set1.set[this.currentTrial - 1 + (this.isPractice ? 0 : 10)].word;
+        selectedSet = Set1
         break;
       case 2:
-        this.color = Set2.set[this.currentTrial - 1 + (this.isPractice ? 0 : 10)].color;
-        this.text = Set2.set[this.currentTrial - 1 + (this.isPractice ? 0 : 10)].word;
+        selectedSet = Set2
         break;
       case 3:
-        this.color = Set3.set[this.currentTrial - 1 + (this.isPractice ? 0 : 10)].color;
-        this.text = Set3.set[this.currentTrial - 1 + (this.isPractice ? 0 : 10)].word;
+        selectedSet = Set3
         break;
       case 4:
-        this.color = Set4.set[this.currentTrial - 1 + (this.isPractice ? 0 : 10)].color;
-        this.text = Set4.set[this.currentTrial - 1 + (this.isPractice ? 0 : 10)].word;
+        selectedSet = Set4
+        break;
+      case 0:
+        selectedSet = PracticeSet
         break;
     }
+
+    this.color = selectedSet.set[this.currentTrial - 1].color
+    this.text = selectedSet.set[this.currentTrial - 1].word
 
     this.data.push({
       userID: this.userID,
@@ -203,8 +209,6 @@ export class StroopTaskComponent implements OnInit {
       set: this.set
     });
   }
-
-
 
   async showFeedback() {
     this.feedbackShown = true;

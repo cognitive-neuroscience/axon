@@ -8,12 +8,13 @@ import * as Set1 from './stimuli_1_1';
 import * as Set2 from './stimuli_2_1';
 import * as Set3 from './stimuli_3_1';
 import * as Set4 from './stimuli_4_1';
-import * as SetPractice from './stimuli_practice';
+import * as PracticeSet from './stimuli_practice';
 import { TaskManagerService } from '../../../services/task-manager.service';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { Role } from 'src/app/models/InternalDTOs';
+import { NBackStimuli } from '../../../models/TaskData';
 
 @Component({
   selector: 'app-n-back',
@@ -31,8 +32,8 @@ export class NBackComponent implements OnInit {
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 10;
-  actualTrials: number = 60;
+  practiceTrials: number = 15;
+  actualTrials: number = 143;
 
   step: number = 1;
   feedback: string = '';
@@ -172,29 +173,28 @@ export class NBackComponent implements OnInit {
 
 
   generateStimulus() {
-    const set = this.isPractice ? 0 : this.set;
-    switch (set) {
+    const setNum = this.isPractice ? 0 : this.set;
+    let selectedSet: NBackStimuli
+    switch (setNum) {
       case 1:
-        this.currentLetter = Set1.set[this.currentTrial - 1].currentLetter;
-        this.nback = Set1.set[this.currentTrial - 1].nback;
+        selectedSet = Set1
         break;
       case 2:
-        this.currentLetter = Set2.set[this.currentTrial - 1].currentLetter;
-        this.nback = Set2.set[this.currentTrial - 1].nback;
+        selectedSet = Set2
         break;
       case 3:
-        this.currentLetter = Set3.set[this.currentTrial - 1].currentLetter;
-        this.nback = Set3.set[this.currentTrial - 1].nback;
+        selectedSet = Set3
         break;
       case 4:
-        this.currentLetter = Set4.set[this.currentTrial - 1].currentLetter;
-        this.nback = Set4.set[this.currentTrial - 1].nback;
+        selectedSet = Set4
         break;
       default:
-        this.currentLetter = SetPractice.set[this.currentTrial - 1].currentLetter;
-        this.nback = SetPractice.set[this.currentTrial - 1].nback;
+        selectedSet = PracticeSet
         break;
     }
+
+    this.currentLetter = selectedSet.set[this.currentTrial - 1].currentLetter;
+    this.nback = selectedSet.set[this.currentTrial - 1].nback
 
     this.data.push({
       trial: this.currentTrial,
@@ -273,19 +273,30 @@ export class NBackComponent implements OnInit {
         }
       } else {
         this.proceedtoNextStep()
-        this.uploadResults(this.data).subscribe(ok => {
-          if(ok) {
-            this.proceedtoNextStep()
-          } else {
+
+        const decodedToken = this.authService.getDecodedToken()
+
+        // if admin, then this task is in debug mode and we do not want to upload tasks
+        if(decodedToken.Role === Role.ADMIN) {
+          this.proceedtoNextStep()
+        } else {
+
+          this.uploadResults(this.data).subscribe(ok => {
+            if(ok) {
+              this.proceedtoNextStep()
+            } else {
+              this.router.navigate(['/login/mturk'])
+              console.error("There was an error uploading the results")
+              this.snackbarService.openErrorSnackbar("There was an error uploading the results")
+            }
+          }, err => {
             this.router.navigate(['/login/mturk'])
             console.error("There was an error uploading the results")
             this.snackbarService.openErrorSnackbar("There was an error uploading the results")
-          }
-        }, err => {
-          this.router.navigate(['/login/mturk'])
-          console.error("There was an error uploading the results")
-          this.snackbarService.openErrorSnackbar("There was an error uploading the results")
-        })
+          })
+
+        }
+
       }
     }
   }
@@ -318,6 +329,11 @@ export class NBackComponent implements OnInit {
 
 
   continueAhead() {
+    const decodedToken = this.authService.getDecodedToken()
+    if(decodedToken.Role === Role.ADMIN) {
+      this.router.navigate(['/dashboard/tasks'])
+      this.snackbarService.openInfoSnackbar("Task completed")
+    }
     this.taskManager.nextExperiment()
   }
 

@@ -4,6 +4,10 @@ export abstract class TaskData {
     score: number;
 }
 
+export interface Stimuli {
+    set: any[]
+}
+
 export class StroopTask extends TaskData {
     actualAnswer:   string;
     userAnswer:     string;
@@ -13,10 +17,27 @@ export class StroopTask extends TaskData {
     set:            number;
 }
 
+export class StroopTaskStimuli implements Stimuli {
+    set: {
+        trial: number;
+        color: string;
+        congruent: number;
+        word: string;
+    }[]
+}
+
 export class NBack extends TaskData {
     actualAnswer: string;
     userAnswer: string;
     responseTime: number;
     isCorrect: boolean;
     set: number;
+}
+
+export class NBackStimuli implements Stimuli {
+    set: {
+        trial: number;
+        currentLetter: string;
+        nback: string;
+    }[]
 }
