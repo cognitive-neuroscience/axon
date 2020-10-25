@@ -333,8 +333,9 @@ export class NBackComponent implements OnInit {
     if(decodedToken.Role === Role.ADMIN) {
       this.router.navigate(['/dashboard/tasks'])
       this.snackbarService.openInfoSnackbar("Task completed")
+    } else {
+      this.taskManager.nextExperiment()
     }
-    this.taskManager.nextExperiment()
   }
 
 

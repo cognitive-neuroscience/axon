@@ -273,20 +273,27 @@ export class StroopTaskComponent implements OnInit {
         }
       } else {
         this.proceedtoNextStep();
-        console.log(this.data);
-        this.uploadResults(this.data).subscribe(ok => {
-          if(ok) {
-            this.proceedtoNextStep();
-          } else {
+
+        const decodedToken = this.authService.getDecodedToken()
+        if(decodedToken.Role === Role.ADMIN) {
+          this.proceedtoNextStep()
+        } else {
+
+          this.uploadResults(this.data).subscribe(ok => {
+            if(ok) {
+              this.proceedtoNextStep();
+            } else {
+              this.router.navigate(['/login/mturk'])
+              console.error("There was an error uploading the results");
+              this.snackbarService.openErrorSnackbar("There was an error uploading the results");
+            }
+          }, err => {
             this.router.navigate(['/login/mturk'])
-            console.error("There was an error uploading the results");
+            console.log("There was an error uploading the results");
             this.snackbarService.openErrorSnackbar("There was an error uploading the results");
-          }
-        }, err => {
-          this.router.navigate(['/login/mturk'])
-          console.log("There was an error uploading the results");
-          this.snackbarService.openErrorSnackbar("There was an error uploading the results");
-        })
+          })
+
+        }
       }
     }
   }
@@ -318,7 +325,13 @@ export class StroopTaskComponent implements OnInit {
 
 
   continueAhead() {
-    this.taskManager.nextExperiment()
+    const decodedToken = this.authService.getDecodedToken()
+    if(decodedToken.Role === Role.ADMIN) {
+      this.router.navigate(['/dashboard/tasks'])
+      this.snackbarService.openInfoSnackbar("Task completed")
+    } else {
+      this.taskManager.nextExperiment()
+    }
   }
 
 
