@@ -17,8 +17,8 @@ export class TaskSwitchingComponent implements OnInit {
   maxResponseTime: number = 2500;
   durationOfFeedback: number = 500;
   interTrialDelay: number = 1000;
-  practiceTrials: number = 20;
-  actualTrials: number = 125;
+  practiceTrials: number = 5;
+  actualTrials: number = 10;
 
   step: number = 1;
   color: string = 'transparent';

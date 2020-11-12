@@ -20,8 +20,8 @@ export class FingerTappingTaskComponent implements OnInit {
   maxResponseTime: number;
   durationOfFeedback: number;
   interTrialDelay: number;
-  practiceTrials: number = 10;
-  actualTrials: number = 20;
+  practiceTrials: number = 1;
+  actualTrials: number = 2;
   keyA: string;
   keyB: string;
   block: number = 0;

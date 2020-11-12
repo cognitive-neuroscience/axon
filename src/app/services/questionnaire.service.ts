@@ -13,12 +13,7 @@ export class QuestionnaireService {
     constructor(private http: HttpClient) {}
 
     saveQuestionnaireResponse(response: MturkQuestionnaireResponse): Observable<any> {
-        console.log(response);
-        
-        return this.http.post(`${environment.apiBaseURL}/questionnaire`, response, { observe: "response" }).pipe(
-            tap(x => console.log(x)
-            )
-        )
+        return this.http.post(`${environment.apiBaseURL}/questionnaire`, response, { observe: "response" })
     }
 
 }

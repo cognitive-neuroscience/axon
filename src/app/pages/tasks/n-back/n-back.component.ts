@@ -26,14 +26,16 @@ export class NBackComponent implements OnInit {
   // Default Experiment config
   userID: string = ""
   isScored: boolean | number = true;
-  showFeedbackAfterEveryTrial: boolean | number = false;
+  showFeedbackAfterEveryTrial: boolean | number = true;
   showScoreAfterEveryTrial: boolean | number = false;
   numberOfBreaks: number = 0;
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 15;
-  actualTrials: number = 143;
+  // practiceTrials: number = 15;
+  // actualTrials: number = 143;
+    practiceTrials: number = 10;
+  actualTrials: number = 30;
 
   step: number = 1;
   feedback: string = '';
@@ -159,8 +161,6 @@ export class NBackComponent implements OnInit {
     this.timer.started = new Date().getTime();
     this.timer.ended = 0;
 
-    console.log(this.isPractice ? `Practice trial: ${this.currentTrial}` : `Actual trial: ${this.currentTrial}`);
-
     // This is the delay between showing the stimulus and showing the feedback
     this.sTimeout = setTimeout(() => {
       if (!this.feedbackShown) {
@@ -236,8 +236,9 @@ export class NBackComponent implements OnInit {
       this.data[this.data.length - 1].score = 0;
       this.scoreForSpecificTrial = 0;
     }
-
-    if (this.showFeedbackAfterEveryTrial || this.isPractice) {
+    // show feedback either if it is a practice trial, or if the feedback is telling the user
+    // they are too slow. Don't show for other feedback during actual game
+    if (this.isPractice || (this.showFeedbackAfterEveryTrial && this.feedback === 'Too slow')) {
       await this.wait(this.durationOfFeedback);
     }
     this.decideToContinue();

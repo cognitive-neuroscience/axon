@@ -1,3 +1,18 @@
+export class ConsentForm {
+    img: string;
+    title: string;
+    summary: {
+        caption: string,
+        words: string[]
+    }[];
+    secondTitle: string;
+    body: {
+        caption: string,
+        words: string[]
+    }[];
+    endMessage: string;
+}
+
 export enum SnackbarType {
     SUCCESS = "SUCCESS",
     ERROR = "ERROR",

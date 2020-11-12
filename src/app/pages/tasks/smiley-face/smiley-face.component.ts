@@ -18,8 +18,8 @@ export class SmileyFaceComponent implements OnInit {
   maxResponseTime: number = 800;        // In milliseconds
   durationOfFeedback: number = 1750;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 30;
-  actualTrials: number = 300;
+  practiceTrials: number = 5;
+  actualTrials: number = 10;
 
   step: number = 1;
   size: string = 'no';

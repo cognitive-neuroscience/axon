@@ -54,7 +54,7 @@
                 </div>
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
-                        START
+                        NEXT
                         &nbsp;
                         <mat-icon>
                             arrow_forward
@@ -86,7 +86,7 @@
                 </div>
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
-                        START
+                        NEXT
                         &nbsp;
                         <mat-icon>
                             arrow_forward
@@ -118,7 +118,7 @@
                 </div>
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
-                        START
+                        NEXT
                         &nbsp;
                         <mat-icon>
                             arrow_forward
@@ -150,7 +150,7 @@
                 </div>
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
-                        START
+                        NEXT
                         &nbsp;
                         <mat-icon>
                             arrow_forward
@@ -280,7 +280,7 @@
         </div>
 
         <div *ngIf="!isStimulus" align="center">
-            <div class="feedback" *ngIf="showFeedbackAfterEveryTrial">
+            <div class="feedback" *ngIf="showFeedbackAfterEveryTrial && feedback === 'Too slow'">
                 <span>{{feedback}}</span>
                 <br>
                 <span *ngIf="showScoreAfterEveryTrial && (scoreForSpecificTrial > 0)">

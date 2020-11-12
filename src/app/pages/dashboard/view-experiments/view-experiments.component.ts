@@ -7,6 +7,7 @@ import { HttpResponse } from '@angular/common/http';
 import { ConfirmationService } from '../../../services/confirmation.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-view-experiments',
@@ -15,7 +16,9 @@ import { Observable } from 'rxjs';
 })
 export class ViewExperimentsComponent implements OnInit {
 
-  LINK = "https://psharplab.campus.mcgill.ca/#/login/mturk?code="
+  PROD_LINK: string = "https://psharplab.campus.mcgill.ca/#/login/mturk?code=";
+  DEV_LINK: string = "http://localhost:4200/#/login/mturk?code="
+  SHOWN_LINK: string;
 
   constructor(
     private experimentsService: ExperimentsService,
@@ -27,6 +30,8 @@ export class ViewExperimentsComponent implements OnInit {
   experiments: Observable<Experiment[]>;
 
   ngOnInit(): void {
+    this.setLink()
+
     this.experiments = this.experimentsService.experiments
     this.updateExperiments()
   }
@@ -47,6 +52,10 @@ export class ViewExperimentsComponent implements OnInit {
     this.experimentsService.createExperiment(experiment).subscribe(() => {
       this.updateExperiments()
     })
+  }
+
+  private setLink(): void {
+    this.SHOWN_LINK = environment.production ? this.PROD_LINK : this.DEV_LINK
   }
 
   onDelete(code: string) {

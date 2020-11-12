@@ -51,7 +51,9 @@ export class MturkQuestionnaireComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    
+    if(!this.taskManager.hasExperiment()) {
+      this.taskManager.handleErr()
+    }
   }
 
   cancel() {

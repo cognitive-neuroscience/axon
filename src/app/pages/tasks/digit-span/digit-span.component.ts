@@ -19,7 +19,7 @@ export class DigitSpanComponent implements OnInit {
   durationOfFeedback: number = 1000;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
   practiceTrials: number = 1;
-  actualTrials: number = 6;
+  actualTrials: number = 3;
 
   step: number = 1;
   digitShown: string = '';

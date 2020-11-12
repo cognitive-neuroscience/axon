@@ -25,14 +25,17 @@ export class StroopTaskComponent implements OnInit {
   // Default Experiment config
   userID: string;
   isScored: boolean | number = true;
-  showFeedbackAfterEveryTrial: boolean | number = false;
+  showFeedbackAfterEveryTrial: boolean | number = true;
   showScoreAfterEveryTrial: boolean | number = false;
   numberOfBreaks: number = 0;
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 15;
-  actualTrials: number = 120;
+  // practiceTrials: number = 15;
+  // actualTrials: number = 120;
+  practiceTrials: number = 10;
+  actualTrials: number = 30;
+
 
   step: number = 1;
   color: string = '';
@@ -159,8 +162,6 @@ export class StroopTaskComponent implements OnInit {
     this.timer.started = new Date().getTime();
     this.timer.ended = 0;
 
-    console.log(this.isPractice ? `Practice trial: ${this.currentTrial}` : `Actual trial: ${this.currentTrial}`);
-
     // This is the delay between showing the stimulus and showing the feedback
     this.sTimeout = setTimeout(() => {
       if (!this.feedbackShown) {
@@ -237,7 +238,7 @@ export class StroopTaskComponent implements OnInit {
       this.scoreForSpecificTrial = 0;
     }
 
-    if (this.showFeedbackAfterEveryTrial || this.isPractice) {
+    if (this.isPractice || (this.showFeedbackAfterEveryTrial && this.feedback === 'Too slow')) {
       await this.wait(this.durationOfFeedback);
     }
     this.decideToContinue();

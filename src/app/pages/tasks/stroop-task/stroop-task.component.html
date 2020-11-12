@@ -186,7 +186,7 @@
         </div>
 
         <div *ngIf="!isStimulus" align="center">
-            <div class="feedback" *ngIf="showFeedbackAfterEveryTrial">
+            <div class="feedback" *ngIf="showFeedbackAfterEveryTrial && feedback === 'Too slow'">
                 <span>{{feedback}}</span>
                 <br>
                 <span *ngIf="showScoreAfterEveryTrial && (scoreForSpecificTrial > 0)">

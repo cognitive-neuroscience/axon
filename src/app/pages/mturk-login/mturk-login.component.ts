@@ -51,7 +51,12 @@ export class MturkLoginComponent implements OnInit {
       }
       this._taskManager.startExperiment()
     }, (err) => {
-      this._snackbarService.openErrorSnackbar(err.error.message)
+      // if headers too large error
+      if(err.status && err.status === 431) {
+        this._snackbarService.openErrorSnackbar('There was an error. Please try clearing your cookies, or open the experiment in incognito mode.', '', 6000)
+      } else {
+        this._snackbarService.openErrorSnackbar(err.error.message)
+      }
     })
   }
 }

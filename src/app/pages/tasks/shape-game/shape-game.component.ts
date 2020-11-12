@@ -17,8 +17,8 @@ export class ShapeGameComponent implements OnInit {
   maxResponseTime: number = 800;
   durationOfFeedback: number = 500;
   interTrialDelay: number = 1000;
-  practiceTrials: number = 10;
-  actualTrials: number = 30;
+  practiceTrials: number = 5;
+  actualTrials: number = 10;
   step: number = 1;
   color: string = '';
   feedback: string = '';

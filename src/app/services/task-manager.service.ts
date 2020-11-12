@@ -42,7 +42,10 @@ export class TaskManagerService {
 
     startExperiment() {
         const code = this._sessionStorageService.getExperimentCodeFromSessionStorage()
-        if(!code) this.handleErr()
+        if(!code) {
+            this.handleErr()
+            return
+        }
         this._experimentService.getExperiment(code).subscribe(experiment => {
             this._experiment = experiment
             this.getConsent()

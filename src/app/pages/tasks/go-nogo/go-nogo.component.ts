@@ -18,8 +18,8 @@ export class GoNogoComponent implements OnInit {
   maxResponseTime: number = 800;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 10;
-  actualTrials: number = 30;
+  practiceTrials: number = 5;
+  actualTrials: number = 10;
 
   step: number = 1;
   color: string = '';

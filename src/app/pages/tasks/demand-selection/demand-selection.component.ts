@@ -18,8 +18,8 @@ export class DemandSelectionComponent implements OnInit {
   numberOfBreaks: number = 0;
   durationOfFeedback: number = 1000;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 10;
-  actualTrials: number = 75;
+  practiceTrials: number = 5;
+  actualTrials: number = 10;
   showPatches: boolean = false;
   showNumber: boolean = false;
   step: number = 1;
