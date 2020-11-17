@@ -32,10 +32,8 @@ export class NBackComponent implements OnInit {
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  // practiceTrials: number = 15;
-  // actualTrials: number = 143;
-    practiceTrials: number = 10;
-  actualTrials: number = 30;
+  practiceTrials: number = 15;
+  actualTrials: number = 143;
 
   step: number = 1;
   feedback: string = '';
