@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Experiment } from 'src/app/models/Experiment';
 import { ExperimentsService } from 'src/app/services/experiments.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,19 +6,22 @@ import { CreateExperimentDialogComponent } from './create-experiment-dialog/crea
 import { HttpResponse } from '@angular/common/http';
 import { ConfirmationService } from '../../../services/confirmation.service';
 import { SnackbarService } from '../../../services/snackbar.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { RouteMap } from '../../../routing/routes';
 
 @Component({
   selector: 'app-view-experiments',
   templateUrl: './view-experiments.component.html',
   styleUrls: ['./view-experiments.component.scss']
 })
-export class ViewExperimentsComponent implements OnInit {
+export class ViewExperimentsComponent implements OnInit, OnDestroy {
 
   PROD_LINK: string = "https://psharplab.campus.mcgill.ca/#/login/mturk?code=";
   DEV_LINK: string = "http://localhost:4200/#/login/mturk?code="
   SHOWN_LINK: string;
+
+  subscriptions: Subscription[] = []
 
   constructor(
     private experimentsService: ExperimentsService,
@@ -38,10 +41,11 @@ export class ViewExperimentsComponent implements OnInit {
 
   openCreateExperimentDialog() {
     const dialogRef = this.dialog.open(CreateExperimentDialogComponent, {width: "30%"})
-
-    dialogRef.afterClosed().subscribe((data: Experiment) => {      
-      if(data) this._createExperiment(data);
-    })
+    this.subscriptions.push(
+      dialogRef.afterClosed().subscribe((data: Experiment) => {      
+        if(data) this._createExperiment(data);
+      })
+    )
   }
 
   private updateExperiments() {
@@ -49,9 +53,11 @@ export class ViewExperimentsComponent implements OnInit {
   }
 
   private _createExperiment(experiment: Experiment) {
-    this.experimentsService.createExperiment(experiment).subscribe(() => {
-      this.updateExperiments()
-    })
+    this.subscriptions.push(
+      this.experimentsService.createExperiment(experiment).subscribe(() => {
+        this.updateExperiments()
+      })
+    )
   }
 
   private setLink(): void {
@@ -59,20 +65,32 @@ export class ViewExperimentsComponent implements OnInit {
   }
 
   onDelete(code: string) {
-    this.confirmationService.openConfirmationDialog(`Are you sure you want to delete experiment ${code}?`).subscribe(ok => {
-      if(ok) this.deleteExperiment(code)
-    })
+    this.subscriptions.push(
+      this.confirmationService.openConfirmationDialog(`Are you sure you want to delete experiment ${code}?`).subscribe(ok => {
+        if(ok) this.deleteExperiment(code)
+      })
+    )
   }
 
   private deleteExperiment(code: string) {
-    this.experimentsService.deleteExperiment(code).subscribe((data: HttpResponse<any>) => {
-      this.updateExperiments();
-      this.snackbarService.openSuccessSnackbar(`Successfully deleted experiment ${code}`)
-    })
+    this.subscriptions.push(
+      this.experimentsService.deleteExperiment(code).subscribe((data: HttpResponse<any>) => {
+        this.updateExperiments();
+        this.snackbarService.openSuccessSnackbar(`Successfully deleted experiment ${code}`)
+      })
+    )
   }
 
   showCopiedMessage() {
     this.snackbarService.openSuccessSnackbar("Copied to clipboard")
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(x => x.unsubscribe())
+  }
+
+  mapTaskIdToTitle(task: string) {
+    return RouteMap[task].title
   }
 
 }

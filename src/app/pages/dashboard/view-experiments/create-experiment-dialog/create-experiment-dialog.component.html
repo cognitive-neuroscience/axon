@@ -19,7 +19,7 @@
         <mat-form-field class="w-100">
             <mat-label>Select tasks</mat-label>
             <mat-select formControlName="tasks" multiple required>
-                <mat-option *ngFor="let task of tasks" [disabled]="!taskIsComplete(task)" [value]="task.title">{{ task.title }}</mat-option>
+                <mat-option *ngFor="let task of tasks" [disabled]="!taskIsComplete(task)" [value]="task">{{ task.title }}</mat-option>
             </mat-select>
             <mat-error *ngIf="experimentForm.get('tasks')?.hasError('required')">At least one task is required</mat-error>
         </mat-form-field>
@@ -34,7 +34,7 @@
                         {{i+1}}
                     </div>
                     <div class="w-75">
-                        {{selected}}
+                        {{selected.title}}
                     </div>
                 </div>
             </div>

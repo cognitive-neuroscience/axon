@@ -1,3 +1,4 @@
+import { Task } from './Task';
 export class ConsentForm {
     img: string;
     title: string;
@@ -47,4 +48,8 @@ export class SnackbarData {
 export enum LoginMode {
     LOGIN = "LOGIN",
     REGISTER = "REGISTER",
+}
+
+export class ExperimentRoutingMap {
+    [key: string]: Task
 }

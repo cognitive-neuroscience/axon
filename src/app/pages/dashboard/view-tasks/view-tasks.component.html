@@ -23,14 +23,9 @@
             <ng-container matColumnDef="route">
                 <th mat-header-cell *matHeaderCellDef> Actions </th>
                 <td mat-cell *matCellDef="let task">
-                    <button *ngIf="taskIsComplete(task); else underConstruction" mat-icon-button (click)="run(task)">
+                    <button mat-icon-button (click)="run(task)">
                         <mat-icon style="color: green;">play_arrow</mat-icon>
                     </button>
-                    <ng-template #underConstruction>
-                        <button mat-icon-button>
-                            <mat-icon>handyman</mat-icon>
-                        </button>
-                    </ng-template>
                 </td>
             </ng-container>
 
@@ -63,14 +58,9 @@
             <ng-container matColumnDef="route">
                 <th mat-header-cell *matHeaderCellDef> Actions </th>
                 <td mat-cell *matCellDef="let experiment">
-                    <button *ngIf="taskIsComplete(experiment); else underConstruction" mat-icon-button (click)="run(experiment)">
+                    <button mat-icon-button (click)="run(experiment)">
                         <mat-icon style="color: green;">play_arrow</mat-icon>
                     </button>
-                    <ng-template #underConstruction>
-                        <button mat-icon-button>
-                            <mat-icon>handyman</mat-icon>
-                        </button>
-                    </ng-template>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumnsForExperiments"></tr>

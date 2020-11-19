@@ -32,8 +32,10 @@ export class NBackComponent implements OnInit {
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 15;
-  actualTrials: number = 143;
+  // practiceTrials: number = 15;
+  // actualTrials: number = 143;
+   practiceTrials: number = 5;
+  actualTrials: number = 5;
 
   step: number = 1;
   feedback: string = '';
@@ -319,7 +321,7 @@ export class NBackComponent implements OnInit {
 
   uploadResults(data: NBack[]): Observable<boolean> {
     const experimentCode = this.taskManager.getExperimentCode()
-    return this.uploadDataService.uploadData(experimentCode, "N Back", data).pipe(
+    return this.uploadDataService.uploadData(experimentCode, "nback", data).pipe(
       map(ok => ok.ok)
     )
   }

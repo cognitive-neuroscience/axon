@@ -1,21 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TasklistService } from 'src/app/services/tasklist.service';
-import { Task, TaskRoute } from 'src/app/models/Task';
+import { Task } from 'src/app/models/Task';
+import { Subscription } from 'rxjs';
+import { RouteMap } from '../../../routing/routes';
 
 @Component({
   selector: 'app-view-tasks',
   templateUrl: './view-tasks.component.html',
   styleUrls: ['./view-tasks.component.scss']
 })
-export class ViewTasksComponent implements OnInit {
+export class ViewTasksComponent implements OnInit, OnDestroy {
 
   // contains Ids of completed tasks
-  completedTasks: number[] = []
+  completedTasks: string[] = []
+
+  subscribers: Subscription[] = [];
 
   displayedColumnsForExperiments = ['title', 'description', 'route'];
-
-  taskRoutes: TaskRoute[] = []
 
   tasklist: Task[] = []
 
@@ -28,31 +30,30 @@ export class ViewTasksComponent implements OnInit {
     this.tasklistService.updateTasks()
     this.getCompletedTasklist();
     this.getTasklist();
-    this.getTaskRoutes();
   }
 
   private getCompletedTasklist(): void {
-    this.tasklistService.completedTaskList.subscribe(completedTasks => {
-      this.completedTasks = completedTasks
-    })
+    this.subscribers.push(
+      this.tasklistService.completedTaskList.subscribe(completedTasks => {
+        this.completedTasks = completedTasks
+      })
+    )
   }
 
   private getTasklist(): void {
-    this.tasklistService.taskList.subscribe(tasks => {
-      this.tasklist = tasks
-    })
-  }
-
-  private getTaskRoutes(): void {
-    this.tasklistService.taskRouteList.subscribe(taskRoutes => {
-      this.taskRoutes = taskRoutes
-    })
+    this.subscribers.push(
+      this.tasklistService.taskList.subscribe(tasks => {
+        console.log(tasks);
+        
+        this.tasklist = tasks
+      })
+    )
   }
 
   run(task: Task) {
-    const taskRoute = this.taskRoutes.find(route => route.id === task.id)
+    const taskRoute = RouteMap[task.id].route;
     if(taskRoute) {
-      this.router.navigate([taskRoute.route]);
+      this.router.navigate([taskRoute]);
     }
   }
 
@@ -64,11 +65,14 @@ export class ViewTasksComponent implements OnInit {
     return this.tasklist ? this.tasklist.filter(t => t.type === 'experimental') : []
   }
 
-  // applies styling and disabled incomplete tasks. For now, we want to make them accessible
+  // returns true if the given task is complete, and false otherwise
   taskIsComplete(task: Task): boolean {
-    return true
-    // if(!this.completedTasks || !task || !task.id) return false
-    // return this.completedTasks.includes(task.id) ? true : false
+    if(!this.completedTasks || !task || !task.id) return false
+    return this.completedTasks.includes(task.id) ? true : false
+  }
+
+  ngOnDestroy() {
+    this.subscribers.forEach(x => x.unsubscribe());
   }
 
 }

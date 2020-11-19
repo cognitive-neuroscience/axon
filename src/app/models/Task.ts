@@ -1,11 +1,7 @@
 export class Task {
-    id: number;
+    id: string;
     title: string;
     description: string;
     type: string;
-}
-
-export class TaskRoute {
-    id: number;
     route: string;
 }

@@ -15,7 +15,7 @@ export enum ArrayChange {
 
 export class ArrayChangeObject {
   change: ArrayChange;
-  item: string;
+  item: Task;
 }
 
 @Component({
@@ -26,8 +26,8 @@ export class ArrayChangeObject {
 export class CreateExperimentDialogComponent implements OnInit, OnDestroy {
 
   tasks: Task[] = [];
-  completedTasks: number[] = [];
-  selectedTasks: string[] = [];
+  completedTasks: string[] = [];
+  selectedTasks: Task[] = [];
 
   private subscriptions: Subscription[] = [];
 
@@ -49,20 +49,20 @@ export class CreateExperimentDialogComponent implements OnInit, OnDestroy {
     this.getTasklist()
     this.getCompletedTasklist()
     this.subscriptions.push(
-      this.experimentForm.get("tasks").valueChanges.subscribe((tasks: string[]) => {
+      this.experimentForm.get("tasks").valueChanges.subscribe((tasks: Task[]) => {
         this.handleSelectChange(tasks)
       })
     )
   }
 
-  handleSelectChange(newTasks: string[]) {
+  handleSelectChange(newTasks: Task[]) {
     const change = this._findDifference(this.selectedTasks, newTasks)
     switch (change.change) {
       case ArrayChange.ADDED:
         this.selectedTasks.push(change.item)
         break;
       case ArrayChange.REMOVED:
-        const indexOfRemovedItem = this.selectedTasks.indexOf(change.item)
+        const indexOfRemovedItem = this.selectedTasks.findIndex(x => x.id === change.item.id)
         this.selectedTasks.splice(indexOfRemovedItem, 1)
         break;
       default:
@@ -74,28 +74,28 @@ export class CreateExperimentDialogComponent implements OnInit, OnDestroy {
   }
 
   // takes in 2 arrays and returns the single change between the two
-  private _findDifference(oldArr: string[], newArr: string[]): ArrayChangeObject {
+  private _findDifference(oldArr: Task[], newArr: Task[]): ArrayChangeObject {
     // will either be 1 or -1 since only one change occurs at a time
     const sizeDiff = newArr.length - oldArr.length
     // element has been added to the array
     if(sizeDiff > 0) {
       // !<some-string> is false, !undefined is true so we search through
       // until we come across a string in newArr that is not found in oldArr
-      const newStr = newArr.find(x => !oldArr.find(y => x === y))
+      const task = newArr.find(x => !oldArr.find(y => x.id === y.id))
 
       return {
         change: ArrayChange.ADDED,
-        item: newStr
+        item: task
       }
     } else {
       // element has been removed from the array
 
       // same logic as above, but reversed
-      const removedStr = oldArr.find(x => !newArr.find(y => x === y))
+      const task = oldArr.find(x => !newArr.find(y => x.id === y.id))
 
       return {
         change: ArrayChange.REMOVED,
-        item: removedStr
+        item: task
       }
     }
   }
@@ -120,15 +120,12 @@ export class CreateExperimentDialogComponent implements OnInit, OnDestroy {
     )
   }
 
-  // TODO: implement multiple ordered task selection
   sendDataToParent() {
-    const assocTasks = this.selectedTasks.map(selectedTask => this.tasks.find(task => selectedTask === task.title))
-
     const experiment = new Experiment(
       this.experimentForm.get("name").value,
       null, // code is populated in the backend
       this.experimentForm.get("description").value,
-      assocTasks
+      this.selectedTasks.map(x => x.id)
     )
     this.dialogRef.close({experiment})
   }

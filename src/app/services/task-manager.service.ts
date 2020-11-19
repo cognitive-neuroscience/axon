@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
 import { SessionStorageService } from './sessionStorage.service';
 import { ConsentService } from './consentService';
 import { ConfirmationService } from './confirmation.service';
+import { RouteMap } from '../routing/routes';
 
 @Injectable({
     providedIn: "root"
@@ -25,7 +26,6 @@ export class TaskManagerService {
 
     constructor(
         private _experimentService: ExperimentsService,
-        private _tasklistService: TasklistService,
         private _snackbarService: SnackbarService,
         private _router: Router,
         private _userService: UserService,
@@ -47,6 +47,8 @@ export class TaskManagerService {
             return
         }
         this._experimentService.getExperiment(code).subscribe(experiment => {
+            console.log(experiment);
+            
             this._experiment = experiment
             this.getConsent()
         }, err => {
@@ -83,15 +85,14 @@ export class TaskManagerService {
         this._snackbarService.openErrorSnackbar("There was an error. Please contact the sharplab")
     }
 
-    private _routeToTask(task: Task) {
-        this._tasklistService.taskRouteList.subscribe((taskRoutes) => {
-            const route = taskRoutes.find(aRoute => aRoute.id === task.id)
-            if(!route) {
-                this._snackbarService.openErrorSnackbar("There was an error, please try again later.")
-            }
-            this._router.navigate([route.route])
-            this._snackbarService.openSuccessSnackbar("Redirecting you to task " + (this._currentTaskIndex + 1))
-        })
+    private _routeToTask(task: string) {
+        const route = RouteMap[task].route;
+        if(!route) {
+            this._snackbarService.openErrorSnackbar("There was an error, please try again later.")
+        } else {
+            this._router.navigate([route])
+            this._snackbarService.openSuccessSnackbar("Redirecting you to task number " + (this._currentTaskIndex + 1))
+        }
     }
 
     private _routeToFinalPage() {

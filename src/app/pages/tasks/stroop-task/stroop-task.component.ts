@@ -31,8 +31,10 @@ export class StroopTaskComponent implements OnInit {
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 15;
-  actualTrials: number = 120;
+  // practiceTrials: number = 15;
+  // actualTrials: number = 120;
+   practiceTrials: number = 5;
+  actualTrials: number = 5;
 
   step: number = 1;
   color: string = '';
@@ -315,7 +317,7 @@ export class StroopTaskComponent implements OnInit {
 
   uploadResults(data: StroopTask[]): Observable<boolean> {
     const experimentCode = this.taskManager.getExperimentCode()
-    return this.uploadDataService.uploadData(experimentCode, "Stroop Task", data).pipe(
+    return this.uploadDataService.uploadData(experimentCode, "stroop", data).pipe(
       map(ok => ok.ok)
     )
   }

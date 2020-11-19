@@ -25,7 +25,7 @@ export class AuthService {
 
   loginTurker(id: string, expCode: string): Observable<HttpResponse<any>> {
     const obj = {
-      id: id,
+      id: id.trim(),
       code: expCode
     }
     return this.http.post<HttpResponse<any>>(`${environment.apiBaseURL}/login/turker`, obj, { observe: "response" });
