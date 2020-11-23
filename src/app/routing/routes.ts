@@ -6,76 +6,83 @@ export const RouteMap: ExperimentRoutingMap = {
       title: "Go-NoGo",
       description: "Description of Go-NoGo Task",
       type: "NAB",
-      route: "experiments/gonogo"
+      route: "task/gonogo"
     },
     digitspan: {
       id: "digitspan",
       title: "Digit Span",
       description: "Description of Digit Span Task",
       type: "NAB",
-      route: "experiments/digitspan"
+      route: "task/digitspan"
     },
     fingertapping: {
       id: "fingertapping",
-          title: "Finger Tapping Task",
-          description: "Description of Finger Tapping Task",
+      title: "Finger Tapping Task",
+      description: "Description of Finger Tapping Task",
       type: "NAB",
-      route: "experiments/fingertapping"
+      route: "task/fingertapping"
     },
     nback: {
       id: "nback",
-          title: "N-Back",
-          description: "Description of N-Back Task",
+      title: "N-Back",
+      description: "Description of N-Back Task",
       type: "NAB",
-      route: "experiments/nback"
+      route: "task/nback"
     },
     stroop: {
       id: "stroop",
-          title: "Stroop Task",
-          description: "Description of the Stroop Task",
+      title: "Stroop Task",
+      description: "Description of the Stroop Task",
       type: "NAB",
-      route: "experiments/stroop"
+      route: "task/stroop"
     },
     trailmaking: {
       id: "trailmaking",
-          title: "Trail Making",
-          description: "Description of Trail Making Task",
+      title: "Trail Making",
+      description: "Description of Trail Making Task",
       type: "NAB",
-      route: "experiments/trailmaking"
+      route: "task/trailmaking"
     },
     colorgame: {
       id: "colorgame",
-          title: "Color Game",
-          description: "Description of Color Game",
+      title: "Color Game",
+      description: "Description of Color Game",
       type: "experimental",
-      route: "experiments/colorgame"
+      route: "task/colorgame"
     },
     shapegame: {
       id: "shapegame",
-          title: "Shape Game",
-          description: "Description of Shape Game",
+      title: "Shape Game",
+      description: "Description of Shape Game",
       type: "experimental",
-      route: "experiments/shapegame"
+      route: "task/shapegame"
     },
-    tsdst: {
-      id: "tsdst",
-          title: "TS & DST",
-          description: "Description of TS & DST",
+    taskswitching: {
+      id: "taskswitching",
+      title: "Task Switching",
+      description: "Description of TS",
       type: "experimental",
-      route: "experiments/tsdst"
+      route: "task/taskswitching"
+    },
+    demandselection: {
+      id: "demandselection",
+      title: "Demand Selection",
+      description: "Description of demand selection",
+      type: "experimental",
+      route: "task/demandselection"
     },
     simon: {
       id: "simon",
           title: "Simon Task",
           description: "Description of Simon Task",
       type: "experimental",
-      route: "experiments/simontask"
+      route: "task/simontask"
     },
     smileyface: {
       id: "smileyface",
           title: "Smiley Face",
           description: "Description of Smiley Face Game",
       type: "experimental",
-      route: "experiments/smileyface"
+      route: "task/smileyface"
       }
   };

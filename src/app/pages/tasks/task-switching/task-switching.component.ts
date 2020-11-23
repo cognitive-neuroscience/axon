@@ -6,6 +6,7 @@ import { Color, Key, Role } from '../../../models/InternalDTOs';
 import { AuthService } from '../../../services/auth.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
+import { TaskSwitching } from '../../../models/TaskData';
 declare function setFullScreen(): any;
 
 export enum UserResponse {
@@ -21,7 +22,7 @@ export enum UserResponse {
   styleUrls: ['./task-switching.component.scss']
 })
 export class TaskSwitchingComponent implements OnInit {
-
+  userID: string;
   isScored: boolean = false;
   showFeedbackAfterEveryTrial: boolean = true;
   showScoreAfterEveryTrial: boolean = false;
@@ -29,7 +30,7 @@ export class TaskSwitchingComponent implements OnInit {
   maxResponseTime: number = 4000;
   durationOfFeedback: number = 500;
   interTrialDelay: number = 1000;
-  practiceTrials: number = 5;
+  practiceTrials: number;
   actualTrials: number = 5;
 
   step: number = 1;
@@ -42,7 +43,7 @@ export class TaskSwitchingComponent implements OnInit {
   scoreForSpecificTrial: number = 0;
   totalScore: number = 0;
   isPractice: boolean = false;
-  // what practice round we are currently at
+  // what practice phase we are currently at
   currentPracticeRound: {
     phase: number,
     round: number
@@ -63,15 +64,15 @@ export class TaskSwitchingComponent implements OnInit {
     }
   } = {
     1: {
-      numTrials: 1,
+      numTrials: 5,
       showFeedback: true,
       repeat: {
         canRepeat: false,
         numRepeatsAllowed: 0
       }
     },
-    3: {
-      numTrials: 2,
+    2: {
+      numTrials: 20,
       showFeedback: true,
       repeat: {
         canRepeat: false,
@@ -79,8 +80,8 @@ export class TaskSwitchingComponent implements OnInit {
         thresholdForRepeat: 0.8,
       }
     },
-    4: {
-      numTrials: 3,
+    3: {
+      numTrials: 10,
       showFeedback: false,
       repeat: {
         canRepeat: false,
@@ -94,15 +95,7 @@ export class TaskSwitchingComponent implements OnInit {
   currentTrial: number = 0;
   isResponseAllowed: boolean = false;
   sTimeout: any;
-  data: {
-    color: string,
-    digit: number,
-    actualAnswer: UserResponse,
-    userAnswer: UserResponse,
-    responseTime: number,
-    isCorrect: boolean,
-    score: number
-  }[] = [];
+  data: TaskSwitching[] = [];
   timer: {
     started: number,
     ended: number
@@ -156,6 +149,13 @@ export class TaskSwitchingComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    const decodedToken = this.authService.getDecodedToken()
+    if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {
+      this.router.navigate(['/login/mturk'])
+      this.snackbarService.openErrorSnackbar("Refresh has occurred")
+    }
+    const jwt = this.authService.getDecodedToken()
+    this.userID = jwt.UserID
   }
 
   proceedtoPreviousStep(steps = 1) {
@@ -195,6 +195,8 @@ export class TaskSwitchingComponent implements OnInit {
     this.showStimulus();
   }
 
+  // looks at the practice trial config and applies the number of practice trials, feedback shown, as well as
+  // whether the phase needs to be repeated or not
   private applyPracticeTrialConfigs() {
     if(this.currentPracticeRound.round == 0 || !this.shouldRepeatPracticePhase()) {
       // if we are at the first round of the phase, we don't worry  about repeating
@@ -215,7 +217,8 @@ export class TaskSwitchingComponent implements OnInit {
     const repeatConfig = this.practiceRoundConfig[phase].repeat;
     const threshold = repeatConfig.thresholdForRepeat ? repeatConfig.thresholdForRepeat : 1.01
 
-    // if we can repeat, we haven't reached our max repeat limit, and the participant did worse than the given threshold
+    // repeat if we canRepeate = true, we haven't reached our max repeat limit, 
+    // and the participant did worse than the given threshold
     if( repeatConfig.canRepeat && 
         round <= repeatConfig.numRepeatsAllowed && 
         this.getPercentageCorrect() < threshold
@@ -285,6 +288,8 @@ export class TaskSwitchingComponent implements OnInit {
     this.color = color;
     this.number = digit;
     this.data.push({
+      trial: this.currentTrial,
+      userID: this.userID,
       color: this.color,
       digit: digit,
       actualAnswer: answer,

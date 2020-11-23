@@ -48,6 +48,5 @@ export class TaskSwitching extends TaskData {
     actualAnswer: string;
     userAnswer: string;
     responseTime: number;
-    isCorrect: number;
-    colorMapping: string;
+    isCorrect: boolean;
 }
