@@ -41,3 +41,13 @@ export class NBackStimuli implements Stimuli {
         nback: string;
     }[]
 }
+
+export class TaskSwitching extends TaskData {
+    color: string;
+    digit: number;
+    actualAnswer: string;
+    userAnswer: string;
+    responseTime: number;
+    isCorrect: number;
+    colorMapping: string;
+}

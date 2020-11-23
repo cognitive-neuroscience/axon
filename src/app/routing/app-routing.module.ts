@@ -11,14 +11,14 @@ import { DemandSelectionComponent } from '../pages/tasks/demand-selection/demand
 import { SimonTaskPrelimComponent } from '../pages/tasks/simon-task-prelim/simon-task-prelim.component';
 import { SimonTaskFinalComponent } from '../pages/tasks/simon-task-final/simon-task-final.component';
 import { SmileyFaceComponent } from '../pages/tasks/smiley-face/smiley-face.component';
-import { FingerTappingTaskComponent } from '../pages/tasks/finger-tapping-task/finger-tapping-task.component';
+import { FingerTappingTaskComponent } from '../pages/tasks/finger-tapping/finger-tapping-task.component';
 import { NBackComponent } from '../pages/tasks/n-back/n-back.component';
-import { StroopTaskComponent } from '../pages/tasks/stroop-task/stroop-task.component';
+import { StroopTaskComponent } from '../pages/tasks/stroop/stroop-task.component';
 import { TrailMakingComponent } from '../pages/tasks/trail-making/trail-making.component';
 import { ViewExperimentsComponent } from '../pages/dashboard/view-experiments/view-experiments.component';
 import { ViewTasksComponent } from '../pages/dashboard/view-tasks/view-tasks.component';
 import { MturkLoginComponent } from '../pages/mturk-login/mturk-login.component'
-import { ExperimentRoutingMap, Role } from '../models/InternalDTOs';
+import { Role } from '../models/InternalDTOs';
 import { RouteMap } from './routes';
 import { CanActivateRouteGuard } from '../CanActivateRouteGuard';
 import { FinalPageComponent } from '../pages/participant/final-page/final-page.component';

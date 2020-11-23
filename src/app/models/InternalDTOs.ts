@@ -50,6 +50,17 @@ export enum LoginMode {
     REGISTER = "REGISTER",
 }
 
+export enum Key {
+    ARROWLEFT = "ArrowLeft",
+    ARROWRIGHT = "ArrowRight"
+}
+
+export enum Color {
+    BLUE = "blue",
+    ORANGE = "orange",
+    TRANSPARENT = "transparent"
+  }
+
 export class ExperimentRoutingMap {
     [key: string]: Task
 }

@@ -2,7 +2,19 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { Matrix } from './matrix';
 import { UploadDataService } from 'src/app/services/uploadData.service';
+import { Color, Key, Role } from '../../../models/InternalDTOs';
+import { AuthService } from '../../../services/auth.service';
+import { SnackbarService } from '../../../services/snackbar.service';
+import { TaskManagerService } from '../../../services/task-manager.service';
 declare function setFullScreen(): any;
+
+export enum UserResponse {
+  GREATER = "GREATER",
+  LESSER = "LESSER",
+  ODD = "ODD",
+  EVEN = "EVEN"
+}
+
 @Component({
   selector: 'app-task-switching',
   templateUrl: './task-switching.component.html',
@@ -11,37 +23,85 @@ declare function setFullScreen(): any;
 export class TaskSwitchingComponent implements OnInit {
 
   isScored: boolean = false;
-  showFeedbackAfterEveryTrial: boolean = false;
+  showFeedbackAfterEveryTrial: boolean = true;
   showScoreAfterEveryTrial: boolean = false;
   numberOfBreaks: number = 0;
-  maxResponseTime: number = 2500;
+  maxResponseTime: number = 4000;
   durationOfFeedback: number = 500;
   interTrialDelay: number = 1000;
   practiceTrials: number = 5;
-  actualTrials: number = 10;
+  actualTrials: number = 5;
 
   step: number = 1;
+  // color of digit being displayed
   color: string = 'transparent';
+  // digit being displayed
   number: number = 0;
+  // feedback to participant after the trial
   feedback: string = '';
   scoreForSpecificTrial: number = 0;
   totalScore: number = 0;
   isPractice: boolean = false;
+  // what practice round we are currently at
+  currentPracticeRound: {
+    phase: number,
+    round: number
+  } = {
+    phase: 0,
+    round: 0
+  }
+  // config for setting up practice rounds
+  practiceRoundConfig: {
+    [key: number]: {
+      numTrials: number, 
+      showFeedback: boolean, 
+      repeat: {
+        canRepeat: boolean, 
+        numRepeatsAllowed: number,
+        thresholdForRepeat?: number
+      }
+    }
+  } = {
+    1: {
+      numTrials: 1,
+      showFeedback: true,
+      repeat: {
+        canRepeat: false,
+        numRepeatsAllowed: 0
+      }
+    },
+    3: {
+      numTrials: 2,
+      showFeedback: true,
+      repeat: {
+        canRepeat: false,
+        numRepeatsAllowed: 1,
+        thresholdForRepeat: 0.8,
+      }
+    },
+    4: {
+      numTrials: 3,
+      showFeedback: false,
+      repeat: {
+        canRepeat: false,
+        numRepeatsAllowed: 0
+      }
+    }
+  }
   isStimulus: boolean = false;
   isBreak: boolean = false;
   fRepeat = true;
   currentTrial: number = 0;
   isResponseAllowed: boolean = false;
+  sTimeout: any;
   data: {
-    isPractice: number,
     color: string,
     digit: number,
-    actualAnswer: string,
-    userAnswer: string,
+    actualAnswer: UserResponse,
+    userAnswer: UserResponse,
     responseTime: number,
-    isCorrect: number,
-    score: number,
-    colorMapping: string
+    isCorrect: boolean,
+    score: number
   }[] = [];
   timer: {
     started: number,
@@ -52,35 +112,47 @@ export class TaskSwitchingComponent implements OnInit {
     };
   showFixation: boolean = false;
   feedbackShown: boolean = false;
-  matrix = {
-    colors: [],
-    digits: []
-  };
-  colorMapping = localStorage.getItem('mapping') === '1' ? ['blue', 'yellow'] : ['yellow', 'blue'];
+  matrix: Matrix;
 
-  @HostListener('document:click', ['$event'])
-  onKeyPress(event: MouseEvent) {
-    if (this.isResponseAllowed) {
+  oddEvenColor = Color.BLUE;
+  ltGtColor = Color.ORANGE;
+
+  @HostListener('window:keydown', ['$event'])
+  onKeyPress(event: KeyboardEvent) {
+    if (this.isResponseAllowed && this.isValidKey(event.key)) {
+      // if we have a response before timeout, we need to make sure this is cleared
+      clearTimeout(this.sTimeout)
+
       this.isResponseAllowed = false;
-      try {
-        if (this.data[this.data.length - 1].color === this.colorMapping[0]) {
-          this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
-          this.data[this.data.length - 1].userAnswer = 'GREATER';
-        } else {
-          this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
-          this.data[this.data.length - 1].userAnswer = 'EVEN';
-        }
-        this.showFeedback();
-      } catch (error) {
+      let userAnswer: UserResponse;
+
+      this.timer.ended = new Date().getTime();
+      this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
+
+      // mark down user response
+      if(this.matrix.colors[this.currentTrial - 1] === this.oddEvenColor) {
+        userAnswer = event.key === Key.ARROWLEFT ? UserResponse.ODD : UserResponse.EVEN
+      } else {
+        userAnswer = event.key === Key.ARROWLEFT ? UserResponse.LESSER : UserResponse.GREATER
       }
+
+      this.data[this.data.length - 1].userAnswer = userAnswer;
+
+      this.showFeedback();
     }
+  }
+
+  private isValidKey(key: string): boolean {
+    if(key === Key.ARROWLEFT || key === Key.ARROWRIGHT) return true;
+    return false;
   }
 
   constructor(
     private router: Router,
     private uploadDataService: UploadDataService,
+    private authService: AuthService,
+    private snackbarService: SnackbarService,
+    private taskManager: TaskManagerService
   ) { }
 
   ngOnInit() {
@@ -97,31 +169,22 @@ export class TaskSwitchingComponent implements OnInit {
     this.step += steps;
   }
 
-  processClickEvent(event: any) {
-    if (this.isResponseAllowed) {
-      this.isResponseAllowed = false;
-      try {
-        if (this.data[this.data.length - 1].color === this.colorMapping[0]) {
-          this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
-          this.data[this.data.length - 1].userAnswer = 'LESSER';
-        } else {
-          this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
-          this.data[this.data.length - 1].userAnswer = 'ODD';
-        }
-        this.showFeedback();
-      } catch (error) {
-      }
+  handleAfterPractice() {
+    const phase = this.currentPracticeRound.phase;
+
+    // if the next phase doesn't exist in config, it means we've ended the practice phase
+    if(!this.practiceRoundConfig[phase + 1]) {
+      this.proceedtoNextStep()
+    } else {
+      this.proceedtoPreviousStep(5)
     }
-    event.preventDefault();
   }
 
-  async startPractice(trials = 0) {
-    if (trials !== 0) {
-      this.practiceTrials = trials;
-    }
-    this.matrix = new Matrix(this.practiceTrials, 50);
+  async startPractice() {
+
+    this.applyPracticeTrialConfigs()
+
+    this.matrix = new Matrix(this.practiceTrials, 50, Color.BLUE, Color.ORANGE);
     this.startGameInFullScreen();
     this.resetData();
     this.proceedtoNextStep();
@@ -132,14 +195,50 @@ export class TaskSwitchingComponent implements OnInit {
     this.showStimulus();
   }
 
+  private applyPracticeTrialConfigs() {
+    if(this.currentPracticeRound.round == 0 || !this.shouldRepeatPracticePhase()) {
+      // if we are at the first round of the phase, we don't worry  about repeating
+      // we should not go to the next phase if we need to repeat
+      this.currentPracticeRound.phase++;
+      this.currentPracticeRound.round = 0; 
+    }
+
+    const phase = this.currentPracticeRound.phase;
+    this.practiceTrials = this.practiceRoundConfig[phase].numTrials;
+    this.showFeedbackAfterEveryTrial = this.practiceRoundConfig[phase].showFeedback;
+    this.currentPracticeRound.round++;
+  }
+
+  private shouldRepeatPracticePhase(): boolean {
+    const phase = this.currentPracticeRound.phase;
+    const round = this.currentPracticeRound.round;
+    const repeatConfig = this.practiceRoundConfig[phase].repeat;
+    const threshold = repeatConfig.thresholdForRepeat ? repeatConfig.thresholdForRepeat : 1.01
+
+    // if we can repeat, we haven't reached our max repeat limit, and the participant did worse than the given threshold
+    if( repeatConfig.canRepeat && 
+        round <= repeatConfig.numRepeatsAllowed && 
+        this.getPercentageCorrect() < threshold
+     ) {
+      return true;
+    }
+    return false;
+  }
+
+  private getPercentageCorrect(): number {
+    // divide by 0 guard
+    if(this.practiceTrials == 0) return 0;
+    return (this.totalScore / 10) / this.practiceTrials;
+  }
+
   async startActualGame() {
-    this.matrix = new Matrix(this.actualTrials, 50);
+    this.matrix = new Matrix(this.actualTrials, 50, Color.BLUE, Color.ORANGE);
     this.resetData();
     this.proceedtoNextStep();
     await this.wait(2000);
     this.proceedtoNextStep();
     this.isPractice = false;
-    this.showFeedbackAfterEveryTrial = false;
+    this.showFeedbackAfterEveryTrial = true;  // we want to show "Too slow"
     this.showScoreAfterEveryTrial = false;
     this.currentTrial = 0;
     this.showStimulus();
@@ -157,38 +256,42 @@ export class TaskSwitchingComponent implements OnInit {
     this.isResponseAllowed = true;
     this.timer.started = new Date().getTime();
     this.timer.ended = 0;
-    console.log(this.isPractice ? `Practice trial: ${this.currentTrial}` : `Actual trial: ${this.currentTrial}`);
+
+    // Give participant max time to respond to stimuli
+    this.sTimeout = setTimeout(() => {
+      if (!this.feedbackShown) {
+        this.showFeedback();
+      }
+    }, this.maxResponseTime);
   }
 
   generateStimulus() {
-    const color = this.colorMapping[this.matrix.colors[this.currentTrial - 1] - 1];
+    const color = this.matrix.colors[this.currentTrial - 1];
     const digit = this.matrix.digits[this.currentTrial - 1];
-    let answer = '';
-    if (color === this.colorMapping[0]) {
-      if (digit > 5) {
-        answer = 'GREATER';
+    let answer: UserResponse;
+    if (color === this.oddEvenColor) {
+      if (digit % 2 === 0) {
+        answer = UserResponse.EVEN;
       } else {
-        answer = 'LESSER';
+        answer = UserResponse.ODD;
       }
     } else {
-      if (digit % 2 === 0) {
-        answer = 'EVEN';
+      if (digit > 5) {
+        answer = UserResponse.GREATER;
       } else {
-        answer = 'ODD';
+        answer = UserResponse.LESSER;
       }
     }
     this.color = color;
     this.number = digit;
     this.data.push({
-      isPractice: this.isPractice ? 1 : 0,
-      color,
-      digit,
+      color: this.color,
+      digit: digit,
       actualAnswer: answer,
-      userAnswer: '',
+      userAnswer: null,
       responseTime: 0,
-      isCorrect: 0,
+      isCorrect: false,
       score: 0,
-      colorMapping: this.colorMapping.join().toUpperCase()
     });
   }
 
@@ -196,29 +299,32 @@ export class TaskSwitchingComponent implements OnInit {
     this.feedbackShown = true;
     this.isStimulus = false;
     this.isResponseAllowed = false;
-    if (this.data[this.data.length - 1].responseTime === 0) {
-      this.timer.ended = new Date().getTime();
-      this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
-    }
-    if (this.data[this.data.length - 1].actualAnswer === this.data[this.data.length - 1].userAnswer) {
-      this.feedback = "Correct";
-      this.data[this.data.length - 1].isCorrect = 1;
-      this.data[this.data.length - 1].score = 10;
-      this.scoreForSpecificTrial = 10;
-      this.totalScore += 10;
-    } else {
-      if (this.data[this.data.length - 1].userAnswer === '') {
+
+    const currentDataObj = this.data[this.data.length - 1];
+
+    switch (currentDataObj.userAnswer) {
+      case currentDataObj.actualAnswer:   // correct
+        this.feedback = "Correct";
+        currentDataObj.isCorrect = true;
+        currentDataObj.score = 10;
+        this.scoreForSpecificTrial = 10;
+        this.totalScore += 10;
+        break;
+      case null:                          // too slow
         this.feedback = "Too slow";
-      } else {
+        currentDataObj.responseTime = this.maxResponseTime;
+        break;
+      default:                            // incorrect
         this.feedback = "Incorrect";
-      }
-      this.data[this.data.length - 1].isCorrect = 0;
-      this.data[this.data.length - 1].score = 0;
-      this.scoreForSpecificTrial = 0;
+        currentDataObj.isCorrect = false;
+        this.scoreForSpecificTrial = 0;
+        break;
     }
-    if (this.showFeedbackAfterEveryTrial || this.isPractice) {
+
+    if (this.isPractice || (this.showFeedbackAfterEveryTrial && this.feedback === 'Too slow')) {
       await this.wait(this.durationOfFeedback);
     }
+
     this.decideToContinue();
   }
 
@@ -230,8 +336,6 @@ export class TaskSwitchingComponent implements OnInit {
         this.proceedtoNextStep();
         await this.wait(2000);
         this.proceedtoNextStep();
-        console.log(this.data);
-        this.uploadResults();
       }
     } else {
       if (this.currentTrial < this.actualTrials) {
@@ -279,12 +383,18 @@ export class TaskSwitchingComponent implements OnInit {
   }
 
   continueAhead() {
-    this.router.navigate(['/experiments/dst']);
+    const decodedToken = this.authService.getDecodedToken()
+    if(decodedToken.Role === Role.ADMIN) {
+      this.router.navigate(['/dashboard/tasks'])
+      this.snackbarService.openInfoSnackbar("Task completed")
+    } else {
+      this.taskManager.nextExperiment()
+    }
   }
 
   reset() {
     this.number = 0;
-    this.color = 'transparent';
+    this.color = Color.TRANSPARENT;
     this.feedback = '';
     this.feedbackShown = false;
     this.scoreForSpecificTrial = 0;

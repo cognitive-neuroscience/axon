@@ -1,12 +1,8 @@
-<div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center"
-    (contextmenu)="processClickEvent($event);">
+<div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
 
     <!-- Slide 1 -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 1">
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2></h2>
-        </div>
-        <div class="w-100 p-4 uppercase" align="center">
+        <div class="w-100 p-4 uppercase instructions" align="center">
             <div class="statement">
                 <span>Thank you for participating.</span>
             </div>
@@ -48,10 +44,7 @@
 
     <!-- Slide 2 -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 2">
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Welcome to Number Game</h2>
-        </div>
-        <div class="w-100 p-4 uppercase" align="center">
+        <div class="w-100 p-4 uppercase instructions" align="center">
             <div class="title">
                 <h2 class="mat-h2">
                     Read the instructions carefully
@@ -61,21 +54,21 @@
                 <span>You will see a number on the screen.</span>
             </div>
             <div class="statement">
-                <span>That number is either {{colorMapping[0]}} or yellow.</span>
+                <span>That number is either blue or yellow.</span>
             </div>
             <div class="statement">
                 <span>The color is important: it tells you what you must identify
                     about that number.</span>
             </div>
             <div class="statement">
-                <span>When the number is {{colorMapping[0]}}, you must indicate if the number is lesser or greater than
+                <span>When the number is BLUE, you must indicate if the number is lesser or greater than
                     5.</span>
             </div>
             <div class="statement">
                 <span>When the number is YELLOW, you must indicate if the number is odd or even.</span>
             </div>
             <div class="statement">
-                <span>You will use the mouse to provide your answer.</span>
+                <span>You will use the left and right arrow keys to provide your answer.</span>
             </div>
             <div class="statement-final">
                 Click 'NEXT' to proceed
@@ -108,32 +101,28 @@
 
     <!-- Slide 3 -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 3">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>More Instructions</h2>
-        </div>
-        <div class="w-100 p-4 uppercase" align="center">
+        <div class="w-100 p-4 uppercase instructions" align="center">
             <div class="title">
                 <h2 class="mat-h2"></h2>
             </div>
             <div class="statement">
-                <span style="font-size: 50px;" [style.color]="colorMapping[0]">3</span>
+                <span style="font-size: 50px;" [style.color]="oddEvenColor">3</span>
             </div>
             <div class="statement">
-                <span>If number is GREATER THAN 5: click the left mouse button</span>
+                <span>If number is ODD: press the left arrow key</span>
             </div>
             <div class="statement">
-                <span>If number is LESSER THAN 5: click the right mouse button</span>
+                <span>If number is EVEN: press the right arrow key</span>
             </div>
             <br>
             <div class="statement">
-                <span style="font-size: 50px;" [style.color]="colorMapping[1]">8</span>
+                <span style="font-size: 50px;" [style.color]="ltGtColor">8</span>
             </div>
             <div class="statement">
-                <span>If number is EVEN: click the left mouse button</span>
+                <span>If number is LESS THAN 5: press the left arrow key</span>
             </div>
             <div class="statement">
-                <span>If number is ODD: click the right mouse button</span>
+                <span>If number is GREATER THAN 5: press the right arrow key</span>
             </div>
             <br>
             <div class="statement-final">
@@ -145,66 +134,6 @@
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoNextStep(2)">
-                        NEXT
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Slide 3a -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 4">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>More Instructions</h2>
-        </div>
-        <div class="w-100 p-4 uppercase" align="center">
-            <div class="statement">
-                <span>Remember, the color of the number tells you what you must identify about that number.</span>
-            </div>
-            <br>
-            <div class="statement">
-                <span style="font-size: 50px;" [style.color]="colorMapping[0]">3</span>
-            </div>
-            <div class="statement">
-                <span>If number is GREATER THAN 5: click the left mouse button</span>
-            </div>
-            <div class="statement">
-                <span>If number is LESSER THAN 5: click the right mouse button</span>
-            </div>
-            <br>
-            <div class="statement">
-                <span style="font-size: 50px;" [style.color]="colorMapping[1]">8</span>
-            </div>
-            <div class="statement">
-                <span>If number is EVEN: click the left mouse button</span>
-            </div>
-            <div class="statement">
-                <span>If number is ODD: click the right mouse button</span>
-            </div>
-            <br>
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-        </div>
-        <!-- Navigation buttons -->
-        <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
-                <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -226,20 +155,22 @@
     </div>
 
     <!-- Slide 4-->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 5">
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Practice Round</h2>
-        </div>
-        <div class="w-100 p-4 uppercase" align="center">
-            <div class="statement">
-                <h4>Let's Practice</h4>
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 4">
+        <div class="instructions">
+            <div class="w-100 p-4 uppercase" align="center">
+                <h2>Practice Round</h2>
             </div>
-            <br>
-            <div class="statement">
-                The game will launch in fullscreen
-            </div>
-            <div class="statement-final">
-                Click 'START' when you are ready for the practice round
+            <div class="w-100 p-4 uppercase" align="center">
+                <div class="statement">
+                    <h4>Let's Practice</h4>
+                </div>
+                <br>
+                <div class="statement">
+                    The game will launch in fullscreen
+                </div>
+                <div class="statement-final">
+                    Click 'START' when you are ready for the practice round
+                </div>
             </div>
         </div>
         <!-- Navigation buttons -->
@@ -256,7 +187,7 @@
                 </div>
                 <div>
                     <button mat-raised-button color="primary"
-                        (click)="startPractice(); showFeedbackAfterEveryTrial = true;">
+                        (click)="startPractice();">
                         START
                         &nbsp;
                         <mat-icon>
@@ -269,43 +200,90 @@
     </div>
 
     <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 5">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Start Practice Round -->
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 6">
-        <mat-spinner [diameter]="75"></mat-spinner>
+
+        <div *ngIf="isStimulus">
+            <div style="font-size: 80px;" [style.color]="color">
+                {{number}}
+            </div>
+        </div>
+
+        <div *ngIf="showFixation">
+            <i class="material-icons" style="font-size: 80px;">add</i>
+        </div>
+
+        <div *ngIf="!isStimulus">
+            <div class="feedback">
+                {{feedback}}
+            </div>
+        </div>
     </div>
 
-    <!-- Start 1st Practice Round -->
+    <!-- Show loader -->
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 7">
-
-        <div *ngIf="isStimulus">
-            <div style="font-size: 50px;" [style.color]="color">
-                {{number}}
-            </div>
-        </div>
-
-        <div *ngIf="showFixation">
-            <img src="/assets/images/eye.png" style="height: 60px" />
-        </div>
-
-        <div *ngIf="!isStimulus && showFeedbackAfterEveryTrial">
-            <div class="feedback">
-                {{feedback}}
-            </div>
-        </div>
-    </div>
-
-    <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 8">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Slide 5/5a -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 9">
+    <!-- Practice round complete message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 8">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Practice Round Is Now Complete</h2>
         </div>
 
         <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="statement">
+                You got {{totalScore/10}} out of {{practiceTrials}} trials correct
+            </div>
+
+            <br>
+
+            <div *ngIf="fRepeat" class="statement-final">
+                Let's practice again.
+            </div>
+
+            <div class="statement-final">
+                Click 'NEXT' when you are ready to practice.
+            </div>
+
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button disabled color="primary">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="handleAfterPractice()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 13">
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Practice Round Is Now Complete</h2>
+        </div>
         <div class="w-100 p-4 uppercase" align="center">
 
             <div class="statement">
@@ -323,8 +301,6 @@
             </div>
 
         </div>
-
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
@@ -347,197 +323,10 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Slide 6 -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 10">
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Practice Round</h2>
-        </div>
-        <div class="w-100 p-4 uppercase" align="center">
-            <div class="statement">
-                <h4>Let's practice again</h4>
-            </div>
-            <br>
-            <div class="statement">
-                This time we won’t give you feedback after each answer.
-            </div>
-            <br>
-            <div class="statement">
-                Do your best!
-            </div>
-        </div>
-        <!-- Navigation buttons -->
-        <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
-                <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
-                        NEXT
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Slide 6a -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 11">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Recap Instructions</h2>
-        </div>
-        <div class="w-100 p-4 uppercase" align="center">
-            <div class="statement">
-                <span>Remember, the color of the number tells you what you must identify about that number.</span>
-            </div>
-            <br>
-            <div class="statement">
-                <span style="font-size: 50px;" [style.color]="colorMapping[0]">3</span>
-            </div>
-            <div class="statement">
-                <span>If number is GREATER THAN 5: click the left mouse button</span>
-            </div>
-            <div class="statement">
-                <span>If number is LESSER THAN 5: click the right mouse button</span>
-            </div>
-            <br>
-            <div class="statement">
-                <span style="font-size: 50px;" [style.color]="colorMapping[1]">8</span>
-            </div>
-            <div class="statement">
-                <span>If number is EVEN: click the left mouse button</span>
-            </div>
-            <div class="statement">
-                <span>If number is ODD: click the right mouse button</span>
-            </div>
-            <br>
-            <div class="statement-final">
-                Click 'START' to start the practice
-            </div>
-        </div>
-        <!-- Navigation buttons -->
-        <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
-                <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary"
-                        (click)="startPractice(10); showFeedbackAfterEveryTrial = false; fRepeat = true;">
-                        START
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 12">
-        <mat-spinner [diameter]="75"></mat-spinner>
-    </div>
-
-    <!-- Start 2nd Practice Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 13">
-
-        <div *ngIf="isStimulus">
-            <div style="font-size: 50px;" [style.color]="color">
-                {{number}}
-            </div>
-        </div>
-
-        <div *ngIf="showFixation">
-            <img src="/assets/images/eye.png" style="height: 60px" />
-        </div>
-
-        <div *ngIf="!isStimulus && showFeedbackAfterEveryTrial">
-            <div class="feedback">
-                {{feedback}}
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 14">
-        <mat-spinner [diameter]="75"></mat-spinner>
-    </div>
-
-
-    <!-- Slide 7/7a -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 15">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Practice Round Is Now Complete</h2>
-        </div>
-
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                You got {{totalScore/10}} out of {{practiceTrials}} trials correct
-            </div>
-
-            <br>
-
-            <div *ngIf="fRepeat" class="statement-final">
-                Click 'REPEAT' to practice again, or
-            </div>
-
-            <div class="statement-final">
-                Click 'NEXT' when you are ready for the next stage.
-            </div>
-
-        </div>
-
-        <!-- Navigation buttons -->
-        <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
-                <div>
-                    <button mat-raised-button [disabled]="!fRepeat" color="warn" (click)="proceedtoPreviousStep(5);">
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        REPEAT
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
-                        NEXT
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    </div> -->
 
     <!-- Slide 8 -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 16">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 9">
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Main Round</h2>
         </div>
@@ -580,24 +369,24 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 17">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 10">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start Actual Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 18">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 11">
 
         <div *ngIf="isStimulus">
-            <div style="font-size: 50px;" [style.color]="color">
+            <div style="font-size: 80px;" [style.color]="color">
                 {{number}}
             </div>
         </div>
 
         <div *ngIf="showFixation">
-            <img src="/assets/images/eye.png" style="height: 60px" />
+            <i class="material-icons" style="font-size: 80px;">add</i>
         </div>
 
-        <div *ngIf="!isStimulus && showFeedbackAfterEveryTrial">
+        <div *ngIf="!isStimulus && showFeedbackAfterEveryTrial && feedback === 'Too slow'">
             <div class="feedback">
                 {{feedback}}
             </div>
@@ -606,13 +395,13 @@
 
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 19">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 12">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
 
     <!-- Slide 9 -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 20">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 13">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Main Round Is Now Complete</h2>
@@ -621,8 +410,8 @@
         <!-- Introduction -->
         <div class="w-100 p-4 uppercase" align="center">
 
-            <div class="statement">
-                You got {{totalScore/10}} out of {{actualTrials}} trials correct
+            <div class="statement" *ngIf="isScored">
+                You scored {{totalScore}} point(s)
             </div>
 
             <br>

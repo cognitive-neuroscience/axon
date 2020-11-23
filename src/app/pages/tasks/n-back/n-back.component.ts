@@ -32,10 +32,8 @@ export class NBackComponent implements OnInit {
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  // practiceTrials: number = 15;
-  // actualTrials: number = 143;
-   practiceTrials: number = 5;
-  actualTrials: number = 5;
+  practiceTrials: number = 15;
+  actualTrials: number = 143;
 
   step: number = 1;
   feedback: string = '';
@@ -216,8 +214,8 @@ export class NBackComponent implements OnInit {
     this.isResponseAllowed = false;
 
     if (this.data[this.data.length - 1].responseTime === 0) {
-      this.timer.ended = new Date().getTime();
-      this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
+      // user did not response in time
+      this.data[this.data.length - 1].responseTime = this.maxResponseTime;
     }
 
     if (this.data[this.data.length - 1].actualAnswer === this.data[this.data.length - 1].userAnswer) {
