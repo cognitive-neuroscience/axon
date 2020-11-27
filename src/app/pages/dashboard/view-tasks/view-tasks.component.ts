@@ -43,8 +43,6 @@ export class ViewTasksComponent implements OnInit, OnDestroy {
   private getTasklist(): void {
     this.subscribers.push(
       this.tasklistService.taskList.subscribe(tasks => {
-        console.log(tasks);
-        
         this.tasklist = tasks
       })
     )

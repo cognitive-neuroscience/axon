@@ -1,7 +1,18 @@
-.font-blue {
-    color: blue;
+.instructions-reminder {
+    
 }
 
-.font-yellow {
-    color: yellow;
+
+.image {
+    width: 100%;
+    text-align: center;
+
+    & img {
+        width: 100%; 
+        max-width: 800px;
+    }
+}
+
+.underline-text {
+    text-decoration: underline;
 }

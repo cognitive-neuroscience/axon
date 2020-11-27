@@ -46,7 +46,7 @@ export class TaskSwitchingComponent implements OnInit {
   // what practice phase we are currently at
   currentPracticeRound: {
     phase: number,
-    round: number
+    round: number // multiple rounds for each phase (each repeat is +1 round)
   } = {
     phase: 0,
     round: 0
@@ -64,7 +64,7 @@ export class TaskSwitchingComponent implements OnInit {
     }
   } = {
     1: {
-      numTrials: 5,
+      numTrials: 1,
       showFeedback: true,
       repeat: {
         canRepeat: false,
@@ -72,16 +72,16 @@ export class TaskSwitchingComponent implements OnInit {
       }
     },
     2: {
-      numTrials: 20,
+      numTrials: 2,
       showFeedback: true,
       repeat: {
-        canRepeat: false,
+        canRepeat: true,
         numRepeatsAllowed: 1,
         thresholdForRepeat: 0.8,
       }
     },
     3: {
-      numTrials: 10,
+      numTrials: 3,
       showFeedback: false,
       repeat: {
         canRepeat: false,
@@ -89,9 +89,10 @@ export class TaskSwitchingComponent implements OnInit {
       }
     }
   }
+
   isStimulus: boolean = false;
   isBreak: boolean = false;
-  fRepeat = true;
+  fRepeat = false;
   currentTrial: number = 0;
   isResponseAllowed: boolean = false;
   sTimeout: any;
@@ -159,25 +160,11 @@ export class TaskSwitchingComponent implements OnInit {
   }
 
   proceedtoPreviousStep(steps = 1) {
-    if (steps > 1) {
-      this.fRepeat = false;
-    }
     this.step -= steps;
   }
 
   proceedtoNextStep(steps = 1) {
     this.step += steps;
-  }
-
-  handleAfterPractice() {
-    const phase = this.currentPracticeRound.phase;
-
-    // if the next phase doesn't exist in config, it means we've ended the practice phase
-    if(!this.practiceRoundConfig[phase + 1]) {
-      this.proceedtoNextStep()
-    } else {
-      this.proceedtoPreviousStep(5)
-    }
   }
 
   async startPractice() {
@@ -198,11 +185,12 @@ export class TaskSwitchingComponent implements OnInit {
   // looks at the practice trial config and applies the number of practice trials, feedback shown, as well as
   // whether the phase needs to be repeated or not
   private applyPracticeTrialConfigs() {
+
     if(this.currentPracticeRound.round == 0 || !this.shouldRepeatPracticePhase()) {
-      // if we are at the first round of the phase, we don't worry  about repeating
+      // if we are at the first round of the phase, we don't worry about repeating
       // we should not go to the next phase if we need to repeat
       this.currentPracticeRound.phase++;
-      this.currentPracticeRound.round = 0; 
+      this.currentPracticeRound.round = 0;
     }
 
     const phase = this.currentPracticeRound.phase;
@@ -211,7 +199,7 @@ export class TaskSwitchingComponent implements OnInit {
     this.currentPracticeRound.round++;
   }
 
-  private shouldRepeatPracticePhase(): boolean {
+  public shouldRepeatPracticePhase(): boolean {
     const phase = this.currentPracticeRound.phase;
     const round = this.currentPracticeRound.round;
     const repeatConfig = this.practiceRoundConfig[phase].repeat;
@@ -241,7 +229,7 @@ export class TaskSwitchingComponent implements OnInit {
     await this.wait(2000);
     this.proceedtoNextStep();
     this.isPractice = false;
-    this.showFeedbackAfterEveryTrial = true;  // we want to show "Too slow"
+    this.showFeedbackAfterEveryTrial = false;
     this.showScoreAfterEveryTrial = false;
     this.currentTrial = 0;
     this.showStimulus();
@@ -326,7 +314,8 @@ export class TaskSwitchingComponent implements OnInit {
         break;
     }
 
-    if (this.isPractice || (this.showFeedbackAfterEveryTrial && this.feedback === 'Too slow')) {
+    // we want to show 'Too slow' every time
+    if (this.feedback === 'Too slow' || this.showFeedbackAfterEveryTrial) {
       await this.wait(this.durationOfFeedback);
     }
 
