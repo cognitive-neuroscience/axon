@@ -56,6 +56,7 @@ export class TaskSwitchingComponent implements OnInit {
     [key: number]: {
       numTrials: number, 
       showFeedback: boolean, 
+      responseTime: number, // in milliseconds
       repeat: {
         canRepeat: boolean, 
         numRepeatsAllowed: number,
@@ -66,6 +67,7 @@ export class TaskSwitchingComponent implements OnInit {
     1: {
       numTrials: 1,
       showFeedback: true,
+      responseTime: 10000,
       repeat: {
         canRepeat: false,
         numRepeatsAllowed: 0
@@ -74,6 +76,7 @@ export class TaskSwitchingComponent implements OnInit {
     2: {
       numTrials: 2,
       showFeedback: true,
+      responseTime: 4000,
       repeat: {
         canRepeat: true,
         numRepeatsAllowed: 1,
@@ -83,6 +86,7 @@ export class TaskSwitchingComponent implements OnInit {
     3: {
       numTrials: 3,
       showFeedback: false,
+      responseTime: 4000,
       repeat: {
         canRepeat: false,
         numRepeatsAllowed: 0
@@ -195,6 +199,7 @@ export class TaskSwitchingComponent implements OnInit {
 
     const phase = this.currentPracticeRound.phase;
     this.practiceTrials = this.practiceRoundConfig[phase].numTrials;
+    this.maxResponseTime = this.practiceRoundConfig[phase].responseTime;
     this.showFeedbackAfterEveryTrial = this.practiceRoundConfig[phase].showFeedback;
     this.currentPracticeRound.round++;
   }
@@ -223,16 +228,23 @@ export class TaskSwitchingComponent implements OnInit {
   }
 
   async startActualGame() {
+
+    this.applyActualGameConfigs();
+
     this.matrix = new Matrix(this.actualTrials, 50, Color.BLUE, Color.ORANGE);
     this.resetData();
     this.proceedtoNextStep();
     await this.wait(2000);
     this.proceedtoNextStep();
+    this.showStimulus();
+  }
+
+  private applyActualGameConfigs() {
     this.isPractice = false;
     this.showFeedbackAfterEveryTrial = false;
+    this.maxResponseTime = 4000;
     this.showScoreAfterEveryTrial = false;
     this.currentTrial = 0;
-    this.showStimulus();
   }
 
   async showStimulus() {
