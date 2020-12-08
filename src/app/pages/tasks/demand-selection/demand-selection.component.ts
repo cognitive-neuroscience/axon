@@ -25,7 +25,7 @@ export class DemandSelectionComponent implements OnInit {
   interTrialDelay: number = 200;       // In milliseconds
   practiceTrials: number = 5;
   actualTrials: number = 50;
-  blockTrials: number[] = [2, 2, 2, 2, 5, 5]
+  blockTrials: number[] = [10, 10, 10, 10, 8, 8]
 
   // all variables relating to showing different component in the game
   showPatches: boolean = false;
@@ -83,7 +83,7 @@ export class DemandSelectionComponent implements OnInit {
     }
   } = {
     1: {
-      numTrials: 1,
+      numTrials: 5,
       showFeedback: true,
       responseTime: 4000,
       repeat: {
@@ -92,7 +92,7 @@ export class DemandSelectionComponent implements OnInit {
       }
     },
     2: {
-      numTrials: 1,
+      numTrials: 5,
       showFeedback: true,
       responseTime: 4000,
       repeat: {
@@ -479,6 +479,4 @@ export class DemandSelectionComponent implements OnInit {
       }, time);
     });
   }
-
-
 }
