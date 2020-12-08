@@ -1,5 +1,50 @@
-td {
-    height: 150px;
-    width: 150px;
-    // border: solid thin black;
+@import '../../../sass/mixins';
+
+.fixation {
+    height: 60px;
+    width: auto;
+}
+
+.displayed-number {
+    font-size: 100px;
+}
+
+.patch-container {
+    @include for-small-device-only {
+        width: 400px;
+    }
+    
+    @include for-small-desktop-only {
+        width: 500px;
+    }
+    
+    @include for-desktop-up {
+        width: 600px;
+    }
+    
+    @include for-large-desktop-up {
+        width: 800px;
+    }
+}
+
+.patch {
+    @include for-small-device-only {
+        width: 80px;
+        height: 80px;
+    }
+    
+    @include for-small-desktop-only {
+        width: 100px;
+        height: 100px;
+    }
+    
+    @include for-desktop-up {
+        width: 140px;
+        height: 140px;
+    }
+    
+    @include for-large-desktop-up {
+        width: 160px;
+        height: 160px;
+    }
 }

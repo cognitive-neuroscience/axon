@@ -33,6 +33,7 @@ import { ConfirmationComponent } from './services/confirmation/confirmation.comp
 import { FinalPageComponent } from './pages/participant/final-page/final-page.component';
 import { DataComponent } from './pages/dashboard/data/data.component';
 import { MturkQuestionnaireComponent } from './pages/questionnaires/mturk-questionnaire/mturk-questionnaire.component';
+import { RotateDirective } from './pages/tasks/demand-selection/Rotate.directive';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { MturkQuestionnaireComponent } from './pages/questionnaires/mturk-questi
     FinalPageComponent,
     DataComponent,
     MturkQuestionnaireComponent,
+    RotateDirective
   ],
   imports: [
     BrowserModule,

@@ -1,42 +1,13 @@
 <!-- STILL IN PROGRESS -->
 
 
-<div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center"
-    (contextmenu)="processClickEvent($event);">
+<div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
 
 
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 1">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Welcome to Patch Game</h2>
-        </div>
         <!-- Introduction -->
-        <div class="w-100 uppercase instructions" align="center">
-
-            <div class="title">
-                <h2 class="mat-h2">
-                    Read the instructions carefully
-                </h2>
-            </div>
-
-            <div class="statement">
-                <span>Now you will be playing a slightly different game.</span>
-            </div>
-
-            <div class="statement">
-                <span>Your goal is still to make a decision about the number on the screen based on its color, BLUE or
-                    YELLOW.</span>
-            </div>
-
-            <div class="statement">
-                <span>However, here you will see two patches on the screen and will have to pick one.</span>
-            </div>
-
-
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/1.png" alt="Demand Selection instructions">
         </div>
 
         <!-- Navigation buttons -->
@@ -64,41 +35,10 @@
         </div>
     </div>
 
-
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>More Instructions</h2>
-        </div>
         <!-- Introduction -->
-        <div class="w-100 p-4 instructions uppercase" align="center">
-
-            <div class="title">
-                <h2 class="mat-h2">
-                </h2>
-            </div>
-
-            <div class="statement">
-                <span>Each patch is hiding a colored number.</span>
-            </div>
-
-            <div class="statement">
-                <span>There are differences between the patches.</span>
-            </div>
-
-            <div class="statement">
-                <span>One patch is hiding numbers that change color less often.</span>
-            </div>
-
-            <div class="statement">
-                <span>Other patch is hiding numbers that change color more often.</span>
-            </div>
-
-
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/2.png" alt="Demand Selection instructions">
         </div>
 
         <!-- Navigation buttons -->
@@ -127,33 +67,9 @@
     </div>
 
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 3">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>More Instructions</h2>
-        </div>
         <!-- Introduction -->
-        <div class="w-100 p-4 instructions uppercase" align="center">
-
-            <div class="statement">
-                <span>If you develop a preference for one of the patches, feel free to continue to choose it.</span>
-            </div>
-
-            <div class="statement">
-                <span>However, we recommend that you try both patches at the beginning.</span>
-            </div>
-
-            <div class="statement">
-                <span>Try to avoid choosing the patch solely based on how they look or on their location.</span>
-            </div>
-
-            <div class="statement">
-                <span>For the patches to appear, every time you must move the cursor over the fixation mark.</span>
-            </div>
-
-            <br>
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/3.png" alt="Demand Selection instructions">
         </div>
 
         <!-- Navigation buttons -->
@@ -182,29 +98,9 @@
     </div>
 
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 4">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>More Instructions</h2>
-        </div>
-        <!-- Introduction -->
-        <div class="w-100 p-4 instructions uppercase" align="center">
-
-            <div class="statement">
-                <span>To select a patch, move the mouse cursor over to it.</span>
-            </div>
-
-            <div class="statement">
-                <span>As soon as you hover over it, the colored number will appear.</span>
-            </div>
-
-            <div class="statement">
-                <span>Then use the mouse buttons as before to give us your answer.</span>
-            </div>
-
-            <br>
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
+        <!-- Instructions -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/4.png" alt="Demand Selection instructions">
         </div>
 
         <div class="w-100 p-4 uppercase">
@@ -232,44 +128,16 @@
     </div>
 
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 5">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>More Instructions</h2>
+        <!-- Instructions -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/5.png" alt="Demand Selection instructions">
         </div>
-        <div class="w-100 p-4 instructions uppercase" align="center">
-            <div class="statement">
-                <span>Remember, the color of the number tells you what you must identify about that number.</span>
-            </div>
-            <br>
-            <div class="statement">
-                <span style="font-size: 50px;" [style.color]="colorMapping[0]">3</span>
-            </div>
-            <div class="statement">
-                <span>If number is GREATER THAN 5: click the left mouse button</span>
-            </div>
-            <div class="statement">
-                <span>If number is LESSER THAN 5: click the right mouse button</span>
-            </div>
-            <br>
-            <div class="statement">
-                <span style="font-size: 50px;" [style.color]="colorMapping[1]">8</span>
-            </div>
-            <div class="statement">
-                <span>If number is EVEN: click the left mouse button</span>
-            </div>
-            <div class="statement">
-                <span>If number is ODD: click the right mouse button</span>
-            </div>
-            <br>
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-        </div>
+
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -291,26 +159,9 @@
     </div>
 
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 6">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Lets' Practice</h2>
-        </div>
-        <!-- Introduction -->
-        <div class="w-100 p-4 instructions uppercase" align="center">
-
-            <div class="statement">
-                <span>Now we will see a practice.</span>
-            </div>
-
-
-            <div class="statement">
-                The game will launch in fullscreen
-            </div>
-
-            <div class="statement-final">
-                Click 'START' when you are ready for the practice round
-            </div>
-
+        <!-- First Practice -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/6.png" alt="Demand Selection instructions">
         </div>
 
         <div class="w-100 p-4 uppercase">
@@ -343,41 +194,33 @@
     </div>
 
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
-
+        <!-- practice round -->
         <div *ngIf="isStimulus">
 
-            <div (mouseenter)="onHoverCursor($event)" style="cursor: pointer;" *ngIf="showFixation">
-                <img src="/assets/images/eye.png" style="height: 60px" />
+            <div (mouseenter)="onHoverFixation($event)" style="cursor: pointer;" *ngIf="showFixation">
+                <img src="/assets/images/stimuli/eye.png" class="fixation"/>
             </div>
+
 
             <div *ngIf="!showFixation">
-                <table>
-                    <tr *ngFor="let row of rows; let rowIndex = index;">
-                        <td style="text-align: center;" *ngFor="let col of cols; let colIndex = index;">
-                            <div *ngIf="posA === (rowIndex * 6 + (colIndex + 1))">
-                                <img *ngIf="showPatches" style="height: 150px;"
-                                    (mouseenter)="onHoverPatch($event, 'left')" [src]="getImage('a')" alt="">
-                                <div *ngIf="showNumber && hover === 'left'" style="font-size: 50px;"
-                                    [style.color]="color">
-                                    {{number}}
-                                </div>
-                            </div>
-                            <div *ngIf="posB === (rowIndex * 6 + (colIndex + 1))">
-                                <img *ngIf="showPatches" style="height: 150px;"
-                                    (mouseenter)="onHoverPatch($event, 'right')" [src]="getImage('b')" alt="">
-                                <div *ngIf="showNumber && hover === 'right'" style="font-size: 50px;"
-                                    [style.color]="color">
-                                    {{number}}
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                <div class="patch-container d-flex justify-content-between" rotate [rotation]="currentBlock.blockConfig.rotation">
+                    <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
+                        <img (mouseenter)="onHoverPatch($event, 'firstPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.firstPatchImg}}" alt="First Patch">
+                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                            <span class="displayed-number" [style.color]="color">{{ number }}</span>
+                        </div>
+                    </div>
+                    <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
+                        <img (mouseenter)="onHoverPatch($event, 'secondPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.secondPatchImg}}" alt="Second Patch">
+                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                            <span class="displayed-number" [style.color]="color">{{ number }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-
         </div>
 
-        <div *ngIf="!isStimulus">
+        <div *ngIf="!isStimulus && (showFeedbackAfterEveryTrial || (feedback === 'Too slow'))">
             <div class="feedback">
                 {{feedback}}
             </div>
@@ -385,7 +228,7 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step ===9">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
@@ -438,22 +281,9 @@
     </div>
 
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 11">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2></h2>
-        </div>
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <span>Awesome! Now we will start the real game. There are six parts to the game.</span>
-            </div>
-
-            <br>
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-
+        <!-- Recap instructions -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/7.png" alt="Demand Selection instructions">
         </div>
 
         <div class="w-100 p-4 uppercase">
@@ -468,387 +298,7 @@
                     </button>
                 </div>
                 <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
-                        NEXT
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Round X -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 12">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2></h2>
-        </div>
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <span>This is part {{block}} of the game.</span>
-            </div>
-
-            <br>
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-
-        </div>
-
-        <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
-                <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
-                        NEXT
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="full-box d-flex flex-column align-items-center justify-content-between"
-        *ngIf="!isBreak && step === 13 && block < 5">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Intructions</h2>
-        </div>
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-
-            <div class="statement">
-                <span>Your goal is still to make a decision about the number on the screen based on its color, BLUE or
-                    YELLOW.</span>
-            </div>
-
-            <div class="statement">
-                <span>You will see two patches on the screen and will have to pick one.</span>
-            </div>
-
-            <div class="statement">
-                <span>Each patch is hiding a colored number.</span>
-            </div>
-
-            <div class="statement">
-                <span>There are differences between the patches.</span>
-            </div>
-
-            <div class="statement">
-                <span>One patch has colors that change color less often and the other patch is
-                    hiding numbers that change color more often.</span>
-            </div>
-
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-
-        </div>
-
-        <!-- Navigation buttons -->
-        <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
-                <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
-                        NEXT
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="full-box d-flex flex-column align-items-center justify-content-between"
-        *ngIf="!isBreak && step === 14 && block < 5">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>More Instructions</h2>
-        </div>
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <span>If you develop a preference for one of the patches, feel free to continue to choose it.</span>
-            </div>
-
-            <div class="statement">
-                <span>However, we recommend that you try both patches at the beginning.</span>
-            </div>
-
-            <div class="statement">
-                <span>Try to avoid choosing the patch solely based on how they look or on their location.</span>
-            </div>
-
-            <div class="statement">
-                <span>For the patches to appear, every time you must move the cursor over the fixation mark.</span>
-            </div>
-
-            <br>
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-
-        </div>
-
-        <!-- Navigation buttons -->
-        <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
-                <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
-                        NEXT
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="full-box d-flex flex-column align-items-center justify-content-between"
-        *ngIf="!isBreak && step === 15 && block < 5">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>More Instructions</h2>
-        </div>
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <span>To select a patch, move the mouse cursor over to it.</span>
-            </div>
-
-            <div class="statement">
-                <span>As soon as you hover over it, the colored number will appear.</span>
-            </div>
-
-            <div class="statement">
-                <span>Then use the mouse buttons as before to give us your answer.</span>
-            </div>
-
-            <br>
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-
-        </div>
-
-        <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
-                <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
-                        NEXT
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="full-box d-flex flex-column align-items-center justify-content-between"
-        *ngIf="!isBreak && step === 13 && block === 5">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Intructions</h2>
-        </div>
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-
-            <div class="statement">
-                <span>For this part, you should try and figure out which patch is harder and stick with it for the rest
-                    of the block</span>
-            </div>
-
-            <div class="statement">
-                <span>Remember, once you have found and selected the harder patch, your goal is still to make a decision
-                    about the number on
-                    the screen based on its color, BLUE or YELLOW</span>
-            </div>
-
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-
-        </div>
-
-        <!-- Navigation buttons -->
-        <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
-                <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary" (click)="step = 16;">
-                        NEXT
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="full-box d-flex flex-column align-items-center justify-content-between"
-        *ngIf="!isBreak && step === 13 && block === 6">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Intructions</h2>
-        </div>
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-
-            <div class="statement">
-                <span>For this part, you should try and figure out which patch is easier and stick with it for the rest
-                    of
-                    the block</span>
-            </div>
-
-            <div class="statement">
-                <span>Remember, once you have found and selected the easier patch, your goal is still to make a decision
-                    about the number on
-                    the screen based on its color, BLUE or YELLOW</span>
-            </div>
-
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-
-        </div>
-
-        <!-- Navigation buttons -->
-        <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
-                <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary" (click)="step = 16;">
-                        NEXT
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 16">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>More Instructions</h2>
-        </div>
-        <div class="w-100 p-4 uppercase" align="center">
-            <div class="statement">
-                <span>Remember, the color of the number tells you what you must identify about that number.</span>
-            </div>
-            <br>
-            <div class="statement">
-                <span style="font-size: 50px;" [style.color]="colorMapping[0]">3</span>
-            </div>
-            <div class="statement">
-                <span>If number is GREATER THAN 5: click the left mouse button</span>
-            </div>
-            <div class="statement">
-                <span>If number is LESSER THAN 5: click the right mouse button</span>
-            </div>
-            <br>
-            <div class="statement">
-                <span style="font-size: 50px;" [style.color]="colorMapping[1]">8</span>
-            </div>
-            <div class="statement">
-                <span>If number is EVEN: click the left mouse button</span>
-            </div>
-            <div class="statement">
-                <span>If number is ODD: click the right mouse button</span>
-            </div>
-            <br>
-            <div class="statement-final">
-                Click 'START' when you are ready.
-            </div>
-        </div>
-        <!-- Navigation buttons -->
-        <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
-                <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary" (click)="startActualGame()">
+                    <button mat-raised-button color="primary" (click)="startPractice()">
                         START
                         &nbsp;
                         <mat-icon>
@@ -861,46 +311,39 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 17">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 12">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 18">
-
+    <!-- second practice round -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 13">
+        <!-- practice round -->
         <div *ngIf="isStimulus">
 
-            <div (mouseenter)="onHoverCursor($event)" style="cursor: pointer;" *ngIf="showFixation">
-                <img src="/assets/images/eye.png" style="height: 60px" />
+            <div (mouseenter)="onHoverFixation($event)" style="cursor: pointer;" *ngIf="showFixation">
+                <img src="/assets/images/stimuli/eye.png" class="fixation"/>
             </div>
+
 
             <div *ngIf="!showFixation">
-                <table>
-                    <tr *ngFor="let row of rows; let rowIndex = index;">
-                        <td style="text-align: center;" *ngFor="let col of cols; let colIndex = index;">
-                            <div *ngIf="posA === (rowIndex * 6 + (colIndex + 1))">
-                                <img *ngIf="showPatches" style="height: 150px;"
-                                    (mouseenter)="onHoverPatch($event, 'left')" [src]="getImage('a')" alt="">
-                                <div *ngIf="showNumber && hover === 'left'" style="font-size: 50px;"
-                                    [style.color]="color">
-                                    {{number}}
-                                </div>
-                            </div>
-                            <div *ngIf="posB === (rowIndex * 6 + (colIndex + 1))">
-                                <img *ngIf="showPatches" style="height: 150px;"
-                                    (mouseenter)="onHoverPatch($event, 'right')" [src]="getImage('b')" alt="">
-                                <div *ngIf="showNumber && hover === 'right'" style="font-size: 50px;"
-                                    [style.color]="color">
-                                    {{number}}
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                <div class="patch-container d-flex justify-content-between" rotate [rotation]="currentBlock.blockConfig.rotation">
+                    <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
+                        <img (mouseenter)="onHoverPatch($event, 'firstPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.firstPatchImg}}" alt="First Patch">
+                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                            <span class="displayed-number" [style.color]="color">{{ number }}</span>
+                        </div>
+                    </div>
+                    <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
+                        <img (mouseenter)="onHoverPatch($event, 'secondPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.secondPatchImg}}" alt="Second Patch">
+                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                            <span class="displayed-number" [style.color]="color">{{ number }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-
         </div>
 
-        <div *ngIf="!isStimulus">
+        <div *ngIf="!isStimulus && (showFeedbackAfterEveryTrial || (feedback === 'Too slow'))">
             <div class="feedback">
                 {{feedback}}
             </div>
@@ -908,38 +351,20 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 19">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 14">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Show block finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 20">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Block {{block}} Is Now Complete</h2>
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 15">
+        <!-- Intro to main game -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/8.png" alt="Demand Selection instructions">
         </div>
 
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                You got {{totalScore/10}} out of {{actualTrials}} trials correct
-            </div>
-
-            <br>
-
-
-            <div class="statement-final">
-                Click 'NEXT' when you are ready for the next block.
-            </div>
-
-        </div>
-
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button disabled (click)="proceedtoPreviousStep();">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -947,16 +372,7 @@
                         PREVIOUS
                     </button>
                 </div>
-                <div *ngIf="block !== 6">
-                    <button mat-raised-button color="primary" (click)="block = block + 1; step = 12;">
-                        NEXT
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
-                    </button>
-                </div>
-                <div *ngIf="block === 6">
+                <div>
                     <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
                         NEXT
                         &nbsp;
@@ -969,23 +385,27 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 21">
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2></h2>
-        </div>
-        <div class="w-100 p-4 uppercase" align="center">
+    <!-- Actual game: Round 1 Intro -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 16">
+
+        <!-- Introduction -->
+        <div class="w-100 h-100 d-flex flex-column justify-content-center p-4 uppercase" align="center">
+
             <div class="statement">
-                <span>Thank you for participating.</span>
+                <span>This is part 1 of the game.</span>
             </div>
+
+            <br>
             <div class="statement-final">
-                Click 'EXIT' to proceed
+                Click 'NEXT' to proceed
             </div>
+
         </div>
-        <!-- Navigation buttons -->
+
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -994,8 +414,8 @@
                     </button>
                 </div>
                 <div>
-                    <button mat-raised-button color="primary" (click)="continueAhead()">
-                        EXIT
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
                         &nbsp;
                         <mat-icon>
                             arrow_forward
@@ -1005,5 +425,721 @@
             </div>
         </div>
     </div>
+
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 17">
+        <!-- Recap instructions -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/10.png" alt="Demand Selection instructions">
+        </div>
+
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 18">
+        <!-- Recap instructions -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/9.png" alt="Demand Selection instructions">
+        </div>
+
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 19">
+        <!-- Recap instructions -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/10.png" alt="Demand Selection instructions">
+        </div>
+
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 20">
+        <!-- Recap instructions -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/11.png" alt="Demand Selection instructions">
+        </div>
+
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="prepareActualGame()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 21">
+        <!-- Recap instructions -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/12.png" alt="Demand Selection instructions">
+        </div>
+
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="startBlock()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 22">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- actual game for block 1 -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 23">
+
+        <div *ngIf="isStimulus">
+
+            <div (mouseenter)="onHoverFixation($event)" style="cursor: pointer;" *ngIf="showFixation">
+                <img src="/assets/images/stimuli/eye.png" class="fixation"/>
+            </div>
+
+            <div *ngIf="!showFixation">
+                <div class="patch-container d-flex justify-content-between" rotate [rotation]="currentBlock.blockConfig.rotation">
+                    <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
+                        <img (mouseenter)="onHoverPatch($event, 'firstPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.firstPatchImg}}" alt="First Patch">
+                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                            <span class="displayed-number" [style.color]="color">{{ number }}</span>
+                        </div>
+                    </div>
+                    <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
+                        <img (mouseenter)="onHoverPatch($event, 'secondPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.secondPatchImg}}" alt="Second Patch">
+                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                            <span class="displayed-number" [style.color]="color">{{ number }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="!isStimulus && (showFeedbackAfterEveryTrial || (feedback === 'Too slow'))">
+            <div class="feedback">
+                {{feedback}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 24">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Actual game: Round 1 Complete message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 25">
+
+        <!-- Introduction -->
+        <div class="w-100 h-100 d-flex flex-column justify-content-center p-4 uppercase" align="center">
+
+            <div class="statement">
+                <span>Part 1 is now complete.</span>
+            </div>
+
+            <br>
+            <div class="statement-final">
+                Click 'NEXT' to proceed
+            </div>
+
+        </div>
+
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled>
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="handleNextRound()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actual game: Round 2,3,4 Intro -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 26">
+
+        <!-- Introduction -->
+        <div class="w-100 h-100 d-flex flex-column justify-content-center p-4 uppercase" align="center">
+
+            <div class="statement">
+                <span>This is part {{blockNum}} of the game.</span>
+            </div>
+
+            <br>
+            <div class="statement-final">
+                Click 'NEXT' to proceed
+            </div>
+
+        </div>
+
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled>
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- instructions recap -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 27">
+        <!-- Recap instructions -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/12.png" alt="Demand Selection instructions">
+        </div>
+
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="startBlock()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 28">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- actual game for blocks 2, 3, and 4 -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 29">
+
+        <div *ngIf="isStimulus">
+
+            <div (mouseenter)="onHoverFixation($event)" style="cursor: pointer;" *ngIf="showFixation">
+                <img src="/assets/images/stimuli/eye.png" class="fixation"/>
+            </div>
+
+            <div *ngIf="!showFixation">
+                <div class="patch-container d-flex justify-content-between" rotate [rotation]="currentBlock.blockConfig.rotation">
+                    <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
+                        <img (mouseenter)="onHoverPatch($event, 'firstPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.firstPatchImg}}" alt="First Patch">
+                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                            <span class="displayed-number" [style.color]="color">{{ number }}</span>
+                        </div>
+                    </div>
+                    <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
+                        <img (mouseenter)="onHoverPatch($event, 'secondPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.secondPatchImg}}" alt="Second Patch">
+                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                            <span class="displayed-number" [style.color]="color">{{ number }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="!isStimulus && (showFeedbackAfterEveryTrial || (feedback === 'Too slow'))">
+            <div class="feedback">
+                {{feedback}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 30">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Actual game: Round 2,3,4 Complete message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 31">
+
+        <!-- Introduction -->
+        <div class="w-100 h-100 d-flex flex-column justify-content-center p-4 uppercase" align="center">
+
+            <div class="statement">
+                <span>Part {{blockNum}} is now complete.</span>
+            </div>
+            <br>
+            <!-- at the 4th block, we want to introduce counterbalancing -->
+            <div *ngIf="blockNum === 4" class="statement">
+                <span style="color: red;" class="uppercase">We will be asking you to do something different!!!</span>
+            </div>
+            <br>
+            <div class="statement-final">
+                Click 'NEXT' to proceed
+            </div>
+        </div>
+
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled>
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="handleNextRound()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- start counter balancing -->
+
+    <!-- counter balancing, block 5 -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 32">
+
+        <ng-container *ngIf="counterBalance === 'Select hard patch'">
+            <!-- instructions for round 5 -->
+            <div class="w-100 px-4 uppercase instructions" align="center">
+                <img class="w-100" src="/assets/images/instructions/demandselection/13a.png" alt="Demand Selection instructions">
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="counterBalance === 'Select easy patch'">
+            <!-- instructions for round 5 -->
+            <div class="w-100 px-4 uppercase instructions" align="center">
+                <img class="w-100" src="/assets/images/instructions/demandselection/13b.png" alt="Demand Selection instructions">
+            </div>
+        </ng-container>
+
+
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled>
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- instructions recap -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 33">
+        <!-- Recap instructions -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/12.png" alt="Demand Selection instructions">
+        </div>
+
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="startBlock()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 34">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- actual game for block 5-->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 35">
+
+        <div *ngIf="isStimulus">
+
+            <div (mouseenter)="onHoverFixation($event)" style="cursor: pointer;" *ngIf="showFixation">
+                <img src="/assets/images/stimuli/eye.png" class="fixation"/>
+            </div>
+
+            <div *ngIf="!showFixation">
+                <div class="patch-container d-flex justify-content-between" rotate [rotation]="currentBlock.blockConfig.rotation">
+                    <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
+                        <img (mouseenter)="onHoverPatch($event, 'firstPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.firstPatchImg}}" alt="First Patch">
+                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                            <span class="displayed-number" [style.color]="color">{{ number }}</span>
+                        </div>
+                    </div>
+                    <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
+                        <img (mouseenter)="onHoverPatch($event, 'secondPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.secondPatchImg}}" alt="Second Patch">
+                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                            <span class="displayed-number" [style.color]="color">{{ number }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="!isStimulus && (showFeedbackAfterEveryTrial || (feedback === 'Too slow'))">
+            <div class="feedback">
+                {{feedback}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 36">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Actual game: Round 5 Complete message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 37">
+
+        <!-- Introduction -->
+        <div class="w-100 h-100 d-flex flex-column justify-content-center p-4 uppercase" align="center">
+
+            <div class="statement">
+                <span>Part {{blockNum}} is now complete.</span>
+            </div>
+            <br>
+            <div class="statement">
+                <span style="color: red;" class="uppercase">We will be asking you to do something different!!!</span>
+            </div>
+            <br>
+            <div class="statement-final">
+                Click 'NEXT' to proceed
+            </div>
+        </div>
+
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled>
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="handleNextRound()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- counter balancing, block 6 -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 38">
+
+        <ng-container *ngIf="counterBalance === 'Select hard patch'">
+            <!-- instructions for round 5 -->
+            <div class="w-100 px-4 uppercase instructions" align="center">
+                <img class="w-100" src="/assets/images/instructions/demandselection/14b.png" alt="Demand Selection instructions">
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="counterBalance === 'Select easy patch'">
+            <!-- instructions for round 5 -->
+            <div class="w-100 px-4 uppercase instructions" align="center">
+                <img class="w-100" src="/assets/images/instructions/demandselection/14a.png" alt="Demand Selection instructions">
+            </div>
+        </ng-container>
+
+
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled>
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- instructions recap -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 39">
+        <!-- Recap instructions -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/demandselection/12.png" alt="Demand Selection instructions">
+        </div>
+
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="startBlock()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 40">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- actual game for block 6-->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 41">
+
+        <div *ngIf="isStimulus">
+
+            <div (mouseenter)="onHoverFixation($event)" style="cursor: pointer;" *ngIf="showFixation">
+                <img src="/assets/images/stimuli/eye.png" class="fixation"/>
+            </div>
+
+            <div *ngIf="!showFixation">
+                <div class="patch-container d-flex justify-content-between" rotate [rotation]="currentBlock.blockConfig.rotation">
+                    <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
+                        <img (mouseenter)="onHoverPatch($event, 'firstPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.firstPatchImg}}" alt="First Patch">
+                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                            <span class="displayed-number" [style.color]="color">{{ number }}</span>
+                        </div>
+                    </div>
+                    <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
+                        <img (mouseenter)="onHoverPatch($event, 'secondPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.secondPatchImg}}" alt="Second Patch">
+                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                            <span class="displayed-number" [style.color]="color">{{ number }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="!isStimulus && (showFeedbackAfterEveryTrial || (feedback === 'Too slow'))">
+            <div class="feedback">
+                {{feedback}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 42">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Actual game: Round 6 Complete message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 43">
+
+        <!-- Heading -->
+        <div class="w-100 p-4 uppercase" align="center">
+            <h2>Round 6 Is Now Complete</h2>
+        </div>
+
+        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center">
+
+            <div class="statement-final">
+                Click 'NEXT' when you are ready for the next stage.
+            </div>
+
+        </div>
+
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled>
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="continueAhead()">
+                        NEXT
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </div>

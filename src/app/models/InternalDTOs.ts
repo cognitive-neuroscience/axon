@@ -64,3 +64,10 @@ export enum Color {
 export class ExperimentRoutingMap {
     [key: string]: Task
 }
+
+export enum UserResponse {
+    GREATER = "GREATER",
+    LESSER = "LESSER",
+    ODD = "ODD",
+    EVEN = "EVEN"
+}

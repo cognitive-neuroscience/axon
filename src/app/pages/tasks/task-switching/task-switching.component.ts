@@ -2,19 +2,12 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { Matrix } from './matrix';
 import { UploadDataService } from 'src/app/services/uploadData.service';
-import { Color, Key, Role } from '../../../models/InternalDTOs';
+import { Color, Key, Role, UserResponse } from '../../../models/InternalDTOs';
 import { AuthService } from '../../../services/auth.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
 import { TaskSwitching } from '../../../models/TaskData';
 declare function setFullScreen(): any;
-
-export enum UserResponse {
-  GREATER = "GREATER",
-  LESSER = "LESSER",
-  ODD = "ODD",
-  EVEN = "EVEN"
-}
 
 @Component({
   selector: 'app-task-switching',
@@ -65,7 +58,7 @@ export class TaskSwitchingComponent implements OnInit {
     }
   } = {
     1: {
-      numTrials: 1,
+      numTrials: 10,
       showFeedback: true,
       responseTime: 10000,
       repeat: {
@@ -74,7 +67,7 @@ export class TaskSwitchingComponent implements OnInit {
       }
     },
     2: {
-      numTrials: 2,
+      numTrials: 20,
       showFeedback: true,
       responseTime: 4000,
       repeat: {
@@ -84,7 +77,7 @@ export class TaskSwitchingComponent implements OnInit {
       }
     },
     3: {
-      numTrials: 3,
+      numTrials: 10,
       showFeedback: false,
       responseTime: 4000,
       repeat: {

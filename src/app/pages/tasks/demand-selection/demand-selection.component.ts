@@ -1,8 +1,12 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, ElementRef, Renderer2, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 declare function setFullScreen(): any;
-import { Matrix } from './matrix';
+import { BlockSet, Block, DScounterbalance } from './BlockSet';
 import { UploadDataService } from 'src/app/services/uploadData.service';
+import { Color, Key, Role, UserResponse } from 'src/app/models/InternalDTOs';
+import { AuthService } from '../../../services/auth.service';
+import { SnackbarService } from '../../../services/snackbar.service';
+import { TaskManagerService } from '../../../services/task-manager.service';
 
 @Component({
   selector: 'app-demand-selection',
@@ -15,36 +19,89 @@ export class DemandSelectionComponent implements OnInit {
   isScored: boolean | number = true;
   showFeedbackAfterEveryTrial: boolean | number = true;
   showScoreAfterEveryTrial: boolean | number = false;
-  numberOfBreaks: number = 0;
+  // numberOfBreaks: number = 0;
+  maxResponseTime: number = 4000;
   durationOfFeedback: number = 1000;    // In milliseconds
-  interTrialDelay: number = 1000;       // In milliseconds
+  interTrialDelay: number = 200;       // In milliseconds
   practiceTrials: number = 5;
-  actualTrials: number = 10;
+  actualTrials: number = 50;
+  blockTrials: number[] = [2, 2, 2, 2, 5, 5]
+
+  // all variables relating to showing different component in the game
   showPatches: boolean = false;
   showNumber: boolean = false;
-  step: number = 1;
   number: number = 0;
   feedback: string = '';
+  showFixation: boolean = false;
+  feedbackShown: boolean = false;
+  
   scoreForSpecificTrial: number = 0;
+  step: number = 1;
   totalScore: number = 0;
   isPractice: boolean = false;
   isStimulus: boolean = false;
   isBreak: boolean = false;
-  currentTrial: number = 0;
+  currentTrial: number = 0; // keeps track of what trial num we're currently at for the specific block
   isResponseAllowed: boolean = false;
   data: {
-    isPractice: number,
-    positions: string,
-    patch: string,
+    patchImgSelected: string,
+    patchImgNotSelected: string,
     color: string,
     digit: number,
     actualAnswer: string,
     userAnswer: string,
+    counterbalance: string,
     responseTime: number,
-    isCorrect: number,
+    isCorrect: boolean,
+    block: number,
     score: number,
-    colorMapping: string
   }[] = [];
+  sTimeout: any;
+
+  // what practice phase we are currently at
+  currentPracticeRound: {
+    phase: number,
+    round: number // multiple rounds for each phase (each repeat is +1 round)
+  } = {
+    phase: 0,
+    round: 0
+  }
+
+  public readonly imagePath = "/assets/images/stimuli/demandselection/"
+
+  // config for setting up practice rounds
+  practiceRoundConfig: {
+    [key: number]: {
+      numTrials: number, 
+      showFeedback: boolean, 
+      responseTime: number, // in milliseconds
+      repeat: {
+        canRepeat: boolean, 
+        numRepeatsAllowed: number,
+        thresholdForRepeat?: number
+      }
+    }
+  } = {
+    1: {
+      numTrials: 1,
+      showFeedback: true,
+      responseTime: 4000,
+      repeat: {
+        canRepeat: false,
+        numRepeatsAllowed: 0
+      }
+    },
+    2: {
+      numTrials: 1,
+      showFeedback: true,
+      responseTime: 4000,
+      repeat: {
+        canRepeat: false,
+        numRepeatsAllowed: 0,
+      }
+    }
+  }
+
   timer: {
     started: number,
     ended: number
@@ -52,100 +109,86 @@ export class DemandSelectionComponent implements OnInit {
       started: 0,
       ended: 0
     };
-  showFixation: boolean = false;
-  feedbackShown: boolean = false;
 
-  rows = [1, 2, 3, 4, 5, 6];
-  cols = [1, 2, 3, 4, 5, 6];
-  posA = 0;
-  posB = 0;
-  hover = 'left';
-  colorMapping = localStorage.getItem('mapping') === '1' ? ['blue', 'yellow'] : ['yellow', 'blue'];
-  color: string = this.colorMapping[0];
-  block = 1;
-  matrix = {
-    digits: []
-  };
+  
 
-  colorStim = [
-    ['abstPa.bmp', 'abstPb.bmp'],
-    ['abst01a.bmp', 'abst01b.bmp'],
-    ['abst02a.bmp', 'abst02b.bmp'],
-    ['abst03a.bmp', 'abst03b.bmp'],
-    ['abst04a.bmp', 'abst04b.bmp'],
-    ['abst05a.bmp', 'abst05b.bmp'],
-    ['abst06a.bmp', 'abst06b.bmp'],
-    ['abst07a.bmp', 'abst07b.bmp'],
-    ['abst08a.bmp', 'abst08b.bmp'],
-    ['abst09a.bmp', 'abst09b.bmp'],
-    ['abst10a.bmp', 'abst10b.bmp'],
-    ['abst11a.bmp', 'abst11b.bmp'],
-    ['abst12a.bmp', 'abst12b.bmp'],
-  ]
+  selectedPatch: "firstPatch" | "secondPatch" = "firstPatch";
+  color: string;
+  blockset: BlockSet;
+  currentBlock: Block;
+  blockNum = 1;
+  counterBalance: DScounterbalance = DScounterbalance.NONE; // for blocks 5 & 6
 
-  @HostListener('document:click', ['$event'])
-  onKeyPress(event: MouseEvent) {
-    if (this.isResponseAllowed) {
+  oddEvenColor = Color.BLUE;
+  ltGtColor = Color.ORANGE;
+
+  @HostListener('window:keydown', ['$event'])
+  onKeyPress(event: KeyboardEvent) {
+    if (this.isResponseAllowed && this.isValidKey(event.key)) {
+      // if we have a response before timeout, we need to make sure this is cleared
+      clearTimeout(this.sTimeout)
+      this.isStimulus = false;
+      this.showPatches = false;
+      this.showFixation = false;
+      this.showNumber = false;
       this.isResponseAllowed = false;
-      try {
-        if (this.data[this.data.length - 1].color === this.colorMapping[0]) {
-          this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
-          this.data[this.data.length - 1].userAnswer = 'GREATER';
-        } else {
-          this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
-          this.data[this.data.length - 1].userAnswer = 'EVEN';
-        }
-        this.showFeedback();
-      } catch (error) {
+      let userAnswer: UserResponse;
+
+      this.timer.ended = new Date().getTime();
+      this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
+
+      // mark down user response
+      const selectedColor = this.currentBlock.trialConfigs[this.currentTrial - 1][this.selectedPatch];
+      if(selectedColor === this.oddEvenColor) {
+        userAnswer = event.key === Key.ARROWLEFT ? UserResponse.ODD : UserResponse.EVEN
+      } else {
+        userAnswer = event.key === Key.ARROWLEFT ? UserResponse.LESSER : UserResponse.GREATER
       }
+
+      this.data[this.data.length - 1].userAnswer = userAnswer;
+
+      this.showFeedback();
     }
   }
 
+  private isValidKey(key: string): boolean {
+    if(key === Key.ARROWLEFT || key === Key.ARROWRIGHT) return true;
+    return false;
+  }
 
   constructor(
     private router: Router,
     private uploadDataService: UploadDataService,
+    private authService: AuthService,
+    private snackbarService: SnackbarService,
+    private taskManager: TaskManagerService
   ) { }
 
   ngOnInit() {
+    // generate the blockset for the 6 blocks to be run
+    this.blockset = new BlockSet(this.blockTrials, 10, 90, Color.BLUE, Color.ORANGE, false);
+    console.log(this.blockset);
+    
   }
 
-  proceedtoPreviousStep() {
-    this.step -= 1;
+  proceedtoPreviousStep(step = 1) {
+    this.step -= step;
   }
 
   proceedtoNextStep() {
     this.step += 1;
   }
 
-  processClickEvent(event: any) {
-    if (this.isResponseAllowed) {
-      this.isResponseAllowed = false;
-      try {
-        if (this.data[this.data.length - 1].color === this.colorMapping[0]) {
-          this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
-          this.data[this.data.length - 1].userAnswer = 'GREATER';
-        } else {
-          this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
-          this.data[this.data.length - 1].userAnswer = 'EVEN';
-        }
-        try {
-          this.showFeedback();
-        } catch (error) {
-        }
-      } catch (error) {
-      }
-    }
-    event.preventDefault();
-  }
-
   async startPractice() {
-    this.matrix = new Matrix(this.practiceTrials, 50);
-    this.startGameInFullScreen();
+
+    this.applyPracticeTrialConfigs()
+
+    let blockset = new BlockSet([this.practiceTrials], 10, 90, Color.BLUE, Color.ORANGE, true);
+    console.log(blockset);
+    
+    this.currentBlock = blockset.blocks[0];
+
+    // this.startGameInFullScreen();
     this.resetData();
     this.proceedtoNextStep();
     await this.wait(2000);
@@ -155,100 +198,124 @@ export class DemandSelectionComponent implements OnInit {
     this.showStimulus();
   }
 
-  async startActualGame() {
-    if (this.block >= 5) {
-      this.actualTrials = 35;
+  // looks at the practice trial config and applies the number of practice trials, feedback shown, as well as
+  // whether the phase needs to be repeated or not
+  private applyPracticeTrialConfigs() {
+
+    if(this.currentPracticeRound.round == 0 || !this.shouldRepeatPracticePhase()) {
+      // if we are at the first round of the phase, we don't worry about repeating
+      // we should not go to the next phase if we need to repeat
+      this.currentPracticeRound.phase++;
+      this.currentPracticeRound.round = 0;
     }
-    this.matrix = new Matrix(this.actualTrials, 50);
+
+    const phase = this.currentPracticeRound.phase;
+    this.practiceTrials = this.practiceRoundConfig[phase].numTrials;
+    this.maxResponseTime = this.practiceRoundConfig[phase].responseTime;
+    this.showFeedbackAfterEveryTrial = this.practiceRoundConfig[phase].showFeedback;
+    this.currentPracticeRound.round++;
+  }
+
+  private shouldRepeatPracticePhase(): boolean {
+    const phase = this.currentPracticeRound.phase;
+    const round = this.currentPracticeRound.round;
+    const repeatConfig = this.practiceRoundConfig[phase].repeat;
+    const threshold = repeatConfig.thresholdForRepeat ? repeatConfig.thresholdForRepeat : 1.01
+
+    // if canRepeat = true, we haven't reached our max repeat limit, 
+    // and the participant did worse than the given threshold then we repeat
+    if( repeatConfig.canRepeat && 
+        round <= repeatConfig.numRepeatsAllowed && 
+        this.getPercentageCorrect() < threshold
+     ) {
+      return true;
+    }
+    return false;
+  }
+
+  private getPercentageCorrect(): number {
+    // divide by 0 guard
+    if(this.practiceTrials == 0) return 0;
+    return (this.totalScore / 10) / this.practiceTrials;
+  }
+
+  async prepareActualGame() {
     this.resetData();
+    this.currentBlock = this.blockset.blocks[0];
+    this.proceedtoNextStep()
+  }
+
+  async startBlock() {
     this.proceedtoNextStep();
     await this.wait(2000);
     this.proceedtoNextStep();
     this.isPractice = false;
     this.showFeedbackAfterEveryTrial = false;
+    this.maxResponseTime = 4000;
     this.showScoreAfterEveryTrial = false;
+    this.actualTrials = this.currentBlock.trialConfigs.length;
     this.currentTrial = 0;
     this.showStimulus();
   }
 
-  async showStimulus() {
-
+  // 1) show the bullseye
+  showStimulus() {
     this.reset();
     this.showFixation = true;
     this.showNumber = false;
     this.showPatches = false;
-
-    this.posA = 0;
-    this.posB = 0;
-
-    while (1) {
-      this.posA = Math.floor(Math.random() * this.rows.length * this.cols.length) + 1;
-      this.posB = Math.floor(Math.random() * this.rows.length * this.cols.length) + 1;
-      if (this.posA !== this.posB && ![15, 16, 21, 22].includes(this.posA) && ![15, 16, 21, 22].includes(this.posB)) {
-        break;
-      }
-    }
-    console.log(this.posA, this.posB);
-
-    await this.wait(200);
-
     this.currentTrial += 1;
     this.isStimulus = true;
   }
 
-  onHoverCursor(event) {
-    this.showPatches = true;
+  // 2) mouse hovers over the bullseye so we hide it and show the patches
+  onHoverFixation(event) {
     this.showFixation = false;
+    this.showPatches = true;
     this.showNumber = false;
     this.isResponseAllowed = false;
     this.timer.started = 0;
     this.timer.ended = 0;
   }
 
-  onHoverPatch(event, side = 'left') {
-    this.hover = side;
-
-    let switchingProb = 0.5;
-    if (this.block >= 5) {
-      switchingProb = side === 'left' ? 0.1 : 0.9;
-    }
-
-    if (this.currentTrial > 1) {
-      if (Math.random() >= switchingProb) {
-        this.color = this.color === 'blue' ? 'yellow' : 'blue';
-      }
-    } else {
-      this.color = this.colorMapping[0];
-    }
-
-    const digit = this.matrix.digits[this.currentTrial - 1];
+  // 3) mouse hovers over a patch so we show the numbers and accept responses
+  onHoverPatch(event, patch: "firstPatch" | "secondPatch") {
     let answer = '';
-    if (this.color === this.colorMapping[0]) {
-      if (digit > 5) {
-        answer = 'GREATER';
+    const currentTrial = this.currentBlock.trialConfigs[this.currentTrial - 1];
+    const blockConfig = this.currentBlock.blockConfig;
+    const color = patch === "firstPatch" ? currentTrial.firstPatch : currentTrial.secondPatch;
+    const digit = currentTrial.digit;
+
+    if (color === this.oddEvenColor) {
+      if (digit % 2 === 0) {
+        answer = UserResponse.EVEN;
       } else {
-        answer = 'LESSER';
+        answer = UserResponse.ODD;
       }
     } else {
-      if (digit % 2 === 0) {
-        answer = 'EVEN';
+      if (digit > 5) {
+        answer = UserResponse.GREATER;
       } else {
-        answer = 'ODD';
+        answer = UserResponse.LESSER;
       }
     }
+
+    this.selectedPatch = patch;
     this.number = digit;
+    this.color = color;
+
     this.data.push({
-      isPractice: this.isPractice ? 1 : 0,
-      patch: side === 'left' ? 'A' : 'B',
-      positions: [this.posA, this.posB].join(),
+      patchImgSelected: patch === "firstPatch" ? blockConfig.firstPatchImg : blockConfig.secondPatchImg,
+      patchImgNotSelected: patch === "firstPatch" ? blockConfig.secondPatchImg : blockConfig.firstPatchImg,
       color: this.color,
-      digit,
+      digit: digit,
       actualAnswer: answer,
-      userAnswer: '',
+      userAnswer: null,
+      block: this.blockNum,
       responseTime: 0,
-      isCorrect: 0,
+      isCorrect: false,
+      counterbalance: this.counterBalance,
       score: 0,
-      colorMapping: this.colorMapping.join().toUpperCase()
     });
 
     this.showPatches = false;
@@ -259,7 +326,12 @@ export class DemandSelectionComponent implements OnInit {
     this.timer.started = new Date().getTime();
     this.timer.ended = 0;
 
-    console.log(this.isPractice ? `Practice trial: ${this.currentTrial}` : `Actual trial: ${this.currentTrial}`);
+    // Give participant max time to respond to stimuli
+    this.sTimeout = setTimeout(() => {
+      if (!this.feedbackShown) {
+        this.showFeedback();
+      }
+    }, this.maxResponseTime);
   }
 
   async showFeedback() {
@@ -270,31 +342,32 @@ export class DemandSelectionComponent implements OnInit {
     this.showNumber = false;
     this.isResponseAllowed = false;
 
-    if (this.data[this.data.length - 1].responseTime === 0) {
-      this.timer.ended = new Date().getTime();
-      this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
-    }
+    const currentDataObj = this.data[this.data.length - 1];
 
-    if (this.data[this.data.length - 1].actualAnswer === this.data[this.data.length - 1].userAnswer) {
-      this.feedback = "Correct";
-      this.data[this.data.length - 1].isCorrect = 1;
-      this.data[this.data.length - 1].score = 10;
-      this.scoreForSpecificTrial = 10;
-      this.totalScore += 10;
-    } else {
-      if (this.data[this.data.length - 1].userAnswer === '') {
+    switch (currentDataObj.userAnswer) {
+      case currentDataObj.actualAnswer:   // correct
+        this.feedback = "Correct";
+        currentDataObj.isCorrect = true;
+        currentDataObj.score = 10;
+        this.scoreForSpecificTrial = 10;
+        this.totalScore += 10;
+        break;
+      case null:                          // too slow
         this.feedback = "Too slow";
-      } else {
+        currentDataObj.responseTime = this.maxResponseTime;
+        break;
+      default:                            // incorrect
         this.feedback = "Incorrect";
-      }
-      this.data[this.data.length - 1].isCorrect = 0;
-      this.data[this.data.length - 1].score = 0;
-      this.scoreForSpecificTrial = 0;
+        currentDataObj.isCorrect = false;
+        this.scoreForSpecificTrial = 0;
+        break;
     }
 
-    if (this.showFeedbackAfterEveryTrial || this.isPractice) {
+    // we want to show 'Too slow' every time
+    if (this.feedback === 'Too slow' || this.showFeedbackAfterEveryTrial) {
       await this.wait(this.durationOfFeedback);
     }
+
     this.decideToContinue();
   }
 
@@ -311,29 +384,44 @@ export class DemandSelectionComponent implements OnInit {
       }
     } else {
       if (this.currentTrial < this.actualTrials) {
-        if (this.numberOfBreaks === 0) {
-          this.continueGame();
-        } else {
-          const breakAtTrailIndices = [];
-          const setSize = this.actualTrials / (this.numberOfBreaks + 1);
-          for (let i = 1; i < this.numberOfBreaks + 1; i++) {
-            breakAtTrailIndices.push(setSize * i);
-          }
-          if (breakAtTrailIndices.includes(this.currentTrial)) {
-            this.isBreak = true;
-          } else {
-            this.isBreak = false;
-            this.continueGame();
-          }
-        }
+        this.continueGame();
+
+        // Implement later if we decide to include breaks
+        // if (this.numberOfBreaks === 0) {
+        //   this.continueGame();
+        // } else {
+        //   const breakAtTrailIndices = [];
+        //   const setSize = this.actualTrials / (this.numberOfBreaks + 1);
+        //   for (let i = 1; i < this.numberOfBreaks + 1; i++) {
+        //     breakAtTrailIndices.push(setSize * i);
+        //   }
+        //   if (breakAtTrailIndices.includes(this.currentTrial)) {
+        //     this.isBreak = true;
+        //   } else {
+        //     this.isBreak = false;
+        //     this.continueGame();
+        //   }
+        // }
       } else {
+
+        if(this.blockNum == 6) {
+          this.uploadResults()
+        }
+
+
         this.proceedtoNextStep();
         await this.wait(2000);
         this.proceedtoNextStep();
-        console.log(this.data);
-        this.uploadResults();
       }
     }
+  }
+
+  handleNextRound() {
+    this.blockNum++;
+    // set the curent block to be the next one
+    this.currentBlock = this.blockset.blocks[this.blockNum - 1];
+    this.counterBalance = this.currentBlock.blockConfig.counterbalance;
+    this.blockNum >= 5 || this.blockNum == 2 ? this.proceedtoNextStep() : this.proceedtoPreviousStep(5)
   }
 
   resume() {
@@ -349,13 +437,20 @@ export class DemandSelectionComponent implements OnInit {
 
   uploadResults() {
     if (this.data.length > 0) {
+      console.log(this.data);
       let d = JSON.parse(JSON.stringify(this.data));
       // this.dataService.uploadData('dst', d);
     }
   }
 
   continueAhead() {
-    this.router.navigate(['/dashboard']);
+    const decodedToken = this.authService.getDecodedToken()
+    if(decodedToken.Role === Role.ADMIN) {
+      this.router.navigate(['/dashboard/tasks'])
+      this.snackbarService.openInfoSnackbar("Task completed")
+    } else {
+      this.taskManager.nextExperiment()
+    }
   }
 
   reset() {
@@ -366,21 +461,11 @@ export class DemandSelectionComponent implements OnInit {
     this.showPatches = false;
     this.showFixation = false;
     this.showNumber = false;
-    this.posA = 0;
-    this.posB = 0;
   }
 
   resetData() {
     this.data = [];
     this.totalScore = 0;
-  }
-
-  getImage(side: string) {
-    if (this.isPractice) {
-      return `/assets/images/dst/abstP${side}.bmp`
-    } else {
-      return `/assets/images/dst/abst${this.block < 10 ? '0' : ''}${this.block}${side}.bmp`
-    }
   }
 
   startGameInFullScreen() {
