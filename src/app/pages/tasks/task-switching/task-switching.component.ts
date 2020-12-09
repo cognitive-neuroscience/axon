@@ -58,7 +58,7 @@ export class TaskSwitchingComponent implements OnInit {
     }
   } = {
     1: {
-      numTrials: 10,
+      numTrials: 5,
       showFeedback: true,
       responseTime: 10000,
       repeat: {
@@ -67,7 +67,7 @@ export class TaskSwitchingComponent implements OnInit {
       }
     },
     2: {
-      numTrials: 20,
+      numTrials: 5,
       showFeedback: true,
       responseTime: 4000,
       repeat: {
@@ -77,7 +77,7 @@ export class TaskSwitchingComponent implements OnInit {
       }
     },
     3: {
-      numTrials: 10,
+      numTrials: 5,
       showFeedback: false,
       responseTime: 4000,
       repeat: {

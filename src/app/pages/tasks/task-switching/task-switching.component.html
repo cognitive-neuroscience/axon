@@ -370,7 +370,7 @@
                     </button>
                 </div>
                 <div>
-                    <button mat-raised-button color="primary" (click)="shouldRepeatPracticePhase() ? startPractice() : proceedtoNextStep(5)">
+                    <button mat-raised-button color="primary" (click)="shouldRepeatPracticePhase() ? proceedtoNextStep() : proceedtoNextStep(6)">
                         NEXT
                         &nbsp;
                         <mat-icon>
@@ -382,13 +382,46 @@
         </div>
     </div>
 
+    <!-- Instructions slide for practice #2 -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 16">
+        
+        <!-- Instructions -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/taskswitching/7.png" alt="Task Switching instructions">
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button disabled color="primary">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="startPractice()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 16">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 17">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start 2nd Practice Round repeated -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 17">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 18">
 
         <div *ngIf="isStimulus">
             <div style="font-size: 80px;" [style.color]="color">
@@ -409,12 +442,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 18">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 19">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- 2nd Practice round complete message repeated -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 19">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 20">
         
         <!-- Practice score -->
         <div class="w-100 h-100 d-flex flex-column justify-content-center px-4 uppercase instructions" align="center">
@@ -455,7 +488,7 @@
     </div>
 
     <!-- Introduction slide for practice #3 -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 20">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 21">
         
         <!-- Instructions -->
         <div class="w-100 px-4 uppercase instructions" align="center">
@@ -488,7 +521,7 @@
     </div>
 
     <!-- Instructions recap slide for practice #3 -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 21">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 22">
         
         <!-- Instructions -->
         <div class="w-100 px-4 uppercase instructions" align="center">
@@ -521,12 +554,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 22">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 23">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start 3rd Practice Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 23">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 24">
 
         <div *ngIf="isStimulus">
             <div style="font-size: 80px;" [style.color]="color">
@@ -547,12 +580,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 24">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 25">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Introduction slide for actual round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 25">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 26">
         
         <!-- Instructions -->
         <div class="w-100 px-4 uppercase instructions" align="center">
@@ -585,7 +618,7 @@
     </div>
 
     <!-- Recap instructions for actual round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 26">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 27">
         
         <!-- Instructions -->
         <div class="w-100 px-4 uppercase instructions" align="center">
@@ -618,12 +651,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 27">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 28">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start Actual Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 28">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 29">
 
         <div *ngIf="isStimulus">
             <div style="font-size: 80px;" [style.color]="color">
@@ -643,12 +676,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 29">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 30">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Slide 9 -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 30">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 31">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Main Round Is Now Complete</h2>

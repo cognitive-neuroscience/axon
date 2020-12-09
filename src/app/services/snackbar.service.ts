@@ -20,6 +20,10 @@ export class SnackbarService {
         })
     }
 
+    public clearSnackbar() {
+        this._snackbar.dismiss();
+    }
+
     // action doesn't do anything right now, kept in case we want to implement later
     public openSuccessSnackbar(message: string, action?: string, duration?: number) {
         this._snackbar.openFromComponent(SnackbarComponent, {

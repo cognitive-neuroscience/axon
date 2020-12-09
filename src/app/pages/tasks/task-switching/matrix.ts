@@ -13,7 +13,7 @@ export class Matrix {
         ltGtColor: Color = Color.ORANGE
     ) {
         
-        //  digits are 1,2,3,4,6,7,8,9 - don't repeat
+        //  digits are 1,2,3,4,6,7,8,9 - don't repeat same digit twice
         while (this.digits.length < trials) {
             const digit = this.getRandomInt(10);
             const prevDigit = this.digits.length > 0 ? this.digits[this.digits.length - 1] : null;

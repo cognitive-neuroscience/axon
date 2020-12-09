@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, ViewChild, ElementRef, Renderer2, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 declare function setFullScreen(): any;
 import { BlockSet, Block, DScounterbalance } from './BlockSet';
@@ -20,12 +20,12 @@ export class DemandSelectionComponent implements OnInit {
   showFeedbackAfterEveryTrial: boolean | number = true;
   showScoreAfterEveryTrial: boolean | number = false;
   // numberOfBreaks: number = 0;
-  maxResponseTime: number = 4000;
+  maxResponseTime: number = 5000;
   durationOfFeedback: number = 1000;    // In milliseconds
   interTrialDelay: number = 200;       // In milliseconds
   practiceTrials: number = 5;
   actualTrials: number = 50;
-  blockTrials: number[] = [10, 10, 10, 10, 8, 8]
+  blockTrials: number[] = [50, 50, 50, 50, 35, 35]
 
   // all variables relating to showing different component in the game
   showPatches: boolean = false;
@@ -35,6 +35,8 @@ export class DemandSelectionComponent implements OnInit {
   showFixation: boolean = false;
   feedbackShown: boolean = false;
   
+  delayToShowHelpMessage: number = 4000;
+  durationHelpMessageShown: number = 6000;
   scoreForSpecificTrial: number = 0;
   step: number = 1;
   totalScore: number = 0;
@@ -57,6 +59,7 @@ export class DemandSelectionComponent implements OnInit {
     score: number,
   }[] = [];
   sTimeout: any;
+  snackbarTimeout: any;
 
   // what practice phase we are currently at
   currentPracticeRound: {
@@ -85,7 +88,7 @@ export class DemandSelectionComponent implements OnInit {
     1: {
       numTrials: 5,
       showFeedback: true,
-      responseTime: 4000,
+      responseTime: 5000,
       repeat: {
         canRepeat: false,
         numRepeatsAllowed: 0
@@ -94,7 +97,7 @@ export class DemandSelectionComponent implements OnInit {
     2: {
       numTrials: 5,
       showFeedback: true,
-      responseTime: 4000,
+      responseTime: 5000,
       repeat: {
         canRepeat: false,
         numRepeatsAllowed: 0,
@@ -188,7 +191,7 @@ export class DemandSelectionComponent implements OnInit {
     
     this.currentBlock = blockset.blocks[0];
 
-    // this.startGameInFullScreen();
+    this.startGameInFullScreen();
     this.resetData();
     this.proceedtoNextStep();
     await this.wait(2000);
@@ -241,18 +244,24 @@ export class DemandSelectionComponent implements OnInit {
 
   async prepareActualGame() {
     this.resetData();
+
+    // this method is called the first time (and only once) when the actual game is about to start so we init
+    // the currentblock with the first block in the blockset 
     this.currentBlock = this.blockset.blocks[0];
+
+    this.isPractice = false;
+    this.showFeedbackAfterEveryTrial = false;
+    this.maxResponseTime = 5000;
+    this.showScoreAfterEveryTrial = false;
+
     this.proceedtoNextStep()
   }
 
   async startBlock() {
+    this.startGameInFullScreen();
     this.proceedtoNextStep();
     await this.wait(2000);
     this.proceedtoNextStep();
-    this.isPractice = false;
-    this.showFeedbackAfterEveryTrial = false;
-    this.maxResponseTime = 4000;
-    this.showScoreAfterEveryTrial = false;
     this.actualTrials = this.currentBlock.trialConfigs.length;
     this.currentTrial = 0;
     this.showStimulus();
@@ -266,20 +275,26 @@ export class DemandSelectionComponent implements OnInit {
     this.showPatches = false;
     this.currentTrial += 1;
     this.isStimulus = true;
+
+    this.showHelpMessage("Please move your cursor to the bullseye for the patches to appear", this.delayToShowHelpMessage, this.durationHelpMessageShown);
   }
 
   // 2) mouse hovers over the bullseye so we hide it and show the patches
   onHoverFixation(event) {
+    this.cancelHelpMessage();
     this.showFixation = false;
     this.showPatches = true;
     this.showNumber = false;
     this.isResponseAllowed = false;
     this.timer.started = 0;
     this.timer.ended = 0;
+    this.snackbarTimeout
+    this.showHelpMessage("Please choose a patch by moving your cursor to its location", this.delayToShowHelpMessage, this.durationHelpMessageShown);
   }
 
   // 3) mouse hovers over a patch so we show the numbers and accept responses
   onHoverPatch(event, patch: "firstPatch" | "secondPatch") {
+    this.cancelHelpMessage();
     let answer = '';
     const currentTrial = this.currentBlock.trialConfigs[this.currentTrial - 1];
     const blockConfig = this.currentBlock.blockConfig;
@@ -385,29 +400,11 @@ export class DemandSelectionComponent implements OnInit {
     } else {
       if (this.currentTrial < this.actualTrials) {
         this.continueGame();
-
-        // Implement later if we decide to include breaks
-        // if (this.numberOfBreaks === 0) {
-        //   this.continueGame();
-        // } else {
-        //   const breakAtTrailIndices = [];
-        //   const setSize = this.actualTrials / (this.numberOfBreaks + 1);
-        //   for (let i = 1; i < this.numberOfBreaks + 1; i++) {
-        //     breakAtTrailIndices.push(setSize * i);
-        //   }
-        //   if (breakAtTrailIndices.includes(this.currentTrial)) {
-        //     this.isBreak = true;
-        //   } else {
-        //     this.isBreak = false;
-        //     this.continueGame();
-        //   }
-        // }
       } else {
 
         if(this.blockNum == 6) {
           this.uploadResults()
         }
-
 
         this.proceedtoNextStep();
         await this.wait(2000);
@@ -428,6 +425,17 @@ export class DemandSelectionComponent implements OnInit {
     this.reset();
     this.isBreak = false;
     this.continueGame();
+  }
+
+  private showHelpMessage(helpMessage: string, delay: number, duration: number) {
+    this.snackbarTimeout = setTimeout(() => {
+      this.snackbarService.openInfoSnackbar(helpMessage, "", duration);
+    }, delay)
+  }
+
+  private cancelHelpMessage() {
+    this.snackbarService.clearSnackbar();
+    clearTimeout(this.snackbarTimeout);
   }
 
   async continueGame() {

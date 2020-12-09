@@ -149,7 +149,7 @@ export class BlockSet {
     private getDigit(block: Block): number {
         let digit = this.getRandomInt(10);
         const prevDigit = block.trialConfigs.length > 0 ? block.trialConfigs[block.trialConfigs.length - 1].digit : null;
-        //  digits are 1,2,3,4,6,7,8,9 - don't repeat
+        //  digits are 1,2,3,4,6,7,8,9 - don't repeat same digit twice
         while(digit == 0 || digit == 5 || digit == prevDigit) {
             digit = this.getRandomInt(10);
         }
