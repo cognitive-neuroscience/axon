@@ -1,15 +1,19 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { TaskManagerService } from './services/task-manager.service';
-import { SnackbarService } from './services/snackbar.service';
-import { SessionStorageService } from './services/sessionStorage.service';
-import { AuthService } from './services/auth.service';
-import { Role } from './models/InternalDTOs';
+import { TaskManagerService } from '../services/task-manager.service';
+import { SnackbarService } from '../services/snackbar.service';
+import { SessionStorageService } from '../services/sessionStorage.service';
+import { AuthService } from '../services/auth.service';
+import { Role } from '../models/InternalDTOs';
 @Injectable({
     providedIn: "root"
 })
 export class ExperimentRouteGuard implements CanActivate {
+    /**
+     * This route guard checks that the user EITHER has the experiment in local memory, or is an admin in which
+     * case the experiment is allowed to proceed
+     */
 
     constructor(
         private _taskManager: TaskManagerService, 

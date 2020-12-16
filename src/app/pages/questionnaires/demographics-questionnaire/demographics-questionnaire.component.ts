@@ -4,20 +4,20 @@ import { ConfirmationService } from '../../../services/confirmation.service';
 import { Router } from '@angular/router';
 import { SessionStorageService } from '../../../services/sessionStorage.service';
 import { QuestionnaireService } from '../../../services/questionnaire.service';
-import { MturkQuestionnaireResponse } from '../../../models/Questionnaire';
+import { DemographicsQuestionnaireResponse } from '../../../models/Questionnaire';
 import { TaskManagerService } from '../../../services/task-manager.service';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
-  selector: 'app-mturk-questionnaire',
-  templateUrl: './mturk-questionnaire.component.html',
-  styleUrls: ['./mturk-questionnaire.component.scss']
+  selector: 'app-demographics-questionnaire',
+  templateUrl: './demographics-questionnaire.component.html',
+  styleUrls: ['./demographics-questionnaire.component.scss']
 })
-export class MturkQuestionnaireComponent implements OnInit {
+export class DemographicsQuestionnaireComponent implements OnInit {
 
   numbersRegex = /^[0-9]+$/;
 
-  mturkQuestionnaire = this.fb.group({
+  demographicsQuestionnaire = this.fb.group({
     age: ['', [
       Validators.required,
       Validators.min(18),
@@ -70,17 +70,17 @@ export class MturkQuestionnaireComponent implements OnInit {
     const userID = this.authService.getDecodedToken().UserID
     const experimentCode = this.taskManager.getExperimentCode()
 
-    const response: MturkQuestionnaireResponse = {
+    const response: DemographicsQuestionnaireResponse = {
       userID: userID,
       experimentCode: experimentCode,
-      age: this.mturkQuestionnaire.get("age").value,
-      sex: this.mturkQuestionnaire.get("sex").value,
-      selfIdentification: this.mturkQuestionnaire.get("selfIdentification").value,
-      yearsOfEducation: this.mturkQuestionnaire.get("yearsOfEducation").value,
-      hasNeuroConditions: this.mturkQuestionnaire.get("hasNeuroConditions").value,
-      hasPsychConditions: this.mturkQuestionnaire.get("hasPsychConditions").value
+      age: this.demographicsQuestionnaire.get("age").value,
+      sex: this.demographicsQuestionnaire.get("sex").value,
+      selfIdentification: this.demographicsQuestionnaire.get("selfIdentification").value,
+      yearsOfEducation: this.demographicsQuestionnaire.get("yearsOfEducation").value,
+      hasNeuroConditions: this.demographicsQuestionnaire.get("hasNeuroConditions").value,
+      hasPsychConditions: this.demographicsQuestionnaire.get("hasPsychConditions").value
     }
-    this.questionnaireService.saveQuestionnaireResponse(response).subscribe(ok => {
+    this.questionnaireService.saveDemographicsQuestionnaireResponse(response).subscribe(ok => {
       if(ok) {
         this.taskManager.nextExperiment()
       } else {

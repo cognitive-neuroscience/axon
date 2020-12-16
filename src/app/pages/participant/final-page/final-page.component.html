@@ -1,13 +1,19 @@
-<div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: #3f51b5;">
+<div class="d-flex align-items-center justify-content-center" style="min-height: 100%; background-color: #3f51b5;">
 
-    <div class="jumbotron w-75">
-        <h1 class="display-4">Thanks for participating in our study!</h1>
-        <hr class="my-4">
+    <div class="content-container">
+        <h1 class="display-4 text-center">Thanks for participating in our study!</h1>
+        <hr class="my-2">
         <p>Copy your completion code below and input it into Mturk to complete the HIT and collect your reward.</p>
+        <p class='font-weight-bold'>Note: You will not be able to see this again once you close the page, so please make sure you copy the completion code</p>
+
         <div class="completion-code">
-            <span style="cursor: pointer;" #tooltip="matTooltip" (click)="showCopiedMessage()" matTooltip="copy to clipboard" [cdkCopyToClipboard]="completionCode">{{ completionCode }}</span>
+            <span style="cursor: pointer; color: white" #tooltip="matTooltip" (click)="showCopiedMessage()" matTooltip="copy to clipboard" [cdkCopyToClipboard]="completionCode">{{ completionCode }}</span>
         </div>
-        <p style="color: red">Note: You will not be able to see this again once you close the page, so please make sure you copy the completion code</p>
+
+        <div class="my-3">
+            <app-feedback-questionnaire></app-feedback-questionnaire>
+        </div>
+
         <div>
             <button class="btn btn-danger w-100" (click)="logout()">Exit</button>
         </div>

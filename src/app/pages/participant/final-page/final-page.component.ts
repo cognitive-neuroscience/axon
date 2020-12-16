@@ -27,9 +27,9 @@ export class FinalPageComponent implements OnInit {
 
   ngOnInit(): void {
     const experimentCode = this._taskManager.getExperimentCode()
-    const userID = this._authService.getDecodedToken().UserID
+    // const userID = this._authService.getDecodedToken().UserID
     
-    this.getCompletionCode(userID, experimentCode)
+    // this.getCompletionCode(userID, experimentCode)
   }
 
   getCompletionCode(userId: string, expCode: string) {

@@ -5,14 +5,14 @@
         <hr>
     </h2>
 
-    <div [formGroup]="mturkQuestionnaire" class="form">
+    <div [formGroup]="demographicsQuestionnaire" class="form">
         <div class="py-2">
             <label class="font-weight-bold w-100">What is your age (in years)?</label>
             <mat-form-field>
                 <input required formControlName="age" matInput type="number" min="18" max="122">
-                <mat-error *ngIf="mturkQuestionnaire.get('age')?.hasError('required')">This is required</mat-error>
-                <mat-error *ngIf="mturkQuestionnaire.get('age')?.hasError('min')">You must be 18 or over</mat-error>
-                <mat-error *ngIf="mturkQuestionnaire.get('age')?.hasError('max')">Please enter a valid age</mat-error>
+                <mat-error *ngIf="demographicsQuestionnaire.get('age')?.hasError('required')">This is required</mat-error>
+                <mat-error *ngIf="demographicsQuestionnaire.get('age')?.hasError('min')">You must be 18 or over</mat-error>
+                <mat-error *ngIf="demographicsQuestionnaire.get('age')?.hasError('max')">Please enter a valid age</mat-error>
             </mat-form-field>
         </div>
         <br>
@@ -23,7 +23,7 @@
                 <mat-radio-button class="w-100" [value]="'female'">Female</mat-radio-button>
                 <mat-radio-button class="w-100" [value]="'male'">Male</mat-radio-button>
             </mat-radio-group>
-            <mat-error *ngIf="mturkQuestionnaire.get('sex')?.hasError('required')">This is required</mat-error>
+            <mat-error *ngIf="demographicsQuestionnaire.get('sex')?.hasError('required')">This is required</mat-error>
         </div>
         <br>
         <div class="py-2 d-flex flex-column">
@@ -35,16 +35,16 @@
                 <mat-radio-button class="w-100" [value]="'transgender'">Transgender</mat-radio-button>
                 <mat-radio-button class="w-100" [value]="'none'">Do not identify as female, male, or transgender</mat-radio-button>
             </mat-radio-group>
-            <mat-error *ngIf="mturkQuestionnaire.get('selfIdentification')?.hasError('required')">At least one task is required</mat-error>
+            <mat-error *ngIf="demographicsQuestionnaire.get('selfIdentification')?.hasError('required')">At least one task is required</mat-error>
         </div>
         <br>
         <div class="py-2">
             <label class="font-weight-bold w-100">How many years of education do you have (completing high school equals 12 years)?</label>
             <mat-form-field>
                 <input required formControlName="yearsOfEducation" matInput type="number" min="0" max="30">
-                <mat-error *ngIf="mturkQuestionnaire.get('yearsOfEducation')?.hasError('required')">This is required</mat-error>
-                <mat-error *ngIf="mturkQuestionnaire.get('yearsOfEducation')?.hasError('min')">Please enter a valid number</mat-error>
-                <mat-error *ngIf="mturkQuestionnaire.get('yearsOfEducation')?.hasError('max')">Please enter a valid number</mat-error>
+                <mat-error *ngIf="demographicsQuestionnaire.get('yearsOfEducation')?.hasError('required')">This is required</mat-error>
+                <mat-error *ngIf="demographicsQuestionnaire.get('yearsOfEducation')?.hasError('min')">Please enter a valid number</mat-error>
+                <mat-error *ngIf="demographicsQuestionnaire.get('yearsOfEducation')?.hasError('max')">Please enter a valid number</mat-error>
             </mat-form-field>
         </div>
         <br>
@@ -54,7 +54,7 @@
                 <mat-radio-button class="w-100" [value]="true">Yes</mat-radio-button>
                 <mat-radio-button class="w-100" [value]="false">No</mat-radio-button>
             </mat-radio-group>
-            <mat-error *ngIf="mturkQuestionnaire.get('hasNeuroConditions')?.hasError('required')">This is required</mat-error>
+            <mat-error *ngIf="demographicsQuestionnaire.get('hasNeuroConditions')?.hasError('required')">This is required</mat-error>
         </div>
         <br>
         <div class="py-2">
@@ -63,7 +63,7 @@
                 <mat-radio-button class="w-100" [value]="true">Yes</mat-radio-button>
                 <mat-radio-button class="w-100" [value]="false">No</mat-radio-button>
             </mat-radio-group>
-            <mat-error *ngIf="mturkQuestionnaire.get('hasPsychConditions')?.hasError('required')">This is required</mat-error>
+            <mat-error *ngIf="demographicsQuestionnaire.get('hasPsychConditions')?.hasError('required')">This is required</mat-error>
         </div>
         <br>
 
@@ -80,7 +80,7 @@
                     </button>
                 </div>
                 <div class="m-2">
-                    <button mat-raised-button color="primary" (click)="submit()" [disabled]="!mturkQuestionnaire.valid">
+                    <button mat-raised-button color="primary" (click)="submit()" [disabled]="!demographicsQuestionnaire.valid">
                         SUBMIT
                         &nbsp;
                         <mat-icon>

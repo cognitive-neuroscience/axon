@@ -1,5 +1,6 @@
 .completion-code {
-    background-color: white;
+    background-color: green;
+    justify-content: center;
     display: flex;
     flex-direction: row;
     padding: 2%;
@@ -7,4 +8,16 @@
     color: black;
     font-size: 1.5rem;
     margin: 10px 0;
+}
+
+.content-container {
+    background-color: #e9ecef;
+    border-radius: 10px;
+    padding: 2%;
+    margin: 2% 0;
+    width: 75%;
+}
+
+p {
+    margin: 0;
 }

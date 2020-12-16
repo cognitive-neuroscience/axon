@@ -32,8 +32,9 @@ import { SnackbarComponent } from './services/snackbar/snackbar.component';
 import { ConfirmationComponent } from './services/confirmation/confirmation.component';
 import { FinalPageComponent } from './pages/participant/final-page/final-page.component';
 import { DataComponent } from './pages/dashboard/data/data.component';
-import { MturkQuestionnaireComponent } from './pages/questionnaires/mturk-questionnaire/mturk-questionnaire.component';
+import { DemographicsQuestionnaireComponent } from './pages/questionnaires/demographics-questionnaire/demographics-questionnaire.component';
 import { RotateDirective } from './pages/tasks/demand-selection/Rotate.directive';
+import { FeedbackQuestionnaireComponent } from './pages/questionnaires/feedback-questionnaire/feedback-questionnaire.component';
 
 @NgModule({
   declarations: [
@@ -63,8 +64,9 @@ import { RotateDirective } from './pages/tasks/demand-selection/Rotate.directive
     ConfirmationComponent,
     FinalPageComponent,
     DataComponent,
-    MturkQuestionnaireComponent,
-    RotateDirective
+    DemographicsQuestionnaireComponent,
+    RotateDirective,
+    FeedbackQuestionnaireComponent
   ],
   imports: [
     BrowserModule,

@@ -11,6 +11,8 @@ import { SessionStorageService } from './sessionStorage.service';
 import { ConsentService } from './consentService';
 import { ConfirmationService } from './confirmation.service';
 import { RouteMap } from '../routing/routes';
+import { switchMap, take } from "rxjs/operators";
+import { EMPTY, of, Subscription } from 'rxjs';
 
 @Injectable({
     providedIn: "root"
@@ -23,6 +25,7 @@ export class TaskManagerService {
     private _currentTaskIndex: number = 0;
     private _experiment: Experiment = null;
     private _totalAmountEarned: number = 0;
+    private _subscriptions: Subscription[] = [];
 
     constructor(
         private _experimentService: ExperimentsService,
@@ -46,9 +49,8 @@ export class TaskManagerService {
             this.handleErr()
             return
         }
-        this._experimentService.getExperiment(code).subscribe(experiment => {
-            console.log(experiment);
-            
+        this._experimentService.getExperiment(code).pipe(take(1)).subscribe(experiment => {
+            // keep experiment in local memory to ensure participant does not refresh
             this._experiment = experiment
             this.getConsent()
         }, err => {
@@ -58,25 +60,32 @@ export class TaskManagerService {
     }
 
     private getConsent() {
-        this._router.navigate(['/consent'])
-        this._consentService.consentSubject.subscribe(accepted => {
-            if(accepted) {
-                this.showMturkQuestionnaire()
-            } else {
-                const msg = "Are you sure you want to quit? You will not be able to register again."
-                this._confirmationService.openConfirmationDialog(msg).subscribe(ok => {
+        this._router.navigate(['/consent']).then(() => {
+            this._subscriptions.push(
+                this._consentService.consentSubject.pipe(switchMap(accepted => {
+                    if(accepted) {
+                        this.showDemographicsQuestionnaire()
+                        return of(false);
+                    } else {
+                        const msg = "Are you sure you want to quit? You will not be able to register again."
+                        // inner subscription is automatically unsubscribed by switchMap
+                        return this._confirmationService.openConfirmationDialog(msg)
+                    }
+                })).subscribe(ok => {
                     if(ok) {
                         this._sessionStorageService.clearSessionStorage()
                         this._router.navigate(['/login/mturk'])
                         this._snackbarService.openInfoSnackbar("Experiment was cancelled.")
                     }
                 })
-            }
+            )
         })
     }
 
-    private showMturkQuestionnaire() {
-        this._router.navigate(['/questionnaire/mturk'])
+    private showDemographicsQuestionnaire() {
+        // clear subscriptions for consentSubject
+        this._subscriptions.forEach(sub => sub.unsubscribe());
+        this._router.navigate(['/questionnaire/demographics'])
     }
 
     handleErr() {
@@ -114,7 +123,7 @@ export class TaskManagerService {
             const jwt = this._authService.getDecodedToken()
             const userID = jwt ? jwt.UserID : ""
             const experimentCode = this._sessionStorageService.getExperimentCodeFromSessionStorage()
-            this._userService.markUserAsComplete(userID, experimentCode).subscribe((data) => {
+            this._userService.markUserAsComplete(userID, experimentCode).pipe(take(1)).subscribe((data) => {
                 this._routeToFinalPage()
             }, err => {
                 this.handleErr()

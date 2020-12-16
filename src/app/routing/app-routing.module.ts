@@ -20,12 +20,13 @@ import { ViewTasksComponent } from '../pages/dashboard/view-tasks/view-tasks.com
 import { MturkLoginComponent } from '../pages/mturk-login/mturk-login.component'
 import { Role } from '../models/InternalDTOs';
 import { RouteMap } from './routes';
-import { CanActivateRouteGuard } from '../CanActivateRouteGuard';
+import { CanActivateRouteGuard } from '../guards/CanActivateRouteGuard';
 import { FinalPageComponent } from '../pages/participant/final-page/final-page.component';
-import { ExperimentRouteGuard } from '../ExperimentRouteGuard';
+import { ExperimentRouteGuard } from '../guards/ExperimentRouteGuard';
 import { DataComponent } from '../pages/dashboard/data/data.component';
 import { ConsentComponent } from '../services/consent/consent.component';
-import { MturkQuestionnaireComponent } from '../pages/questionnaires/mturk-questionnaire/mturk-questionnaire.component';
+import { DemographicsQuestionnaireComponent } from '../pages/questionnaires/demographics-questionnaire/demographics-questionnaire.component';
+import { FeedbackQuestionnaireComponent } from '../pages/questionnaires/feedback-questionnaire/feedback-questionnaire.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login/mturk', pathMatch: 'full' },
@@ -42,7 +43,8 @@ const routes: Routes = [
     ]
   },
   { path: 'login/mturk', component: MturkLoginComponent },
-  { path: 'questionnaire/mturk', component: MturkQuestionnaireComponent },
+  { path: 'questionnaire/demographics', component: DemographicsQuestionnaireComponent },
+  { path: 'questionnaire/feedback', component: FeedbackQuestionnaireComponent },
   { path: 'login', component: LoginComponent },
   { path: 'consent', component: ConsentComponent },
   { path: RouteMap.colorgame.route, component: ColorGameComponent },
@@ -58,7 +60,7 @@ const routes: Routes = [
   { path: RouteMap.nback.route, component: NBackComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.stroop.route, component: StroopTaskComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.trailmaking.route, component: TrailMakingComponent },
-  { path: 'complete', component: FinalPageComponent },
+  { path: 'complete', component: FinalPageComponent, canActivate: [ExperimentRouteGuard] },
   { path: '**', redirectTo: '/login/mturk', pathMatch: 'full' }
 ];
 

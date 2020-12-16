@@ -1,0 +1,32 @@
+<div style="background-color: white; border-radius: 10px;" class="questionnaire-container">
+    <div *ngIf="!formSubmitted">
+        <h3 class="my-3" align="center">
+            <b>Do you have any feedback for us? (Optional)</b>
+            <hr>
+        </h3>
+    
+        <div class="form">
+            <div>
+                <label class="w-100 font-weight-bold">Did you encounter any issues during our study?</label>
+                <mat-form-field class="w-100">
+                    <textarea class="w-100" matInput rows="3"></textarea>
+                </mat-form-field>
+            </div>
+            <br>
+            <div>
+                <label class="w-100 font-weight-bold">Additional Feedback</label>
+                <mat-form-field class="w-100">
+                    <textarea class="w-100" matInput rows="3"></textarea>
+                </mat-form-field>
+            </div>
+            <br>
+    
+            <button (click)="submitForm()" mat-raised-button color="primary">Submit Feedback</button>
+        </div>
+    </div>
+    <div *ngIf="formSubmitted">
+        <p class="font-weight-bold" style="margin: 0;">
+            Thank you for your feedback!
+        </p>
+    </div>
+</div>

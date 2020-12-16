@@ -3,11 +3,16 @@ export abstract class QuestionnaireResponse {
     experimentCode: string;
 }
 
-export class MturkQuestionnaireResponse extends QuestionnaireResponse {
+export class DemographicsQuestionnaireResponse extends QuestionnaireResponse {
     age: number;
     sex: string;
     selfIdentification: string;
     yearsOfEducation: number;
     hasNeuroConditions: boolean;
     hasPsychConditions: boolean;
+}
+
+export class FeedbackQuestionnaireResponse extends QuestionnaireResponse {
+    issuesEncountered: string;
+    additionalFeedback: string;
 }
