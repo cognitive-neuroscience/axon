@@ -20,8 +20,7 @@ export class ExperimentRouteGuard implements CanActivate {
     ) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-        console.log("inside can activate");
-        
+
         const decodedToken = this._authService.getDecodedToken()
 
         if(decodedToken && (decodedToken.Role === Role.ADMIN || this.hasExperiment())) {

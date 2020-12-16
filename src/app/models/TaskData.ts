@@ -50,3 +50,16 @@ export class TaskSwitching extends TaskData {
     responseTime: number;
     isCorrect: boolean;
 }
+
+export class DemandSelection extends TaskData {
+    patchImgSelected: string;
+    patchImgNotSelected: string;
+    color: string;
+    digit: number;
+    actualAnswer: string;
+    userAnswer: string;
+    counterbalance: string;
+    responseTime: number;
+    isCorrect: boolean;
+    block: number;
+}

@@ -15,6 +15,8 @@ import { AuthService } from '../../../services/auth.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { Role } from 'src/app/models/InternalDTOs';
 import { NBackStimuli } from '../../../models/TaskData';
+import { TimerService } from '../../../services/timer.service';
+import { UserResponse, Feedback } from '../../../models/InternalDTOs';
 
 @Component({
   selector: 'app-n-back',
@@ -45,13 +47,6 @@ export class NBackComponent implements OnInit {
   currentTrial: number = 0;
   isResponseAllowed: boolean = false;
   data: NBack[] = [];
-  timer: {
-    started: number,
-    ended: number
-  } = {
-      started: 0,
-      ended: 0
-    };
   set: number;
   showFixation: boolean = false;
   sTimeout: any;
@@ -66,11 +61,10 @@ export class NBackComponent implements OnInit {
         this.isResponseAllowed = false;
         try {
           if (!!event.key) {
-            this.timer.ended = new Date().getTime();
-            this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
+            this.data[this.data.length - 1].responseTime = this.timerService.stopTimerAndGetTime();
             switch (event.key) {
-              case 'ArrowLeft': this.data[this.data.length - 1].userAnswer = 'NO'; break;
-              case 'ArrowRight': this.data[this.data.length - 1].userAnswer = 'YES'; break;
+              case 'ArrowLeft': this.data[this.data.length - 1].userAnswer = UserResponse.NO; break;
+              case 'ArrowRight': this.data[this.data.length - 1].userAnswer = UserResponse.YES; break;
             }
             try {
               clearTimeout(this.sTimeout);
@@ -90,7 +84,8 @@ export class NBackComponent implements OnInit {
     private uploadDataService: UploadDataService,
     private taskManager: TaskManagerService,
     private authService: AuthService,
-    private snackbarService: SnackbarService
+    private snackbarService: SnackbarService,
+    private timerService: TimerService
   ) { }
 
 
@@ -146,6 +141,7 @@ export class NBackComponent implements OnInit {
   async showStimulus() {
 
     this.reset();
+    this.timerService.clearTimer();
     this.showFixation = true;
     await this.wait(500);
     this.showFixation = false;
@@ -156,8 +152,7 @@ export class NBackComponent implements OnInit {
     this.isStimulus = true;
     this.isResponseAllowed = true;
 
-    this.timer.started = new Date().getTime();
-    this.timer.ended = 0;
+    this.timerService.startTimer();
 
     // This is the delay between showing the stimulus and showing the feedback
     this.sTimeout = setTimeout(() => {
@@ -167,8 +162,6 @@ export class NBackComponent implements OnInit {
     }, this.maxResponseTime);
 
   }
-
-
 
   generateStimulus() {
     const setNum = this.isPractice ? 0 : this.set;
@@ -197,8 +190,8 @@ export class NBackComponent implements OnInit {
     this.data.push({
       trial: this.currentTrial,
       userID: this.userID,
-      actualAnswer: this.currentLetter === this.nback ? 'YES' : 'NO',
-      userAnswer: 'NA',
+      actualAnswer: this.currentLetter === this.nback ? UserResponse.YES : UserResponse.NO,
+      userAnswer: UserResponse.NA,
       responseTime: 0,
       isCorrect: false,
       score: 0,
@@ -206,37 +199,35 @@ export class NBackComponent implements OnInit {
     });
   }
 
-
-
   async showFeedback() {
     this.feedbackShown = true;
     this.isStimulus = false;
     this.isResponseAllowed = false;
 
-    if (this.data[this.data.length - 1].responseTime === 0) {
-      // user did not response in time
-      this.data[this.data.length - 1].responseTime = this.maxResponseTime;
-    }
+    const actualAnswer = this.data[this.data.length - 1].actualAnswer;
+    const userAnswer = this.data[this.data.length - 1].userAnswer;
 
-    if (this.data[this.data.length - 1].actualAnswer === this.data[this.data.length - 1].userAnswer) {
-      this.feedback = "Correct";
-      this.data[this.data.length - 1].isCorrect = true;
-      this.data[this.data.length - 1].score = 10;
-      this.scoreForSpecificTrial = 10;
-      this.totalScore += 10;
-    } else {
-      if (this.data[this.data.length - 1].userAnswer === 'NA') {
-        this.feedback = "Too slow"
-      } else {
-        this.feedback = "Incorrect";
-      }
-      this.data[this.data.length - 1].isCorrect = false;
-      this.data[this.data.length - 1].score = 0;
-      this.scoreForSpecificTrial = 0;
+    switch (userAnswer) {
+      case actualAnswer:
+        this.feedback = Feedback.CORRECT;
+        this.data[this.data.length - 1].isCorrect = true;
+        this.data[this.data.length - 1].score = 10;
+        this.scoreForSpecificTrial = 10;
+        this.totalScore += 10;
+        break;
+      case UserResponse.NA:
+        this.feedback = Feedback.TOOSLOW
+        this.data[this.data.length - 1].responseTime = this.maxResponseTime;
+        this.scoreForSpecificTrial = 0;
+        break;
+      default:
+        this.feedback = Feedback.INCORRECT;
+        this.scoreForSpecificTrial = 0;
+        break;
     }
     // show feedback either if it is a practice trial, or if the feedback is telling the user
     // they are too slow. Don't show for other feedback during actual game
-    if (this.isPractice || (this.showFeedbackAfterEveryTrial && this.feedback === 'Too slow')) {
+    if (this.isPractice || (this.showFeedbackAfterEveryTrial && this.feedback === Feedback.TOOSLOW)) {
       await this.wait(this.durationOfFeedback);
     }
     this.decideToContinue();
@@ -249,6 +240,8 @@ export class NBackComponent implements OnInit {
       if (this.currentTrial < this.practiceTrials) {
         this.continueGame();
       } else {
+        console.log(this.data);
+        
         this.proceedtoNextStep();
         await this.wait(2000);
         this.proceedtoNextStep();

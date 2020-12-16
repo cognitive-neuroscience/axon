@@ -12,7 +12,9 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
 import { SnackbarService } from '../../../services/snackbar.service';
-import { Role } from 'src/app/models/InternalDTOs';
+import { Key, Role } from 'src/app/models/InternalDTOs';
+import { TimerService } from '../../../services/timer.service';
+import { UserResponse, Feedback } from '../../../models/InternalDTOs';
 declare function setFullScreen(): any;
 
 @Component({
@@ -46,13 +48,6 @@ export class StroopTaskComponent implements OnInit {
   currentTrial: number = 0;
   isResponseAllowed: boolean = false;
   data: StroopTask[] = [];
-  timer: {
-    started: number,
-    ended: number
-  } = {
-      started: 0,
-      ended: 0
-    };
   set: number;
   showFixation: boolean = false;
   sTimeout: any;
@@ -64,13 +59,12 @@ export class StroopTaskComponent implements OnInit {
       this.isResponseAllowed = false;
       try {
         if (!!event.key) {
-          this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
+          this.data[this.data.length - 1].responseTime = this.timerService.stopTimerAndGetTime();
           switch (event.key) {
-            case '1': this.data[this.data.length - 1].userAnswer = 'red'; break;
-            case '2': this.data[this.data.length - 1].userAnswer = 'blue'; break;
-            case '3': this.data[this.data.length - 1].userAnswer = 'green'; break;
-            default: this.data[this.data.length - 1].userAnswer = ''; break;
+            case Key.NUMONE: this.data[this.data.length - 1].userAnswer = UserResponse.RED; break;
+            case Key.NUMTWO: this.data[this.data.length - 1].userAnswer = UserResponse.BLUE; break;
+            case Key.NUMTHREE: this.data[this.data.length - 1].userAnswer = UserResponse.GREEN; break;
+            default: this.data[this.data.length - 1].userAnswer = UserResponse.INVALID; break;
           }
           try {
             clearTimeout(this.sTimeout);
@@ -89,7 +83,8 @@ export class StroopTaskComponent implements OnInit {
     private uploadDataService: UploadDataService,
     private taskManager: TaskManagerService,
     private snackbarService: SnackbarService,
-    private authService: AuthService
+    private authService: AuthService,
+    private timerService: TimerService
   ) { }
 
 
@@ -146,6 +141,7 @@ export class StroopTaskComponent implements OnInit {
   async showStimulus() {
 
     this.reset();
+    this.timerService.clearTimer();
     this.showFixation = true;
     await this.wait(500);
     this.showFixation = false;
@@ -156,8 +152,7 @@ export class StroopTaskComponent implements OnInit {
     this.isStimulus = true;
     this.isResponseAllowed = true;
 
-    this.timer.started = new Date().getTime();
-    this.timer.ended = 0;
+    this.timerService.startTimer();
 
     // This is the delay between showing the stimulus and showing the feedback
     this.sTimeout = setTimeout(() => {
@@ -165,7 +160,6 @@ export class StroopTaskComponent implements OnInit {
         this.showFeedback();
       }
     }, this.maxResponseTime);
-
   }
 
 
@@ -198,12 +192,12 @@ export class StroopTaskComponent implements OnInit {
     this.data.push({
       userID: this.userID,
       trial: this.currentTrial,
-      actualAnswer: this.color,
-      userAnswer: 'NA',
+      actualAnswer: this.color.toUpperCase(),
+      userAnswer: UserResponse.NA,
       isCongruent: this.color === this.text ? true : false,
       responseTime: null,
-      isCorrect: null,
-      score: null,
+      isCorrect: false,
+      score: 0,
       set: this.set
     });
   }
@@ -213,28 +207,29 @@ export class StroopTaskComponent implements OnInit {
     this.isStimulus = false;
     this.isResponseAllowed = false;
 
-    if (this.data[this.data.length - 1].responseTime === 0) {
-      this.data[this.data.length - 1].responseTime = this.maxResponseTime;
+    const actualAnswer = this.data[this.data.length - 1].actualAnswer;
+    const userAnswer = this.data[this.data.length - 1].userAnswer;
+    
+    switch (userAnswer) {
+      case actualAnswer:
+        this.feedback = Feedback.CORRECT;
+        this.data[this.data.length - 1].isCorrect = true;
+        this.data[this.data.length - 1].score = 10;
+        this.scoreForSpecificTrial = 10;
+        this.totalScore += 10;
+        break;
+      case UserResponse.NA:
+        this.feedback = Feedback.TOOSLOW;
+        this.data[this.data.length - 1].responseTime = this.maxResponseTime;
+        this.scoreForSpecificTrial = 0;
+        break;
+      default:
+        this.feedback = Feedback.INCORRECT;
+        this.scoreForSpecificTrial = 0;
+        break;
     }
 
-    if (this.data[this.data.length - 1].actualAnswer === this.data[this.data.length - 1].userAnswer) {
-      this.feedback = "Correct";
-      this.data[this.data.length - 1].isCorrect = true;
-      this.data[this.data.length - 1].score = 10;
-      this.scoreForSpecificTrial = 10;
-      this.totalScore += 10;
-    } else {
-      if (this.data[this.data.length - 1].userAnswer === 'NA') {
-        this.feedback = "Too slow"
-      } else {
-        this.feedback = "Incorrect";
-      }
-      this.data[this.data.length - 1].isCorrect = false;
-      this.data[this.data.length - 1].score = 0;
-      this.scoreForSpecificTrial = 0;
-    }
-
-    if (this.isPractice || (this.showFeedbackAfterEveryTrial && this.feedback === 'Too slow')) {
+    if (this.isPractice || (this.showFeedbackAfterEveryTrial && this.feedback === Feedback.TOOSLOW)) {
       await this.wait(this.durationOfFeedback);
     }
     this.decideToContinue();
@@ -247,6 +242,8 @@ export class StroopTaskComponent implements OnInit {
       if (this.currentTrial < this.practiceTrials) {
         this.continueGame();
       } else {
+        console.log(this.data);
+        
         this.proceedtoNextStep();
         await this.wait(2000);
         this.proceedtoNextStep();

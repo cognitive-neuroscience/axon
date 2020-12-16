@@ -7,6 +7,9 @@ import { Color, Key, Role, UserResponse } from 'src/app/models/InternalDTOs';
 import { AuthService } from '../../../services/auth.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
+import { TimerService } from '../../../services/timer.service';
+import { Feedback } from '../../../models/InternalDTOs';
+import { DemandSelection } from '../../../models/TaskData';
 
 @Component({
   selector: 'app-demand-selection',
@@ -45,21 +48,11 @@ export class DemandSelectionComponent implements OnInit {
   isBreak: boolean = false;
   currentTrial: number = 0; // keeps track of what trial num we're currently at for the specific block
   isResponseAllowed: boolean = false;
-  data: {
-    patchImgSelected: string,
-    patchImgNotSelected: string,
-    color: string,
-    digit: number,
-    actualAnswer: string,
-    userAnswer: string,
-    counterbalance: string,
-    responseTime: number,
-    isCorrect: boolean,
-    block: number,
-    score: number,
-  }[] = [];
+  data: DemandSelection[] = [];
   sTimeout: any;
   snackbarTimeout: any;
+
+  userID: string;
 
   // what practice phase we are currently at
   currentPracticeRound: {
@@ -105,16 +98,6 @@ export class DemandSelectionComponent implements OnInit {
     }
   }
 
-  timer: {
-    started: number,
-    ended: number
-  } = {
-      started: 0,
-      ended: 0
-    };
-
-  
-
   selectedPatch: "firstPatch" | "secondPatch" = "firstPatch";
   color: string;
   blockset: BlockSet;
@@ -137,8 +120,7 @@ export class DemandSelectionComponent implements OnInit {
       this.isResponseAllowed = false;
       let userAnswer: UserResponse;
 
-      this.timer.ended = new Date().getTime();
-      this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
+      this.data[this.data.length - 1].responseTime = this.timerService.stopTimerAndGetTime();
 
       // mark down user response
       const selectedColor = this.currentBlock.trialConfigs[this.currentTrial - 1][this.selectedPatch];
@@ -164,14 +146,21 @@ export class DemandSelectionComponent implements OnInit {
     private uploadDataService: UploadDataService,
     private authService: AuthService,
     private snackbarService: SnackbarService,
-    private taskManager: TaskManagerService
+    private taskManager: TaskManagerService,
+    private timerService: TimerService
   ) { }
 
   ngOnInit() {
+    const decodedToken = this.authService.getDecodedToken()
+    if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {
+      this.router.navigate(['/login/mturk'])
+      this.snackbarService.openErrorSnackbar("Refresh has occurred")
+    }
+    const jwt = this.authService.getDecodedToken()
+    this.userID = jwt.UserID
+
     // generate the blockset for the 6 blocks to be run
     this.blockset = new BlockSet(this.blockTrials, 10, 90, Color.BLUE, Color.ORANGE, false);
-    console.log(this.blockset);
-    
   }
 
   proceedtoPreviousStep(step = 1) {
@@ -187,8 +176,6 @@ export class DemandSelectionComponent implements OnInit {
     this.applyPracticeTrialConfigs()
 
     let blockset = new BlockSet([this.practiceTrials], 10, 90, Color.BLUE, Color.ORANGE, true);
-    console.log(blockset);
-    
     this.currentBlock = blockset.blocks[0];
 
     this.startGameInFullScreen();
@@ -270,6 +257,7 @@ export class DemandSelectionComponent implements OnInit {
   // 1) show the bullseye
   showStimulus() {
     this.reset();
+    this.timerService.clearTimer();
     this.showFixation = true;
     this.showNumber = false;
     this.showPatches = false;
@@ -286,8 +274,6 @@ export class DemandSelectionComponent implements OnInit {
     this.showPatches = true;
     this.showNumber = false;
     this.isResponseAllowed = false;
-    this.timer.started = 0;
-    this.timer.ended = 0;
     this.snackbarTimeout
     this.showHelpMessage("Please choose a patch by moving your cursor to its location", this.delayToShowHelpMessage, this.durationHelpMessageShown);
   }
@@ -295,7 +281,7 @@ export class DemandSelectionComponent implements OnInit {
   // 3) mouse hovers over a patch so we show the numbers and accept responses
   onHoverPatch(event, patch: "firstPatch" | "secondPatch") {
     this.cancelHelpMessage();
-    let answer = '';
+    let answer: UserResponse;
     const currentTrial = this.currentBlock.trialConfigs[this.currentTrial - 1];
     const blockConfig = this.currentBlock.blockConfig;
     const color = patch === "firstPatch" ? currentTrial.firstPatch : currentTrial.secondPatch;
@@ -320,12 +306,14 @@ export class DemandSelectionComponent implements OnInit {
     this.color = color;
 
     this.data.push({
+      trial: this.currentTrial,
+      userID: this.userID,
       patchImgSelected: patch === "firstPatch" ? blockConfig.firstPatchImg : blockConfig.secondPatchImg,
       patchImgNotSelected: patch === "firstPatch" ? blockConfig.secondPatchImg : blockConfig.firstPatchImg,
       color: this.color,
       digit: digit,
       actualAnswer: answer,
-      userAnswer: null,
+      userAnswer: UserResponse.NA,
       block: this.blockNum,
       responseTime: 0,
       isCorrect: false,
@@ -338,8 +326,7 @@ export class DemandSelectionComponent implements OnInit {
     this.showNumber = true;
     this.isResponseAllowed = true;
 
-    this.timer.started = new Date().getTime();
-    this.timer.ended = 0;
+    this.timerService.startTimer();
 
     // Give participant max time to respond to stimuli
     this.sTimeout = setTimeout(() => {
@@ -361,25 +348,24 @@ export class DemandSelectionComponent implements OnInit {
 
     switch (currentDataObj.userAnswer) {
       case currentDataObj.actualAnswer:   // correct
-        this.feedback = "Correct";
+        this.feedback = Feedback.CORRECT;
         currentDataObj.isCorrect = true;
         currentDataObj.score = 10;
         this.scoreForSpecificTrial = 10;
         this.totalScore += 10;
         break;
-      case null:                          // too slow
-        this.feedback = "Too slow";
+      case UserResponse.NA:               // too slow
+        this.feedback = Feedback.TOOSLOW;
         currentDataObj.responseTime = this.maxResponseTime;
         break;
       default:                            // incorrect
-        this.feedback = "Incorrect";
-        currentDataObj.isCorrect = false;
+        this.feedback = Feedback.INCORRECT;
         this.scoreForSpecificTrial = 0;
         break;
     }
 
     // we want to show 'Too slow' every time
-    if (this.feedback === 'Too slow' || this.showFeedbackAfterEveryTrial) {
+    if (this.feedback === Feedback.TOOSLOW || this.showFeedbackAfterEveryTrial) {
       await this.wait(this.durationOfFeedback);
     }
 
@@ -389,19 +375,20 @@ export class DemandSelectionComponent implements OnInit {
   async decideToContinue() {
     if (this.isPractice) {
       if (this.currentTrial < this.practiceTrials) {
+        console.log(this.data);
+        
         this.continueGame();
       } else {
         this.proceedtoNextStep();
         await this.wait(2000);
         this.proceedtoNextStep();
-        console.log(this.data);
-        this.uploadResults();
       }
     } else {
       if (this.currentTrial < this.actualTrials) {
         this.continueGame();
       } else {
 
+        // we have reached the last block
         if(this.blockNum == 6) {
           this.uploadResults()
         }
@@ -445,7 +432,6 @@ export class DemandSelectionComponent implements OnInit {
 
   uploadResults() {
     if (this.data.length > 0) {
-      console.log(this.data);
       let d = JSON.parse(JSON.stringify(this.data));
       // this.dataService.uploadData('dst', d);
     }

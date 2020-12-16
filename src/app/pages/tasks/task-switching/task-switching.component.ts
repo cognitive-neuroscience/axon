@@ -2,11 +2,12 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { Matrix } from './matrix';
 import { UploadDataService } from 'src/app/services/uploadData.service';
-import { Color, Key, Role, UserResponse } from '../../../models/InternalDTOs';
+import { Color, Key, Role, UserResponse, Feedback } from '../../../models/InternalDTOs';
 import { AuthService } from '../../../services/auth.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
 import { TaskSwitching } from '../../../models/TaskData';
+import { TimerService } from '../../../services/timer.service';
 declare function setFullScreen(): any;
 
 @Component({
@@ -94,13 +95,6 @@ export class TaskSwitchingComponent implements OnInit {
   isResponseAllowed: boolean = false;
   sTimeout: any;
   data: TaskSwitching[] = [];
-  timer: {
-    started: number,
-    ended: number
-  } = {
-      started: 0,
-      ended: 0
-    };
   showFixation: boolean = false;
   feedbackShown: boolean = false;
   matrix: Matrix;
@@ -116,9 +110,7 @@ export class TaskSwitchingComponent implements OnInit {
 
       this.isResponseAllowed = false;
       let userAnswer: UserResponse;
-
-      this.timer.ended = new Date().getTime();
-      this.data[this.data.length - 1].responseTime = this.timer.ended - this.timer.started;
+      this.data[this.data.length - 1].responseTime = this.timerService.stopTimerAndGetTime();
 
       // mark down user response
       if(this.matrix.colors[this.currentTrial - 1] === this.oddEvenColor) {
@@ -143,7 +135,8 @@ export class TaskSwitchingComponent implements OnInit {
     private uploadDataService: UploadDataService,
     private authService: AuthService,
     private snackbarService: SnackbarService,
-    private taskManager: TaskManagerService
+    private taskManager: TaskManagerService,
+    private timerService: TimerService
   ) { }
 
   ngOnInit() {
@@ -242,6 +235,7 @@ export class TaskSwitchingComponent implements OnInit {
 
   async showStimulus() {
     this.reset();
+    this.timerService.clearTimer();
     this.showFixation = true;
     await this.wait(500);
     this.showFixation = false;
@@ -250,8 +244,8 @@ export class TaskSwitchingComponent implements OnInit {
     this.generateStimulus();
     this.isStimulus = true;
     this.isResponseAllowed = true;
-    this.timer.started = new Date().getTime();
-    this.timer.ended = 0;
+
+    this.timerService.startTimer();
 
     // Give participant max time to respond to stimuli
     this.sTimeout = setTimeout(() => {
@@ -286,7 +280,7 @@ export class TaskSwitchingComponent implements OnInit {
       color: this.color,
       digit: digit,
       actualAnswer: answer,
-      userAnswer: null,
+      userAnswer: UserResponse.NA,
       responseTime: 0,
       isCorrect: false,
       score: 0,
@@ -302,25 +296,24 @@ export class TaskSwitchingComponent implements OnInit {
 
     switch (currentDataObj.userAnswer) {
       case currentDataObj.actualAnswer:   // correct
-        this.feedback = "Correct";
+        this.feedback = Feedback.CORRECT;
         currentDataObj.isCorrect = true;
         currentDataObj.score = 10;
         this.scoreForSpecificTrial = 10;
         this.totalScore += 10;
         break;
-      case null:                          // too slow
-        this.feedback = "Too slow";
+      case UserResponse.NA:               // too slow
+        this.feedback = Feedback.TOOSLOW;
         currentDataObj.responseTime = this.maxResponseTime;
         break;
       default:                            // incorrect
-        this.feedback = "Incorrect";
-        currentDataObj.isCorrect = false;
+        this.feedback = Feedback.INCORRECT;
         this.scoreForSpecificTrial = 0;
         break;
     }
 
     // we want to show 'Too slow' every time
-    if (this.feedback === 'Too slow' || this.showFeedbackAfterEveryTrial) {
+    if (this.feedback === Feedback.TOOSLOW || this.showFeedbackAfterEveryTrial) {
       await this.wait(this.durationOfFeedback);
     }
 

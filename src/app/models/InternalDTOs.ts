@@ -52,7 +52,10 @@ export enum LoginMode {
 
 export enum Key {
     ARROWLEFT = "ArrowLeft",
-    ARROWRIGHT = "ArrowRight"
+    ARROWRIGHT = "ArrowRight",
+    NUMONE = "1",
+    NUMTWO = "2",
+    NUMTHREE = "3"
 }
 
 export enum Color {
@@ -65,9 +68,22 @@ export class ExperimentRoutingMap {
     [key: string]: Task
 }
 
+export enum Feedback {
+    CORRECT = "Correct",
+    INCORRECT = "Incorrect",
+    TOOSLOW = "Too slow"
+}
+
 export enum UserResponse {
     GREATER = "GREATER",
     LESSER = "LESSER",
     ODD = "ODD",
-    EVEN = "EVEN"
+    EVEN = "EVEN",
+    NA = "NA",
+    INVALID = "INVALID",
+    RED = "RED",
+    GREEN = "GREEN",
+    BLUE = "BLUE",
+    NO = "NO",
+    YES = "YES"
 }
