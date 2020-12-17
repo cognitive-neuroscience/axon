@@ -63,3 +63,11 @@ export class DemandSelection extends TaskData {
     isCorrect: boolean;
     block: number;
 }
+
+export class TrailMaking extends TaskData {
+    trialType: string;
+    actualAnswer: string;
+    userAnswer: string;
+    timeFromLastClick: number;
+    isCorrect: boolean;
+}
