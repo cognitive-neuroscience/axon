@@ -1,8 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { UploadDataService } from 'src/app/services/uploadData.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import * as practiceGrid1 from './grid.1.practice';
+import * as grid1 from './grid.1';
+import * as practiceGrid2 from './grid.2.practice';
+import * as grid2 from './grid.2';
+import { MatButton } from '@angular/material/button';
+
 declare function setFullScreen(): any;
+
+export class GridConfig {
+  correct: any[];
+  grid: {value: any}[][]
+}
 
 @Component({
   selector: 'app-trail-making',
@@ -15,6 +26,7 @@ export class TrailMakingComponent implements OnInit {
   isScored: number | boolean;
   showFeedbackAfterEveryTrial: number | boolean;
   showScoreAfterEveryTrial: number | boolean;
+  flashIncorrectDuration: number = 500;
   numberOfBreaks: number;
   maxResponseTime: number;
   durationOfFeedback: number;
@@ -22,15 +34,16 @@ export class TrailMakingComponent implements OnInit {
   practiceTrials: number;
   actualTrials: number;
   sTimeout;
-  clicked: number[] = [];
-  correct: number[] = [];
-  sTimeout2;
-
+  // can be numbers or letters
+  correctItems: (number | string)[] = [];
+  answerKey: (number | string)[] = [];
+  gridConfig: GridConfig
 
   constructor(
     private router: Router,
     private uploadDataService: UploadDataService,
-    private snackbar: MatSnackBar
+    private snackbar: MatSnackBar,
+    private renderer: Renderer2
   ) { }
 
   ngOnInit() {
@@ -45,48 +58,70 @@ export class TrailMakingComponent implements OnInit {
     this.step += 1;
   }
 
-  getColor(number: number) {
-    return this.clicked.includes(number) ? (this.clicked[number - 1] === number ? 'green' : 'red') : 'whitesmoke';
+  // sets the button color to green if it is correct and white otherwise
+  getColor(val: number | string) {
+    return this.correctItems.includes(val) ? 'green' : 'whitesmoke';
   }
 
-  registerClick(number: number) {
-    if (!this.clicked.includes(number)) {
-      this.clicked.push(number);
-      if (this.clicked[this.clicked.length - 1] !== this.correct[this.clicked.length - 1]) {
-        const audio = new Audio('/assets/sounds/wrong.mp3');
-        audio.play();
-        this.sTimeout = setTimeout(() => {
-          this.clicked.pop();
-        }, 500);
-      } else {
-        const audio = new Audio('/assets/sounds/correct.mp3');
-        audio.play();
-      }
-      try {
-        clearTimeout(this.sTimeout2);
-      } catch (error) {
+  registerClick(button: MatButton, value: number | string) {
 
-      }
-      this.sTimeout2 = setTimeout(() => {
-        if (this.clicked.length === this.correct.length) {
-          this.clicked = [];
-          this.proceedtoNextStep();
-        }
-      }, 1500);
+    // if answer has already been recorded as correct, we do nothing
+    if (this.correctItems.includes(value)) return;
+
+    this.correctItems.push(value);
+    const currIndex = this.correctItems.length - 1;
+
+    // selected answer is incorrect
+    if (this.correctItems[currIndex] !== this.answerKey[currIndex]) {
+      this.correctItems.pop();
+      this.flashIncorrectColor(button._elementRef, value);
     }
+
+    // if we have filled up all the correct Items, complete the round and move on
+    if (this.correctItems.length === this.answerKey.length) this.roundComplete();
+  }
+
+  private flashIncorrectColor(elRef: ElementRef, val: number | string) {
+
+    this.changeColor(elRef, 'red');
+
+    // case: elRef = button 2, val = 2
+    // 1. user selects 2 (incorrect)
+    // 2. user selects 1 immediately (correct)
+    // 3. user selects 2 immediately (now correct)
+    // in this case, we don't want the color to change back to white, we want to
+    // keep it green so we need to check if the user happened to selected the correct
+    // answer before the timeout ended
+    setTimeout(() => {
+      if(!this.correctItems.includes(val)) {
+        this.changeColor(elRef, 'whitesmoke')
+      }
+    }, this.flashIncorrectDuration)
+  }
+
+  private changeColor(elRef: ElementRef, color: string) {
+    this.renderer.setStyle(elRef.nativeElement, 'background-color', color);
+  }
+
+  private async roundComplete() {
+    await this.wait(1000);
+    this.correctItems = [];
+    this.proceedtoNextStep();
   }
 
   async startPractice() {
-    this.clicked = [];
-    this.correct = [1, 2, 3, 4, 5, 6, 7, 8];
+    this.gridConfig = this.step >= 9 ? practiceGrid2.config : practiceGrid1.config;
+    this.answerKey = this.gridConfig.correct;
+    this.correctItems = [];
     this.proceedtoNextStep();
     await this.wait(2000);
     this.proceedtoNextStep();
   }
 
   async startActual() {
-    this.clicked = [];
-    this.correct = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
+    this.gridConfig = this.step >= 9 ? grid2.config : grid1.config;
+    this.answerKey = this.gridConfig.correct;
+    this.correctItems = [];
     this.proceedtoNextStep();
     await this.wait(2000);
     this.proceedtoNextStep();

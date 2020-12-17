@@ -3,39 +3,16 @@
     <!-- Show welcome message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 1">
 
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Welcome to the Trail Making Task - Part 1</h2>
-        </div>
-
         <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="title">
-                <h2 class="mat-h2">
-                    Read the instructions carefully
-                </h2>
-            </div>
-
-            <div class="statement">
-                In this task, you will be shown numbered circles on the screen that are randomly arranged.
-            </div>
-
-            <div class="statement">
-                It's your goal to click on the numbered circles in an increasing order.
-            </div>
-
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/trailmaking/1.png" alt="Trailmaking instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -58,32 +35,10 @@
 
     <!-- Show practice round message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 2">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Practice Round</h2>
-        </div>
 
         <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <h4>Let's Practice</h4>
-            </div>
-
-            <div class="statement">
-                Try clicking numbers from 1 to 2 and so forth.
-            </div>
-
-            <br>
-
-            <div class="statement">
-                The game will launch in fullscreen
-            </div>
-
-            <div class="statement-final">
-                Click 'START' when you are ready for the practice round
-            </div>
-
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/trailmaking/2.png" alt="Trailmaking instructions">
         </div>
 
         <!-- Navigation buttons -->
@@ -116,135 +71,33 @@
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
+    <!-- practice around -->
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 4">
 
         <div align="center">
             <table>
-                <tr>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(2)"
-                            (click)="registerClick(2)">2</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(7)"
-                            (click)="registerClick(7)">7</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(8)"
-                            (click)="registerClick(8)">8</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(1)"
-                            (click)="registerClick(1)">1</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(4)"
-                            (click)="registerClick(4)">4</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(3)"
-                            (click)="registerClick(3)">3</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(6)"
-                            (click)="registerClick(6)">6</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(5)"
-                            (click)="registerClick(5)">5</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
+                <tr *ngFor="let row of gridConfig.grid">
+                    <td *ngFor="let col of row">
+                        <button *ngIf="col.value" class="fab" [style.background-color]="getColor(col.value)" #myButton mat-fab (click)="registerClick(myButton, col.value)">{{col.value}}</button>
                     </td>
                 </tr>
             </table>
         </div>
-
-
     </div>
 
-    <!-- Show practice round finished message -->
+    <!-- Show practice round finished message, intro to actual game -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 5">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Practice Round Is Now Complete</h2>
-        </div>
 
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <h4>You will now play the actual game</h4>
-            </div>
-
-            <div *ngIf="isScored" class="statement">
-                You will earn 10 cents for every right answer
-            </div>
-
-            <div *ngIf="isScored" class="statement">
-                Good luck !
-            </div>
-
-            <div class="statement">
-                You have 4 minutes to finish this task.
-            </div>
-
-            <br>
-
-            <div class="statement-final">
-                Click 'START' when you are ready for the actual game
-            </div>
-
+        <!-- Intro to actual game -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/trailmaking/3.png" alt="Trailmaking instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -270,230 +123,32 @@
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
+    <!-- Actual game part 1 -->
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 7">
-
         <div align="center">
             <table>
-
-                <tr>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(15)"
-                            (click)="registerClick(15)">15</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(17)"
-                            (click)="registerClick(17)">17</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(11)"
-                            (click)="registerClick(11)">11</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(21)"
-                            (click)="registerClick(21)">21</button>
+                <tr *ngFor="let row of gridConfig.grid">
+                    <td *ngFor="let col of row">
+                        <button *ngIf="col.value" class="fab" [style.background-color]="getColor(col.value)" #myButton mat-fab (click)="registerClick(myButton, col.value)">{{col.value}}</button>
                     </td>
                 </tr>
-
-                <tr>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(12)"
-                            (click)="registerClick(12)">12</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(9)"
-                            (click)="registerClick(9)">9</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(20)"
-                            (click)="registerClick(20)">20</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(19)"
-                            (click)="registerClick(19)">19</button>
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(16)"
-                            (click)="registerClick(16)">16</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(2)"
-                            (click)="registerClick(2)">2</button>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(18)"
-                            (click)="registerClick(18)">18</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(25)"
-                            (click)="registerClick(25)">25</button>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(3)"
-                            (click)="registerClick(3)">3</button>
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(23)"
-                            (click)="registerClick(23)">23</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(5)"
-                            (click)="registerClick(5)">5</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(4)"
-                            (click)="registerClick(4)">4</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(22)"
-                            (click)="registerClick(22)">22</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(13)"
-                            (click)="registerClick(13)">13</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(6)"
-                            (click)="registerClick(6)">6</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(8)"
-                            (click)="registerClick(8)">8</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(10)"
-                            (click)="registerClick(10)">10</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(14)"
-                            (click)="registerClick(14)">14</button>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(7)"
-                            (click)="registerClick(7)">7</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(1)"
-                            (click)="registerClick(1)">1</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(24)"
-                            (click)="registerClick(24)">24</button>
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-
             </table>
         </div>
-
-
     </div>
 
-    <!-- Show welcome message -->
+    <!-- Trail making task part 2 intro -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 8">
 
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Welcome to the Trail Making Task - Part 2</h2>
-        </div>
-
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="title">
-                <h2 class="mat-h2">
-                    Read the instructions carefully
-                </h2>
-            </div>
-
-            <div class="statement">
-                In this task, you will be shown circles with numbers and letters on the screen that are randomly
-                arranged.
-            </div>
-
-            <div class="statement">
-                You will be clicking both numbers and letters on the screen in increasing, alphabetical order.
-            </div>
-
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-
+        <!-- Intro to part 2 practice -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/trailmaking/4.png" alt="Trailmaking instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -514,34 +169,12 @@
         </div>
     </div>
 
-    <!-- Show practice round message -->
+    <!-- Start part 2 practice round -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 9">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Practice Round</h2>
-        </div>
 
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <h4>Let's Practice</h4>
-            </div>
-
-            <div class="statement">
-                Try clicking in the following pattern: 1-A-2-B-3-C and so on.
-            </div>
-
-            <br>
-
-            <div class="statement">
-                The game will launch in fullscreen
-            </div>
-
-            <div class="statement-final">
-                Click 'START' when you are ready for the practice round
-            </div>
-
+        <!-- Start part 2 practice -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/trailmaking/5.png" alt="Trailmaking instructions">
         </div>
 
         <!-- Navigation buttons -->
@@ -578,132 +211,29 @@
 
         <div align="center">
             <table>
-                <tr>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(2)"
-                            (click)="registerClick(2)">A</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(7)"
-                            (click)="registerClick(7)">4</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(8)"
-                            (click)="registerClick(8)">D</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(1)"
-                            (click)="registerClick(1)">1</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(4)"
-                            (click)="registerClick(4)">B</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(3)"
-                            (click)="registerClick(3)">2</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(6)"
-                            (click)="registerClick(6)">C</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(5)"
-                            (click)="registerClick(5)">3</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
+                <tr *ngFor="let row of gridConfig.grid">
+                    <td *ngFor="let col of row">
+                        <button *ngIf="col.value" class="fab" [style.background-color]="getColor(col.value)" #myButton mat-fab (click)="registerClick(myButton, col.value)">{{col.value}}</button>
                     </td>
                 </tr>
             </table>
         </div>
 
-
     </div>
-
 
     <!-- Show practice round finished message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 12">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Practice Round Is Now Complete</h2>
-        </div>
 
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <h4>You will now play the actual game</h4>
-            </div>
-
-            <div *ngIf="isScored" class="statement">
-                You will earn 10 cents for every right answer
-            </div>
-
-            <div *ngIf="isScored" class="statement">
-                Good luck !
-            </div>
-
-            <div class="statement">
-                You have 4 minutes to finish this task.
-            </div>
-
-            <br>
-
-            <div class="statement-final">
-                Click 'START' when you are ready for the actual game
-            </div>
-
+        <!-- Start part 2 practice -->
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/trailmaking/6.png" alt="Trailmaking instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -729,224 +259,31 @@
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
+    <!-- Actual game part 2 -->
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 14">
-
         <div align="center">
             <table>
-
-                <tr>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(15)"
-                            (click)="registerClick(15)">8</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(17)"
-                            (click)="registerClick(17)">9</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(11)"
-                            (click)="registerClick(11)">6</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(21)"
-                            (click)="registerClick(21)">11</button>
+                <tr *ngFor="let row of gridConfig.grid">
+                    <td *ngFor="let col of row">
+                        <button *ngIf="col.value" class="fab" [style.background-color]="getColor(col.value)" #myButton mat-fab (click)="registerClick(myButton, col.value)">{{col.value}}</button>
                     </td>
                 </tr>
-
-                <tr>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(12)"
-                            (click)="registerClick(12)">F</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(9)"
-                            (click)="registerClick(9)">5</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(20)"
-                            (click)="registerClick(20)">J</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(19)"
-                            (click)="registerClick(19)">10</button>
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(16)"
-                            (click)="registerClick(16)">H</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(2)"
-                            (click)="registerClick(2)">A</button>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(18)"
-                            (click)="registerClick(18)">I</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(25)"
-                            (click)="registerClick(25)">13</button>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(3)"
-                            (click)="registerClick(3)">2</button>
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(23)"
-                            (click)="registerClick(23)">12</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(5)"
-                            (click)="registerClick(5)">3</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(4)"
-                            (click)="registerClick(4)">B</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(22)"
-                            (click)="registerClick(22)">K</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(13)"
-                            (click)="registerClick(13)">7</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(6)"
-                            (click)="registerClick(6)">C</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(8)"
-                            (click)="registerClick(8)">D</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(10)"
-                            (click)="registerClick(10)">E</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(14)"
-                            (click)="registerClick(14)">G</button>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(7)"
-                            (click)="registerClick(7)">4</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(1)"
-                            (click)="registerClick(1)">1</button>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                    </td>
-                    <td>
-                        <button class="fab" mat-fab [style.color]="'black'" [style.background-color]="getColor(24)"
-                            (click)="registerClick(24)">L</button>
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-
             </table>
         </div>
-
-
     </div>
 
-    <!-- Show practice round finished message -->
+    <!-- Show actual game finished message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 15">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Game has finished</h2>
-        </div>
 
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <h4>Congratulations ! You have finished the game successfully</h4>
-            </div>
-
-            <br>
-
-            <div class="statement">
-                Thank you for your participation
-            </div>
-
-            <div class="statement-final">
-                Click 'CONTINUE'
-            </div>
-
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/trailmaking/7.png" alt="Trailmaking instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
