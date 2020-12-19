@@ -151,9 +151,6 @@ export class TrailMakingComponent implements OnInit {
   private async roundComplete() {
     clearTimeout(this.sTimeout)
     this.proceedtoNextStep();
-    await this.wait(2000);
-    this.timerService.clearTimer();
-    this.correctItems = [];
 
     if(this.step >= 17) {
       this.uploadResults(this.data).pipe(take(1)).subscribe((ok) => {
@@ -168,6 +165,9 @@ export class TrailMakingComponent implements OnInit {
         this.taskManager.handleErr()
       })
     } else {
+      await this.wait(2000);
+      this.timerService.clearTimer();
+      this.correctItems = [];
       this.proceedtoNextStep();
     }
   }
@@ -222,8 +222,6 @@ export class TrailMakingComponent implements OnInit {
       this.taskManager.nextExperiment();
     }
   }
-
-
 
 
 
