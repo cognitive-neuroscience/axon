@@ -323,6 +323,7 @@ export class DemandSelectionComponent implements OnInit {
       isCorrect: false,
       counterbalance: this.counterBalance,
       score: 0,
+      rotation: blockConfig.rotation
     });
 
     this.showPatches = false;

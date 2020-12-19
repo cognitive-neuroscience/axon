@@ -59,7 +59,7 @@ export class StroopTaskComponent implements OnInit {
     if (this.isResponseAllowed) {
       this.isResponseAllowed = false;
       try {
-        if (!!event.key) {
+        if (this.isValidKey(event.key)) {
           this.data[this.data.length - 1].responseTime = this.timerService.stopTimerAndGetTime();
           switch (event.key) {
             case Key.NUMONE: this.data[this.data.length - 1].userAnswer = UserResponse.RED; break;
@@ -75,6 +75,15 @@ export class StroopTaskComponent implements OnInit {
         }
       } catch (error) {
       }
+    }
+  }
+
+  private isValidKey(key: string): boolean {
+    if(!key) return false
+    if(key === Key.NUMONE || key === Key.NUMTWO || key === Key.NUMTHREE) {
+      return true
+    } else {
+      return false
     }
   }
 

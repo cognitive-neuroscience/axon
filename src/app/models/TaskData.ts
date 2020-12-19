@@ -77,6 +77,7 @@ export class DemandSelection extends TaskData {
     responseTime: number;
     isCorrect: boolean;
     block: number;
+    rotation: number;
 }
 
 export class TrailMaking extends TaskData {
