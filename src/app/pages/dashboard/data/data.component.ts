@@ -22,8 +22,8 @@ export class DataComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.tableNames = this._downloadDataService.tableNames
-    this._downloadDataService.updateTableNames()
+    this.tableNames = this._downloadDataService.tableNames;
+    this._downloadDataService.updateTableNames();
   }
 
   downloadFile() {

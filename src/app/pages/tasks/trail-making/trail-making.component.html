@@ -85,8 +85,13 @@
         </div>
     </div>
 
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 5">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
     <!-- Show practice round finished message, intro to actual game -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 5">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 6">
 
         <!-- Intro to actual game -->
         <div class="w-100 px-4 uppercase instructions" align="center">
@@ -119,12 +124,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 6">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 7">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Actual game part 1 -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 7">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 8">
         <div align="center">
             <table>
                 <tr *ngFor="let row of gridConfig.grid">
@@ -136,8 +141,13 @@
         </div>
     </div>
 
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 9">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
     <!-- Trail making task part 2 intro -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 8">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 10">
 
         <!-- Intro to part 2 practice -->
         <div class="w-100 px-4 uppercase instructions" align="center">
@@ -170,7 +180,7 @@
     </div>
 
     <!-- Start part 2 practice round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 9">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 11">
 
         <!-- Start part 2 practice -->
         <div class="w-100 px-4 uppercase instructions" align="center">
@@ -203,11 +213,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 10">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 12">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 11">
+    <!-- part 2 practice round -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 13">
 
         <div align="center">
             <table>
@@ -221,8 +232,13 @@
 
     </div>
 
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 14">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
     <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 12">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 15">
 
         <!-- Start part 2 practice -->
         <div class="w-100 px-4 uppercase instructions" align="center">
@@ -255,12 +271,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 13">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 16">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Actual game part 2 -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 14">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 17">
         <div align="center">
             <table>
                 <tr *ngFor="let row of gridConfig.grid">
@@ -272,8 +288,13 @@
         </div>
     </div>
 
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 18">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
     <!-- Show actual game finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 15">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 19">
 
         <div class="w-100 px-4 uppercase instructions" align="center">
             <img class="w-100" src="/assets/images/instructions/trailmaking/7.png" alt="Trailmaking instructions">

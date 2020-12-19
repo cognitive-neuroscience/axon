@@ -1,3 +1,18 @@
+export enum TaskNames {
+    GONOGO = "gonogo",
+    DIGITSPAN = "digitspan",
+    FINGERTAPPING = "fingertapping",
+    NBACK = "nback",
+    STROOP = "stroop",
+    TRAILMAKING = "trailmaking",
+    COLORGAME = "colorgame",
+    SHAPEGAME = "shapegame",
+    TASKSWITCHING = "taskswitching",
+    DEMANDSELECTION = "demandselection",
+    SIMON = "simon",
+    SMILEYFACE = "smileyface"
+}
+
 export abstract class TaskData {
     trial: number;
     userID: string;

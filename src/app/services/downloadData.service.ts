@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { Role } from '../models/InternalDTOs';
 import { AuthService } from './auth.service';
 import { ExcelService } from './excel.service';
+import { take } from 'rxjs/operators';
 
 @Injectable({
     providedIn: "root"
@@ -28,7 +29,7 @@ export class DownloadDataService {
         const jwt = this.authService.getDecodedToken()
         const role = jwt ? jwt.Role : null
         if(role && role === Role.ADMIN) {
-            this._getTableNames().subscribe(data => {
+            this._getTableNames().pipe(take(1)).subscribe(data => {
                 this._tableNames.next(data)
             })
         }

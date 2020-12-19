@@ -6,8 +6,11 @@ import { Color, Key, Role, UserResponse, Feedback } from '../../../models/Intern
 import { AuthService } from '../../../services/auth.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
-import { TaskSwitching } from '../../../models/TaskData';
+import { TaskNames, TaskSwitching } from '../../../models/TaskData';
 import { TimerService } from '../../../services/timer.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
 declare function setFullScreen(): any;
 
 @Component({
@@ -25,7 +28,7 @@ export class TaskSwitchingComponent implements OnInit {
   durationOfFeedback: number = 500;
   interTrialDelay: number = 1000;
   practiceTrials: number;
-  actualTrials: number = 5;
+  actualTrials: number = environment.production ? 125 : 5;
 
   step: number = 1;
   // color of digit being displayed
@@ -59,7 +62,7 @@ export class TaskSwitchingComponent implements OnInit {
     }
   } = {
     1: {
-      numTrials: 5,
+      numTrials: environment.production ? 5 : 5,
       showFeedback: true,
       responseTime: 10000,
       repeat: {
@@ -68,7 +71,7 @@ export class TaskSwitchingComponent implements OnInit {
       }
     },
     2: {
-      numTrials: 5,
+      numTrials: environment.production ? 20 : 5,
       showFeedback: true,
       responseTime: 4000,
       repeat: {
@@ -78,7 +81,7 @@ export class TaskSwitchingComponent implements OnInit {
       }
     },
     3: {
-      numTrials: 5,
+      numTrials: environment.production ? 10 : 5,
       showFeedback: false,
       responseTime: 4000,
       repeat: {
@@ -347,11 +350,27 @@ export class TaskSwitchingComponent implements OnInit {
           }
         }
       } else {
+        // go to loader
         this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
-        console.log(this.data);
-        this.uploadResults();
+
+        const decodedToken = this.authService.getDecodedToken()
+        if(decodedToken.Role === Role.ADMIN) {
+          this.proceedtoNextStep()
+        } else {
+
+          this.uploadResults(this.data).subscribe(ok => {
+            if(ok) {
+              this.proceedtoNextStep();
+            } else {
+              console.error("There was an error downloading results")
+              this.taskManager.handleErr()
+            }
+          }, err => {
+            console.error("There was an error downloading results")
+            this.taskManager.handleErr()
+          })
+
+        }
       }
     }
   }
@@ -367,11 +386,11 @@ export class TaskSwitchingComponent implements OnInit {
     this.showStimulus();
   }
 
-  uploadResults() {
-    if (this.data.length > 0) {
-      let d = JSON.parse(JSON.stringify(this.data));
-      // this.dataService.uploadData('ts', d);
-    }
+  uploadResults(data: TaskSwitching[]): Observable<boolean> {
+    const experimentCode = this.taskManager.getExperimentCode()
+    return this.uploadDataService.uploadData(experimentCode, TaskNames.TASKSWITCHING, data).pipe(
+      map(ok => ok.ok)
+    )
   }
 
   continueAhead() {

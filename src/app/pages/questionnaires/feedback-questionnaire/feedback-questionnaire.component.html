@@ -9,19 +9,24 @@
             <div>
                 <label class="w-100 font-weight-bold">Did you encounter any issues during our study?</label>
                 <mat-form-field class="w-100">
-                    <textarea class="w-100" matInput rows="3"></textarea>
+                    <textarea [(ngModel)]="issuesEncountered" (ngModelChange)="onChange()" class="w-100" matInput rows="3"></textarea>
                 </mat-form-field>
             </div>
             <br>
             <div>
                 <label class="w-100 font-weight-bold">Additional Feedback</label>
                 <mat-form-field class="w-100">
-                    <textarea class="w-100" matInput rows="3"></textarea>
+                    <textarea [(ngModel)]="additionalFeedback" (ngModelChange)="onChange()" class="w-100" matInput rows="3"></textarea>
                 </mat-form-field>
             </div>
             <br>
     
-            <button (click)="submitForm()" mat-raised-button color="primary">Submit Feedback</button>
+            <div class="d-flex justify-content-between">
+                <button [disabled]="!issuesEncountered && !additionalFeedback" (click)="submitForm()" mat-raised-button color="primary">Submit Feedback</button>
+                <mat-error class="d-flex align-items-center" *ngIf="!issuesEncountered && !additionalFeedback && touched">
+                    To submit feedback, please input any issues you encountered or any additional feedback you may have.
+                </mat-error>
+            </div>
         </div>
     </div>
     <div *ngIf="formSubmitted">

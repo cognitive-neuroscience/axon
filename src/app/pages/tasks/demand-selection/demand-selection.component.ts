@@ -9,7 +9,10 @@ import { SnackbarService } from '../../../services/snackbar.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
 import { TimerService } from '../../../services/timer.service';
 import { Feedback } from '../../../models/InternalDTOs';
-import { DemandSelection } from '../../../models/TaskData';
+import { DemandSelection, TaskNames } from '../../../models/TaskData';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-demand-selection',
@@ -28,7 +31,7 @@ export class DemandSelectionComponent implements OnInit {
   interTrialDelay: number = 200;       // In milliseconds
   practiceTrials: number = 5;
   actualTrials: number = 50;
-  blockTrials: number[] = [50, 50, 50, 50, 35, 35]
+  blockTrials: number[] = environment.production ? [50, 50, 50, 50, 35, 35] : [5, 5, 5, 5, 3, 3];
 
   // all variables relating to showing different component in the game
   showPatches: boolean = false;
@@ -79,7 +82,7 @@ export class DemandSelectionComponent implements OnInit {
     }
   } = {
     1: {
-      numTrials: 5,
+      numTrials: environment.production ? 5 : 5,
       showFeedback: true,
       responseTime: 5000,
       repeat: {
@@ -88,7 +91,7 @@ export class DemandSelectionComponent implements OnInit {
       }
     },
     2: {
-      numTrials: 5,
+      numTrials: environment.production ? 5 : 5,
       showFeedback: true,
       responseTime: 5000,
       repeat: {
@@ -240,11 +243,12 @@ export class DemandSelectionComponent implements OnInit {
     this.showFeedbackAfterEveryTrial = false;
     this.maxResponseTime = 5000;
     this.showScoreAfterEveryTrial = false;
-
-    this.proceedtoNextStep()
   }
 
   async startBlock() {
+    if(this.blockNum == 1) {
+      this.prepareActualGame()
+    }
     this.startGameInFullScreen();
     this.proceedtoNextStep();
     await this.wait(2000);
@@ -375,8 +379,6 @@ export class DemandSelectionComponent implements OnInit {
   async decideToContinue() {
     if (this.isPractice) {
       if (this.currentTrial < this.practiceTrials) {
-        console.log(this.data);
-        
         this.continueGame();
       } else {
         this.proceedtoNextStep();
@@ -388,14 +390,35 @@ export class DemandSelectionComponent implements OnInit {
         this.continueGame();
       } else {
 
-        // we have reached the last block
-        if(this.blockNum == 6) {
-          this.uploadResults()
-        }
+        // go to loader
+        this.proceedtoNextStep();
 
-        this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
+        // we have reached the last block so we are done
+        if(this.blockNum == 6) {
+
+          const decodedToken = this.authService.getDecodedToken()
+          if(decodedToken.Role === Role.ADMIN) {
+            this.proceedtoNextStep()
+          } else {
+  
+            this.uploadResults(this.data).subscribe(ok => {
+              if(ok) {
+                this.proceedtoNextStep();
+              } else {
+                console.error("There was an error downloading results")
+                this.taskManager.handleErr()
+              }
+            }, err => {
+              console.error("There was an error downloading results")
+              this.taskManager.handleErr()
+            })
+  
+          }
+
+        } else {
+          await this.wait(2000);
+          this.proceedtoNextStep();
+        }
       }
     }
   }
@@ -430,11 +453,11 @@ export class DemandSelectionComponent implements OnInit {
     this.showStimulus();
   }
 
-  uploadResults() {
-    if (this.data.length > 0) {
-      let d = JSON.parse(JSON.stringify(this.data));
-      // this.dataService.uploadData('dst', d);
-    }
+  uploadResults(data: DemandSelection[]): Observable<boolean> {
+    const experimentCode = this.taskManager.getExperimentCode()
+    return this.uploadDataService.uploadData(experimentCode, TaskNames.DEMANDSELECTION, data).pipe(
+      map(ok => ok.ok)
+    )
   }
 
   continueAhead() {

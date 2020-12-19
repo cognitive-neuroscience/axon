@@ -10,13 +10,14 @@ import * as Set3 from './stimuli_3_1';
 import * as Set4 from './stimuli_4_1';
 import * as PracticeSet from './stimuli_practice';
 import { TaskManagerService } from '../../../services/task-manager.service';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { Role } from 'src/app/models/InternalDTOs';
-import { NBackStimuli } from '../../../models/TaskData';
+import { NBackStimuli, TaskNames } from '../../../models/TaskData';
 import { TimerService } from '../../../services/timer.service';
 import { UserResponse, Feedback } from '../../../models/InternalDTOs';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-n-back',
@@ -34,8 +35,8 @@ export class NBackComponent implements OnInit {
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 15;
-  actualTrials: number = 143;
+  practiceTrials: number = environment.production ? 15 : 5;
+  actualTrials: number = environment.production ? 143 : 10;
 
   step: number = 1;
   feedback: string = '';
@@ -273,18 +274,16 @@ export class NBackComponent implements OnInit {
           this.proceedtoNextStep()
         } else {
 
-          this.uploadResults(this.data).subscribe(ok => {
+          this.uploadResults(this.data).pipe(take(1)).subscribe(ok => {
             if(ok) {
               this.proceedtoNextStep()
             } else {
-              this.router.navigate(['/login/mturk'])
-              console.error("There was an error uploading the results")
-              this.snackbarService.openErrorSnackbar("There was an error uploading the results")
+              console.error("There was an error downloading results")
+              this.taskManager.handleErr()
             }
           }, err => {
-            this.router.navigate(['/login/mturk'])
-            console.error("There was an error uploading the results")
-            this.snackbarService.openErrorSnackbar("There was an error uploading the results")
+            console.error("There was an error downloading results")
+            this.taskManager.handleErr()
           })
 
         }
@@ -312,9 +311,7 @@ export class NBackComponent implements OnInit {
 
   uploadResults(data: NBack[]): Observable<boolean> {
     const experimentCode = this.taskManager.getExperimentCode()
-    return this.uploadDataService.uploadData(experimentCode, "nback", data).pipe(
-      map(ok => ok.ok)
-    )
+    return this.uploadDataService.uploadData(experimentCode, TaskNames.NBACK, data).pipe(map(ok => ok.ok))
   }
 
 

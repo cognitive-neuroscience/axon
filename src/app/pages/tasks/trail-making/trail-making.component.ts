@@ -1,7 +1,6 @@
 import { Component, OnInit, Renderer2, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { UploadDataService } from 'src/app/services/uploadData.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import * as practiceGrid1 from './grid.1.practice';
 import * as grid1 from './grid.1';
 import * as practiceGrid2 from './grid.2.practice';
@@ -13,6 +12,9 @@ import { AuthService } from '../../../services/auth.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
 import { Role } from 'src/app/models/InternalDTOs';
 import { SnackbarService } from '../../../services/snackbar.service';
+import { Observable } from 'rxjs';
+import { TaskNames } from '../../../models/TaskData';
+import { map, take } from 'rxjs/operators';
 
 declare function setFullScreen(): any;
 
@@ -39,6 +41,8 @@ export class TrailMakingComponent implements OnInit {
   showScoreAfterEveryTrial: number | boolean;
   flashIncorrectDuration: number = 500;
   numberOfBreaks: number;
+  // 4 minute timer
+  timeToComplete: number = 240000
   maxResponseTime: number;
   durationOfFeedback: number;
   interTrialDelay: number;
@@ -47,6 +51,7 @@ export class TrailMakingComponent implements OnInit {
   data: TrailMaking[] = [];
   clickNum: number = 0;
   sTimeout;
+  isPractice: boolean = true;
   // can be numbers or letters
   correctItems: (number | string)[] = [];
   answerKey: (number | string)[] = [];
@@ -94,17 +99,19 @@ export class TrailMakingComponent implements OnInit {
     const currIndex = this.correctItems.length - 1;
     const isCorrect = this.correctItems[currIndex] === this.answerKey[currIndex];
 
-    // record the click
-    this.data.push({
-      userID: this.userID,
-      score: null,
-      trial: ++this.clickNum,
-      timeFromLastClick: this.timerService.stopTimerAndGetTime(),
-      trialType: this.step >= 9 ? TrialType.ALPHANUMERIC : TrialType.NUMERIC,
-      userAnswer: value.toString(),
-      actualAnswer: this.answerKey[currIndex].toString(),
-      isCorrect: isCorrect,
-    });
+    if(!this.isPractice) {
+      // record the click if actual game
+      this.data.push({
+        userID: this.userID,
+        score: null,
+        trial: ++this.clickNum,
+        timeFromLastClick: this.timerService.stopTimerAndGetTime(),
+        trialType: this.step >= 9 ? TrialType.ALPHANUMERIC : TrialType.NUMERIC,
+        userAnswer: value.toString(),
+        actualAnswer: this.answerKey[currIndex].toString(),
+        isCorrect: isCorrect,
+      });
+    }
 
     this.timerService.clearTimer();
     this.timerService.startTimer();
@@ -142,18 +149,35 @@ export class TrailMakingComponent implements OnInit {
   }
 
   private async roundComplete() {
-    await this.wait(1000);
+    clearTimeout(this.sTimeout)
+    this.proceedtoNextStep();
+    await this.wait(2000);
     this.timerService.clearTimer();
     this.correctItems = [];
-    this.proceedtoNextStep();
+
+    if(this.step >= 17) {
+      this.uploadResults(this.data).pipe(take(1)).subscribe((ok) => {
+        if(ok) {  
+          this.proceedtoNextStep();
+        } else {
+          console.error("There was an error downloading results")
+          this.taskManager.handleErr()
+        }
+      }, (err) => {
+        console.error("There was an error downloading results")
+        this.taskManager.handleErr()
+      })
+    } else {
+      this.proceedtoNextStep();
+    }
   }
 
   async startPractice() {
+    this.isPractice = true;
     this.gridConfig = this.step >= 9 ? practiceGrid2.config : practiceGrid1.config;
     this.answerKey = this.gridConfig.correct;
     this.correctItems = [];
     this.clickNum = 0;
-    this.data = [];
     this.startGameInFullScreen();
     this.proceedtoNextStep();
     await this.wait(2000);
@@ -162,30 +186,43 @@ export class TrailMakingComponent implements OnInit {
   }
 
   async startActual() {
+    this.isPractice = false;
     this.gridConfig = this.step >= 9 ? grid2.config : grid1.config;
     this.answerKey = this.gridConfig.correct;
     this.correctItems = [];
     this.clickNum = 0;
-    this.data = [];
     this.startGameInFullScreen();
     this.proceedtoNextStep();
     await this.wait(2000);
     this.proceedtoNextStep();
     this.timerService.startTimer();
-    // this.sTimeout = setTimeout(() => {
-    //   this.proceedtoNextStep();
-    //   this.snackbar.open('Timeout', '', { duration: 2000 });
-    // }, 240000);
+
+    this.sTimeout = setTimeout(() => {
+      this.snackbarService.openInfoSnackbar("Time is up!")
+      this.roundComplete();
+    }, this.timeToComplete);
   }
 
 
-  uploadResults() {
+  uploadResults(data: TrailMaking[]): Observable<boolean> {
+    const experimentCode = this.taskManager.getExperimentCode()
+    return this.uploadDataService.uploadData(experimentCode, TaskNames.TRAILMAKING, data).pipe(map(ok => ok.ok))
   }
 
 
   continueAhead() {
-    this.router.navigate(['/dashboard']);
+    const decodedToken = this.authService.getDecodedToken()
+
+    if(decodedToken.Role === Role.ADMIN) {
+
+      this.router.navigate(['/dashboard/tasks'])
+      this.snackbarService.openInfoSnackbar("Task completed")
+
+    } else {
+      this.taskManager.nextExperiment();
+    }
   }
+
 
 
 

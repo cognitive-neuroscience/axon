@@ -1,5 +1,11 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
+import { QuestionnaireService } from '../../../services/questionnaire.service';
+import { FeedbackQuestionnaireResponse } from '../../../models/Questionnaire';
+import { AuthService } from '../../../services/auth.service';
+import { TaskManagerService } from '../../../services/task-manager.service';
+import { take } from 'rxjs/operators';
+import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({
   selector: 'app-feedback-questionnaire',
@@ -9,14 +15,50 @@ import { Component, OnInit } from '@angular/core';
 export class FeedbackQuestionnaireComponent implements OnInit {
 
   formSubmitted: boolean = false;
+  touched: boolean = false;
 
-  constructor() { }
+  issuesEncountered: string = "";
+  additionalFeedback: string = "";
+
+  onChange() {
+    this.touched = true;
+  }
+
+  constructor(
+    private questionnaireService: QuestionnaireService, 
+    private authService: AuthService,
+    private taskManager: TaskManagerService,
+    private snackbarService: SnackbarService
+  ) { }
 
   ngOnInit(): void {
   }
 
   submitForm() {
-    this.formSubmitted = true;
+    // submit if neither is empty
+    if(this.issuesEncountered != "" || this.additionalFeedback != "") {
+      this.saveResponse()
+    }
+
+  }
+
+  saveResponse() {
+    const userID = this.authService.getDecodedToken().UserID
+    const experimentCode = this.taskManager.getExperimentCode()
+
+    const obj: FeedbackQuestionnaireResponse = {
+      userID: userID,
+      experimentCode: experimentCode,
+      issuesEncountered: this.issuesEncountered,
+      additionalFeedback: this.additionalFeedback
+    }
+    this.questionnaireService.saveFeedQuestionnaireResponse(obj).pipe(take(1)).subscribe((ok) => {
+      if(ok) {
+        this.formSubmitted = true;
+      } else {
+        this.snackbarService.openErrorSnackbar("There was an error submitting feedback")
+      }
+    })
   }
 
   

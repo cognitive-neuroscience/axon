@@ -7,6 +7,7 @@ import { QuestionnaireService } from '../../../services/questionnaire.service';
 import { DemographicsQuestionnaireResponse } from '../../../models/Questionnaire';
 import { TaskManagerService } from '../../../services/task-manager.service';
 import { AuthService } from '../../../services/auth.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-demographics-questionnaire',
@@ -80,7 +81,7 @@ export class DemographicsQuestionnaireComponent implements OnInit {
       hasNeuroConditions: this.demographicsQuestionnaire.get("hasNeuroConditions").value,
       hasPsychConditions: this.demographicsQuestionnaire.get("hasPsychConditions").value
     }
-    this.questionnaireService.saveDemographicsQuestionnaireResponse(response).subscribe(ok => {
+    this.questionnaireService.saveDemographicsQuestionnaireResponse(response).pipe(take(1)).subscribe(ok => {
       if(ok) {
         this.taskManager.nextExperiment()
       } else {

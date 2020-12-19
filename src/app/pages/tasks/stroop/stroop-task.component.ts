@@ -7,7 +7,7 @@ import * as Set3 from './stimuli_3_1';
 import * as Set4 from './stimuli_4_1';
 import * as PracticeSet from './stimuli_practice';
 import { TaskManagerService } from '../../../services/task-manager.service';
-import { StroopTask, StroopTaskStimuli } from '../../../models/TaskData';
+import { StroopTask, StroopTaskStimuli, TaskNames } from '../../../models/TaskData';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
@@ -15,6 +15,7 @@ import { SnackbarService } from '../../../services/snackbar.service';
 import { Key, Role } from 'src/app/models/InternalDTOs';
 import { TimerService } from '../../../services/timer.service';
 import { UserResponse, Feedback } from '../../../models/InternalDTOs';
+import { environment } from '../../../../environments/environment';
 declare function setFullScreen(): any;
 
 @Component({
@@ -33,8 +34,8 @@ export class StroopTaskComponent implements OnInit {
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 15;
-  actualTrials: number = 120;
+  practiceTrials: number = environment.production ? 15 : 5;
+  actualTrials: number = environment.production ? 120 : 10;
 
   step: number = 1;
   color: string = '';
@@ -85,7 +86,8 @@ export class StroopTaskComponent implements OnInit {
     private snackbarService: SnackbarService,
     private authService: AuthService,
     private timerService: TimerService
-  ) { }
+  ) {
+  }
 
 
 
@@ -242,8 +244,6 @@ export class StroopTaskComponent implements OnInit {
       if (this.currentTrial < this.practiceTrials) {
         this.continueGame();
       } else {
-        console.log(this.data);
-        
         this.proceedtoNextStep();
         await this.wait(2000);
         this.proceedtoNextStep();
@@ -277,14 +277,12 @@ export class StroopTaskComponent implements OnInit {
             if(ok) {
               this.proceedtoNextStep();
             } else {
-              this.router.navigate(['/login/mturk'])
-              console.error("There was an error uploading the results");
-              this.snackbarService.openErrorSnackbar("There was an error uploading the results");
+              console.error("There was an error downloading results")
+              this.taskManager.handleErr()
             }
           }, err => {
-            this.router.navigate(['/login/mturk'])
-            console.log("There was an error uploading the results");
-            this.snackbarService.openErrorSnackbar("There was an error uploading the results");
+            console.error("There was an error downloading results")
+            this.taskManager.handleErr()
           })
 
         }
@@ -311,7 +309,7 @@ export class StroopTaskComponent implements OnInit {
 
   uploadResults(data: StroopTask[]): Observable<boolean> {
     const experimentCode = this.taskManager.getExperimentCode()
-    return this.uploadDataService.uploadData(experimentCode, "stroop", data).pipe(
+    return this.uploadDataService.uploadData(experimentCode, TaskNames.STROOP, data).pipe(
       map(ok => ok.ok)
     )
   }

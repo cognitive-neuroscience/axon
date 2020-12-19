@@ -21,15 +21,15 @@ export class ConsentComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    // if(!this.taskManager.hasExperiment()) {
-    //   this.taskManager.handleErr()
-    // } else {
+    if(!this.taskManager.hasExperiment()) {
+      this.taskManager.handleErr()
+    } else {
       this.subscriptions.push(
         this._consentService.loadConsentFormJSON().subscribe((formData: ConsentForm) => {
           this.consentMetaData = formData;
         })
       )
-    // }
+    }
   }
 
   consent(answer: boolean) {
