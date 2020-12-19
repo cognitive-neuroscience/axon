@@ -1,9 +1,5 @@
 @import '../../../sass/mixins';
 
-td {
-    padding: 25px;
-}
-
 button.fab {
     background-color: whitesmoke;
     color: black;
@@ -37,3 +33,20 @@ button.fab {
 
 }
 
+td {
+    @include for-small-device-only {
+        padding: 10px;
+    }
+    
+    @include for-small-desktop-only {
+        padding: 20px;
+    }
+    
+    @include for-desktop-up {
+        padding: 25px;
+    }
+    
+    @include for-large-desktop-up {
+        padding: 30px;
+    }
+}
