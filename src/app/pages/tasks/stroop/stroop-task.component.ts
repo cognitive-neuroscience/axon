@@ -56,25 +56,17 @@ export class StroopTaskComponent implements OnInit {
 
   @HostListener('window:keypress', ['$event'])
   onKeyPress(event: KeyboardEvent) {
-    if (this.isResponseAllowed) {
+    if(this.isValidKey(event.key) && this.isResponseAllowed) {
       this.isResponseAllowed = false;
-      try {
-        if (this.isValidKey(event.key)) {
-          this.data[this.data.length - 1].responseTime = this.timerService.stopTimerAndGetTime();
-          switch (event.key) {
-            case Key.NUMONE: this.data[this.data.length - 1].userAnswer = UserResponse.RED; break;
-            case Key.NUMTWO: this.data[this.data.length - 1].userAnswer = UserResponse.BLUE; break;
-            case Key.NUMTHREE: this.data[this.data.length - 1].userAnswer = UserResponse.GREEN; break;
-            default: this.data[this.data.length - 1].userAnswer = UserResponse.INVALID; break;
-          }
-          try {
-            clearTimeout(this.sTimeout);
-            this.showFeedback();
-          } catch (error) {
-          }
-        }
-      } catch (error) {
+      this.data[this.data.length - 1].responseTime = this.timerService.stopTimerAndGetTime();
+      switch (event.key) {
+        case Key.NUMONE: this.data[this.data.length - 1].userAnswer = UserResponse.RED; break;
+        case Key.NUMTWO: this.data[this.data.length - 1].userAnswer = UserResponse.BLUE; break;
+        case Key.NUMTHREE: this.data[this.data.length - 1].userAnswer = UserResponse.GREEN; break;
+        default: this.data[this.data.length - 1].userAnswer = UserResponse.INVALID; break;
       }
+      clearTimeout(this.sTimeout);
+      this.showFeedback();
     }
   }
 
