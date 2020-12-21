@@ -34,7 +34,7 @@ const routes: Routes = [
     path: 'dashboard', 
     component: DashboardComponent, 
     data: { roles: [Role.ADMIN] },
-    // canActivate: [CanActivateRouteGuard],
+    canActivate: [CanActivateRouteGuard],
     children: [
       { path: '', redirectTo: 'experiments', pathMatch: 'full' },
       { path: 'experiments', component: ViewExperimentsComponent },
@@ -60,9 +60,7 @@ const routes: Routes = [
   { path: RouteMap.nback.route, component: NBackComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.stroop.route, component: StroopTaskComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.trailmaking.route, component: TrailMakingComponent },
-  { path: 'complete', component: FinalPageComponent, 
-  // canActivate: [ExperimentRouteGuard] 
-},
+  { path: 'complete', component: FinalPageComponent, canActivate: [ExperimentRouteGuard] },
   { path: '**', redirectTo: '/login/mturk', pathMatch: 'full' }
 ];
 
