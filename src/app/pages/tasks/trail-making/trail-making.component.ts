@@ -151,7 +151,14 @@ export class TrailMakingComponent implements OnInit {
   private async roundComplete() {
     clearTimeout(this.sTimeout)
     this.proceedtoNextStep();
+  
+    const decodedToken = this.authService.getDecodedToken()
+    if(decodedToken.Role === Role.ADMIN) {
+      this.proceedtoNextStep();
+      return;
+    }
 
+    // if the role is admin, do not try and upload results
     if(this.step >= 17) {
       this.uploadResults(this.data).pipe(take(1)).subscribe((ok) => {
         if(ok) {  
