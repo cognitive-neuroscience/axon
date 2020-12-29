@@ -242,8 +242,6 @@ export class NBackComponent implements OnInit {
       if (this.currentTrial < this.practiceTrials) {
         this.continueGame();
       } else {
-        console.log(this.data);
-        
         this.proceedtoNextStep();
         await this.wait(2000);
         this.proceedtoNextStep();

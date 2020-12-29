@@ -6,6 +6,7 @@ import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { SessionStorageService } from '../../../services/sessionStorage.service';
 import { environment } from 'src/environments/environment';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-final-page',
@@ -30,17 +31,19 @@ export class FinalPageComponent implements OnInit {
     const experimentCode = this._taskManager.getExperimentCode()
     const userID = this._authService.getDecodedToken().UserID
     
-    if(!environment.production) this.getCompletionCode(userID, experimentCode)
+    this.getCompletionCode(userID, experimentCode)
   }
 
   getCompletionCode(userId: string, expCode: string) {
-    this._userService.getCompletionCode(userId, expCode).subscribe((completionCode) => {
-      // user navigated to complete without finishing
-      if(!completionCode) {
-        this.handleErr()
-      }
-      this.completionCode = completionCode
-    })
+    if(userId && expCode) {
+      this._userService.getCompletionCode(userId, expCode).pipe(take(1)).subscribe((completionCode) => {
+        // user navigated to complete without finishing
+        if(!completionCode) {
+          this.handleErr()
+        }
+        this.completionCode = completionCode
+      })
+    }
   }
 
   handleErr() {
