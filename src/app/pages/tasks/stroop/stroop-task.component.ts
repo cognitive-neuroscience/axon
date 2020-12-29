@@ -58,12 +58,14 @@ export class StroopTaskComponent implements OnInit {
   onKeyPress(event: KeyboardEvent) {
     if(this.isValidKey(event.key) && this.isResponseAllowed) {
       this.isResponseAllowed = false;
-      this.data[this.data.length - 1].responseTime = this.timerService.stopTimerAndGetTime();
+      const lastElement = this.data[this.data.length - 1];
+      lastElement.responseTime = this.timerService.stopTimerAndGetTime();
+      lastElement.submitted = this.timerService.getCurrentTimestamp();
       switch (event.key) {
-        case Key.NUMONE: this.data[this.data.length - 1].userAnswer = UserResponse.RED; break;
-        case Key.NUMTWO: this.data[this.data.length - 1].userAnswer = UserResponse.BLUE; break;
-        case Key.NUMTHREE: this.data[this.data.length - 1].userAnswer = UserResponse.GREEN; break;
-        default: this.data[this.data.length - 1].userAnswer = UserResponse.INVALID; break;
+        case Key.NUMONE: lastElement.userAnswer = UserResponse.RED; break;
+        case Key.NUMTWO: lastElement.userAnswer = UserResponse.BLUE; break;
+        case Key.NUMTHREE: lastElement.userAnswer = UserResponse.GREEN; break;
+        default: lastElement.userAnswer = UserResponse.INVALID; break;
       }
       clearTimeout(this.sTimeout);
       this.showFeedback();
@@ -201,7 +203,9 @@ export class StroopTaskComponent implements OnInit {
       responseTime: null,
       isCorrect: false,
       score: 0,
-      set: this.set
+      set: this.set,
+      submitted: null,
+      isPractice: this.isPractice
     });
   }
 
@@ -320,6 +324,7 @@ export class StroopTaskComponent implements OnInit {
   continueAhead() {
     const decodedToken = this.authService.getDecodedToken()
     if(decodedToken.Role === Role.ADMIN) {
+      if(!environment.production) console.log(this.data)
       this.router.navigate(['/dashboard/tasks'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
@@ -341,7 +346,6 @@ export class StroopTaskComponent implements OnInit {
 
 
   resetData() {
-    this.data = [];
     this.totalScore = 0;
   }
 

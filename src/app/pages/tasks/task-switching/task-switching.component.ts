@@ -113,7 +113,10 @@ export class TaskSwitchingComponent implements OnInit {
 
       this.isResponseAllowed = false;
       let userAnswer: UserResponse;
-      this.data[this.data.length - 1].responseTime = this.timerService.stopTimerAndGetTime();
+
+      const currentDataObj = this.data[this.data.length - 1];
+      currentDataObj.responseTime = this.timerService.stopTimerAndGetTime();
+      currentDataObj.submitted = this.timerService.getCurrentTimestamp();
 
       // mark down user response
       if(this.matrix.colors[this.currentTrial - 1] === this.oddEvenColor) {
@@ -122,7 +125,7 @@ export class TaskSwitchingComponent implements OnInit {
         userAnswer = event.key === Key.ARROWLEFT ? UserResponse.LESSER : UserResponse.GREATER
       }
 
-      this.data[this.data.length - 1].userAnswer = userAnswer;
+      currentDataObj.userAnswer = userAnswer;
 
       this.showFeedback();
     }
@@ -287,6 +290,8 @@ export class TaskSwitchingComponent implements OnInit {
       responseTime: 0,
       isCorrect: false,
       score: 0,
+      isPractice: this.isPractice,
+      submitted: null,
     });
   }
 
@@ -396,6 +401,7 @@ export class TaskSwitchingComponent implements OnInit {
   continueAhead() {
     const decodedToken = this.authService.getDecodedToken()
     if(decodedToken.Role === Role.ADMIN) {
+      if(!environment.production) console.log(this.data)
       this.router.navigate(['/dashboard/tasks'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
@@ -412,7 +418,6 @@ export class TaskSwitchingComponent implements OnInit {
   }
 
   resetData() {
-    this.data = [];
     this.totalScore = 0;
   }
 

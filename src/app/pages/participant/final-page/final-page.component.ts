@@ -5,6 +5,7 @@ import { TaskManagerService } from '../../../services/task-manager.service';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { SessionStorageService } from '../../../services/sessionStorage.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-final-page',
@@ -29,7 +30,7 @@ export class FinalPageComponent implements OnInit {
     const experimentCode = this._taskManager.getExperimentCode()
     const userID = this._authService.getDecodedToken().UserID
     
-    this.getCompletionCode(userID, experimentCode)
+    if(!environment.production) this.getCompletionCode(userID, experimentCode)
   }
 
   getCompletionCode(userId: string, expCode: string) {

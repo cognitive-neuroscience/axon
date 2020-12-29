@@ -27,4 +27,8 @@ export class TimerService {
         this.timer = null;
         return time;
     }
+
+    getCurrentTimestamp(): string {
+        return new Date().toISOString();
+    }
 }

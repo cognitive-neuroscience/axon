@@ -82,7 +82,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.snackbarService.openSuccessSnackbar(this.LOGIN_SUCCESS_STR)
       }, (error: HttpErrorResponse) => {
         console.error(error);
-        this.snackbarService.openErrorSnackbar(error.error.message)
+        const message = error.error.message ? error.error.message : "Could not login"
+        this.snackbarService.openErrorSnackbar(message)
       })
     )
   }

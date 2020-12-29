@@ -15,4 +15,5 @@ export class DemographicsQuestionnaireResponse extends QuestionnaireResponse {
 export class FeedbackQuestionnaireResponse extends QuestionnaireResponse {
     issuesEncountered: string;
     additionalFeedback: string;
+    browser: string;
 }

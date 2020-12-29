@@ -3,7 +3,7 @@ import { Color } from 'src/app/models/InternalDTOs';
 export enum DScounterbalance {
     SELECTEASYPATCH = "Select easy patch",
     SELECTHARDPATCH = "Select hard patch",
-    NONE = "No Counterbalance"
+    NONE = "None"
 }
 
 export class Block {

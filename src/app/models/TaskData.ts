@@ -17,6 +17,9 @@ export abstract class TaskData {
     trial: number;
     userID: string;
     score: number;
+    submitted: string;  // ISO date string
+    isPractice: boolean;
+    isCorrect: boolean;
 }
 
 export interface Stimuli {
@@ -28,7 +31,6 @@ export class StroopTask extends TaskData {
     userAnswer:     string;
     isCongruent:    boolean;
     responseTime:   number;
-    isCorrect:      boolean;
     set:            number;
 }
 
@@ -45,7 +47,6 @@ export class NBack extends TaskData {
     actualAnswer: string;
     userAnswer: string;
     responseTime: number;
-    isCorrect: boolean;
     set: number;
 }
 
@@ -63,19 +64,20 @@ export class TaskSwitching extends TaskData {
     actualAnswer: string;
     userAnswer: string;
     responseTime: number;
-    isCorrect: boolean;
 }
 
 export class DemandSelection extends TaskData {
-    patchImgSelected: string;
-    patchImgNotSelected: string;
+    firstPatch: string;
+    secondPatch: string;
+    selectedPatch: string;
+    harderPatch: string;
+    selectPatchResponseTime: number;
+    respondToNumberResponseTime: number;
+    taskGoal: string;   // which counter balance for blocks 5 and 6
     color: string;
     digit: number;
     actualAnswer: string;
     userAnswer: string;
-    counterbalance: string;
-    responseTime: number;
-    isCorrect: boolean;
     block: number;
     rotation: number;
 }
@@ -85,5 +87,4 @@ export class TrailMaking extends TaskData {
     actualAnswer: string;
     userAnswer: string;
     timeFromLastClick: number;
-    isCorrect: boolean;
 }

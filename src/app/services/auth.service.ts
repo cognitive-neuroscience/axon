@@ -6,13 +6,14 @@ import { SessionStorageService } from './sessionStorage.service';
 import { map } from 'rxjs/operators';
 import jwt_decode from 'jwt-decode';
 import { JWT } from '../models/Login';
+import { TimerService } from './timer.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private http: HttpClient, private sessionStorageService: SessionStorageService) {
+  constructor(private http: HttpClient, private sessionStorageService: SessionStorageService, private timerService: TimerService) {
   }
 
   login(email: string, password: string): Observable<HttpResponse<any>> {
@@ -26,7 +27,8 @@ export class AuthService {
   loginTurker(id: string, expCode: string): Observable<HttpResponse<any>> {
     const obj = {
       id: id.trim(),
-      code: expCode
+      code: expCode,
+      registerDate: this.timerService.getCurrentTimestamp()
     }
     return this.http.post<HttpResponse<any>>(`${environment.apiBaseURL}/login/turker`, obj, { observe: "response" });
   }

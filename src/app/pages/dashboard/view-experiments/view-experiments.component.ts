@@ -77,6 +77,8 @@ export class ViewExperimentsComponent implements OnInit, OnDestroy {
       this.experimentsService.deleteExperiment(code).subscribe((data: HttpResponse<any>) => {
         this.updateExperiments();
         this.snackbarService.openSuccessSnackbar(`Successfully deleted experiment ${code}`)
+      }, err => {4
+        this.snackbarService.openErrorSnackbar(`There was an error deleting experiment ${code}` )
       })
     )
   }

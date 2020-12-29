@@ -123,7 +123,10 @@ export class DemandSelectionComponent implements OnInit {
       this.isResponseAllowed = false;
       let userAnswer: UserResponse;
 
-      this.data[this.data.length - 1].responseTime = this.timerService.stopTimerAndGetTime();
+      const lastItem = this.data[this.data.length - 1]
+
+      lastItem.respondToNumberResponseTime = this.timerService.stopTimerAndGetTime();
+      lastItem.submitted = this.timerService.getCurrentTimestamp();
 
       // mark down user response
       const selectedColor = this.currentBlock.trialConfigs[this.currentTrial - 1][this.selectedPatch];
@@ -133,7 +136,7 @@ export class DemandSelectionComponent implements OnInit {
         userAnswer = event.key === Key.ARROWLEFT ? UserResponse.LESSER : UserResponse.GREATER
       }
 
-      this.data[this.data.length - 1].userAnswer = userAnswer;
+      lastItem.userAnswer = userAnswer;
 
       this.showFeedback();
     }
@@ -163,6 +166,7 @@ export class DemandSelectionComponent implements OnInit {
     this.userID = jwt.UserID
 
     // generate the blockset for the 6 blocks to be run
+    // we are creating a blockset where the harder patch is the second one (higher prob of switching)
     this.blockset = new BlockSet(this.blockTrials, 10, 90, Color.BLUE, Color.ORANGE, false);
   }
 
@@ -178,8 +182,8 @@ export class DemandSelectionComponent implements OnInit {
 
     this.applyPracticeTrialConfigs()
 
-    let blockset = new BlockSet([this.practiceTrials], 10, 90, Color.BLUE, Color.ORANGE, true);
-    this.currentBlock = blockset.blocks[0];
+    let practiceBlockset = new BlockSet([this.practiceTrials], 10, 90, Color.BLUE, Color.ORANGE, true);
+    this.currentBlock = practiceBlockset.blocks[0];
 
     this.startGameInFullScreen();
     this.resetData();
@@ -274,6 +278,7 @@ export class DemandSelectionComponent implements OnInit {
   // 2) mouse hovers over the bullseye so we hide it and show the patches
   onHoverFixation(event) {
     this.cancelHelpMessage();
+    this.timerService.startTimer();
     this.showFixation = false;
     this.showPatches = true;
     this.showNumber = false;
@@ -312,25 +317,30 @@ export class DemandSelectionComponent implements OnInit {
     this.data.push({
       trial: this.currentTrial,
       userID: this.userID,
-      patchImgSelected: patch === "firstPatch" ? blockConfig.firstPatchImg : blockConfig.secondPatchImg,
-      patchImgNotSelected: patch === "firstPatch" ? blockConfig.secondPatchImg : blockConfig.firstPatchImg,
+      harderPatch: blockConfig.secondPatchImg,
+      firstPatch: blockConfig.firstPatchImg,
+      secondPatch: blockConfig.secondPatchImg,
+      selectedPatch: patch === 'firstPatch' ? blockConfig.firstPatchImg : blockConfig.secondPatchImg,
       color: this.color,
       digit: digit,
       actualAnswer: answer,
       userAnswer: UserResponse.NA,
+      selectPatchResponseTime: this.timerService.stopTimerAndGetTime(),
+      respondToNumberResponseTime: 0,
       block: this.blockNum,
-      responseTime: 0,
       isCorrect: false,
-      counterbalance: this.counterBalance,
+      taskGoal: this.counterBalance,
       score: 0,
-      rotation: blockConfig.rotation
+      rotation: blockConfig.rotation,
+      isPractice: this.isPractice,
+      submitted: null
     });
-
     this.showPatches = false;
     this.showFixation = false;
     this.showNumber = true;
     this.isResponseAllowed = true;
-
+    
+    this.timerService.clearTimer()
     this.timerService.startTimer();
 
     // Give participant max time to respond to stimuli
@@ -361,7 +371,7 @@ export class DemandSelectionComponent implements OnInit {
         break;
       case UserResponse.NA:               // too slow
         this.feedback = Feedback.TOOSLOW;
-        currentDataObj.responseTime = this.maxResponseTime;
+        currentDataObj.respondToNumberResponseTime = this.maxResponseTime;
         break;
       default:                            // incorrect
         this.feedback = Feedback.INCORRECT;
@@ -464,6 +474,8 @@ export class DemandSelectionComponent implements OnInit {
   continueAhead() {
     const decodedToken = this.authService.getDecodedToken()
     if(decodedToken.Role === Role.ADMIN) {
+      if(!environment.production) console.log(this.data)
+      
       this.router.navigate(['/dashboard/tasks'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
@@ -482,7 +494,6 @@ export class DemandSelectionComponent implements OnInit {
   }
 
   resetData() {
-    this.data = [];
     this.totalScore = 0;
   }
 

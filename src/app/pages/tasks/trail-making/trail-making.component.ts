@@ -15,6 +15,7 @@ import { SnackbarService } from '../../../services/snackbar.service';
 import { Observable } from 'rxjs';
 import { TaskNames } from '../../../models/TaskData';
 import { map, take } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 declare function setFullScreen(): any;
 
@@ -99,19 +100,19 @@ export class TrailMakingComponent implements OnInit {
     const currIndex = this.correctItems.length - 1;
     const isCorrect = this.correctItems[currIndex] === this.answerKey[currIndex];
 
-    if(!this.isPractice) {
-      // record the click if actual game
-      this.data.push({
-        userID: this.userID,
-        score: null,
-        trial: ++this.clickNum,
-        timeFromLastClick: this.timerService.stopTimerAndGetTime(),
-        trialType: this.step >= 9 ? TrialType.ALPHANUMERIC : TrialType.NUMERIC,
-        userAnswer: value.toString(),
-        actualAnswer: this.answerKey[currIndex].toString(),
-        isCorrect: isCorrect,
-      });
-    }
+    // record the click if actual game
+    this.data.push({
+      userID: this.userID,
+      score: null,
+      trial: ++this.clickNum,
+      timeFromLastClick: this.timerService.stopTimerAndGetTime(),
+      trialType: this.step >= 9 ? TrialType.ALPHANUMERIC : TrialType.NUMERIC,
+      userAnswer: value.toString(),
+      actualAnswer: this.answerKey[currIndex].toString(),
+      isCorrect: isCorrect,
+      submitted: this.timerService.getCurrentTimestamp(),
+      isPractice: this.isPractice
+    });
 
     this.timerService.clearTimer();
     this.timerService.startTimer();
@@ -221,7 +222,8 @@ export class TrailMakingComponent implements OnInit {
     const decodedToken = this.authService.getDecodedToken()
 
     if(decodedToken.Role === Role.ADMIN) {
-
+      if(!environment.production) console.log(this.data);
+      
       this.router.navigate(['/dashboard/tasks'])
       this.snackbarService.openInfoSnackbar("Task completed")
 

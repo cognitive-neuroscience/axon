@@ -13,7 +13,7 @@ import { TaskManagerService } from '../../../services/task-manager.service';
 import { map, take } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
 import { SnackbarService } from '../../../services/snackbar.service';
-import { Role } from 'src/app/models/InternalDTOs';
+import { Key, Role } from 'src/app/models/InternalDTOs';
 import { NBackStimuli, TaskNames } from '../../../models/TaskData';
 import { TimerService } from '../../../services/timer.service';
 import { UserResponse, Feedback } from '../../../models/InternalDTOs';
@@ -57,25 +57,24 @@ export class NBackComponent implements OnInit {
 
   @HostListener('window:keydown', ['$event'])
   onKeyPress(event: KeyboardEvent) {
-    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-      if (this.isResponseAllowed) {
-        this.isResponseAllowed = false;
-        try {
-          if (!!event.key) {
-            this.data[this.data.length - 1].responseTime = this.timerService.stopTimerAndGetTime();
-            switch (event.key) {
-              case 'ArrowLeft': this.data[this.data.length - 1].userAnswer = UserResponse.NO; break;
-              case 'ArrowRight': this.data[this.data.length - 1].userAnswer = UserResponse.YES; break;
-            }
-            try {
-              clearTimeout(this.sTimeout);
-              this.showFeedback();
-            } catch (error) {
-            }
-          }
-        } catch (error) {
-        }
+    if (this.isValidKey(event.key) && this.isResponseAllowed) {
+      clearTimeout(this.sTimeout);
+      this.isResponseAllowed = false;
+      const lastElement = this.data[this.data.length - 1]
+      lastElement.responseTime = this.timerService.stopTimerAndGetTime();
+      lastElement.submitted = this.timerService.getCurrentTimestamp();
+      switch (event.key) {
+        case Key.ARROWLEFT: lastElement.userAnswer = UserResponse.NO; break;
+        case Key.ARROWRIGHT: lastElement.userAnswer = UserResponse.YES; break;
       }
+      this.showFeedback();
+    }
+  }
+
+  private isValidKey(key: string): boolean {
+    if(!key) return false
+    if(key === Key.ARROWLEFT || key === Key.ARROWRIGHT) {
+      return true
     }
   }
 
@@ -196,7 +195,9 @@ export class NBackComponent implements OnInit {
       responseTime: 0,
       isCorrect: false,
       score: 0,
-      set: this.set
+      set: this.set,
+      submitted: null,
+      isPractice: this.isPractice
     });
   }
 
@@ -320,6 +321,8 @@ export class NBackComponent implements OnInit {
   continueAhead() {
     const decodedToken = this.authService.getDecodedToken()
     if(decodedToken.Role === Role.ADMIN) {
+      if(!environment.production) console.log(this.data);
+      
       this.router.navigate(['/dashboard/tasks'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
@@ -341,7 +344,6 @@ export class NBackComponent implements OnInit {
 
 
   resetData() {
-    this.data = [];
     this.totalScore = 0;
   }
 

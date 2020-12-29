@@ -19,9 +19,21 @@ export class FeedbackQuestionnaireComponent implements OnInit {
 
   issuesEncountered: string = "";
   additionalFeedback: string = "";
+  browser: string = "";
+  browserPlaceholder: string = "";
 
   onChange() {
     this.touched = true;
+
+    this.browser !== "" ? this.hidePlaceholder() : this.showPlaceholder()
+  }
+
+  showPlaceholder() {
+    this.browserPlaceholder = "Chrome, Safari, Opera, Internet Explorer, etc";
+  }
+
+  hidePlaceholder() {
+    this.browserPlaceholder = "";
   }
 
   constructor(
@@ -36,7 +48,7 @@ export class FeedbackQuestionnaireComponent implements OnInit {
 
   submitForm() {
     // submit if neither is empty
-    if(this.issuesEncountered != "" || this.additionalFeedback != "") {
+    if(this.issuesEncountered != "" || this.additionalFeedback != "" || this.browser != "") {
       this.saveResponse()
     }
 
@@ -50,8 +62,11 @@ export class FeedbackQuestionnaireComponent implements OnInit {
       userID: userID,
       experimentCode: experimentCode,
       issuesEncountered: this.issuesEncountered,
-      additionalFeedback: this.additionalFeedback
+      additionalFeedback: this.additionalFeedback,
+      browser: this.browser
     }
+    console.log(obj);
+    
     this.questionnaireService.saveFeedQuestionnaireResponse(obj).pipe(take(1)).subscribe((ok) => {
       if(ok) {
         this.formSubmitted = true;

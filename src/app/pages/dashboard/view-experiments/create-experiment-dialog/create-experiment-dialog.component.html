@@ -1,12 +1,12 @@
 <div class="p-3" class="overflow-scroll">
     <div>
-        <h3>Create a new experiment</h3>
+        <h3>Create a new study</h3>
         <hr>
     </div>
     <div [formGroup]="experimentForm">
         <mat-form-field class="w-100">
-            <mat-label>Experiment Name</mat-label>
-            <input required formControlName="name" matInput type="text" placeholder="My experiment">
+            <mat-label>Study Name</mat-label>
+            <input required formControlName="name" matInput type="text" placeholder="My study">
             <mat-error *ngIf="experimentForm.get('name')?.hasError('required')">This is required</mat-error>
         </mat-form-field>
         <br>
