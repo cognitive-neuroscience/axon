@@ -54,10 +54,12 @@ export class ExcelService {
         return typeof value === "string";
     }
 
+    
     // returns the dateTime or null if invalid
+    // checks regex, we expect dates of the form: 2020-12-30T03:13:23Z
     private isDate(date: any): boolean {
         if(!date) return false;
-        let x = DateTime.fromISO(date);
-        return x.isValid;
+        const regex = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\dZ/;
+        return regex.test(date);
     }
 }
