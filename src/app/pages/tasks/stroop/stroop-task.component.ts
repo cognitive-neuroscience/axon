@@ -204,7 +204,7 @@ export class StroopTaskComponent implements OnInit {
       isCorrect: false,
       score: 0,
       set: this.set,
-      submitted: null,
+      submitted: this.timerService.getCurrentTimestamp(),
       isPractice: this.isPractice
     });
   }

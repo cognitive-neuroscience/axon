@@ -333,7 +333,7 @@ export class DemandSelectionComponent implements OnInit {
       score: 0,
       rotation: blockConfig.rotation,
       isPractice: this.isPractice,
-      submitted: null
+      submitted: this.timerService.getCurrentTimestamp()
     });
     this.showPatches = false;
     this.showFixation = false;

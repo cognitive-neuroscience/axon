@@ -224,6 +224,7 @@ export class TaskSwitchingComponent implements OnInit {
     this.applyActualGameConfigs();
 
     this.matrix = new Matrix(this.actualTrials, 50, Color.BLUE, Color.ORANGE);
+    
     this.resetData();
     this.proceedtoNextStep();
     await this.wait(2000);
@@ -291,12 +292,13 @@ export class TaskSwitchingComponent implements OnInit {
       isCorrect: false,
       score: 0,
       isPractice: this.isPractice,
-      submitted: null,
+      submitted: this.timerService.getCurrentTimestamp(),
     });
   }
 
   async showFeedback() {
     this.feedbackShown = true;
+    this.timerService.clearTimer();
     this.isStimulus = false;
     this.isResponseAllowed = false;
 
