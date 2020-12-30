@@ -20,7 +20,7 @@ export class FeedbackQuestionnaireComponent implements OnInit {
   issuesEncountered: string = "";
   additionalFeedback: string = "";
   browser: string = "";
-  browserPlaceholder: string = "";
+  browserPlaceholder: string = "Chrome, Safari, Opera, Internet Explorer, etc";
 
   onChange() {
     this.touched = true;

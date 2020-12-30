@@ -28,7 +28,10 @@
     "@angular/cli": "~10.0.6",
     "@angular/compiler-cli": "~10.0.9",
     "@angular/language-service": "~10.0.9",
+    "@types/file-saver": "^2.0.1",
+    "@types/luxon": "^1.25.0",
     "@types/node": "^12.11.1",
+    "luxon": "^1.25.0",
     "ts-node": "~8.9.0",
     "tslint": "~6.1.0",
     "typescript": "~3.9.7"

@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
+import { DateTime } from 'luxon';
 
 @Injectable({
     providedIn: "root"
@@ -12,7 +13,7 @@ export class ExcelService {
     private NULL_DATE = "0001-01-01T00:00:00Z";
 
     exportAsExcel(json: any[], excelFileName: string): void {
-        this._cleanUpDate(json);
+        this._formatDates(json);
         
         const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json)
         const workbook: XLSX.WorkBook = {
@@ -30,13 +31,33 @@ export class ExcelService {
         FileSaver.saveAs(data, fileName + this.EXCEL_EXTENSION)
     }
 
-    // For null date values, we get 0001-01-01T00:00:00Z from the backend. We want to translate
-    // this to "NONE".
-    private _cleanUpDate(json: any[]) {
+    // takes json and checks if it is a valid date. If so, it will replace the given UTC date
+    // with a human readable local date
+    private _formatDates(json: any[]) {
         json.forEach(obj => {
             for(let [key, value] of Object.entries(obj)) {
-                if(value === this.NULL_DATE) obj[key] = "NONE";
+
+                if(value === this.NULL_DATE) {
+                    // for null date values, gorm maps it as 0001-01-01T00:00:00Z from the backend. We
+                    // want to translate this to NONE so it's more user friendly
+                    obj[key] = "NONE";
+                } else if(this.isString(value) && this.isDate(value)) {
+                    // we want to transform the stored UTC date to our local and make it user friendly
+                    const dt: DateTime = DateTime.fromISO(value as string);
+                    obj[key] = dt.toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS)
+                }
             }
         })
+    }
+
+    private isString(value: any): boolean {
+        return typeof value === "string";
+    }
+
+    // returns the dateTime or null if invalid
+    private isDate(date: any): boolean {
+        if(!date) return false;
+        let x = DateTime.fromISO(date);
+        return x.isValid;
     }
 }
