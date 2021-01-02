@@ -111,7 +111,8 @@ export class TrailMakingComponent implements OnInit {
       actualAnswer: this.answerKey[currIndex].toString(),
       isCorrect: isCorrect,
       submitted: this.timerService.getCurrentTimestamp(),
-      isPractice: this.isPractice
+      isPractice: this.isPractice,
+      experimentCode: this.taskManager.getExperimentCode()
     });
 
     this.timerService.clearTimer();

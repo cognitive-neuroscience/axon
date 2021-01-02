@@ -84,5 +84,5 @@ export const RouteMap: ExperimentRoutingMap = {
           description: "Description of Smiley Face Game",
       type: "experimental",
       route: "task/smileyface"
-      }
+    },
   };

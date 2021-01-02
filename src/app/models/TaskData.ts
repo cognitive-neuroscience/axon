@@ -1,3 +1,5 @@
+import { RouteMap } from "../routing/routes";
+
 export enum TaskNames {
     GONOGO = "gonogo",
     DIGITSPAN = "digitspan",
@@ -20,6 +22,7 @@ export abstract class TaskData {
     submitted: string;  // ISO date string
     isPractice: boolean;
     isCorrect: boolean;
+    experimentCode: string;
 }
 
 export interface Stimuli {
@@ -88,3 +91,16 @@ export class TrailMaking extends TaskData {
     userAnswer: string;
     timeFromLastClick: number;
 }
+
+export function mapTaskIdToTitle(task: string) {
+    switch (task) {
+        case "demographics_questionnaire_responses":
+            return "Demographics Questionnaire";
+        case "feedback_questionnaire_responses":
+            return "Feedback Questionnaire";
+        case "experiment_user":
+            return "Registered Participants"
+        default:
+            return RouteMap[task].title
+    }
+  }

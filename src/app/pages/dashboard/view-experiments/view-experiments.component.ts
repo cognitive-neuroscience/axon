@@ -8,7 +8,8 @@ import { ConfirmationService } from '../../../services/confirmation.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { Observable, Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { RouteMap } from '../../../routing/routes';
+import { map, tap } from 'rxjs/operators';
+import { mapTaskIdToTitle } from '../../../models/TaskData';
 
 @Component({
   selector: 'app-view-experiments',
@@ -16,6 +17,8 @@ import { RouteMap } from '../../../routing/routes';
   styleUrls: ['./view-experiments.component.scss']
 })
 export class ViewExperimentsComponent implements OnInit, OnDestroy {
+
+  mapTaskIdToTitle = mapTaskIdToTitle;
 
   PROD_LINK: string = "https://psharplab.campus.mcgill.ca/#/login/mturk?code=";
   DEV_LINK: string = "http://localhost:4200/#/login/mturk?code="
@@ -30,12 +33,15 @@ export class ViewExperimentsComponent implements OnInit, OnDestroy {
     private snackbarService: SnackbarService,
   ) { }
 
+
   experiments: Observable<Experiment[]>;
 
   ngOnInit(): void {
     this.setLink()
 
-    this.experiments = this.experimentsService.experiments
+    this.experiments = this.experimentsService.experiments.pipe(
+      map(x => x?.filter(experiment => !experiment.deleted))
+    )
     this.updateExperiments()
   }
 
@@ -89,10 +95,6 @@ export class ViewExperimentsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.forEach(x => x.unsubscribe())
-  }
-
-  mapTaskIdToTitle(task: string) {
-    return RouteMap[task].title
   }
 
 }

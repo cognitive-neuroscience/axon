@@ -35,6 +35,7 @@ import { DataComponent } from './pages/dashboard/data/data.component';
 import { DemographicsQuestionnaireComponent } from './pages/questionnaires/demographics-questionnaire/demographics-questionnaire.component';
 import { RotateDirective } from './pages/tasks/demand-selection/Rotate.directive';
 import { FeedbackQuestionnaireComponent } from './pages/questionnaires/feedback-questionnaire/feedback-questionnaire.component';
+import { DataTableComponent } from './pages/dashboard/data/data-table/data-table.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { FeedbackQuestionnaireComponent } from './pages/questionnaires/feedback-
     DataComponent,
     DemographicsQuestionnaireComponent,
     RotateDirective,
-    FeedbackQuestionnaireComponent
+    FeedbackQuestionnaireComponent,
+    DataTableComponent
   ],
   imports: [
     BrowserModule,

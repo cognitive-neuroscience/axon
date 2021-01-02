@@ -293,6 +293,7 @@ export class TaskSwitchingComponent implements OnInit {
       score: 0,
       isPractice: this.isPractice,
       submitted: this.timerService.getCurrentTimestamp(),
+      experimentCode: this.taskManager.getExperimentCode()
     });
   }
 

@@ -197,7 +197,8 @@ export class NBackComponent implements OnInit {
       score: 0,
       set: this.set,
       submitted: this.timerService.getCurrentTimestamp(),
-      isPractice: this.isPractice
+      isPractice: this.isPractice,
+      experimentCode: this.taskManager.getExperimentCode()
     });
   }
 

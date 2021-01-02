@@ -17,7 +17,6 @@ export class ExperimentsService {
      */
 
     private _experimentBehaviorSubject: BehaviorSubject<Experiment[]>;
-
     public experiments: Observable<Experiment[]>;
 
     constructor(private _http: HttpClient, private authService: AuthService) {
@@ -38,7 +37,7 @@ export class ExperimentsService {
 
     getExperiment(code: string): Observable<Experiment> {
         return this._http.get<Experiment>(`${environment.apiBaseURL}/experiments/${code}`, {observe: "response"}).pipe(
-            map(res => res.body as Experiment)
+            map(res => res.body as Experiment),
         )
     }
 
