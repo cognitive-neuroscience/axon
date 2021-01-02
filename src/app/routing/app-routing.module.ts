@@ -51,15 +51,15 @@ const routes: Routes = [
   { path: RouteMap.shapegame.route, component: ShapeGameComponent },
   { path: RouteMap.gonogo.route, component: GoNogoComponent },
   { path: RouteMap.digitspan.route, component: DigitSpanComponent },
-  { path: RouteMap.taskswitching.route, component: TaskSwitchingComponent },
-  { path: RouteMap.demandselection.route, component: DemandSelectionComponent },
+  { path: RouteMap.taskswitching.route, component: TaskSwitchingComponent, canActivate: [ExperimentRouteGuard] },
+  { path: RouteMap.demandselection.route, component: DemandSelectionComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.simon.route, component: SimonTaskPrelimComponent },
   { path: 'experiments/simon-2', component: SimonTaskFinalComponent },
   { path: RouteMap.smileyface.route, component: SmileyFaceComponent },
   { path: RouteMap.fingertapping.route, component: FingerTappingTaskComponent },
   { path: RouteMap.nback.route, component: NBackComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.stroop.route, component: StroopTaskComponent, canActivate: [ExperimentRouteGuard] },
-  { path: RouteMap.trailmaking.route, component: TrailMakingComponent },
+  { path: RouteMap.trailmaking.route, component: TrailMakingComponent, canActivate: [ExperimentRouteGuard] },
   { path: 'complete', component: FinalPageComponent, canActivate: [ExperimentRouteGuard] },
   { path: '**', redirectTo: '/login/mturk', pathMatch: 'full' }
 ];
