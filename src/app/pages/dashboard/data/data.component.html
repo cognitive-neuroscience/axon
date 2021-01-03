@@ -9,7 +9,7 @@
     </button>
 
     <mat-menu #studyCodes="matMenu">
-        <button *ngFor="let code of codeList | async" mat-menu-item [matMenuTriggerData]="{ 'code': code }" [matMenuTriggerFor]="options">{{ code }}</button>
+        <button *ngFor="let study of experiments | async" mat-menu-item [matMenuTriggerData]="{ 'code': study.code }" [matMenuTriggerFor]="options">{{ study.name }} ({{ study.code }})</button>
     </mat-menu>
 
     <hr>

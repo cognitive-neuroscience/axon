@@ -35,12 +35,6 @@ export class DataComponent implements OnInit {
     this.experimentService.updateExperiments();
   }
 
-  get codeList(): Observable<string[]> {
-    return this.experiments.pipe(
-      map(list => list?.map(experiment => experiment.code))
-    );
-  }
-
   optionsList(code: string): Observable<string[]> {
     return this.experiments.pipe(
       mergeAll(),
