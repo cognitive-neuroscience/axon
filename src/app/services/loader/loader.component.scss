@@ -1,0 +1,10 @@
+.loading-container {
+    width: 300px;
+    height: 300px;
+    position: absolute;
+    text-align: center;
+    left: 50%;
+    top: 50%;
+    z-index: 1001;
+    transform: translate(-50%, -50%);
+}

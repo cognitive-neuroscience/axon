@@ -7,6 +7,7 @@ import { ExperimentsService } from '../../../services/experiments.service';
 import { Experiment } from '../../../models/Experiment';
 import { filter, map, mergeAll } from 'rxjs/operators';
 import { mapTaskIdToTitle } from '../../../models/TaskData';
+import { LoaderService } from '../../../services/loader.service';
 
 @Component({
   selector: 'app-data',
@@ -27,7 +28,8 @@ export class DataComponent implements OnInit {
   constructor(
     private _downloadDataService: DownloadDataService, 
     private snackbarService: SnackbarService,
-    private experimentService: ExperimentsService
+    private experimentService: ExperimentsService,
+    private loaderService: LoaderService
   ) { }
 
   ngOnInit(): void {
@@ -43,18 +45,21 @@ export class DataComponent implements OnInit {
     )
   }
 
-  getAndDisplayData(code: string, option: string) {    
+  getAndDisplayData(code: string, option: string) { 
+    this.loaderService.showLoader();   
     this._downloadDataService.getTableData(code, option).pipe(
       map(jsonData => this.formatDates(jsonData))
-    ).subscribe(data => {      
+    ).subscribe(data => {    
       this.tableData = data
       this.fileName = `CODE-${code}-DATASET-${option}`
+      this.loaderService.hideLoader();
     }, err => {
+      this.loaderService.hideLoader();
       console.error(err)
       this.snackbarService.openErrorSnackbar("Could not get data")
     })
   }
-
+  
   // takes json and checks if it is a valid date. If so, it will replace the given UTC date
   // with a human readable local date
   private formatDates(json: any[]): any[] {

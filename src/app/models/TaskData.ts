@@ -92,6 +92,10 @@ export class TrailMaking extends TaskData {
     timeFromLastClick: number;
 }
 
+export class FingerTapping extends TaskData {
+    
+}
+
 export function mapTaskIdToTitle(task: string) {
     switch (task) {
         case "demographics_questionnaire_responses":

@@ -18,6 +18,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 const modules = [
   MatInputModule,
@@ -37,7 +38,8 @@ const modules = [
   MatListModule,
   MatTooltipModule,
   ClipboardModule,
-  MatMenuModule
+  MatMenuModule,
+  MatPaginatorModule
 ];
 
 @NgModule({

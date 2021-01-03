@@ -56,7 +56,7 @@ const routes: Routes = [
   { path: RouteMap.simon.route, component: SimonTaskPrelimComponent },
   { path: 'experiments/simon-2', component: SimonTaskFinalComponent },
   { path: RouteMap.smileyface.route, component: SmileyFaceComponent },
-  { path: RouteMap.fingertapping.route, component: FingerTappingTaskComponent },
+  { path: RouteMap.fingertapping.route, component: FingerTappingTaskComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.nback.route, component: NBackComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.stroop.route, component: StroopTaskComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.trailmaking.route, component: TrailMakingComponent, canActivate: [ExperimentRouteGuard] },

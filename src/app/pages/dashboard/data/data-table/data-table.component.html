@@ -1,19 +1,21 @@
-<div class="w-100 scroll-x" *ngIf="isValid()">
-    <button (click)="download()" class="btn btn-primary my-2">
+<div class="w-100">
+    <button *ngIf="isValid()" (click)="download()" class="btn btn-primary my-2">
         Export this data to an excel spreadsheet
         <mat-icon>vertical_align_bottom</mat-icon>
     </button>
-    <table mat-table [dataSource]="json" class="w-100 mat-elevation-z3">
-        <ng-container [matColumnDef]="colTitle" *ngFor="let colTitle of columnTitles">
-            <th mat-header-cell *matHeaderCellDef>{{ colTitle }}</th>
-            <td mat-cell *matCellDef="let obj">{{ obj[colTitle] }}</td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="columnTitles"></tr>
-        <tr mat-row *matRowDef="let row; columns: columnTitles;"></tr>
-
-    </table>
-</div>
-<div *ngIf="!isValid()" style="color: red;">
-    No table data
+    <div *ngIf="!isValid()">
+        <span style="color: red;">No table data</span>
+    </div>
+    <div class="table-container" [hidden]="!isValid()">
+        <table mat-table [dataSource]="dataSource" class="w-100 mat-elevation-z3">
+            <ng-container [matColumnDef]="colTitle" sticky *ngFor="let colTitle of columnTitles">
+                <th mat-header-cell *matHeaderCellDef>{{ colTitle }}</th>
+                <td mat-cell *matCellDef="let obj">{{ obj[colTitle] }}</td>
+            </ng-container>
+            
+            <tr mat-header-row *matHeaderRowDef="columnTitles"></tr>
+            <tr mat-row *matRowDef="let row; columns: columnTitles;"></tr>
+        </table>
+        <mat-paginator #paginator [pageSizeOptions]="[15, 30, 50]" showFirstLastButtons></mat-paginator>
+    </div>
 </div>
