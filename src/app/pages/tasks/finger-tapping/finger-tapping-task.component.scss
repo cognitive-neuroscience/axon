@@ -1,0 +1,20 @@
+.button-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.option-button {
+    width: 200px;
+    height: 50px;
+    font-size: 1rem;
+}
+
+.ready {
+    color: green;
+}
+
+.not-ready {
+    color: red;
+}

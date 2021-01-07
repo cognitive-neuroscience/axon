@@ -1,4 +1,5 @@
 import { RouteMap } from "../routing/routes";
+import { Key, UserResponse } from "./InternalDTOs";
 
 export enum TaskNames {
     GONOGO = "gonogo",
@@ -30,8 +31,8 @@ export interface Stimuli {
 }
 
 export class StroopTask extends TaskData {
-    actualAnswer:   string;
-    userAnswer:     string;
+    actualAnswer:   UserResponse;
+    userAnswer:     UserResponse;
     isCongruent:    boolean;
     responseTime:   number;
     set:            number;
@@ -47,8 +48,8 @@ export class StroopTaskStimuli implements Stimuli {
 }
 
 export class NBack extends TaskData {
-    actualAnswer: string;
-    userAnswer: string;
+    actualAnswer: UserResponse;
+    userAnswer: UserResponse;
     responseTime: number;
     set: number;
 }
@@ -64,8 +65,8 @@ export class NBackStimuli implements Stimuli {
 export class TaskSwitching extends TaskData {
     color: string;
     digit: number;
-    actualAnswer: string;
-    userAnswer: string;
+    actualAnswer: UserResponse;
+    userAnswer: UserResponse;
     responseTime: number;
 }
 
@@ -79,8 +80,8 @@ export class DemandSelection extends TaskData {
     taskGoal: string;   // which counter balance for blocks 5 and 6
     color: string;
     digit: number;
-    actualAnswer: string;
-    userAnswer: string;
+    actualAnswer: UserResponse;
+    userAnswer: UserResponse;
     block: number;
     rotation: number;
 }
@@ -93,7 +94,11 @@ export class TrailMaking extends TaskData {
 }
 
 export class FingerTapping extends TaskData {
-    
+    block: number;
+    dominantHand: UserResponse;
+    shouldUseDominantHand: boolean;
+    timeFromLastKeyPress: number;
+    keyPressed: Key;
 }
 
 export function mapTaskIdToTitle(task: string) {
