@@ -1,0 +1,49 @@
+<div>
+    <div style="margin: 5px;" align="center">
+        <input class="form-control form-control-lg" type="text" style="text-align: center;" disabled [(ngModel)]="displayValue" />
+    </div>
+    <div class="d-flex flex-row align-items-center justify-content-center">
+        <div class="keypadButton" (click)="addNumber('1')">
+            1
+        </div>
+        <div class="keypadButton" (click)="addNumber('2')">
+            2
+        </div>
+        <div class="keypadButton" (click)="addNumber('3')">
+            3
+        </div>
+    </div>
+    <div class="d-flex flex-row align-items-center justify-content-center">
+        <div class="keypadButton" (click)="addNumber('4')">
+            4
+        </div>
+        <div class="keypadButton" (click)="addNumber('5')">
+            5
+        </div>
+        <div class="keypadButton" (click)="addNumber('6')">
+            6
+        </div>
+    </div>
+    <div class="d-flex flex-row align-items-center justify-content-center">
+        <div class="keypadButton" (click)="addNumber('7')">
+            7
+        </div>
+        <div class="keypadButton" (click)="addNumber('8')">
+            8
+        </div>
+        <div class="keypadButton" (click)="addNumber('9')">
+            9
+        </div>
+    </div>
+    <div class="d-flex flex-row align-items-center justify-content-center">
+        <div class="keypadButton keypad-button-text" (click)="removeLastNumber()">
+            DEL
+        </div>
+        <div class="keypadButton" (click)="addNumber('0')">
+            0
+        </div>
+        <div class="keypadButton keypad-button-text" (click)="onSubmit()">
+            SUBMIT
+        </div>
+    </div>
+</div>

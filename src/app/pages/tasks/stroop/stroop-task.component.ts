@@ -197,7 +197,7 @@ export class StroopTaskComponent implements OnInit {
     this.data.push({
       userID: this.userID,
       trial: this.currentTrial,
-      actualAnswer: this.color.toUpperCase(),
+      actualAnswer: (this.color.toUpperCase() === UserResponse.RED) ? UserResponse.RED : ((this.color.toUpperCase() === UserResponse.BLUE) ? UserResponse.BLUE : UserResponse.GREEN),
       userAnswer: UserResponse.NA,
       isCongruent: this.color === this.text ? true : false,
       responseTime: null,

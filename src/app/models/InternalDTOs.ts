@@ -55,7 +55,9 @@ export enum Key {
     ARROWRIGHT = "ArrowRight",
     NUMONE = "1",
     NUMTWO = "2",
-    NUMTHREE = "3"
+    NUMTHREE = "3",
+    Q = "q",
+    P = "p"
 }
 
 export enum Color {
@@ -85,5 +87,7 @@ export enum UserResponse {
     GREEN = "GREEN",
     BLUE = "BLUE",
     NO = "NO",
-    YES = "YES"
+    YES = "YES",
+    LEFT = "LEFT",
+    RIGHT = "RIGHT"
 }
