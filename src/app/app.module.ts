@@ -37,6 +37,7 @@ import { RotateDirective } from './pages/tasks/demand-selection/Rotate.directive
 import { FeedbackQuestionnaireComponent } from './pages/questionnaires/feedback-questionnaire/feedback-questionnaire.component';
 import { DataTableComponent } from './pages/dashboard/data/data-table/data-table.component';
 import { LoaderComponent } from './services/loader/loader.component';
+import { NumpadComponent } from './pages/tasks/digit-span/numpad/numpad.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { LoaderComponent } from './services/loader/loader.component';
     RotateDirective,
     FeedbackQuestionnaireComponent,
     DataTableComponent,
-    LoaderComponent
+    LoaderComponent,
+    NumpadComponent
   ],
   imports: [
     BrowserModule,

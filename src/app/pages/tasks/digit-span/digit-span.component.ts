@@ -2,6 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UploadDataService } from 'src/app/services/uploadData.service';
 declare function setFullScreen(): any;
+import * as practiceSequence from './sequence.practice';
+import * as actualSequence from './sequence';
+import { DigitSpan } from 'src/app/models/TaskData';
+import { AuthService } from 'src/app/services/auth.service';
+import { TaskManagerService } from 'src/app/services/task-manager.service';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { Feedback, Role, UserResponse } from 'src/app/models/InternalDTOs';
+import { TimerService } from 'src/app/services/timer.service';
+import { environment } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-digit-span',
@@ -9,22 +19,26 @@ declare function setFullScreen(): any;
   styleUrls: ['./digit-span.component.scss']
 })
 export class DigitSpanComponent implements OnInit {
+  userID: string = "";
 
   // Default Experiment config
   isScored: boolean | number = true;
-  showFeedbackAfterEveryTrial: boolean | number = false;
+  showFeedbackAfterEveryTrial: boolean | number = true;
   showScoreAfterEveryTrial: boolean | number = false;
   numberOfBreaks: number = 0;
-  maxResponseTime: number = 0;        // In milliseconds, 0 for indefinte
+  maxResponseTime: number = 20000;        // 20 seconds
   durationOfFeedback: number = 1000;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
   practiceTrials: number = 1;
-  actualTrials: number = 3;
+  actualTrials: number = 1;
+  delayToShowHelpMessage: number = 10000;
+  durationHelpMessageShown: number = 4000;
+
+  snackbarTimeout: number;
+  responseTimeout: number;
 
   step: number = 1;
   digitShown: string = '';
-  textShown: string = '';
-  userAnswer: string = '';
   feedback: string = '';
   scoreForSpecificTrial: number = 0;
   totalScore: number = 0;
@@ -36,50 +50,39 @@ export class DigitSpanComponent implements OnInit {
   currentTrial: number = 0;
   isResponseAllowed: boolean = false;
 
-  accuracy: number = 0;
-  failedAttempts: number = 0;
-  correctAttempts: number = 0;
-  numberLen: number = 3;
+  sequence: number[][][];
 
-  data: {
-    actualAnswer: string,
-    userAnswer: string,
-    responseTime: number,
-    numberOfDigits: number,
-    isCorrect: number,
-    score: number
-  }[] = [];
-  timer: {
-    started: number,
-    ended: number
+  currentSequence: {
+    level: number, // represents the difficulty (ranging from 0 to 7)
+    set: number    // represents whether we're using the first or second set of that level
   } = {
-      started: 0,
-      ended: 0
-    };
-  showFixation: boolean = false;
+    level: 0,
+    set: 0
+  }
 
+  data: DigitSpan[] = [];
+  showFixation: boolean = false;
 
   constructor(
     private router: Router,
-    private uploadDataService: UploadDataService
+    private uploadDataService: UploadDataService,
+    private authService: AuthService,
+    private taskManager: TaskManagerService,
+    private snackbarService: SnackbarService,
+    private timerService: TimerService
   ) { }
 
 
 
   ngOnInit() {
-
-  }
-
-
-
-  processConsent(consent: Boolean) {
-    if (consent) {
-      this.proceedtoNextStep();
-    } else {
-      this.router.navigate(['/dashboard']);
+    const decodedToken = this.authService.getDecodedToken()
+    if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {
+      this.router.navigate(['/login/mturk'])
+      this.snackbarService.openErrorSnackbar("Refresh has occurred")
     }
+    const jwt = this.authService.getDecodedToken()
+    this.userID = jwt.UserID
   }
-
 
 
   proceedtoPreviousStep() {
@@ -92,8 +95,18 @@ export class DigitSpanComponent implements OnInit {
     this.step += 1;
   }
 
+  async startForwardMemoryPractice() {
+    this.sequence = practiceSequence.config.forwardSequence;
+    this.startPractice();
+  }
 
-  async startPractice() {
+  async startBackwardMemoryPractice() {
+    this.sequence = practiceSequence.config.backwardSequence;
+    this.startPractice();
+  }
+
+
+  private async startPractice() {
     this.startGameInFullScreen();
     this.resetData();
     this.proceedtoNextStep();
@@ -102,6 +115,16 @@ export class DigitSpanComponent implements OnInit {
     this.isPractice = true;
     this.currentTrial = 0;
     this.showStimulus();
+  }
+
+  async startForwardMemoryActual() {
+    this.sequence = actualSequence.config.forwardSequence;
+    this.startActualGame();
+  }
+
+  async startBackwardMemoryActual() {
+    this.sequence = actualSequence.config.backwardSequence;
+    this.startActualGame();
   }
 
 
@@ -116,160 +139,172 @@ export class DigitSpanComponent implements OnInit {
   }
 
 
-  async showStimulus() {
-
+  async showStimulus() {    
     this.reset();
-    this.showFixation = true;
-    await this.wait(500);
-    this.showFixation = false;
-    await this.wait(200);
+    this.currentTrial++;
 
-    this.currentTrial += 1;
+    await this.flashFixation();
 
     this.isStimulus = true;
     this.isKeypad = false;
     this.isFeedback = false;
 
-    this.generateStimulus().then(async () => {
-      this.data.push({
-        userAnswer: '',
-        actualAnswer: this.textShown,
-        responseTime: 0,
-        numberOfDigits: this.textShown.length,
-        isCorrect: 0,
-        score: 0
-      });
-      this.isStimulus = false;
-      this.isKeypad = true;
-      this.isResponseAllowed = true;
-      this.timer.started = new Date().getTime();
-      this.timer.ended = 0;
-      console.log(this.isPractice ? `Practice trial: ${this.currentTrial}` : `Actual trial: ${this.currentTrial}`);
-    })
-  }
+    await this.generateStimulus()
 
-
-
-  generateStimulus() {
-    if (this.failedAttempts >= 3) {
-      this.numberLen -= 1;
-      this.failedAttempts = 0;
-      this.correctAttempts = 0;
-    }
-    if (this.correctAttempts >= 3) {
-      this.numberLen += 1;
-      this.correctAttempts = 0;
-    }
-    if (this.numberLen < 3) {
-      this.numberLen = 3;
-    }
-    if (this.numberLen > 7) {
-      this.numberLen = 7;
-    }
-    const min = this.getMaxMin(this.numberLen).min;
-    const max = this.getMaxMin(this.numberLen).max;
-    const numberToShow = Math.floor(Math.random() * (max - min + 1)) + min;
-    const numAsArray = numberToShow.toString().split('').join('_').split('');
-    this.userAnswer = '';
-    this.textShown = numberToShow.toString();
-    console.log(this.textShown, numAsArray);
-    let promise = Promise.resolve();
-    numAsArray.forEach((digit) => {
-      promise = promise.then(() => {
-        this.digitShown = digit === '_' ? '' : digit;
-        return new Promise((resolve) => {
-          setTimeout(resolve, digit === '_' ? 300 : 1000);
-        });
-      });
+    this.data.push({
+      userID: this.userID,
+      trial: this.currentTrial,
+      submitted: this.timerService.getCurrentTimestamp(),
+      isPractice: this.isPractice,
+      experimentCode: this.taskManager.getExperimentCode(),
+      userAnswer: UserResponse.NA,
+      actualAnswer: this.arrayToPaddedString(this.sequence[this.currentSequence.level][this.currentSequence.set]),
+      responseTime: 0,
+      numberOfDigits: this.sequence[this.currentSequence.level][this.currentSequence.set].length,
+      isCorrect: false,
+      score: 0
     });
-    return promise;
+    this.timerService.startTimer();
+    this.isStimulus = false;
+    this.isKeypad = true;
+    this.isResponseAllowed = true;
+
+    this.showHelpMessage("Please enter your response", this.delayToShowHelpMessage, this.durationHelpMessageShown)
+
+    this.responseTimeout = setTimeout(() => {
+      const message = "Please do you best to provide your answer in the time allotted for the next trial."
+      this.snackbarService.openInfoSnackbar(message, "", this.durationHelpMessageShown)
+      this.showFeedback()
+    }, this.maxResponseTime)
+  }
+
+  private showHelpMessage(helpMessage: string, delay: number, duration: number) {
+    this.snackbarTimeout = setTimeout(() => {
+      this.snackbarService.openInfoSnackbar(helpMessage, "", duration);
+    }, delay)
   }
 
 
-  getMaxMin(len: number) {
-    const ret = {
-      min: 100,
-      max: 999
-    };
-    switch (len) {
-      case 4: ret.min = 1000; ret.max = 9999; break;
-      case 5: ret.min = 10000; ret.max = 99999; break;
-      case 6: ret.min = 100000; ret.max = 999999; break;
-      case 7: ret.min = 1000000; ret.max = 9999999; break;
+  private async flashFixation() {
+    this.showFixation = true;
+    await this.wait(500);
+    this.showFixation = false;
+    await this.wait(200);
+  }
+
+
+  async generateStimulus() {
+    const sequenceToShow: number[] = this.sequence[this.currentSequence.level][this.currentSequence.set]
+    for (const num of sequenceToShow) {
+      this.digitShown = num.toString();
+      await this.wait(1000);
+      this.digitShown = "";
+      await this.wait(300);
     }
-    return ret;
   }
 
+  onNumpadSubmit($event: string) {
+    clearTimeout(this.snackbarTimeout)
+    clearTimeout(this.responseTimeout)
+    this.snackbarService.clearSnackbar()
+    const thisTrial = this.data[this.data.length - 1];
 
+    thisTrial.userAnswer = this.padString($event);
+    thisTrial.submitted = this.timerService.getCurrentTimestamp()
+    thisTrial.responseTime = this.timerService.stopTimerAndGetTime()
 
-  addNumber(num: number) {
-    this.userAnswer += num.toString();
+    this.showFeedback()
   }
 
+  private arrayToPaddedString(arr: number[]): string {
+    let str = "";
+    arr.forEach(x => str = `${str}${x} `)
+    return str.slice(0, str.length - 1);
+  }
+
+  // adds spaces in between the letters of a string
+  private padString(strToPad: string): string {
+    let x = "";
+    for(const letter of strToPad) {
+      x = `${x}${letter} `
+    }
+    return x.slice(0, x.length - 1);
+  }
 
 
   async showFeedback() {
-    this.data[this.data.length - 1].userAnswer = this.userAnswer;
     this.isStimulus = false;
     this.isKeypad = false;
     this.isFeedback = true;
     this.isResponseAllowed = false;
-    if (this.data[this.data.length - 1].responseTime === 0) {
-      this.timer.ended = new Date().getTime();
-      this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
-    }
-    console.log()
-    if (this.data[this.data.length - 1].actualAnswer === this.data[this.data.length - 1].userAnswer) {
-      this.feedback = "Correct";
-      this.data[this.data.length - 1].isCorrect = 1;
-      this.data[this.data.length - 1].score = 10;
-      this.scoreForSpecificTrial = 10;
-      this.totalScore += 10;
-      this.correctAttempts += 1;
-      this.failedAttempts = 0;
-    } else {
-      this.feedback = "Incorrect";
-      this.data[this.data.length - 1].isCorrect = 0;
-      this.data[this.data.length - 1].score = 0;
-      this.scoreForSpecificTrial = 0;
-      this.correctAttempts = 0;
-      this.failedAttempts += 1;
+
+    const thisTrial = this.data[this.data.length - 1]
+
+    const actualAnswer = thisTrial.actualAnswer;
+    const userAnswer = thisTrial.userAnswer;
+
+    switch (userAnswer) {
+      case actualAnswer:
+        this.feedback = Feedback.CORRECT;
+        thisTrial.isCorrect = true;
+        thisTrial.score = 10;
+        this.scoreForSpecificTrial = 10;
+        this.totalScore += 10;
+        this.updateCurrentSequence(true);
+        break;
+      case UserResponse.NA:
+        this.feedback = Feedback.TOOSLOW
+        thisTrial.responseTime = this.maxResponseTime;
+        this.scoreForSpecificTrial = 0;
+        this.updateCurrentSequence(false);
+        break;
+      default:
+        this.feedback = Feedback.INCORRECT;
+        this.scoreForSpecificTrial = 0;
+        this.updateCurrentSequence(false);
+        break;
     }
 
-    if (this.showFeedbackAfterEveryTrial || this.isPractice) {
+    // show feedback either if it is a practice trial, or if the feedback is telling the user
+    // they are too slow. Don't show for other feedback during actual game
+    if (this.isPractice || (this.showFeedbackAfterEveryTrial && this.feedback === Feedback.TOOSLOW)) {
       await this.wait(this.durationOfFeedback);
     }
+
     this.decideToContinue();
+  }
+
+  private updateCurrentSequence(isCorrect: boolean) {
+    if(isCorrect) {
+      this.currentSequence.level++;
+      this.currentSequence.set = 0;
+    } else {
+      this.currentSequence.set++;
+    }
+  }
+
+  private canContinueGame(): boolean {
+    if(this.currentSequence.level >= 7) {
+      // 6 possible levels, meaning the participant has successfully completed all the trials
+      return false
+    } else if(this.currentSequence.set >= 2) {
+      // the participant has gotten 2 wrong in the same level, meaning they have to move on
+      return false
+    }
+    return true
   }
 
 
 
   async decideToContinue() {
+    // only 1 practice trial
     if (this.isPractice) {
-      if (this.currentTrial < this.practiceTrials) {
-        this.continueGame();
-      } else {
-        this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
-      }
+      this.proceedtoNextStep();
+      await this.wait(2000);
+      this.proceedtoNextStep();
     } else {
-      if (this.currentTrial < this.actualTrials) {
-        if (this.numberOfBreaks === 0) {
-          this.continueGame();
-        } else {
-          const breakAtTrailIndices = [];
-          const setSize = this.actualTrials / (this.numberOfBreaks + 1);
-          for (let i = 1; i < this.numberOfBreaks + 1; i++) {
-            breakAtTrailIndices.push(setSize * i);
-          }
-          if (breakAtTrailIndices.includes(this.currentTrial)) {
-            this.isBreak = true;
-          } else {
-            this.isBreak = false;
-            this.continueGame();
-          }
-        }
+      if (this.canContinueGame()) {
+        this.continueGame();
       } else {
         this.proceedtoNextStep();
         await this.wait(2000);
@@ -301,16 +336,22 @@ export class DigitSpanComponent implements OnInit {
 
 
   continueAhead() {
-    this.router.navigate(['/dashboard']);
+    const decodedToken = this.authService.getDecodedToken()
+    if(decodedToken.Role === Role.ADMIN) {
+      if(!environment.production) console.log(this.data)
+      
+      this.router.navigate(['/dashboard/tasks'])
+      this.snackbarService.openInfoSnackbar("Task completed")
+    } else {
+      this.taskManager.nextExperiment()
+    }
   }
 
 
 
-
   reset() {
-    this.textShown = '';
     this.feedback = '';
-    this.textShown = '';
+    this.timerService.clearTimer()
     this.digitShown = '';
     this.scoreForSpecificTrial = 0;
   }
@@ -318,12 +359,10 @@ export class DigitSpanComponent implements OnInit {
 
 
   resetData() {
-    this.data = [];
     this.totalScore = 0;
-    this.accuracy = 0;
-    this.numberLen = 3;
-    this.correctAttempts = 0;
-    this.failedAttempts = 0;
+    this.currentTrial = 0;
+    this.currentSequence.level = 0;
+    this.currentSequence.set = 0;
   }
 
 

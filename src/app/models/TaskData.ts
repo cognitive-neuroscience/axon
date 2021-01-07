@@ -101,6 +101,13 @@ export class FingerTapping extends TaskData {
     keyPressed: Key;
 }
 
+export class DigitSpan extends TaskData {
+    actualAnswer: string;   // the actual sequence given
+    userAnswer: string;     // the sequence the user inputs
+    responseTime: number;   // time from when keypad entered screen to participant submitting their response
+    numberOfDigits: number;
+}
+
 export function mapTaskIdToTitle(task: string) {
     switch (task) {
         case "demographics_questionnaire_responses":
