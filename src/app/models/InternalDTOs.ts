@@ -91,3 +91,9 @@ export enum UserResponse {
     LEFT = "LEFT",
     RIGHT = "RIGHT"
 }
+
+
+export enum TaskType {
+    NAB = "NAB",
+    Experimental = "Experimental"
+}

@@ -4,6 +4,7 @@ import { TasklistService } from 'src/app/services/tasklist.service';
 import { Task } from 'src/app/models/Task';
 import { Subscription } from 'rxjs';
 import { RouteMap } from '../../../routing/routes';
+import { TaskType } from 'src/app/models/InternalDTOs';
 
 @Component({
   selector: 'app-view-tasks',
@@ -56,11 +57,11 @@ export class ViewTasksComponent implements OnInit, OnDestroy {
   }
 
   get tasks() {    
-    return this.tasklist ? this.tasklist.filter(t => t.type === 'NAB') : []
+    return this.tasklist ? this.tasklist.filter(t => t.type === TaskType.NAB) : []
   }
 
   get experiments() {
-    return this.tasklist ? this.tasklist.filter(t => t.type === 'experimental') : []
+    return this.tasklist ? this.tasklist.filter(t => t.type === TaskType.Experimental) : []
   }
 
   // returns true if the given task is complete, and false otherwise

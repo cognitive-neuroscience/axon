@@ -33,6 +33,7 @@ export class DigitSpanComponent implements OnInit {
   actualTrials: number = 1;
   delayToShowHelpMessage: number = 10000;
   durationHelpMessageShown: number = 4000;
+  backwardMemoryMode: boolean = false;
 
   snackbarTimeout: number;
   responseTimeout: number;
@@ -97,11 +98,13 @@ export class DigitSpanComponent implements OnInit {
 
   async startForwardMemoryPractice() {
     this.sequence = practiceSequence.config.forwardSequence;
+    this.backwardMemoryMode = false;
     this.startPractice();
   }
 
   async startBackwardMemoryPractice() {
     this.sequence = practiceSequence.config.backwardSequence;
+    this.backwardMemoryMode = true;
     this.startPractice();
   }
 
@@ -119,11 +122,13 @@ export class DigitSpanComponent implements OnInit {
 
   async startForwardMemoryActual() {
     this.sequence = actualSequence.config.forwardSequence;
+    this.backwardMemoryMode = false;
     this.startActualGame();
   }
 
   async startBackwardMemoryActual() {
     this.sequence = actualSequence.config.backwardSequence;
+    this.backwardMemoryMode = true;
     this.startActualGame();
   }
 
@@ -139,7 +144,7 @@ export class DigitSpanComponent implements OnInit {
   }
 
 
-  async showStimulus() {    
+  async showStimulus() {
     this.reset();
     this.currentTrial++;
 
@@ -149,7 +154,7 @@ export class DigitSpanComponent implements OnInit {
     this.isKeypad = false;
     this.isFeedback = false;
 
-    await this.generateStimulus()
+    await this.generateStimulus();
 
     this.data.push({
       userID: this.userID,
@@ -158,32 +163,39 @@ export class DigitSpanComponent implements OnInit {
       isPractice: this.isPractice,
       experimentCode: this.taskManager.getExperimentCode(),
       userAnswer: UserResponse.NA,
-      actualAnswer: this.arrayToPaddedString(this.sequence[this.currentSequence.level][this.currentSequence.set]),
+      actualAnswer: this.getActualAnswer(),
       responseTime: 0,
       numberOfDigits: this.sequence[this.currentSequence.level][this.currentSequence.set].length,
       isCorrect: false,
       score: 0
     });
+
     this.timerService.startTimer();
     this.isStimulus = false;
     this.isKeypad = true;
     this.isResponseAllowed = true;
 
-    this.showHelpMessage("Please enter your response", this.delayToShowHelpMessage, this.durationHelpMessageShown)
+    this.showHelpMessage("Please enter your response", this.delayToShowHelpMessage, this.durationHelpMessageShown);
 
     this.responseTimeout = setTimeout(() => {
-      const message = "Please do you best to provide your answer in the time allotted for the next trial."
-      this.snackbarService.openInfoSnackbar(message, "", this.durationHelpMessageShown)
-      this.showFeedback()
-    }, this.maxResponseTime)
+      const message = "Please do you best to provide your answer in the time allotted for the next trial.";
+      this.snackbarService.openInfoSnackbar(message, "", this.durationHelpMessageShown);
+      this.showFeedback();
+    }, this.maxResponseTime);
   }
 
   private showHelpMessage(helpMessage: string, delay: number, duration: number) {
     this.snackbarTimeout = setTimeout(() => {
       this.snackbarService.openInfoSnackbar(helpMessage, "", duration);
-    }, delay)
+    }, delay);
   }
 
+  private getActualAnswer(): string {
+    const thisSequence = this.sequence[this.currentSequence.level][this.currentSequence.set];
+    let answer = this.arrayToPaddedString(thisSequence);
+    if(this.backwardMemoryMode) answer = answer.split("").reverse().join("");
+    return answer;
+  }
 
   private async flashFixation() {
     this.showFixation = true;
@@ -200,25 +212,25 @@ export class DigitSpanComponent implements OnInit {
       await this.wait(1000);
       this.digitShown = "";
       await this.wait(300);
-    }
+    };
   }
 
   onNumpadSubmit($event: string) {
-    clearTimeout(this.snackbarTimeout)
-    clearTimeout(this.responseTimeout)
-    this.snackbarService.clearSnackbar()
+    clearTimeout(this.snackbarTimeout);
+    clearTimeout(this.responseTimeout);
+    this.snackbarService.clearSnackbar();
     const thisTrial = this.data[this.data.length - 1];
 
     thisTrial.userAnswer = this.padString($event);
-    thisTrial.submitted = this.timerService.getCurrentTimestamp()
-    thisTrial.responseTime = this.timerService.stopTimerAndGetTime()
+    thisTrial.submitted = this.timerService.getCurrentTimestamp();
+    thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
 
-    this.showFeedback()
+    this.showFeedback();
   }
 
   private arrayToPaddedString(arr: number[]): string {
     let str = "";
-    arr.forEach(x => str = `${str}${x} `)
+    arr.forEach(x => str = `${str}${x} `);
     return str.slice(0, str.length - 1);
   }
 
@@ -226,7 +238,7 @@ export class DigitSpanComponent implements OnInit {
   private padString(strToPad: string): string {
     let x = "";
     for(const letter of strToPad) {
-      x = `${x}${letter} `
+      x = `${x}${letter} `;
     }
     return x.slice(0, x.length - 1);
   }
@@ -238,7 +250,7 @@ export class DigitSpanComponent implements OnInit {
     this.isFeedback = true;
     this.isResponseAllowed = false;
 
-    const thisTrial = this.data[this.data.length - 1]
+    const thisTrial = this.data[this.data.length - 1];
 
     const actualAnswer = thisTrial.actualAnswer;
     const userAnswer = thisTrial.userAnswer;
@@ -253,7 +265,7 @@ export class DigitSpanComponent implements OnInit {
         this.updateCurrentSequence(true);
         break;
       case UserResponse.NA:
-        this.feedback = Feedback.TOOSLOW
+        this.feedback = Feedback.TOOSLOW;
         thisTrial.responseTime = this.maxResponseTime;
         this.scoreForSpecificTrial = 0;
         this.updateCurrentSequence(false);
@@ -286,12 +298,12 @@ export class DigitSpanComponent implements OnInit {
   private canContinueGame(): boolean {
     if(this.currentSequence.level >= 7) {
       // 6 possible levels, meaning the participant has successfully completed all the trials
-      return false
+      return false;
     } else if(this.currentSequence.set >= 2) {
       // the participant has gotten 2 wrong in the same level, meaning they have to move on
-      return false
+      return false;
     }
-    return true
+    return true;
   }
 
 

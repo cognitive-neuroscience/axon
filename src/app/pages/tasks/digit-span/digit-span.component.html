@@ -3,32 +3,9 @@
     <!-- Show welcome message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 1">
 
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Welcome to Digit Span Task</h2>
-        </div>
-
         <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="title">
-                <h2 class="mat-h2">
-                    Read the instructions carefully
-                </h2>
-            </div>
-
-            <div class="statement">
-                In this task, a sequence of numbers will appear on the screen, one at a time
-            </div>
-
-            <div class="statement">
-                When the keypad is shown, you need to enter the numbers in the same order and click the next arrow
-            </div>
-
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-
+        <div class="w-100 p-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/digitspan/1.png" alt="Digit Span instructions">
         </div>
 
         <!-- Navigation buttons -->
@@ -56,35 +33,12 @@
         </div>
     </div>
 
-    <!-- Show practice round message -->
+    <!-- Show practice round message for forward memory -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Practice Round</h2>
-        </div>
 
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <h4>Let's Practice</h4>
-            </div>
-
-            <div class="statement">
-                Remember, when the keypad is shown, you need to enter the numbers in the same order as they were shown
-                and click the next arrow
-            </div>
-
-            <br>
-
-            <div class="statement">
-                The game will launch in fullscreen
-            </div>
-
-            <div class="statement-final">
-                Click 'START' when you are ready for the practice round
-            </div>
-
+        <!-- practice round instructions -->
+        <div class="w-100 p-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/digitspan/2.png" alt="Digit Span instructions">
         </div>
 
         <!-- Navigation buttons -->
@@ -117,11 +71,11 @@
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Start Practice Round -->
+    <!-- Start Practice Round for forward memory -->
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 4">
 
         <div *ngIf="isStimulus">
-            <div style="font-size: 80px;">
+            <div style="font-size: 100px;">
                 {{digitShown}}
             </div>
         </div>
@@ -146,40 +100,16 @@
 
     <!-- Show practice round finished message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 6">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Practice Round Is Now Complete</h2>
-        </div>
-
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <h4>You will now play the actual game</h4>
-            </div>
-
-            <div *ngIf="isScored" class="statement">
-                Good luck !
-            </div>
-
-            <br>
-
-            <div class="statement">
-                Remember, when the keypad is shown, you need to enter the numbers in the same order as they were shown
-                and click the next arrow
-            </div>
-
-            <div class="statement-final">
-                Click 'START' when you are ready for the actual game
-            </div>
-
+        <!-- end of practice round, start real game -->
+        <div class="w-100 p-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/digitspan/3.png" alt="Digit Span instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disable>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -208,7 +138,7 @@
     <!-- Start Actual Round -->
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
         <div *ngIf="isStimulus">
-            <div style="font-size: 80px;">
+            <div style="font-size: 100px;">
                 {{digitShown}}
             </div>
         </div>
@@ -231,43 +161,181 @@
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- ADD MORE STUFF FOR THE BACKWARDS PRACTICE AND BACKWARDS GAME -->
-
-    <!-- Show practice round finished message -->
+    <!-- Show instructions for backwards memory game -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 10">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Game has finished</h2>
+        <!-- show instructions for backwards memory game -->
+        <div class="w-100 p-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/digitspan/4.png" alt="Digit Span instructions">
         </div>
 
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <h4>Congratulations ! You have finished the game successfully</h4>
-            </div>
-
-            <div class="statement" *ngIf="isScored">
-                Your earnings in this game is : {{totalScore}} cent(s)
-            </div>
-
-            <br>
-
-            <div class="statement">
-                Thank you for your participation
-            </div>
-
-            <div class="statement-final">
-                Click 'CONTINUE'
-            </div>
-
-        </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- practice message for backwards memory game -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 11">
+        <!-- show practice message for backwards memory game -->
+        <div class="w-100 p-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/digitspan/5.png" alt="Digit Span instructions">
+        </div>
+
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="startBackwardMemoryPractice()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 12">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Start Practice Round for backward memory -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 13">
+
+        <div *ngIf="isStimulus">
+            <div style="font-size: 100px;">
+                {{digitShown}}
+            </div>
+        </div>
+
+        <div *ngIf="showFixation">
+            <i class="material-icons" style="font-size: 60px;">add</i>
+        </div>
+
+        <div *ngIf="isFeedback">
+            <div class="feedback">
+                {{feedback}}
+            </div>
+        </div>
+
+        <app-numpad *ngIf="isKeypad" (submit)="onNumpadSubmit($event)"></app-numpad>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 14">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Show backwards memory actual game message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 15">
+        <!-- show backwards memory game message -->
+        <div class="w-100 p-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/digitspan/6.png" alt="Digit Span instructions">
+        </div>
+
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled>
+                        <mat-icon>
+                            arrow_backward
+                        </mat-icon>
+                        &nbsp;
+                        PREVIOUS
+                    </button>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" (click)="startBackwardMemoryActual()">
+                        START
+                        &nbsp;
+                        <mat-icon>
+                            arrow_forward
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 16">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Start Actual Round -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 17">
+        <div *ngIf="isStimulus">
+            <div style="font-size: 100px;">
+                {{digitShown}}
+            </div>
+        </div>
+
+        <div *ngIf="showFixation">
+            <i class="material-icons" style="font-size: 60px;">add</i>
+        </div>
+
+        <div *ngIf="isFeedback" align="center">
+            <div class="feedback" *ngIf="showFeedbackAfterEveryTrial && feedback === 'Too slow'">
+                <span>{{feedback}}</span>
+            </div>
+        </div>
+
+        <app-numpad *ngIf="isKeypad" (submit)="onNumpadSubmit($event)"></app-numpad>
+    </div>
+
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 18">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
+    <!-- Show finished game -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 19">
+        <!-- game complete -->
+        <div class="w-100 p-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/digitspan/7.png" alt="Digit Span instructions">
+        </div>
+
+
+        <!-- Navigation buttons -->
+        <div class="w-100 p-4 uppercase">
+            <div class="d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -277,7 +345,7 @@
                 </div>
                 <div>
                     <button mat-raised-button color="primary" (click)="continueAhead()">
-                        CONTINUE
+                        START
                         &nbsp;
                         <mat-icon>
                             arrow_forward
@@ -289,14 +357,12 @@
     </div>
 
 
-    <!-- Show break message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="isBreak">
-        <!-- Heading -->
+    <!-- div block for break view. Do not need but keep just in case -->
+    <!-- <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="isBreak">
         <div class="w-100 p-4 uppercase" align="center">
             <h2>It's break time</h2>
         </div>
 
-        <!-- Introduction -->
         <div class="w-100 p-4 uppercase" align="center">
 
 
@@ -312,7 +378,6 @@
 
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
@@ -335,7 +400,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
 
 </div>
