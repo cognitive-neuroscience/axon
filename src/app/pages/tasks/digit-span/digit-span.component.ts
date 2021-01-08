@@ -4,13 +4,15 @@ import { UploadDataService } from 'src/app/services/uploadData.service';
 declare function setFullScreen(): any;
 import * as practiceSequence from './sequence.practice';
 import * as actualSequence from './sequence';
-import { DigitSpan } from 'src/app/models/TaskData';
+import { DigitSpan, TaskNames } from 'src/app/models/TaskData';
 import { AuthService } from 'src/app/services/auth.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { Feedback, Role, UserResponse } from 'src/app/models/InternalDTOs';
 import { TimerService } from 'src/app/services/timer.service';
 import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -318,10 +320,24 @@ export class DigitSpanComponent implements OnInit {
       if (this.canContinueGame()) {
         this.continueGame();
       } else {
+
         this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
-        console.log(this.data);
+
+        if(this.step >= 17) {
+          this.uploadResults(this.data).pipe().subscribe(ok => {
+            if(ok) {
+              this.proceedtoNextStep();
+            } else {
+              this.taskManager.handleErr();
+            }
+          }, err => {
+            this.taskManager.handleErr();
+          })
+        } else {
+          await this.wait(2000)
+          this.proceedtoNextStep();
+        }
+
       }
     }
   }
@@ -342,7 +358,11 @@ export class DigitSpanComponent implements OnInit {
 
 
 
-  uploadResults() {
+  uploadResults(data: DigitSpan[]): Observable<boolean> {
+    const experimentCode = this.taskManager.getExperimentCode()
+    return this.uploadDataService.uploadData(experimentCode, TaskNames.DIGITSPAN, data).pipe(
+      map(ok => ok.ok)
+    )
   }
 
 
