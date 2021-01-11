@@ -6,7 +6,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ColorGameComponent } from './pages/tasks/color-game/color-game.component';
 import { ShapeGameComponent } from './pages/tasks/shape-game/shape-game.component';
-import { GoNogoComponent } from './pages/tasks/go-nogo/go-nogo.component';
+import { OddballComponent } from './pages/tasks/oddball/oddball.component';
 import { DigitSpanComponent } from './pages/tasks/digit-span/digit-span.component';
 import { DemandSelectionComponent } from './pages/tasks/demand-selection/demand-selection.component';
 import { TaskSwitchingComponent } from './pages/tasks/task-switching/task-switching.component';
@@ -46,7 +46,7 @@ import { NumpadComponent } from './pages/tasks/digit-span/numpad/numpad.componen
     DashboardComponent,
     ColorGameComponent,
     ShapeGameComponent,
-    GoNogoComponent,
+    OddballComponent,
     DigitSpanComponent,
     DemandSelectionComponent,
     TaskSwitchingComponent,

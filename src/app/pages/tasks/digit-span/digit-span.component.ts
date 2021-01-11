@@ -28,12 +28,12 @@ export class DigitSpanComponent implements OnInit {
   showFeedbackAfterEveryTrial: boolean | number = true;
   showScoreAfterEveryTrial: boolean | number = false;
   numberOfBreaks: number = 0;
-  maxResponseTime: number = 20000;        // 20 seconds
+  maxResponseTime: number = 30000;        // 30 seconds
   durationOfFeedback: number = 1000;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
   practiceTrials: number = 1;
   actualTrials: number = 1;
-  delayToShowHelpMessage: number = 10000;
+  delayToShowHelpMessage: number = 20000;
   durationHelpMessageShown: number = 4000;
   backwardMemoryMode: boolean = false;
 
@@ -169,7 +169,8 @@ export class DigitSpanComponent implements OnInit {
       responseTime: 0,
       numberOfDigits: this.sequence[this.currentSequence.level][this.currentSequence.set].length,
       isCorrect: false,
-      score: 0
+      score: 0,
+      isForwardMemoryMode: this.backwardMemoryMode ? false : true
     });
 
     this.timerService.startTimer();
@@ -223,10 +224,12 @@ export class DigitSpanComponent implements OnInit {
     this.snackbarService.clearSnackbar();
     const thisTrial = this.data[this.data.length - 1];
 
-    thisTrial.userAnswer = this.padString($event);
+    if($event !== UserResponse.NA) {
+      thisTrial.userAnswer = this.padString($event);
+    }
+    
     thisTrial.submitted = this.timerService.getCurrentTimestamp();
     thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
-
     this.showFeedback();
   }
 
@@ -267,7 +270,7 @@ export class DigitSpanComponent implements OnInit {
         this.updateCurrentSequence(true);
         break;
       case UserResponse.NA:
-        this.feedback = Feedback.TOOSLOW;
+        this.feedback = Feedback.NORESPONSE;
         thisTrial.responseTime = this.maxResponseTime;
         this.scoreForSpecificTrial = 0;
         this.updateCurrentSequence(false);
@@ -281,7 +284,7 @@ export class DigitSpanComponent implements OnInit {
 
     // show feedback either if it is a practice trial, or if the feedback is telling the user
     // they are too slow. Don't show for other feedback during actual game
-    if (this.isPractice || (this.showFeedbackAfterEveryTrial && this.feedback === Feedback.TOOSLOW)) {
+    if (this.isPractice || (this.showFeedbackAfterEveryTrial && this.feedback === Feedback.NORESPONSE)) {
       await this.wait(this.durationOfFeedback);
     }
 
@@ -324,15 +327,23 @@ export class DigitSpanComponent implements OnInit {
         this.proceedtoNextStep();
 
         if(this.step >= 17) {
-          this.uploadResults(this.data).pipe().subscribe(ok => {
-            if(ok) {
-              this.proceedtoNextStep();
-            } else {
+          const decodedToken = this.authService.getDecodedToken()
+
+          if(decodedToken.Role === Role.ADMIN) {
+            this.proceedtoNextStep();
+          } else {
+
+            this.uploadResults(this.data).pipe().subscribe(ok => {
+              if(ok) {
+                this.proceedtoNextStep();
+              } else {
+                this.taskManager.handleErr();
+              }
+            }, err => {
               this.taskManager.handleErr();
-            }
-          }, err => {
-            this.taskManager.handleErr();
-          })
+            })
+
+          }
         } else {
           await this.wait(2000)
           this.proceedtoNextStep();

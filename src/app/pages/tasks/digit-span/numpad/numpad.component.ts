@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { UserResponse } from 'src/app/models/InternalDTOs';
 
 @Component({
   selector: 'app-numpad',
@@ -34,4 +35,7 @@ export class NumpadComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  onSkip(): void {
+    this.submit.emit(UserResponse.NA)
+  }
 }

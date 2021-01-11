@@ -2,7 +2,7 @@ import { RouteMap } from "../routing/routes";
 import { Key, UserResponse } from "./InternalDTOs";
 
 export enum TaskNames {
-    GONOGO = "gonogo",
+    ODDBALL = "oddball",
     DIGITSPAN = "digitspan",
     FINGERTAPPING = "fingertapping",
     NBACK = "nback",
@@ -106,6 +106,7 @@ export class DigitSpan extends TaskData {
     userAnswer: string;     // the sequence the user inputs
     responseTime: number;   // time from when keypad entered screen to participant submitting their response
     numberOfDigits: number;
+    isForwardMemoryMode: boolean;
 }
 
 export function mapTaskIdToTitle(task: string) {

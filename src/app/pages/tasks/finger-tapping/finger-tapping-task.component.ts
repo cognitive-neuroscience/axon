@@ -82,7 +82,7 @@ export class FingerTappingTaskComponent implements OnInit {
     }
   }
 
-  private askedToUseDominantHand(): boolean {
+  askedToUseDominantHand(): boolean {
     if(this.isPractice) {
       return this.dominantHand === UserResponse.RIGHT
     }
@@ -199,17 +199,24 @@ export class FingerTappingTaskComponent implements OnInit {
         this.isBreak = true;
         this.startBreakTimer();
       } else {
-        this.uploadResults(this.data).pipe(take(1)).subscribe(ok => {
-          if(ok) {
-            this.proceedtoNextStep();
-          } else {
+        const decodedToken = this.authService.getDecodedToken()
+        if(decodedToken.Role === Role.ADMIN) {
+          this.proceedtoNextStep();
+        } else {
+
+          this.uploadResults(this.data).pipe(take(1)).subscribe(ok => {
+            if(ok) {
+              this.proceedtoNextStep();
+            } else {
+              console.error("There was an error downloading results")
+              this.taskManager.handleErr();
+            }
+          }, err => {
             console.error("There was an error downloading results")
             this.taskManager.handleErr();
-          }
-        }, err => {
-          console.error("There was an error downloading results")
-          this.taskManager.handleErr();
-        })
+          })
+
+        }
       }
     } else {
       await this.wait(2000);
@@ -240,7 +247,7 @@ export class FingerTappingTaskComponent implements OnInit {
   stopBreakTimer() {
     clearInterval(this.breakTimer);
     this.isBreak = false;
-    this.proceedtoNextStep();
+    this.startCountDownTimer();
   }
 
 
