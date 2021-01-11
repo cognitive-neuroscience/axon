@@ -271,7 +271,7 @@ export class DigitSpanComponent implements OnInit {
         break;
       case UserResponse.NA:
         this.feedback = Feedback.NORESPONSE;
-        thisTrial.responseTime = this.maxResponseTime;
+        thisTrial.responseTime = thisTrial.responseTime == 0 ? this.maxResponseTime : thisTrial.responseTime;
         this.scoreForSpecificTrial = 0;
         this.updateCurrentSequence(false);
         break;
