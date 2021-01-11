@@ -181,15 +181,15 @@ export class DigitSpanComponent implements OnInit {
     this.showHelpMessage("Please enter your response", this.delayToShowHelpMessage, this.durationHelpMessageShown);
 
     this.responseTimeout = setTimeout(() => {
-      const message = "Please do you best to provide your answer in the time allotted for the next trial.";
-      this.snackbarService.openInfoSnackbar(message, "", this.durationHelpMessageShown);
+      const message = "Please do your best to provide your answer in the time allotted for the next trial.";
+      this.snackbarService.openInfoSnackbar(message, undefined, this.durationHelpMessageShown);
       this.showFeedback();
     }, this.maxResponseTime);
   }
 
   private showHelpMessage(helpMessage: string, delay: number, duration: number) {
     this.snackbarTimeout = setTimeout(() => {
-      this.snackbarService.openInfoSnackbar(helpMessage, "", duration);
+      this.snackbarService.openInfoSnackbar(helpMessage, undefined, duration, 'center');
     }, delay);
   }
 
