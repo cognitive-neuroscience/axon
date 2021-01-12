@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { SnackbarData, SnackbarType } from '../models/InternalDTOs';
 import { SnackbarComponent } from './snackbar/snackbar.component';
 
@@ -8,16 +8,19 @@ import { SnackbarComponent } from './snackbar/snackbar.component';
 })
 export class SnackbarService {
 
-    private readonly defaultDuration = 4000
-
     constructor(private _snackbar: MatSnackBar) {}
 
-    public openInfoSnackbar(message: string, action?: string, duration?: number) {
-        this._snackbar.openFromComponent(SnackbarComponent, {
-            data: new SnackbarData(message, action, SnackbarType.INFO),
-            panelClass: ["snack-bar-info"],
-            duration: duration ? duration : this.defaultDuration
-        })
+    public openInfoSnackbar(message: string, action?: string, duration?: number, verticalPos?: 'center') {
+        let panelClasses = ["snack-bar-info"]
+        if(verticalPos && verticalPos === 'center') {
+            panelClasses.push("center-snackbar");
+        }
+
+        this.openSnackbar(
+            new SnackbarData(message, action, SnackbarType.INFO),
+            panelClasses,
+            duration
+        )
     }
 
     public clearSnackbar() {
@@ -25,19 +28,40 @@ export class SnackbarService {
     }
 
     // action doesn't do anything right now, kept in case we want to implement later
-    public openSuccessSnackbar(message: string, action?: string, duration?: number) {
-        this._snackbar.openFromComponent(SnackbarComponent, {
-            data: new SnackbarData(message, action, SnackbarType.SUCCESS),
-            panelClass: ["snack-bar-success"],
-            duration: duration ? duration : this.defaultDuration
-        })
+    public openSuccessSnackbar(message: string, action?: string, duration?: number, verticalPos?: 'center') {
+        let panelClasses = ["snack-bar-success"]
+        if(verticalPos && verticalPos === 'center') {
+            panelClasses.push("center-snackbar");
+        }
+
+        this.openSnackbar(
+            new SnackbarData(message, action, SnackbarType.SUCCESS),
+            panelClasses,
+            duration
+        )
     }
+
     // action doesn't do anything right now, kept in case we want to implement later
-    public openErrorSnackbar(message: string, action?: string, duration?: number) {
+    public openErrorSnackbar(message: string, action?: string, duration?: number, verticalPos?: 'center') {
+        let panelClasses = ["snack-bar-error"]
+        if(verticalPos && verticalPos === 'center') {
+            panelClasses.push("center-snackbar");
+        }
+
+        this.openSnackbar(
+            new SnackbarData(message, action, SnackbarType.ERROR),
+            panelClasses,
+            duration
+        )
+    }
+
+    private openSnackbar(data: SnackbarData, panelClasses: string[], duration: number = 4000, verticalPos: MatSnackBarVerticalPosition = 'bottom', horizontalPos: MatSnackBarHorizontalPosition = 'center'): void {
         this._snackbar.openFromComponent(SnackbarComponent, {
-            data: new SnackbarData(message, action, SnackbarType.ERROR),
-            panelClass: ["snack-bar-error"],
-            duration: duration ? duration : this.defaultDuration
+            data: data,
+            panelClass: panelClasses,
+            duration: duration,
+            verticalPosition: verticalPos,
+            horizontalPosition: horizontalPos
         })
     }
 
