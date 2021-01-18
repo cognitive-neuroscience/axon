@@ -35,7 +35,7 @@ export class StroopTaskComponent implements OnInit {
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
   practiceTrials: number = environment.production ? 15 : 5;
-  actualTrials: number = environment.production ? 120 : 10;
+  actualTrials: number = environment.production ? 60 : 10;
 
   step: number = 1;
   color: string = '';
@@ -256,21 +256,7 @@ export class StroopTaskComponent implements OnInit {
       }
     } else {
       if (this.currentTrial < this.actualTrials) {
-        if (this.numberOfBreaks === 0) {
-          this.continueGame();
-        } else {
-          const breakAtTrailIndices = [];
-          const setSize = this.actualTrials / (this.numberOfBreaks + 1);
-          for (let i = 1; i < this.numberOfBreaks + 1; i++) {
-            breakAtTrailIndices.push(setSize * i);
-          }
-          if (breakAtTrailIndices.includes(this.currentTrial)) {
-            this.isBreak = true;
-          } else {
-            this.isBreak = false;
-            this.continueGame();
-          }
-        }
+        this.continueGame();
       } else {
         this.proceedtoNextStep();
 
