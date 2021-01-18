@@ -4,41 +4,26 @@ import { ConfirmationService } from '../../../services/confirmation.service';
 import { Router } from '@angular/router';
 import { SessionStorageService } from '../../../services/sessionStorage.service';
 import { QuestionnaireService } from '../../../services/questionnaire.service';
-import { DemographicsQuestionnaireResponse } from '../../../models/Questionnaire';
+import { ApathyQuestionnaireResponse } from '../../../models/Questionnaire';
 import { TaskManagerService } from '../../../services/task-manager.service';
 import { AuthService } from '../../../services/auth.service';
 import { take } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-demographics-questionnaire',
-  templateUrl: './demographics-questionnaire.component.html',
-  styleUrls: ['./demographics-questionnaire.component.scss']
+  selector: 'app-starkstein-apathy-scale',
+  templateUrl: './starkstein-apathy-scale.component.html',
+  styleUrls: ['./starkstein-apathy-scale.component.scss']
 })
-export class DemographicsQuestionnaireComponent implements OnInit {
+export class StarksteinApathyScaleComponent implements OnInit {
 
-  numbersRegex = /^[0-9]+$/;
+  responses: string[] = ['Not at all', 'Slightly', 'Some', 'A lot'];
 
-  demographicsQuestionnaire = this.fb.group({
-    age: ['', [
-      Validators.required,
-      Validators.min(18),
-      Validators.max(122),
-      Validators.pattern(this.numbersRegex)
-    ]],
-    sex: ['', Validators.required],
-    selfIdentification: [[], Validators.required],
-    yearsOfEducation: ['', [
-      Validators.required,
-      Validators.min(0),
-      Validators.max(30),
-      Validators.pattern(this.numbersRegex)
-    ]],
-    hasNeuroConditions: ['', [
-      Validators.required
-    ]],
-    hasPsychConditions: ['', [
-      Validators.required
-    ]]
+  apathyQuestionnaire = this.fb.group({
+    Q1: ['', [Validators.required]],
+    Q2: ['', [Validators.required]],
+    Q3: ['', [Validators.required]],
+    Q4: ['', [Validators.required]],
+    Q5: ['', [Validators.required]],
   })
 
   constructor(
@@ -71,17 +56,17 @@ export class DemographicsQuestionnaireComponent implements OnInit {
     const userID = this.authService.getDecodedToken().UserID
     const experimentCode = this.taskManager.getExperimentCode()
 
-    const response: DemographicsQuestionnaireResponse = {
+    const response: ApathyQuestionnaireResponse = {
       userID: userID,
       experimentCode: experimentCode,
-      age: this.demographicsQuestionnaire.get("age").value,
-      sex: this.demographicsQuestionnaire.get("sex").value,
-      selfIdentification: this.demographicsQuestionnaire.get("selfIdentification").value,
-      yearsOfEducation: this.demographicsQuestionnaire.get("yearsOfEducation").value,
-      hasNeuroConditions: this.demographicsQuestionnaire.get("hasNeuroConditions").value,
-      hasPsychConditions: this.demographicsQuestionnaire.get("hasPsychConditions").value
+      Q1: this.apathyQuestionnaire.get("Q1").value,
+      Q2: this.apathyQuestionnaire.get("Q2").value,
+      Q3: this.apathyQuestionnaire.get("Q3").value,
+      Q4: this.apathyQuestionnaire.get("Q4").value,
+      Q5: this.apathyQuestionnaire.get("Q5").value,
+ 
     }
-    this.questionnaireService.saveDemographicsQuestionnaireResponse(response).pipe(take(1)).subscribe(ok => {
+    this.questionnaireService.saveApathyQuestionnaireResponse(response).pipe(take(1)).subscribe(ok => {
       if(ok) {
         this.taskManager.nextExperiment()
       } else {
@@ -93,5 +78,4 @@ export class DemographicsQuestionnaireComponent implements OnInit {
     })
 
   }
-
 }

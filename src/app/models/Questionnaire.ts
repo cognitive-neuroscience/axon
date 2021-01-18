@@ -17,3 +17,11 @@ export class FeedbackQuestionnaireResponse extends QuestionnaireResponse {
     additionalFeedback: string;
     browser: string;
 }
+
+export class ApathyQuestionnaireResponse extends QuestionnaireResponse {
+   Q1: string;
+   Q2: string;
+   Q3: string; 
+   Q4: string;
+   Q5: string;
+}

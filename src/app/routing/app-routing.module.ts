@@ -27,6 +27,8 @@ import { DataComponent } from '../pages/dashboard/data/data.component';
 import { ConsentComponent } from '../services/consent/consent.component';
 import { DemographicsQuestionnaireComponent } from '../pages/questionnaires/demographics-questionnaire/demographics-questionnaire.component';
 import { FeedbackQuestionnaireComponent } from '../pages/questionnaires/feedback-questionnaire/feedback-questionnaire.component';
+import { StarksteinApathyScaleComponent } from '../pages/questionnaires/starkstein-apathy-scale/starkstein-apathy-scale.component';
+
 
 const routes: Routes = [
   { path: '', redirectTo: 'login/mturk', pathMatch: 'full' },
@@ -45,6 +47,7 @@ const routes: Routes = [
   { path: 'login/mturk', component: MturkLoginComponent },
   { path: 'questionnaire/demographics', component: DemographicsQuestionnaireComponent },
   { path: 'questionnaire/feedback', component: FeedbackQuestionnaireComponent },
+  { path: 'questionnaire/apathy', component: StarksteinApathyScaleComponent},
   { path: 'login', component: LoginComponent },
   { path: 'consent', component: ConsentComponent },
   { path: RouteMap.colorgame.route, component: ColorGameComponent },
