@@ -50,6 +50,7 @@ export enum LoginMode {
     REGISTER = "REGISTER",
 }
 
+// enum that represents valid keys for the user to input
 export enum Key {
     ARROWLEFT = "ArrowLeft",
     ARROWRIGHT = "ArrowRight",
@@ -57,7 +58,9 @@ export enum Key {
     NUMTWO = "2",
     NUMTHREE = "3",
     Q = "q",
-    P = "p"
+    P = "p",
+    Z = 'z',
+    M = 'm'
 }
 
 export enum Color {
@@ -77,6 +80,7 @@ export enum Feedback {
     NORESPONSE = "No response"
 }
 
+// an enum representing the semantic answer given by the user that gets uploaded to the database
 export enum UserResponse {
     GREATER = "GREATER",
     LESSER = "LESSER",

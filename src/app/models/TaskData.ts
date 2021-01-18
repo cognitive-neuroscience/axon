@@ -109,6 +109,16 @@ export class DigitSpan extends TaskData {
     isForwardMemoryMode: boolean;
 }
 
+export class Oddball extends TaskData {
+    stimulus: string;
+    targetResponse: string;
+    responseTime: number;
+    actualAnswer: Key;
+    userAnswer: string;
+    target: string;
+    block: number;
+}
+
 export function mapTaskIdToTitle(task: string) {
     switch (task) {
         case "demographics_questionnaire_responses":

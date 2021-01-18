@@ -7,6 +7,104 @@ button{
     outline: none !important;
 }
 
+.title {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.big-text {
+    font-weight: bold;
+    line-height: normal;
+}
+
+@include for-small-device-only {
+    .statement {
+        padding: 5px;
+        font-size: 10px;
+    }
+
+    .title{
+        font-size: 14px;
+        padding: 5px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        padding: 5px;
+    }
+
+    .big-text {
+        font-size: 18px;
+    }
+
+}
+
+@include for-small-desktop-only {
+    .statement {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .title{
+        font-size: 18px;
+        padding: 14px;
+    }
+
+    .subtitle {
+        font-size: 18px;
+        padding: 14px;
+    }
+
+    .big-text {
+        font-size: 22px;
+    }
+
+}
+
+@include for-desktop-up {
+    .statement {
+        padding: 20px;
+        font-size: 16px;
+    }
+
+    .title {
+        font-size: 20px;
+        padding: 20px;
+    }
+
+    .subtitle {
+        font-size: 20px;
+        padding: 20px;
+    }
+
+    .big-text {
+        font-size: 24px;
+    }
+
+}
+
+@include for-large-desktop-up {
+    .statement {
+        padding: 25px;
+        font-size: 20px;
+    }
+
+    .title {
+        font-size: 24px;
+        padding: 25px;
+    }
+
+    .subtitle {
+        font-size: 24px;
+        padding: 25px;
+    }
+
+    .big-text {
+        font-size: 28px;
+    }
+
+}
+
 // handles global breakpoints for experiment instructions. These instructions are in the format
 // of .pngs. Pass in the png, create a div wrapper and set the class of the div wrapper to "instructions"
 .instructions {
@@ -85,26 +183,6 @@ button{
 
     .uppercase{
         text-transform: uppercase;
-    }
-
-    .title{
-        text-decoration: underline;
-        padding: 25px;
-    }
-    .statement {
-        padding: 15px;
-        font-size: 20px;
-    }
-
-    .statement-final {
-        padding: 30px;
-        font-size: 20px;
-        font-weight: bold;
-    }
-
-    .square {
-        height: 200px;
-        width: 200px;
     }
 
     .feedback {
