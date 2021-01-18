@@ -4,11 +4,11 @@ import { UploadDataService } from 'src/app/services/uploadData.service';
 declare function setFullScreen(): any;
 
 @Component({
-  selector: 'app-go-nogo',
-  templateUrl: './go-nogo.component.html',
-  styleUrls: ['./go-nogo.component.scss']
+  selector: 'app-oddball',
+  templateUrl: './oddball.component.html',
+  styleUrls: ['./oddball.component.scss']
 })
-export class GoNogoComponent implements OnInit {
+export class OddballComponent implements OnInit {
 
   // Default Experiment config
   isScored: boolean | number = true;

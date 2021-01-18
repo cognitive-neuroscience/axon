@@ -1,13 +1,6 @@
 import { ExperimentRoutingMap, TaskType } from '../models/InternalDTOs';
 
 export const RouteMap: ExperimentRoutingMap = {
-    gonogo: {
-      id: "gonogo",
-      title: "Go-NoGo",
-      description: "Description of Go-NoGo Task",
-      type: TaskType.NAB,
-      route: "task/gonogo"
-    },
     digitspan: {
       id: "digitspan",
       title: "Digit Span",
@@ -73,16 +66,23 @@ export const RouteMap: ExperimentRoutingMap = {
     },
     simon: {
       id: "simon",
-          title: "Simon Task",
-          description: "Description of Simon Task",
+      title: "Simon Task",
+      description: "Description of Simon Task",
       type: TaskType.Experimental,
       route: "task/simontask"
     },
     smileyface: {
       id: "smileyface",
-          title: "Smiley Face",
-          description: "Description of Smiley Face Game",
+      title: "Smiley Face",
+      description: "Description of Smiley Face Game",
       type: TaskType.Experimental,
       route: "task/smileyface"
+    },
+    oddball: {
+      id: "oddball",
+      title: "Oddball Task",
+      description: "Description of the Oddball Task",
+      type: TaskType.Experimental,
+      route: "task/oddball"
     },
   };

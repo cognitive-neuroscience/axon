@@ -4,7 +4,7 @@ import { DashboardComponent } from '../pages/dashboard/dashboard.component';
 import { LoginComponent } from '../pages/login/login.component';
 import { ColorGameComponent } from '../pages/tasks/color-game/color-game.component';
 import { ShapeGameComponent } from '../pages/tasks/shape-game/shape-game.component';
-import { GoNogoComponent } from '../pages/tasks/go-nogo/go-nogo.component';
+import { OddballComponent } from '../pages/tasks/oddball/oddball.component';
 import { DigitSpanComponent } from '../pages/tasks/digit-span/digit-span.component';
 import { TaskSwitchingComponent } from '../pages/tasks/task-switching/task-switching.component';
 import { DemandSelectionComponent } from '../pages/tasks/demand-selection/demand-selection.component';
@@ -52,7 +52,7 @@ const routes: Routes = [
   { path: 'consent', component: ConsentComponent },
   { path: RouteMap.colorgame.route, component: ColorGameComponent },
   { path: RouteMap.shapegame.route, component: ShapeGameComponent },
-  { path: RouteMap.gonogo.route, component: GoNogoComponent },
+  { path: RouteMap.oddball.route, component: OddballComponent },
   { path: RouteMap.digitspan.route, component: DigitSpanComponent },
   { path: RouteMap.taskswitching.route, component: TaskSwitchingComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.demandselection.route, component: DemandSelectionComponent, canActivate: [ExperimentRouteGuard] },

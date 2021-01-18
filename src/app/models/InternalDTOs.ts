@@ -73,7 +73,8 @@ export class ExperimentRoutingMap {
 export enum Feedback {
     CORRECT = "Correct",
     INCORRECT = "Incorrect",
-    TOOSLOW = "Too slow"
+    TOOSLOW = "Too slow",
+    NORESPONSE = "No response"
 }
 
 export enum UserResponse {

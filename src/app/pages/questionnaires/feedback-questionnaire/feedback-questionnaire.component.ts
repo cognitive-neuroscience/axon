@@ -65,8 +65,7 @@ export class FeedbackQuestionnaireComponent implements OnInit {
       additionalFeedback: this.additionalFeedback,
       browser: this.browser
     }
-    console.log(obj);
-    
+
     this.questionnaireService.saveFeedQuestionnaireResponse(obj).pipe(take(1)).subscribe((ok) => {
       if(ok) {
         this.formSubmitted = true;
