@@ -39,6 +39,9 @@ import { DataTableComponent } from './pages/dashboard/data/data-table/data-table
 import { LoaderComponent } from './services/loader/loader.component';
 import { NumpadComponent } from './pages/tasks/digit-span/numpad/numpad.component';
 import { StarksteinApathyScaleComponent } from './pages/questionnaires/starkstein-apathy-scale/starkstein-apathy-scale.component';
+import { EverydayChoiceComponent } from './pages/tasks/everyday-choice/everyday-choice.component';
+import { EverydayChoice2Component } from './pages/tasks/everyday-choice2/everyday-choice2.component';
+import { EverydayChoice3Component } from './pages/tasks/everyday-choice3/everyday-choice3.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +77,10 @@ import { StarksteinApathyScaleComponent } from './pages/questionnaires/starkstei
     DataTableComponent,
     LoaderComponent,
     NumpadComponent,
-    StarksteinApathyScaleComponent
+    StarksteinApathyScaleComponent,
+    EverydayChoiceComponent,
+    EverydayChoice2Component,
+    EverydayChoice3Component
   ],
   imports: [
     BrowserModule,

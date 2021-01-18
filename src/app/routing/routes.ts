@@ -85,4 +85,26 @@ export const RouteMap: ExperimentRoutingMap = {
       type: TaskType.Experimental,
       route: "task/oddball"
     },
+    everydaychoice: {
+      id: "everydaychoice",
+      title: "Everyday Choice Task Part 1, aka Rating Game",
+      description: "Description of Everyday Choice Task",
+      type: "experimental",
+      route: "task/everydaychoice"
+    },
+    everydaychoice2: {
+      id: "everydaychoice2",
+      title: "Everyday Choice Task Part 2, aka Choice Game",
+      description: "Description of Everyday Choice Task",
+      type: "experimental",
+      route: "task/everydaychoice2"
+    },
+    everydaychoice3: {
+      id: "everydaychoice3",
+      title: "Everyday Choice Task Part 2, aka Post-Choice Rating Game",
+      description: "Description of Everyday Choice Task",
+      type: "experimental",
+      route: "task/everydaychoice3"
+    },
+    
   };

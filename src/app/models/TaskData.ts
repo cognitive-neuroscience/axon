@@ -109,6 +109,32 @@ export class DigitSpan extends TaskData {
     isForwardMemoryMode: boolean;
 }
 
+export class ratingTask extends TaskData {
+    counterbalance: number;
+    ratingType: string; 
+    trial: number; 
+    activity: string;
+    userAnswer: number;
+    responseTime: number;
+
+}
+
+export class choiceTask extends TaskData {
+    trial: number; 
+    activityLeft: string;
+    activityRight: string;
+    userAnswer: number;
+    responseTime: number;
+}
+
+export class postChoiceRatingTask extends TaskData {
+    ratingType: string; 
+    trial: number; 
+    activity: string;
+    userAnswer: number;
+    responseTime: number;
+}
+
 export function mapTaskIdToTitle(task: string) {
     switch (task) {
         case "demographics_questionnaire_responses":

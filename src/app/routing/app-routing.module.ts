@@ -15,6 +15,9 @@ import { FingerTappingTaskComponent } from '../pages/tasks/finger-tapping/finger
 import { NBackComponent } from '../pages/tasks/n-back/n-back.component';
 import { StroopTaskComponent } from '../pages/tasks/stroop/stroop-task.component';
 import { TrailMakingComponent } from '../pages/tasks/trail-making/trail-making.component';
+import { EverydayChoiceComponent } from '../pages/tasks/everyday-choice/everyday-choice.component';
+import { EverydayChoice2Component } from '../pages/tasks/everyday-choice2/everyday-choice2.component';
+import { EverydayChoice3Component } from '../pages/tasks/everyday-choice3/everyday-choice3.component';
 import { ViewExperimentsComponent } from '../pages/dashboard/view-experiments/view-experiments.component';
 import { ViewTasksComponent } from '../pages/dashboard/view-tasks/view-tasks.component';
 import { MturkLoginComponent } from '../pages/mturk-login/mturk-login.component'
@@ -63,6 +66,9 @@ const routes: Routes = [
   { path: RouteMap.nback.route, component: NBackComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.stroop.route, component: StroopTaskComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.trailmaking.route, component: TrailMakingComponent, canActivate: [ExperimentRouteGuard] },
+  { path: RouteMap.everydaychoice.route, component: EverydayChoiceComponent },
+  { path: RouteMap.everydaychoice2.route, component: EverydayChoice2Component },
+  { path: RouteMap.everydaychoice3.route, component: EverydayChoice3Component },
   { path: 'complete', component: FinalPageComponent, canActivate: [ExperimentRouteGuard] },
   { path: '**', redirectTo: '/login/mturk', pathMatch: 'full' }
 ];
