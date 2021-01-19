@@ -33,7 +33,7 @@ export class OddballComponent implements OnInit {
   // actualTrials: number = environment.production ? 60 : 3;
 
   durationFixationPresented: number = 100
-  durationStimulusPresented: number = 450;
+  durationStimulusPresented: number = 1000;
   practiceTrials: number = 1
   actualTrials: number = 60
 
@@ -56,7 +56,7 @@ export class OddballComponent implements OnInit {
   trials: OddballTrial[];
   currentTrialConfig: OddballTrial;
   novelStimuliUsed: string[] = [];
-  includeNovelStimuli: boolean = false;
+  includeNovelStimuli: boolean = true;
 
   targetResponse: Key;
   targetImage: 'square.png' | 'triangle.png';
@@ -154,13 +154,55 @@ export class OddballComponent implements OnInit {
   }
 
 
+  private readonly scenesStimuli = [
+    "Scenes00010.png",
+    "Scenes00015.png",
+    "Scenes00047.png",
+    "Scenes00086.png",
+    "Scenes00104.png",
+    "Scenes00162.png",
+    "Scenes00197.png",
+    "Scenes00263.png",
+    "Scenes00500.png",
+    "Scenes00539.png",
+    "Scenes00768.png",
+    "Scenes00790.png",
+    "triangle.png",
+    "square.png",
+    "triangle.png",
+    "square.png",
+    "triangle.png",
+    "square.png",
+    "triangle.png",
+    "square.png",
+    "triangle.png",
+    "square.png",
+    "triangle.png",
+    "square.png",
+    "triangle.png",
+    "square.png",
+    "triangle.png",
+    "square.png",
+    "triangle.png",
+    "square.png",
+]
+
 
   async startActualGame() {
     // restart block from 0 after practice
     if(this.isPractice) this.block = 0;
 
-    // note - we don't need to keep track of novel stimuli - novel stimuli is already pushed to the array from within the BlockGenerator
+    // note - novel stimuli is constantly updated as we are sending a reference to it to the block generator
     this.trials = this.includeNovelStimuli ? new BlockGenerator(this.targetImage, 6, 6, 60, this.novelStimuliUsed).trials : new BlockGenerator(this.targetImage, 12, 0, 60).trials;
+
+
+    this.trials = new Array<OddballTrial>(60);
+    for(let i = 0; i < 60; i++) {
+      this.trials[i] = {
+        stimuli: this.scenesStimuli[Math.floor(Math.random() * this.scenesStimuli.length)],
+        isTarget: false
+      }
+    }
 
     this.block++;
 
