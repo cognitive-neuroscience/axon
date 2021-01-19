@@ -299,8 +299,9 @@
         <div>
             <div>
                 <!-- removing the usage of ngIf seems to reduce the issue of the scenes rendering after a lag... -->
+                <!-- <img class="stimulus" src="{{ pathToImage + stimulusShown }}" alt="Stimulus"> -->
                 <!-- <img [style.display]="isStimulus ? 'initial' : 'none'" class="stimulus" src="{{stimulusShown ? pathToImage + stimulusShown : ''}}" alt="Stimulus"> -->
-                <img *ngIf="isStimulus" class="stimulus" src="{{stimulusShown ? pathToImage + stimulusShown : ''}}" alt="Stimulus">
+                <img [style.visibility]="isStimulus ? 'visible' : 'hidden'" class="stimulus" src="{{stimulusShown ? pathToImage + stimulusShown : ''}}" alt="Stimulus">
             </div>
         </div>
 
