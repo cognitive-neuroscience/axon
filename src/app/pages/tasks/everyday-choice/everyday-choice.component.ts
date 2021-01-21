@@ -219,27 +219,7 @@ export class EverydayChoiceComponent implements OnInit {
   }
 
   generateStimulus() {
-    //const setNum = this.isPractice ? 0 : this.set;
-    //let selectedSet: NBackStimuli
-    /*switch (setNum) {
-      case 1:
-        selectedSet = Set1
-        break;
-      case 2:
-        selectedSet = Set2
-        break;
-      case 3:
-        selectedSet = Set3
-        break;
-      case 4:
-        selectedSet = Set4
-        break;
-      default:
-        selectedSet = PracticeSet
-        break;
-        
-    } */
-
+   
     if (this.isPractice == true) {
       this.currentSet = this.currentPracSet
     }
@@ -326,9 +306,11 @@ export class EverydayChoiceComponent implements OnInit {
         }
       } else if (!this.done_one_part && !this.done_both_part) {
         this.done_one_part = true;
-        this.proceedtoNextStep();
+        this.proceedtoNextStep(); //show first part complete msg
+        console.log(this.step);
         await this.wait(2000);
         this.proceedtoNextStep();
+        console.log(this.step);
       }
       else {
         this.done_both_part = true;
