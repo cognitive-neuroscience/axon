@@ -1,4 +1,4 @@
-<div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
+<div *ngIf="studyLoaded" class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
 
     <!-- INTRO -->
 
@@ -118,7 +118,7 @@
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 4">
 
         <div *ngIf='isStimulus'>
-            <img *ngIf="stimulusShown" class="stimulus" src="{{ pathToImage }}{{ stimulusShown }}" alt="Stimulus">
+            <img *ngIf="stimulusShown" class="stimulus" [src]="stimulusShown" alt="Stimulus">
         </div>
 
         <div *ngIf="showFixation">
@@ -196,7 +196,7 @@
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
 
         <div *ngIf='isStimulus'>
-            <img *ngIf="stimulusShown" class="stimulus" src="{{ pathToImage }}{{ stimulusShown }}" alt="Stimulus">
+            <img *ngIf="stimulusShown" class="stimulus" [src]="stimulusShown" alt="Stimulus">
         </div>
 
         <div *ngIf="showFixation">
@@ -296,13 +296,8 @@
     <div class="full-box d-flex flex-column align-items-center justify-content-center" 
         *ngIf="!isBreak && (step === 13 || step === 17 || step === 21 || step === 25)">
 
-        <div>
-            <div>
-                <!-- removing the usage of ngIf seems to reduce the issue of the scenes rendering after a lag... -->
-                <!-- <img class="stimulus" src="{{ pathToImage + stimulusShown }}" alt="Stimulus"> -->
-                <!-- <img [style.display]="isStimulus ? 'initial' : 'none'" class="stimulus" src="{{stimulusShown ? pathToImage + stimulusShown : ''}}" alt="Stimulus"> -->
-                <img [style.visibility]="isStimulus ? 'visible' : 'hidden'" class="stimulus" src="{{stimulusShown ? pathToImage + stimulusShown : ''}}" alt="Stimulus">
-            </div>
+        <div *ngIf='isStimulus'>
+            <img *ngIf="stimulusShown" class="stimulus" [src]="stimulusShown" alt="Stimulus">
         </div>
 
         <div *ngIf="showFixation">
@@ -418,14 +413,4 @@
             </div>
         </div>
     </div>
-</div>
-
-<div>
-    Stimulus: {{isStimulus}}
-</div>
-<div>
-    Path: {{pathToImage}}{{stimulusShown}}
-</div>
-<div>
-    Trial: {{currentTrial}}
 </div>
