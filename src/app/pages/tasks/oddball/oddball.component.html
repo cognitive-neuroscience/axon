@@ -376,7 +376,7 @@
     </div>
 
 
-    <!-- Show break message -->
+    <!-- Show game finished message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 27">
         <!-- Heading -->
         <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center px-4 instructions">
@@ -402,8 +402,8 @@
                     </button>
                 </div>
                 <div>
-                    <button mat-raised-button color="primary" (click)="stopBreak()">
-                        RESUME
+                    <button mat-raised-button color="primary" (click)="continueAhead()">
+                        CONTINUE
                         &nbsp;
                         <mat-icon>
                             arrow_forward
