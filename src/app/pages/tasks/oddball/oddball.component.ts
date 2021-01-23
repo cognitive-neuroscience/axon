@@ -32,8 +32,8 @@ export class OddballComponent implements OnInit {
   interTrialDelay: number = 200;       // In milliseconds
   durationFixationPresented: number = environment.production ? 2000 : 200;
   durationStimulusPresented: number = 450;
-  practiceTrials: number = environment.production ? 10 : 10//2;
-  actualTrials: number = environment.production ? 60 : 60//3;
+  practiceTrials: number = environment.production ? 10 : 2;
+  actualTrials: number = environment.production ? 60 : 5;
 
   studyLoaded: boolean = false;
 
@@ -71,9 +71,6 @@ export class OddballComponent implements OnInit {
 
   feedbackShown: boolean = false;
 
-  // readonly pathToImage = "/assets/images/stimuli/oddball/"
-  readonly pathToImage = `${environment.apiBaseURL}`
-
   @HostListener('window:keypress', ['$event'])
   onKeyPress(event: KeyboardEvent) {
     if (this.isResponseAllowed && this.isValidKey(event.key)) {
@@ -108,7 +105,7 @@ export class OddballComponent implements OnInit {
   ) { }
 
 
-  // gets all the ascii values of the ID and sums them up, returning a boolean indicating if the result if even
+  // gets the ascii value of the last ID letter, returning a boolean indicating if the result is even
   private idIsEven(id: string): boolean {
     const lastLetter = id[id.length - 1];
     return lastLetter.charCodeAt(0) % 2 == 0;
