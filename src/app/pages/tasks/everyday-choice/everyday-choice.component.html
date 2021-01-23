@@ -244,10 +244,15 @@
         <!-- top half -->
         <div style="height: 50%;" class="d-flex justify-content-between align-items-center w-100">
 
-            <div *ngIf="isStimulus" style="width: 100%; text-align: center;">
+            <div *ngIf="isStimulus" class="d-flex justify-content-between align-items-center w-100"
+                style="width: 100%; text-align: center;">
 
-                <span style=" font-size: 3rem; width: 100%;">
+                <span style=" width: 25%;">
+                </span>
+                <span style=" font-size: 3rem; width: 50%; line-height: normal;">
                     {{currentActivity}}
+                </span>
+                <span style=" width: 25%;">
                 </span>
 
             </div>
@@ -258,9 +263,11 @@
         <div style="height: 50%;" class="d-flex justify-content-center w-100">
             <div *ngIf="isRatingscale">
                 <div *ngIf="counterbalance === 0; else elseBlock">
-                    <img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png" alt="Rating scale">
+                    <img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png"
+                        alt="Rating scale">
                 </div>
-                <ng-template #elseBlock><img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_should.png"
+                <ng-template #elseBlock><img
+                        src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_should.png"
                         alt="Rating scale">
                 </ng-template>
             </div>
@@ -332,12 +339,16 @@
         <!-- top half -->
         <div style="height: 50%;" class="d-flex justify-content-between align-items-center w-100">
 
-            <div *ngIf="isStimulus" style="width: 100%; text-align: center;">
+            <div *ngIf="isStimulus" class="d-flex justify-content-between align-items-center w-100"
+                style="width: 100%; text-align: center;">
 
-                <span style="font-size: 3rem; width: 100%;">
+                <span style=" width: 25%;">
+                </span>
+                <span style=" font-size: 3rem; width: 50%; line-height: normal;">
                     {{currentActivity}}
                 </span>
-
+                <span style=" width: 25%;">
+                </span>
             </div>
 
         </div>
@@ -346,9 +357,11 @@
         <div style="height: 50%;" class="d-flex justify-content-center w-100">
             <div *ngIf="isRatingscale">
                 <div *ngIf="counterbalance === 0; else elseBlock">
-                    <img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png" alt="Rating scale">
+                    <img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png"
+                        alt="Rating scale">
                 </div>
-                <ng-template #elseBlock><img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_should.png"
+                <ng-template #elseBlock><img
+                        src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_should.png"
                         alt="Rating scale">
                 </ng-template>
             </div>
@@ -361,8 +374,16 @@
 
     </div>
 
+
+
+    <!-- Second rating task-->
+    <!-- Show loader -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 13">
+        <mat-spinner [diameter]="75"></mat-spinner>
+    </div>
+
     <!-- Show first part complete message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 13">
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 14">
 
         <!-- First part complete -->
         <div class="w-100 px-4 uppercase instructions" align="center" *ngIf="counterbalance ===0; else elseBlock">
@@ -399,12 +420,6 @@
         </div>
     </div>
 
-
-    <!-- Second rating task-->
-    <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 14">
-        <mat-spinner [diameter]="75"></mat-spinner>
-    </div>
 
     <!-- Show instruction -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 15">
@@ -483,7 +498,7 @@
     <!-- Show practice round message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 17">
         <!-- Show practice -->
-         <div class="w-100 px-4 uppercase instructions" align="center" *ngIf="counterbalance ===0; else elseBlock">
+        <div class="w-100 px-4 uppercase instructions" align="center" *ngIf="counterbalance ===0; else elseBlock">
             <img class="w-100" src="/assets/images/instructions/everydaychoice-rating/cb0/Slide11.png"
                 alt="Rating Task Instructions">
         </div>
@@ -528,12 +543,15 @@
         <!-- top half -->
         <div style="height: 50%;" class="d-flex justify-content-between align-items-center w-100">
 
-            <div *ngIf="isStimulus" style="width: 100%; text-align: center;">
-
-                <span style=" font-size: 3rem; width: 100%;">
+            <div *ngIf="isStimulus" class="d-flex justify-content-between align-items-center w-100"
+                style="width: 100%; text-align: center;">
+                <span style=" width: 25%;">
+                </span>
+                <span style=" font-size: 3rem; width: 50%; line-height: normal;">
                     {{currentActivity}}
                 </span>
-
+                <span style=" width: 25%;">
+                </span>
             </div>
 
         </div>
@@ -542,10 +560,11 @@
         <div style="height: 50%;" class="d-flex justify-content-center w-100">
             <div *ngIf="isRatingscale">
                 <div *ngIf="counterbalance === 0; else elseBlock">
-                    <img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_should.png" alt="Rating scale">
-                </div>
-                <ng-template #elseBlock><img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png"
+                    <img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_should.png"
                         alt="Rating scale">
+                </div>
+                <ng-template #elseBlock><img
+                        src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png" alt="Rating scale">
                 </ng-template>
             </div>
         </div>
@@ -616,10 +635,15 @@
         <!-- top half -->
         <div style="height: 50%;" class="d-flex justify-content-between align-items-center w-100">
 
-            <div *ngIf="isStimulus" style="width: 100%; text-align: center;">
+            <div *ngIf="isStimulus" class="d-flex justify-content-between align-items-center w-100"
+                style="width: 100%; text-align: center;">
 
-                <span style="font-size: 3rem; width: 100%;">
+                <span style=" width: 25%;">
+                </span>
+                <span style=" font-size: 3rem; width: 50%; line-height: normal;">
                     {{currentActivity}}
+                </span>
+                <span style=" width: 25%;">
                 </span>
 
             </div>
@@ -630,10 +654,11 @@
         <div style="height: 50%;" class="d-flex justify-content-center w-100">
             <div *ngIf="isRatingscale">
                 <div *ngIf="counterbalance === 0; else elseBlock">
-                    <img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_should.png" alt="Rating scale">
-                </div>
-                <ng-template #elseBlock><img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png"
+                    <img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_should.png"
                         alt="Rating scale">
+                </div>
+                <ng-template #elseBlock><img
+                        src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png" alt="Rating scale">
                 </ng-template>
             </div>
         </div>
@@ -653,8 +678,8 @@
 
     <!-- Show Game Finished message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 25">
-         <!-- Second part complete -->
-         <div class="w-100 px-4 uppercase instructions" align="center" *ngIf="counterbalance ===0; else elseBlock">
+        <!-- Second part complete -->
+        <div class="w-100 px-4 uppercase instructions" align="center" *ngIf="counterbalance ===0; else elseBlock">
             <img class="w-100" src="/assets/images/instructions/everydaychoice-rating/cb0/Slide13.png"
                 alt="Rating Task Instructions">
         </div>

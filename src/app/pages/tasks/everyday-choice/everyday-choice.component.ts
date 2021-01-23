@@ -26,11 +26,11 @@ export class EverydayChoiceComponent implements OnInit {
   showFeedbackAfterEveryTrial: boolean | number = false;
   showScoreAfterEveryTrial: boolean | number = false;
   numberOfBreaks: number = 0;
-  maxResponseTime: number = 30000;       
+  maxResponseTime: number = 30000;
   durationOfFeedback: number;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
   practiceTrials: number = 1;
-  actualTrials: number = 2;  //change into number of activities
+  actualTrials: number = 45;  //change into number of activities
   delayToShowHelpMessage: number = 20000; //delay to show help message
   durationHelpMessageShown: number = 10000;
 
@@ -179,6 +179,9 @@ export class EverydayChoiceComponent implements OnInit {
     // This is the delay between showing the stimulus and showing the feedback
     this.sTimeout = setTimeout(() => {
       if (!this.feedbackShown) {
+        // If no response during response window, showing a reminder to respond in time next trial
+        const message = "Please do your best to provide your answer in the time allotted for the next trial.";
+        this.snackbarService.openInfoSnackbar(message, undefined, this.interTrialDelay);
         this.showFeedback();
       }
     }, this.maxResponseTime);
@@ -219,7 +222,7 @@ export class EverydayChoiceComponent implements OnInit {
   }
 
   generateStimulus() {
-   
+
     if (this.isPractice == true) {
       this.currentSet = this.currentPracSet
     }
@@ -306,11 +309,9 @@ export class EverydayChoiceComponent implements OnInit {
         }
       } else if (!this.done_one_part && !this.done_both_part) {
         this.done_one_part = true;
-        this.proceedtoNextStep(); //show first part complete msg
-        console.log(this.step);
+        this.proceedtoNextStep(); //loader
         await this.wait(2000);
-        this.proceedtoNextStep();
-        console.log(this.step);
+        this.proceedtoNextStep();  //show first part complete msg
       }
       else {
         this.done_both_part = true;
