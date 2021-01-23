@@ -18,6 +18,7 @@
     <hr>
 
     <mat-menu #options="matMenu" #optionsMenu>
+        <!-- assign menuCode as the study.code -->
         <ng-template matMenuContent let-menuCode="code">
             <button (click)="getAndDisplayData(menuCode, option)" mat-menu-item *ngFor="let option of optionsList(menuCode) | async">{{ mapTaskIdToTitle(option) }}</button>
             <button (click)="getAndDisplayData(menuCode, 'experiment_users')" mat-menu-item>Registered Participants</button>
