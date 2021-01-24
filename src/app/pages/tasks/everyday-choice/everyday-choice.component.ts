@@ -9,7 +9,7 @@ import { pracSet } from './stimuli_practice';
 import { taskSet } from './stimuli_task';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Role } from 'src/app/models/InternalDTOs';
+import { Key, Role } from 'src/app/models/InternalDTOs';
 import { TimerService } from 'src/app/services/timer.service';
 
 declare function setFullScreen(): any;
@@ -66,7 +66,7 @@ export class EverydayChoiceComponent implements OnInit {
 
   @HostListener('window:keypress', ['$event'])
   onKeyPress(event: KeyboardEvent) {
-    if (this.isResponseAllowed) {
+    if (this.isResponseAllowed && this.isValidKey(event.key)) {
       this.isResponseAllowed = false;
       try {
         if (!!event.key) {
@@ -167,12 +167,13 @@ export class EverydayChoiceComponent implements OnInit {
 
 
     this.isStimulus = true;
+    this.timer.started = new Date().getTime();
+    this.timer.ended = 0;
     await this.wait(1500);
     this.isRatingscale = true;
     this.isResponseAllowed = true;
 
-    this.timer.started = new Date().getTime();
-    this.timer.ended = 0;
+    
 
     this.showHelpMessage("Please make the rating by pressing the corresponding number key", this.delayToShowHelpMessage, this.durationHelpMessageShown);
 
@@ -186,6 +187,11 @@ export class EverydayChoiceComponent implements OnInit {
       }
     }, this.maxResponseTime);
 
+  }
+
+  private isValidKey(key: string): boolean {
+    if(key === Key.NUMONE || key === Key.NUMTWO || key === Key.NUMTHREE || key === Key.NUMFOUR || key === Key.NUMFIVE ) return true;
+    return false;
   }
 
 

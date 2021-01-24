@@ -56,6 +56,8 @@ export enum Key {
     NUMONE = "1",
     NUMTWO = "2",
     NUMTHREE = "3",
+    NUMFOUR = "4",
+    NUMFIVE = "5",
     Q = "q",
     P = "p"
 }
