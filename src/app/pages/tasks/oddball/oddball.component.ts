@@ -1,8 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, HostListener, ChangeDetectorRef, ApplicationRef } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Feedback, Key, Role, UserResponse } from 'src/app/models/InternalDTOs';
 import { Oddball } from 'src/app/models/TaskData';
 import { AuthService } from 'src/app/services/auth.service';
+import { LoaderService } from 'src/app/services/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
 import { TimerService } from 'src/app/services/timer.service';
@@ -27,20 +30,16 @@ export class OddballComponent implements OnInit {
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 200;       // In milliseconds
-  // durationFixationPresented: number = environment.production ? 2000 : 200;
-  // durationStimulusPresented: number = 450;
-  // practiceTrials: number = environment.production ? 10 : 2;
-  // actualTrials: number = environment.production ? 60 : 3;
-
-  durationFixationPresented: number = 100
+  durationFixationPresented: number = environment.production ? 2000 : 200;
   durationStimulusPresented: number = 450;
-  practiceTrials: number = 1
-  actualTrials: number = 60
+  practiceTrials: number = environment.production ? 10 : 2;
+  actualTrials: number = environment.production ? 60 : 5;
 
-  // step: number = 1;
-  step:number = 10; //delete after
+  studyLoaded: boolean = false;
+
+  step: number = 1;
   block: number = 0;
-  stimulusShown: string = '';
+  stimulusShown: string | ArrayBuffer = null;
   feedback: string = '';
   scoreForSpecificTrial: number = 0;
   totalScore: number = 0;
@@ -72,8 +71,6 @@ export class OddballComponent implements OnInit {
 
   feedbackShown: boolean = false;
 
-  readonly pathToImage = "/assets/images/stimuli/oddball/"
-
   @HostListener('window:keypress', ['$event'])
   onKeyPress(event: KeyboardEvent) {
     if (this.isResponseAllowed && this.isValidKey(event.key)) {
@@ -102,17 +99,30 @@ export class OddballComponent implements OnInit {
     private taskManager: TaskManagerService,
     private snackbarService: SnackbarService,
     private timerService: TimerService,
-    private cdr: ChangeDetectorRef
+    private http: HttpClient,
+    private loader: LoaderService,
+    private sanitizer: DomSanitizer
   ) { }
 
 
-  // gets all the ascii values of the ID and sums them up, returning a boolean indicating if the result if even
+  // gets the ascii value of the last ID letter, returning a boolean indicating if the result is even
   private idIsEven(id: string): boolean {
     const lastLetter = id[id.length - 1];
     return lastLetter.charCodeAt(0) % 2 == 0;
   }
 
   ngOnInit() {
+
+    this.loader.showLoader()
+
+    // call initialize once to preload images
+    BlockGenerator.initialize(this.http).subscribe(data => {
+      this.loader.hideLoader()
+      this.studyLoaded = true;
+    }, err => {
+      this.taskManager.handleErr();
+    })
+
     const decodedToken = this.authService.getDecodedToken();
     if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {;
       this.router.navigate(['/login/mturk']);
@@ -182,16 +192,13 @@ export class OddballComponent implements OnInit {
   async showStimulus() {
     this.currentTrial += 1;
     this.reset();
-    this.cdr.detectChanges();
     this.generateStimulus();
-    this.cdr.detectChanges();
-    // this.showFixation = true;
-    // await this.wait(this.durationFixationPresented);
-    // this.showFixation = false;
+    this.showFixation = true;
+    await this.wait(this.durationFixationPresented);
+    this.showFixation = false;
     this.isResponseAllowed = true;
     this.timerService.startTimer();
     this.isStimulus = true;
-    await this.wait(100)
 
     this.stimulusShownTimeout = setTimeout(() => {
       clearTimeout(this.stimulusShownTimeout)
@@ -206,12 +213,17 @@ export class OddballComponent implements OnInit {
     }, this.maxResponseTime);
   }
 
-
+  private showImage(blob: Blob) {
+    const fr = new FileReader();
+    fr.addEventListener("load", () => {
+      this.stimulusShown = fr.result;
+    })
+    fr.readAsDataURL(blob);
+  }
 
   generateStimulus() {
     this.currentTrialConfig = this.trials[this.currentTrial - 1]
-    this.stimulusShown = this.currentTrialConfig.stimuli;
-    
+    this.showImage(this.currentTrialConfig.blob);
     const nonTargetResponse = this.targetResponse === Key.Z ? Key.M : Key.Z;
 
     this.data.push({
@@ -355,7 +367,7 @@ export class OddballComponent implements OnInit {
 
 
   reset() {
-    this.stimulusShown = "";
+    this.stimulusShown = null;
     this.feedback = '';
     this.feedbackShown = false;
     this.scoreForSpecificTrial = 0;
