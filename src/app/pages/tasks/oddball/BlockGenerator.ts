@@ -1,3 +1,4 @@
+import { generateRandomNonrepeatingNumberList, getRandomNumber } from "../../../common/commonMethods";
 import { HttpClient } from "@angular/common/http";
 import { forkJoin, Observable, of } from "rxjs";
 import { catchError, map, take } from "rxjs/operators";
@@ -89,7 +90,7 @@ export class BlockGenerator {
             isTarget: false
         })
 
-        const randIndices = this.generateRandomList(numTargetTrials + numNovelTrials, 0, numTotalTrials);
+        const randIndices = generateRandomNonrepeatingNumberList(numTargetTrials + numNovelTrials, 0, numTotalTrials);
 
         // add the target trials
         for(let i = 0; i < numTargetTrials; i++) {
@@ -115,29 +116,11 @@ export class BlockGenerator {
     }
 
     private getNovelStimuli(scenesToExclude: string[]): string {
-        let scene = this.novelBlobKeys[this.getRandomNumber(0, this.novelBlobSize)];
+        let scene = this.novelBlobKeys[getRandomNumber(0, this.novelBlobSize)];
         while(scenesToExclude.includes(scene)) {
-            scene = this.novelBlobKeys[this.getRandomNumber(0, this.novelBlobSize)];
+            scene = this.novelBlobKeys[getRandomNumber(0, this.novelBlobSize)];
         }
         scenesToExclude.push(scene)
         return scene;
-    }
-
-    // generates a list of length <size> of non repeating random numbers
-    // random numbers generated are lowerbound inclusive and upperbound exclusive: [lowerbound, upperbound)
-    private generateRandomList(size: number, lowerBound: number, upperBound: number): number[] {
-        if(size > (upperBound - lowerBound)) throw new Error("Size cannot be greater than the bounds")
-        const randList = [];
-        while(randList.length < size) {
-            const randNum = this.getRandomNumber(lowerBound, upperBound);
-            if(!randList.includes(randNum)) {
-                randList.push(randNum);
-            }
-        }
-        return randList;
-    }
-
-    private getRandomNumber(lowerbound: number, upperbound: number): number {
-        return Math.floor(Math.random() * (upperbound - lowerbound)) + lowerbound;
     }
 }

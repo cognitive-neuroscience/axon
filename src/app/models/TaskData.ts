@@ -13,7 +13,7 @@ export enum TaskNames {
     TASKSWITCHING = "taskswitching",
     DEMANDSELECTION = "demandselection",
     SIMON = "simon",
-    SMILEYFACE = "smileyface"
+    SMILEYFACE = "smileyface",
 }
 
 export abstract class TaskData {
@@ -117,6 +117,16 @@ export class Oddball extends TaskData {
     userAnswer: string;
     target: string;
     block: number;
+}
+
+export class SmileyFace extends TaskData {
+    actualAnswer: string;
+    userAnswer: string;
+    responseTime: number;
+    block: number;
+    stimulus: string;
+    keyPressed: string;
+    rewarded: boolean;
 }
 
 export function mapTaskIdToTitle(task: string) {

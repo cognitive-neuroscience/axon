@@ -3,39 +3,16 @@
     <!-- Show welcome message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 1">
 
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Welcome to Smiley Face Game</h2>
-        </div>
-
         <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="title">
-                <h2 class="mat-h2">
-                    Read the instructions carefully
-                </h2>
-            </div>
-
-            <div class="statement">
-                <span>During the experiment, you will be shown an emoji, either with a short mouth or a long mouth</span>
-            </div>
-
-            <div class="statement">
-                <span>Your task is to press the "Z" key if the emoji shown has a short mouth and press the 'M' key if the emoji shown has a long mouth</span>
-            </div>
-
-            <div class="statement-final">
-                Click 'NEXT' to proceed
-            </div>
-
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/smileyface/1.png" alt="Smiley face instruction 1">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -58,37 +35,9 @@
 
     <!-- Show practice round message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Practice Round</h2>
-        </div>
-
         <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <h4>Let's Practice</h4>
-            </div>
-
-            <div class="statement">
-                Put your index fingers in position.
-            </div>
-
-            <div class="statement">
-                <span>You will not have very much time so you need to respond as accurately and quickly as
-                    possible.</span>
-            </div>
-
-            <br>
-
-            <div class="statement">
-                The game will launch in fullscreen
-            </div>
-
-            <div class="statement-final">
-                Click 'START' when you are ready for the practice round
-            </div>
-
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/smileyface/2.png" alt="Smiley face instruction 2">
         </div>
 
         <!-- Navigation buttons -->
@@ -126,14 +75,14 @@
 
         <div class="w-100" *ngIf="isStimulus">
             <div class="d-flex flex-row align-items-center justify-content-center">
-                <div style="height: 250px; width: 250px;" [style.display]="size === 'short' ? 'block' : 'none'">
-                    <img style="height: 250px; width: 250px;" src="/assets/images/stimuli/smileyface/short.png" alt="">
+                <div style="height: 250px; width: 250px;" [style.display]="smileyFaceType === 'SHORT' ? 'block' : 'none'">
+                    <img style="height: 250px; width: 250px;" src="/assets/images/stimuli/smileyface/short.png" alt="short face">
                 </div>
-                <div style="height: 250px; width: 250px;" [style.display]="size === 'no' ? 'block' : 'none'">
-                    <img style="height: 250px; width: 250px;" src="/assets/images/stimuli/smileyface/no.png" alt="">
+                <div style="height: 250px; width: 250px;" [style.display]="smileyFaceType === 'NONE' ? 'block' : 'none'">
+                    <img style="height: 250px; width: 250px;" src="/assets/images/stimuli/smileyface/no.png" alt="no face">
                 </div>
-                <div style="height: 250px; width: 250px;" [style.display]="size === 'long' ? 'block' : 'none'">
-                    <img style="height: 250px; width: 250px;" src="/assets/images/stimuli/smileyface/long.png" alt="">
+                <div style="height: 250px; width: 250px;" [style.display]="smileyFaceType === 'LONG' ? 'block' : 'none'">
+                    <img style="height: 250px; width: 250px;" src="/assets/images/stimuli/smileyface/long.png" alt="long face">
                 </div>
             </div>
         </div>
@@ -142,9 +91,9 @@
             <i class="material-icons" style="font-size: 60px;">add</i>
         </div>
 
-        <div *ngIf="!isStimulus">
-            <div class="feedback">
-                {{feedback}}
+        <div *ngIf="!isStimulus" align="center">
+            <div class="feedback" *ngIf="feedback">
+                <span>{{feedback}}</span>
             </div>
         </div>
     </div>
@@ -156,44 +105,17 @@
 
     <!-- Show practice round finished message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 6">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Practice Round Is Now Complete</h2>
-        </div>
 
         <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <h4>You will now play the actual game</h4>
-            </div>
-
-            <div *ngIf="isScored" class="statement">
-                You will earn 10 cents for every right answer
-            </div>
-
-            <div *ngIf="isScored" class="statement">
-                Good luck !
-            </div>
-
-            <br>
-
-            <div class="statement">
-                Remember, <span>Your task is to press the "Z" key if the emoji shown has a short mouth and press the 'M' key if the emoji shown has a long mouth</span>
-            </div>
-
-
-            <div class="statement-final">
-                Click 'START' when you are ready for the actual game
-            </div>
-
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/smileyface/3.png" alt="Smiley face instruction 3">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -224,13 +146,13 @@
 
         <div class="w-100" *ngIf="isStimulus">
             <div class="d-flex flex-row align-items-center justify-content-center">
-                <div style="height: 250px; width: 250px;" [style.display]="size === 'short' ? 'block' : 'none'">
+                <div style="height: 250px; width: 250px;" [style.display]="smileyFaceType === 'SHORT' ? 'block' : 'none'">
                     <img style="height: 250px; width: 250px;" src="/assets/images/stimuli/smileyface/short.png" alt="">
                 </div>
-                <div style="height: 250px; width: 250px;" [style.display]="size === 'no' ? 'block' : 'none'">
+                <div style="height: 250px; width: 250px;" [style.display]="smileyFaceType === 'NONE' ? 'block' : 'none'">
                     <img style="height: 250px; width: 250px;" src="/assets/images/stimuli/smileyface/no.png" alt="">
                 </div>
-                <div style="height: 250px; width: 250px;" [style.display]="size === 'long' ? 'block' : 'none'">
+                <div style="height: 250px; width: 250px;" [style.display]="smileyFaceType === 'LONG' ? 'block' : 'none'">
                     <img style="height: 250px; width: 250px;" src="/assets/images/stimuli/smileyface/long.png" alt="">
                 </div>
             </div>
@@ -241,12 +163,8 @@
         </div>
 
         <div *ngIf="!isStimulus" align="center">
-            <div class="feedback" *ngIf="showFeedbackAfterEveryTrial">
+            <div class="feedback" *ngIf="feedback">
                 <span>{{feedback}}</span>
-                <br>
-                <span *ngIf="showScoreAfterEveryTrial && (scoreForSpecificTrial > 0)">
-                    +{{scoreForSpecificTrial}}
-                </span>
             </div>
         </div>
     </div>
@@ -268,10 +186,6 @@
 
             <div class="statement">
                 <h4>Congratulations ! You have finished the game successfully</h4>
-            </div>
-
-            <div class="statement" *ngIf="isScored">
-                Your earnings in this game is : {{totalScore}} cent(s)
             </div>
 
             <br>
@@ -314,25 +228,10 @@
 
     <!-- Show break message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="isBreak">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>It's break time</h2>
-        </div>
 
         <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-
-            <div class="statement">
-                Take a short break
-            </div>
-
-            <br>
-
-            <div class="statement-final">
-                Click 'RESUME' when you are ready
-            </div>
-
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <img class="w-100" src="/assets/images/instructions/smileyface/break.png" alt="Smiley face instruction 2">
         </div>
 
         <!-- Navigation buttons -->

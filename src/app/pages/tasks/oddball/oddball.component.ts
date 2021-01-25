@@ -2,8 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, HostListener, ChangeDetectorRef, ApplicationRef } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { idIsEven } from 'src/app/common/commonMethods';
 import { Feedback, Key, Role, UserResponse } from 'src/app/models/InternalDTOs';
-import { Oddball } from 'src/app/models/TaskData';
+import { Oddball, TaskNames } from 'src/app/models/TaskData';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
@@ -104,13 +107,6 @@ export class OddballComponent implements OnInit {
     private sanitizer: DomSanitizer
   ) { }
 
-
-  // gets the ascii value of the last ID letter, returning a boolean indicating if the result is even
-  private idIsEven(id: string): boolean {
-    const lastLetter = id[id.length - 1];
-    return lastLetter.charCodeAt(0) % 2 == 0;
-  }
-
   ngOnInit() {
 
     this.loader.showLoader()
@@ -131,7 +127,7 @@ export class OddballComponent implements OnInit {
     const jwt = this.authService.getDecodedToken();
     this.userID = jwt.UserID;
 
-    this.targetResponse = this.idIsEven(this.userID) ? Key.M : Key.Z;
+    this.targetResponse = idIsEven(this.userID) ? Key.M : Key.Z;
     this.targetImage = 'triangle.png';
   }
 
@@ -308,17 +304,36 @@ export class OddballComponent implements OnInit {
         // add in the novel stimuli for the last two trials
         if(this.block >= 2) this.includeNovelStimuli = true;
         
+        // we have finished all the blocks
         if(this.block >= 4) {
-          // we are done with the whole task
-          this.uploadResults();
-          await this.wait(2000);
-          this.proceedtoNextStep();
-          return;
+
+          const decodedToken = this.authService.getDecodedToken()
+          if(decodedToken.Role === Role.ADMIN) {
+            this.proceedtoNextStep();
+            return;
+          } else {
+  
+            this.uploadResults(this.data).pipe(take(1)).subscribe(ok => {
+              if(ok) {
+                this.proceedtoNextStep();
+                return;
+              } else {
+                console.error("There was an error downloading results")
+                this.taskManager.handleErr();
+                return;
+              }
+            }, err => {
+              console.error("There was an error downloading results")
+              this.taskManager.handleErr();
+              return;
+            })
+          }
+        } else {
+          // if we are not done with the task, take a break
+          await this.wait(2000)
+          this.startBreak();
         }
 
-        // if we are not done with the task, take a break
-        await this.wait(2000)
-        this.startBreak();
       }
     }
   }
@@ -352,14 +367,25 @@ export class OddballComponent implements OnInit {
 
 
 
-  uploadResults() {
-    console.log(this.data);
+  uploadResults(data: Oddball[]): Observable<boolean> {
+    const experimentCode = this.taskManager.getExperimentCode()
+    return this.uploadDataService.uploadData(experimentCode, TaskNames.ODDBALL, data).pipe(
+      map(ok => ok.ok)
+    )
   }
 
 
 
   continueAhead() {
-    this.router.navigate(['/dashboard']);
+    const decodedToken = this.authService.getDecodedToken()
+    if(decodedToken.Role === Role.ADMIN) {
+      if(!environment.production) console.log(this.data)
+      
+      this.router.navigate(['/dashboard/tasks'])
+      this.snackbarService.openInfoSnackbar("Task completed")
+    } else {
+      this.taskManager.nextExperiment()
+    }
   }
 
 
