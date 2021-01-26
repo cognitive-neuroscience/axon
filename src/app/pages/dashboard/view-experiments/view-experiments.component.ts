@@ -10,6 +10,7 @@ import { Observable, Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { map, tap } from 'rxjs/operators';
 import { mapTaskIdToTitle } from '../../../models/TaskData';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-view-experiments',
@@ -31,10 +32,15 @@ export class ViewExperimentsComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private confirmationService: ConfirmationService,
     private snackbarService: SnackbarService,
+    private authService: AuthService
   ) { }
 
 
   experiments: Observable<Experiment[]>;
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
 
   ngOnInit(): void {
     this.setLink()

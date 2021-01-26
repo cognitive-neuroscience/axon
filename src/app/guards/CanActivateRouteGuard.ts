@@ -18,7 +18,7 @@ export class CanActivateRouteGuard implements CanActivate {
 
         if(token) {
             const jwt = this.authService.getDecodedToken()
-            if(route.data.roles && route.data.roles.indexOf(jwt.Role.toUpperCase()) === -1) {
+            if(route.data.roles && route.data.roles.indexOf(jwt.Role) === -1) {
                 this.sessionStorageService.clearSessionStorage()
                 this.router.navigate(['/login'])
                 return false

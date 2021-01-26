@@ -56,11 +56,11 @@ export class ViewTasksComponent implements OnInit, OnDestroy {
     }
   }
 
-  get tasks() {    
+  get NABTask() {    
     return this.tasklist ? this.tasklist.filter(t => t.type === TaskType.NAB) : []
   }
 
-  get experiments() {
+  get experimentalTasks() {
     return this.tasklist ? this.tasklist.filter(t => t.type === TaskType.Experimental) : []
   }
 

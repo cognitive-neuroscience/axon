@@ -38,6 +38,7 @@ import { FeedbackQuestionnaireComponent } from './pages/questionnaires/feedback-
 import { DataTableComponent } from './pages/dashboard/data/data-table/data-table.component';
 import { LoaderComponent } from './services/loader/loader.component';
 import { NumpadComponent } from './pages/tasks/digit-span/numpad/numpad.component';
+import { ManageGuestsComponent } from './pages/dashboard/manage-guests/manage-guests.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { NumpadComponent } from './pages/tasks/digit-span/numpad/numpad.componen
     FeedbackQuestionnaireComponent,
     DataTableComponent,
     LoaderComponent,
-    NumpadComponent
+    NumpadComponent,
+    ManageGuestsComponent
   ],
   imports: [
     BrowserModule,

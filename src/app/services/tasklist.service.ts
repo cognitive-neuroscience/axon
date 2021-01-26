@@ -5,6 +5,7 @@ import { Task } from '../models/Task';
 import { AuthService } from './auth.service';
 import { Role } from '../models/InternalDTOs';
 import { RouteMap } from '../routing/routes';
+import { take } from "rxjs/operators";
 
 @Injectable({
     providedIn: "root"
@@ -36,7 +37,7 @@ export class TasklistService {
         const jwt = this.authService.getDecodedToken()
         const role = jwt ? jwt.Role : null
 
-        if(role && role === Role.ADMIN) {
+        if(role && (role === Role.ADMIN || role === Role.GUEST)) {
             this._getTasks().subscribe((tasks: Task[]) => {                
                 this._taskBehaviorSubject.next(tasks)
             })
@@ -44,7 +45,7 @@ export class TasklistService {
     }
 
     private _updateCompletedTaskBehaviorSubject() {
-        this._getCompletedTaskIds().subscribe((completedTasks: string[]) => {
+        this._getCompletedTaskIds().pipe(take(1)).subscribe((completedTasks: string[]) => {
             this._completedTaskBehaviorSubject.next(completedTasks)
         })
     }

@@ -27,19 +27,21 @@ import { DataComponent } from '../pages/dashboard/data/data.component';
 import { ConsentComponent } from '../services/consent/consent.component';
 import { DemographicsQuestionnaireComponent } from '../pages/questionnaires/demographics-questionnaire/demographics-questionnaire.component';
 import { FeedbackQuestionnaireComponent } from '../pages/questionnaires/feedback-questionnaire/feedback-questionnaire.component';
+import { ManageGuestsComponent } from '../pages/dashboard/manage-guests/manage-guests.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login/mturk', pathMatch: 'full' },
   { 
     path: 'dashboard', 
     component: DashboardComponent, 
-    data: { roles: [Role.ADMIN] },
+    data: { roles: [Role.ADMIN, Role.GUEST] },
     canActivate: [CanActivateRouteGuard],
     children: [
       { path: '', redirectTo: 'experiments', pathMatch: 'full' },
       { path: 'experiments', component: ViewExperimentsComponent },
       { path: 'tasks', component: ViewTasksComponent },
-      { path: 'data', component: DataComponent }
+      { path: 'data', component: DataComponent },
+      { path: 'guests', component: ManageGuestsComponent }
     ]
   },
   { path: 'login/mturk', component: MturkLoginComponent },
