@@ -9,6 +9,7 @@ export enum SmileyFaceType {
 export class SmileyFaceTrial {
     faceShown: SmileyFaceType;
     isRewarded: boolean;
+    isRescheduledReward: boolean;
 }
 
 export class SmileyFaceBlock {
@@ -57,13 +58,15 @@ export class SmileyFaceBlock {
 
                 this.trials.push({
                     faceShown: SmileyFaceType.SHORT,
-                    isRewarded: shortFaceRewardedTrials.includes(numShortFaces) ? true : false
+                    isRewarded: shortFaceRewardedTrials.includes(numShortFaces) ? true : false,
+                    isRescheduledReward: false
                 })
                 numShortFaces++;
             } else {
                 this.trials.push({
                     faceShown: SmileyFaceType.LONG,
-                    isRewarded: numLongFaceRewardedTrials.includes(numLongFaces) ? true : false
+                    isRewarded: numLongFaceRewardedTrials.includes(numLongFaces) ? true : false,
+                    isRescheduledReward: false
                 })
                 numLongFaces++;
             }

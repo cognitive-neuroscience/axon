@@ -127,6 +127,7 @@ export class SmileyFace extends TaskData {
     stimulus: string;
     keyPressed: string;
     rewarded: boolean;
+    isRescheduledReward: boolean;
 }
 
 export function mapTaskIdToTitle(task: string) {

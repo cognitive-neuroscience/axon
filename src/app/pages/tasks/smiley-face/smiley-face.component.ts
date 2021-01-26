@@ -11,7 +11,7 @@ import { TaskManagerService } from 'src/app/services/task-manager.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { UploadDataService } from 'src/app/services/uploadData.service';
 import { environment } from 'src/environments/environment';
-import { BlockGenerator } from '../oddball/BlockGenerator';
+
 declare function setFullScreen(): any;
 import { SmileyFaceType, SmileyFaceBlock } from './BlockGenerator';
 
@@ -27,12 +27,14 @@ export class SmileyFaceComponent implements OnInit {
   // Default Experiment config
   showFeedbackAfterEveryTrial: boolean | number = true;
   maxResponseTime: number = 3000;        // In milliseconds
-  durationOfFeedback: number = 1750;    // In milliseconds
-  interTrialDelay: number = 1000;       // In milliseconds
+  durationOfFeedback: number = 1000;    // In milliseconds
+  interTrialDelay: number = 500;       // In milliseconds
   durationFixationShown: number = 500;
   durationStimulusShown: number = 100;
-  practiceTrials: number = 10;
-  actualTrials: number = 100;
+  practiceTrials: number = environment.production ? 10 : 4;
+  actualTrials: number = environment.production ? 100: 4;
+  rewardedMoreNum: number = environment.production ? 30 : 2;
+  rewardedLessNum: number = environment.production ? 10 : 1;
 
   step: number = 1;
   smileyFaceType: string = SmileyFaceType.NONE;
@@ -57,6 +59,7 @@ export class SmileyFaceComponent implements OnInit {
   currentBlockNum: number = 0;
   
   shortMouthRewardedMore: boolean = false;
+
 
   @HostListener('window:keypress', ['$event'])
   onKeyPress(event: KeyboardEvent) {
@@ -118,7 +121,9 @@ export class SmileyFaceComponent implements OnInit {
 
 
   async startPractice() {
-    this.currentBlock = new SmileyFaceBlock(5, 5, 5, 5)
+    const numEachTrial = this.practiceTrials / 2;
+    // reward all correct answers in the practice
+    this.currentBlock = new SmileyFaceBlock(numEachTrial, numEachTrial, numEachTrial, numEachTrial);
     this.currentBlockNum++;
     this.startGameInFullScreen();
     this.resetData();
@@ -132,14 +137,18 @@ export class SmileyFaceComponent implements OnInit {
 
 
   async startActualGame() {
-    this.currentBlock = new SmileyFaceBlock(50, 30, 50, 10);
+    const numEachTrial = this.actualTrials / 2;
+    // counterbalanced
+    this.currentBlock = this.shortMouthRewardedMore ? 
+      new SmileyFaceBlock(numEachTrial, this.rewardedMoreNum, numEachTrial, this.rewardedLessNum) :
+      new SmileyFaceBlock(numEachTrial, this.rewardedLessNum, numEachTrial, this.rewardedMoreNum);
+
     this.currentBlockNum++;
     this.resetData();
     this.proceedtoNextStep();
     await wait(2000);
     this.isPractice = false;
     this.startCountDownTimer();
-    this.showStimulus();
   }
 
   startCountDownTimer() {
@@ -205,7 +214,8 @@ export class SmileyFaceComponent implements OnInit {
       userID: this.userID,
       submitted: this.timerService.getCurrentTimestamp(),
       isPractice: this.isPractice,
-      experimentCode: this.taskManager.getExperimentCode()
+      experimentCode: this.taskManager.getExperimentCode(),
+      isRescheduledReward: nextTrial.isRescheduledReward
     });
   }
 
@@ -236,11 +246,13 @@ export class SmileyFaceComponent implements OnInit {
         break;
       case UserResponse.NA:
         this.feedback = Feedback.TOOSLOW;
+        this.currentBlock.postponeReward();
         thisTrial.responseTime = this.maxResponseTime;
         this.scoreForSpecificTrial = 0;
         break;
       default:
         this.scoreForSpecificTrial = 0;
+        this.currentBlock.postponeReward();
         break;
     }
 
@@ -316,12 +328,13 @@ export class SmileyFaceComponent implements OnInit {
   resume() {
     this.reset();
     this.isBreak = false;
-    this.continueGame();
+    this.startActualGame();
   }
 
 
 
   async continueGame() {
+    this.reset();
     await wait(this.interTrialDelay);
     this.showStimulus();
   }
