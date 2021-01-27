@@ -128,6 +128,7 @@ export class SmileyFace extends TaskData {
     keyPressed: string;
     rewarded: boolean;
     isRescheduledReward: boolean;
+    rewardedMore: UserResponse.SHORT | UserResponse.LONG;
 }
 
 export function mapTaskIdToTitle(task: string) {
