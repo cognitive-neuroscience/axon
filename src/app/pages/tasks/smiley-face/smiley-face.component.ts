@@ -1,15 +1,17 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 import { idIsEven, wait } from 'src/app/common/commonMethods';
-import { Key, Role, UserResponse } from 'src/app/models/InternalDTOs';
-import { SmileyFace } from 'src/app/models/TaskData';
+import { Feedback, Key, Role, UserResponse } from 'src/app/models/InternalDTOs';
+import { SmileyFace, TaskNames } from 'src/app/models/TaskData';
 import { AuthService } from 'src/app/services/auth.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { UploadDataService } from 'src/app/services/uploadData.service';
 import { environment } from 'src/environments/environment';
-import { BlockGenerator } from '../oddball/BlockGenerator';
+
 declare function setFullScreen(): any;
 import { SmileyFaceType, SmileyFaceBlock } from './BlockGenerator';
 
@@ -21,15 +23,18 @@ import { SmileyFaceType, SmileyFaceBlock } from './BlockGenerator';
 export class SmileyFaceComponent implements OnInit {
 
   userID = "";
-
+  countdownDisplayValue: number = 10;
   // Default Experiment config
   showFeedbackAfterEveryTrial: boolean | number = true;
-  maxResponseTime: number = 800;        // In milliseconds
-  durationOfFeedback: number = 1750;    // In milliseconds
-  interTrialDelay: number = 1000;       // In milliseconds
+  maxResponseTime: number = 3000;        // In milliseconds
+  durationOfFeedback: number = 1000;    // In milliseconds
+  interTrialDelay: number = 500;       // In milliseconds
   durationFixationShown: number = 500;
-  practiceTrials: number = 10;
-  actualTrials: number = 100;
+  durationStimulusShown: number = 100;
+  practiceTrials: number = environment.production ? 10 : 4;
+  actualTrials: number = environment.production ? 100: 4;
+  rewardedMoreNum: number = environment.production ? 30 : 2;
+  rewardedLessNum: number = environment.production ? 10 : 1;
 
   step: number = 1;
   smileyFaceType: string = SmileyFaceType.NONE;
@@ -43,23 +48,30 @@ export class SmileyFaceComponent implements OnInit {
   isResponseAllowed: boolean = false;
   data: SmileyFace[] = [];
   showFixation: boolean = false;
-  sTimeout: any;
+  
+  // global timers
+  countdownTimer: number;
+  sTimeout: number;
+
+
   feedbackShown: boolean = false;
   currentBlock: SmileyFaceBlock;
   currentBlockNum: number = 0;
   
   shortMouthRewardedMore: boolean = false;
 
+
   @HostListener('window:keypress', ['$event'])
   onKeyPress(event: KeyboardEvent) {
     if (this.isResponseAllowed && this.isValidKey(event.key)) {
       this.isResponseAllowed = false;
+      console.log(this.sTimeout);
       clearTimeout(this.sTimeout);
-      const latestTrial = this.data[this.data.length];
-      latestTrial.responseTime = this.timerService.stopTimerAndGetTime();
-      latestTrial.submitted = this.timerService.getCurrentTimestamp();
-      latestTrial.userAnswer = event.key === Key.Z ? UserResponse.SHORT : UserResponse.LONG;
-      latestTrial.keyPressed = event.key === Key.Z ? Key.Z : Key.M;
+      const thisTrial = this.data[this.data.length - 1];
+      thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
+      thisTrial.submitted = this.timerService.getCurrentTimestamp();
+      thisTrial.userAnswer = event.key === Key.Z ? UserResponse.SHORT : UserResponse.LONG;
+      thisTrial.keyPressed = event.key === Key.Z ? Key.Z : Key.M;
 
       this.showFeedback();
     }
@@ -86,7 +98,7 @@ export class SmileyFaceComponent implements OnInit {
   ngOnInit() {
     const decodedToken = this.authService.getDecodedToken();
     if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {;
-      this.router.navigate(['/login/mturk']);
+      this.router.navigate(['/login/onlineparticipant']);
       this.snackbarService.openErrorSnackbar("Refresh has occurred");
     };
     const jwt = this.authService.getDecodedToken();
@@ -110,7 +122,9 @@ export class SmileyFaceComponent implements OnInit {
 
 
   async startPractice() {
-    this.currentBlock = new SmileyFaceBlock(5, 5, 5, 5)
+    const numEachTrial = this.practiceTrials / 2;
+    // reward all correct answers in the practice
+    this.currentBlock = new SmileyFaceBlock(numEachTrial, numEachTrial, numEachTrial, numEachTrial);
     this.currentBlockNum++;
     this.startGameInFullScreen();
     this.resetData();
@@ -124,35 +138,66 @@ export class SmileyFaceComponent implements OnInit {
 
 
   async startActualGame() {
-    this.currentBlock = new SmileyFaceBlock(50, 30, 50, 10);
+    const numEachTrial = this.actualTrials / 2;
+    // counterbalanced
+    this.currentBlock = this.shortMouthRewardedMore ? 
+      new SmileyFaceBlock(numEachTrial, this.rewardedMoreNum, numEachTrial, this.rewardedLessNum) :
+      new SmileyFaceBlock(numEachTrial, this.rewardedLessNum, numEachTrial, this.rewardedMoreNum);
+
     this.currentBlockNum++;
     this.resetData();
     this.proceedtoNextStep();
     await wait(2000);
-    this.proceedtoNextStep();
     this.isPractice = false;
-    this.showStimulus();
+    this.startCountDownTimer();
+  }
+
+  startCountDownTimer() {
+    this.startGameInFullScreen();
+    this.proceedtoNextStep();
+    this.countdownDisplayValue = 10;
+    this.countdownTimer = setInterval(() => {
+      this.countdownDisplayValue -= 1;
+      if (this.countdownDisplayValue <= 0) {
+        clearInterval(this.countdownTimer);
+        this.proceedtoNextStep();
+        this.showStimulus();
+      }
+    }, 1000);
   }
 
 
 
   async showStimulus() {
+    console.log("SHOWING STIMULUS");
+    
     this.reset();
+    this.currentTrial += 1;
     this.showFixation = true;
     await wait(this.durationFixationShown);
     this.showFixation = false;
-    this.isStimulus = true;
-    this.smileyFaceType = SmileyFaceType.NONE;
-    await wait(500);
 
-    this.currentTrial += 1;
+    this.isStimulus = true;
+    await wait(500);
+    
     this.generateStimulus();
 
-    await wait(100);
-    this.smileyFaceType = SmileyFaceType.NONE;
-
-    this.isResponseAllowed = true;
+    
+    // This is the delay between showing the stimulus and showing the feedback
+    // note: have to set this before isResponseAllowed is true, or else there is
+    // the possibility that there is a response before sTimeout is set
+    this.sTimeout = setTimeout(() => {
+      console.log(this.sTimeout);
+      clearTimeout(this.sTimeout)
+      
+      this.showFeedback();
+    }, this.maxResponseTime);
+    console.log(this.sTimeout);
+    
     this.timerService.startTimer();
+    this.isResponseAllowed = true;
+    await wait(this.durationStimulusShown);
+    this.smileyFaceType = SmileyFaceType.NONE;
   }
 
 
@@ -163,7 +208,7 @@ export class SmileyFaceComponent implements OnInit {
     this.smileyFaceType = nextTrial.faceShown;
 
     this.data.push({
-      actualAnswer: this.smileyFaceType === SmileyFaceType.SHORT ? 'Z' : 'M',
+      actualAnswer: this.smileyFaceType,
       userAnswer: UserResponse.NA,
       responseTime: 0,
       isCorrect: false,
@@ -176,13 +221,16 @@ export class SmileyFaceComponent implements OnInit {
       userID: this.userID,
       submitted: this.timerService.getCurrentTimestamp(),
       isPractice: this.isPractice,
-      experimentCode: this.taskManager.getExperimentCode()
+      experimentCode: this.taskManager.getExperimentCode(),
+      isRescheduledReward: nextTrial.isRescheduledReward
     });
   }
 
 
 
   async showFeedback() {
+    console.log(this.sTimeout);
+    clearTimeout(this.sTimeout)
     this.feedbackShown = true;
     this.isStimulus = false;
     this.isResponseAllowed = false;
@@ -205,11 +253,14 @@ export class SmileyFaceComponent implements OnInit {
         }
         break;
       case UserResponse.NA:
+        this.feedback = Feedback.TOOSLOW;
+        this.currentBlock.postponeReward();
         thisTrial.responseTime = this.maxResponseTime;
         this.scoreForSpecificTrial = 0;
         break;
       default:
         this.scoreForSpecificTrial = 0;
+        this.currentBlock.postponeReward();
         break;
     }
 
@@ -225,6 +276,7 @@ export class SmileyFaceComponent implements OnInit {
     if (this.isPractice) {
       if (this.currentTrial < this.practiceTrials) {
         this.continueGame();
+        return;
       } else {
         console.log(this.data);
         
@@ -232,19 +284,51 @@ export class SmileyFaceComponent implements OnInit {
         this.proceedtoNextStep();
         await wait(2000);
         this.proceedtoNextStep();
+        return;
       }
     } else {
       if (this.currentTrial < this.actualTrials) {
         this.continueGame();
+        return;
       } else {
         console.log(this.data);
-        
         this.proceedtoNextStep();
-        await wait(2000);
-        this.proceedtoNextStep();
-        console.log(this.data);
+
+        if(this.currentBlockNum < 3) {
+          this.takeBreak();
+          return;
+        } else {
+          const decodedToken = this.authService.getDecodedToken()
+
+          if(decodedToken.Role === Role.ADMIN) {
+            this.proceedtoNextStep();
+            return;
+          } else {
+  
+            this.uploadResults(this.data).pipe(take(1)).subscribe(ok => {
+              if(ok) {
+                this.proceedtoNextStep();
+                return;
+              } else {
+                console.error("There was an error downloading results")
+                this.taskManager.handleErr();
+                return;
+              }
+            }, err => {
+              console.error("There was an error downloading results")
+              this.taskManager.handleErr();
+              return;
+            })
+
+          }
+        }
       }
     }
+  }
+
+  async takeBreak() {
+    await wait(2000);
+    this.isBreak = true;
   }
 
 
@@ -252,20 +336,27 @@ export class SmileyFaceComponent implements OnInit {
   resume() {
     this.reset();
     this.isBreak = false;
-    this.continueGame();
+    this.startActualGame();
   }
 
 
 
   async continueGame() {
+    this.reset();
     await wait(this.interTrialDelay);
     this.showStimulus();
   }
 
 
 
-  uploadResults() {
+
+  uploadResults(data: SmileyFace[]): Observable<boolean> {
+    const experimentCode = this.taskManager.getExperimentCode()
+    return this.uploadDataService.uploadData(experimentCode, TaskNames.SMILEYFACE, data).pipe(
+      map(ok => ok.ok)
+    )
   }
+
 
 
 

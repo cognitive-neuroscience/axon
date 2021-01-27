@@ -8,22 +8,22 @@
     <hr>
 
     <div>
-        <table mat-table [dataSource]="tasks" class="mat-elevation-z3">
+        <table mat-table [dataSource]="NABTask" class="mat-elevation-z3">
 
             <ng-container matColumnDef="title">
                 <th mat-header-cell *matHeaderCellDef> Title </th>
-                <td class="first-col-width" mat-cell *matCellDef="let task"> {{task.title}} </td>
+                <td class="first-col-width" mat-cell *matCellDef="let NABTask"> {{NABTask.title}} </td>
             </ng-container>
 
             <ng-container matColumnDef="description">
                 <th mat-header-cell *matHeaderCellDef> Description </th>
-                <td mat-cell *matCellDef="let task"> {{task.description}} </td>
+                <td mat-cell *matCellDef="let NABTask"> {{NABTask.description}} </td>
             </ng-container>
 
             <ng-container matColumnDef="route">
                 <th mat-header-cell *matHeaderCellDef> Actions </th>
-                <td mat-cell *matCellDef="let task">
-                    <button mat-icon-button (click)="run(task)">
+                <td mat-cell *matCellDef="let NABTask">
+                    <button mat-icon-button (click)="run(NABTask)">
                         <mat-icon style="color: green;">play_arrow</mat-icon>
                     </button>
                 </td>
@@ -43,22 +43,22 @@
     <hr>
 
     <div>
-        <table mat-table [dataSource]="experiments" class="mat-elevation-z3">
+        <table mat-table [dataSource]="experimentalTasks" class="mat-elevation-z3">
 
             <ng-container matColumnDef="title">
                 <th mat-header-cell *matHeaderCellDef> Title </th>
-                <td class="first-col-width" mat-cell *matCellDef="let experiment"> {{experiment.title}} </td>
+                <td class="first-col-width" mat-cell *matCellDef="let experimentTask"> {{experimentTask.title}} </td>
             </ng-container>
 
             <ng-container matColumnDef="description">
                 <th mat-header-cell *matHeaderCellDef> Description </th>
-                <td mat-cell *matCellDef="let experiment"> {{experiment.description}} </td>
+                <td mat-cell *matCellDef="let experimentTask"> {{experimentTask.description}} </td>
             </ng-container>
 
             <ng-container matColumnDef="route">
                 <th mat-header-cell *matHeaderCellDef> Actions </th>
-                <td mat-cell *matCellDef="let experiment">
-                    <button mat-icon-button (click)="run(experiment)">
+                <td mat-cell *matCellDef="let experimentTask">
+                    <button mat-icon-button (click)="run(experimentTask)">
                         <mat-icon style="color: green;">play_arrow</mat-icon>
                     </button>
             </ng-container>

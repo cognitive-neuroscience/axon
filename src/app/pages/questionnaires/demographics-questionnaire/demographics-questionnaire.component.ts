@@ -62,7 +62,7 @@ export class DemographicsQuestionnaireComponent implements OnInit {
     this.confirmationService.openConfirmationDialog(msg).subscribe(accept => {
       if(accept) {
         this.sessionStorage.clearSessionStorage()
-        this.router.navigate(['/login/mturk'])
+        this.router.navigate(['/login/onlineparticipant'])
       }
     })
   }

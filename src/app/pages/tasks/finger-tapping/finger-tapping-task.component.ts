@@ -116,7 +116,7 @@ export class FingerTappingTaskComponent implements OnInit {
   ngOnInit() {
     const decodedToken = this.authService.getDecodedToken()
     if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {
-      this.router.navigate(['/login/mturk'])
+      this.router.navigate(['/login/onlineparticipant'])
       this.snackbarService.openErrorSnackbar("Refresh has occurred")
     }
     const jwt = this.authService.getDecodedToken()

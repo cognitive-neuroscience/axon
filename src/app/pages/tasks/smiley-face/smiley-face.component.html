@@ -137,12 +137,23 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 7">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && (step === 7 || step === 11 || step === 15)">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
+    <!-- show countdown -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && (step === 8 || step === 12 || step === 16)">
+
+        <div class="w-100 px-4 uppercase instructions" align="center">
+            <div class="title">Get Ready!</div>
+            <div class="big-text">{{ countdownDisplayValue }}</div>
+
+            <img class="w-100" src="/assets/images/instructions/smileyface/countdown.png" alt="Press Z for short mouth and M for long">
+        </div>
+    </div>
+
     <!-- Start Actual Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && (step === 9 || step === 13 || step === 17)">
 
         <div class="w-100" *ngIf="isStimulus">
             <div class="d-flex flex-row align-items-center justify-content-center">
@@ -170,41 +181,25 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
+    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && (step === 10 || step === 14 || step === 18)">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 10">
-        <!-- Heading -->
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>Game has finished</h2>
-        </div>
-
-        <!-- Introduction -->
-        <div class="w-100 p-4 uppercase" align="center">
-
-            <div class="statement">
-                <h4>Congratulations ! You have finished the game successfully</h4>
-            </div>
-
-            <br>
-
-            <div class="statement">
-                Thank you for your participation
-            </div>
-
-            <div class="statement-final">
-                Click 'CONTINUE'
-            </div>
-
+    <!-- Show game finished message -->
+    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 19">
+        <div class="w-100 px-4 uppercase instructions h-100 d-flex flex-column justify-content-center" align="center">
+            <div class="title">The game has finished</div>
+            <div class="statement">Congratulations!</div>
+            <div class="statement">You finished the game successfully</div>
+            <div class="subtitle">You won {{totalScore}} points</div>
+            <div class="big-text">Thank you for your participation. Click 'CONTINUE'</div>
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -225,7 +220,6 @@
         </div>
     </div>
 
-
     <!-- Show break message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="isBreak">
 
@@ -238,7 +232,7 @@
         <div class="w-100 p-4 uppercase">
             <div class="d-flex flex-row align-items-center justify-content-between">
                 <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -260,3 +254,5 @@
     </div>
 
 </div>
+
+<div>step: {{step}}</div>

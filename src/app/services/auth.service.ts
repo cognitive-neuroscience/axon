@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import jwt_decode from 'jwt-decode';
 import { JWT } from '../models/Login';
 import { TimerService } from './timer.service';
+import { Role } from '../models/InternalDTOs';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +49,11 @@ export class AuthService {
       token: token
     }
     return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/token', obj, { observe: "response" });
+  }
+
+  isAdmin(): boolean {
+    const token = this.getDecodedToken();
+    return token ? token.Role === Role.ADMIN : false;
   }
 
   isAuthenticated(): Observable<boolean> {

@@ -22,7 +22,8 @@ export enum SnackbarType {
 
 export enum Role {
     ADMIN = "ADMIN",
-    PARTICIPANT = "PARTICIPANT"
+    PARTICIPANT = "PARTICIPANT",
+    GUEST = "GUEST" // access to admin views but cannot make any calls to backend
 }
 
 export class ConfirmationDialogMessage {

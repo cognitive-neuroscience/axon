@@ -27,6 +27,6 @@
         </ng-template>
     </mat-menu>
 
-    <app-data-table [fileName]="fileName" [json]="tableData"></app-data-table>
+    <app-data-table *ngIf="isAdmin()" [fileName]="fileName" [json]="tableData"></app-data-table>
 
 </div>
