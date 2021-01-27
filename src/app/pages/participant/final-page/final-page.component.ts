@@ -49,7 +49,7 @@ export class FinalPageComponent implements OnInit {
   handleErr() {
     this._sessionStorage.clearSessionStorage()
     this._snackbar.openErrorSnackbar("Tasks not complete")
-    this._router.navigate(['/login/mturk'])
+    this._router.navigate(['/login/onlineparticipant'])
   }
 
   showCopiedMessage() {
@@ -58,7 +58,7 @@ export class FinalPageComponent implements OnInit {
 
   logout() {
     this._sessionStorage.clearSessionStorage()
-    this._router.navigate(['/login/mturk'])
+    this._router.navigate(['/login/onlineparticipant'])
     this._snackbar.openSuccessSnackbar("Thanks for taking part in our study!")
   }
 

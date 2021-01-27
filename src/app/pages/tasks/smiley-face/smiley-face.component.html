@@ -187,7 +187,7 @@
 
     <!-- Show game finished message -->
     <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 19">
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="w-100 px-4 uppercase instructions h-100 d-flex flex-column justify-content-center" align="center">
             <div class="title">The game has finished</div>
             <div class="statement">Congratulations!</div>
             <div class="statement">You finished the game successfully</div>
@@ -254,3 +254,5 @@
     </div>
 
 </div>
+
+<div>step: {{step}}</div>

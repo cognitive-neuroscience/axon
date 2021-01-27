@@ -74,7 +74,7 @@ export class TaskManagerService {
                 })).subscribe(ok => {
                     if(ok) {
                         this._sessionStorageService.clearSessionStorage()
-                        this._router.navigate(['/login/mturk'])
+                        this._router.navigate(['/login/onlineparticipant'])
                         this._snackbarService.openInfoSnackbar("Experiment was cancelled.")
                     }
                 })
@@ -90,7 +90,7 @@ export class TaskManagerService {
 
     handleErr() {
         this._sessionStorageService.clearSessionStorage()
-        this._router.navigate(['/mturk/login'])
+        this._router.navigate(['/login/onlineparticipant'])
         this._snackbarService.openErrorSnackbar("There was an error. Please contact the sharplab")
     }
 

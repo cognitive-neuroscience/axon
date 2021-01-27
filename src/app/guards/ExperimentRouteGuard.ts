@@ -30,7 +30,7 @@ export class ExperimentRouteGuard implements CanActivate {
         if(decodedToken && (decodedToken.Role === Role.ADMIN || this.hasExperiment())) {
             return true
         } else {
-            this._router.navigate(['/mturk/login'])
+            this._router.navigate(['/login/onlineparticipant'])
             this._sessionStorage.clearSessionStorage()
             console.error("The page was refreshed or access is forbidden")
             this._snackbarService.openErrorSnackbar("There was an error", "", 5000)

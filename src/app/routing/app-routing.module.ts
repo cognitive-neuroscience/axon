@@ -30,7 +30,7 @@ import { FeedbackQuestionnaireComponent } from '../pages/questionnaires/feedback
 import { ManageGuestsComponent } from '../pages/dashboard/manage-guests/manage-guests.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login/mturk', pathMatch: 'full' },
+  { path: '', redirectTo: 'login/onlineparticipant', pathMatch: 'full' },
   { 
     path: 'dashboard', 
     component: DashboardComponent, 
@@ -44,7 +44,7 @@ const routes: Routes = [
       { path: 'guests', component: ManageGuestsComponent }
     ]
   },
-  { path: 'login/mturk', component: MturkLoginComponent },
+  { path: 'login/onlineparticipant', component: MturkLoginComponent },
   { path: 'questionnaire/demographics', component: DemographicsQuestionnaireComponent },
   { path: 'questionnaire/feedback', component: FeedbackQuestionnaireComponent },
   { path: 'login', component: LoginComponent },
@@ -63,7 +63,7 @@ const routes: Routes = [
   { path: RouteMap.stroop.route, component: StroopTaskComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.trailmaking.route, component: TrailMakingComponent, canActivate: [ExperimentRouteGuard] },
   { path: 'complete', component: FinalPageComponent, canActivate: [ExperimentRouteGuard] },
-  { path: '**', redirectTo: '/login/mturk', pathMatch: 'full' }
+  { path: '**', redirectTo: '/login/onlineparticipant', pathMatch: 'full' }
 ];
 
 @NgModule({

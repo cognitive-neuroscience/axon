@@ -21,8 +21,8 @@ export class ViewExperimentsComponent implements OnInit, OnDestroy {
 
   mapTaskIdToTitle = mapTaskIdToTitle;
 
-  PROD_LINK: string = "https://psharplab.campus.mcgill.ca/#/login/mturk?code=";
-  DEV_LINK: string = "http://localhost:4200/#/login/mturk?code="
+  PROD_LINK: string = "https://psharplab.campus.mcgill.ca/#/login/onlineparticipant?code=";
+  DEV_LINK: string = "http://localhost:4200/#/login/onlineparticipant?code="
   SHOWN_LINK: string;
 
   subscriptions: Subscription[] = []

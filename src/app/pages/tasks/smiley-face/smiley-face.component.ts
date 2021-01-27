@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { idIsEven, wait } from 'src/app/common/commonMethods';
 import { Feedback, Key, Role, UserResponse } from 'src/app/models/InternalDTOs';
@@ -65,6 +65,7 @@ export class SmileyFaceComponent implements OnInit {
   onKeyPress(event: KeyboardEvent) {
     if (this.isResponseAllowed && this.isValidKey(event.key)) {
       this.isResponseAllowed = false;
+      console.log(this.sTimeout);
       clearTimeout(this.sTimeout);
       const thisTrial = this.data[this.data.length - 1];
       thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
@@ -97,7 +98,7 @@ export class SmileyFaceComponent implements OnInit {
   ngOnInit() {
     const decodedToken = this.authService.getDecodedToken();
     if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {;
-      this.router.navigate(['/login/mturk']);
+      this.router.navigate(['/login/onlineparticipant']);
       this.snackbarService.openErrorSnackbar("Refresh has occurred");
     };
     const jwt = this.authService.getDecodedToken();
@@ -157,7 +158,7 @@ export class SmileyFaceComponent implements OnInit {
     this.countdownDisplayValue = 10;
     this.countdownTimer = setInterval(() => {
       this.countdownDisplayValue -= 1;
-      if (this.countdownDisplayValue === 0) {
+      if (this.countdownDisplayValue <= 0) {
         clearInterval(this.countdownTimer);
         this.proceedtoNextStep();
         this.showStimulus();
@@ -168,6 +169,8 @@ export class SmileyFaceComponent implements OnInit {
 
 
   async showStimulus() {
+    console.log("SHOWING STIMULUS");
+    
     this.reset();
     this.currentTrial += 1;
     this.showFixation = true;
@@ -179,18 +182,22 @@ export class SmileyFaceComponent implements OnInit {
     
     this.generateStimulus();
 
+    
+    // This is the delay between showing the stimulus and showing the feedback
+    // note: have to set this before isResponseAllowed is true, or else there is
+    // the possibility that there is a response before sTimeout is set
+    this.sTimeout = setTimeout(() => {
+      console.log(this.sTimeout);
+      clearTimeout(this.sTimeout)
+      
+      this.showFeedback();
+    }, this.maxResponseTime);
+    console.log(this.sTimeout);
+    
     this.timerService.startTimer();
     this.isResponseAllowed = true;
     await wait(this.durationStimulusShown);
     this.smileyFaceType = SmileyFaceType.NONE;
-
-
-    // This is the delay between showing the stimulus and showing the feedback
-    this.sTimeout = setTimeout(() => {
-      clearTimeout(this.sTimeout)
-      this.showFeedback();
-      return;
-    }, this.maxResponseTime);
   }
 
 
@@ -222,6 +229,7 @@ export class SmileyFaceComponent implements OnInit {
 
 
   async showFeedback() {
+    console.log(this.sTimeout);
     clearTimeout(this.sTimeout)
     this.feedbackShown = true;
     this.isStimulus = false;
