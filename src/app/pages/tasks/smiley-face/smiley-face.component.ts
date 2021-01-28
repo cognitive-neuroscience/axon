@@ -222,7 +222,8 @@ export class SmileyFaceComponent implements OnInit {
       submitted: this.timerService.getCurrentTimestamp(),
       isPractice: this.isPractice,
       experimentCode: this.taskManager.getExperimentCode(),
-      isRescheduledReward: nextTrial.isRescheduledReward
+      isRescheduledReward: nextTrial.isRescheduledReward,
+      rewardedMore: this.shortMouthRewardedMore ? UserResponse.SHORT : UserResponse.LONG
     });
   }
 
