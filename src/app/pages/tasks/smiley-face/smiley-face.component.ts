@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { idIsEven, wait } from 'src/app/common/commonMethods';
 import { Feedback, Key, Role, UserResponse } from 'src/app/models/InternalDTOs';
