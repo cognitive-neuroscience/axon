@@ -378,7 +378,9 @@ export class SmileyFaceComponent implements OnInit {
 
   resetData() {
     this.currentTrial = 0;
-    this.totalScore = 0;
+    if(!this.isPractice && this.currentBlockNum <= 1) {
+      this.totalScore = 0;
+    }
   }
 
 

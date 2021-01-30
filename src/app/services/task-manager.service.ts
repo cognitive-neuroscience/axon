@@ -24,7 +24,6 @@ export class TaskManagerService {
     
     private _currentTaskIndex: number = 0;
     private _experiment: Experiment = null;
-    private _totalAmountEarned: number = 0;
     private _subscriptions: Subscription[] = [];
 
     constructor(
