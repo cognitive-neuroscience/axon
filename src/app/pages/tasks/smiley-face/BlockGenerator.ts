@@ -37,7 +37,7 @@ export class SmileyFaceBlock {
         for(let i = this._currentTrialIndex + 1; i < this.trials.length; i++) {
             const trial = this.trials[i];
             if(trialWhereUserWasIncorrect.faceShown === trial.faceShown && !trial.isRewarded) {
-                trial.isRewarded = true;
+                trial.isRescheduledReward = true;
                 return;
             }
         }

@@ -65,7 +65,6 @@ export class SmileyFaceComponent implements OnInit {
   onKeyPress(event: KeyboardEvent) {
     if (this.isResponseAllowed && this.isValidKey(event.key)) {
       this.isResponseAllowed = false;
-      console.log(this.sTimeout);
       clearTimeout(this.sTimeout);
       const thisTrial = this.data[this.data.length - 1];
       thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
@@ -169,8 +168,6 @@ export class SmileyFaceComponent implements OnInit {
 
 
   async showStimulus() {
-    console.log("SHOWING STIMULUS");
-    
     this.reset();
     this.currentTrial += 1;
     this.showFixation = true;
@@ -187,12 +184,10 @@ export class SmileyFaceComponent implements OnInit {
     // note: have to set this before isResponseAllowed is true, or else there is
     // the possibility that there is a response before sTimeout is set
     this.sTimeout = setTimeout(() => {
-      console.log(this.sTimeout);
       clearTimeout(this.sTimeout)
       
       this.showFeedback();
     }, this.maxResponseTime);
-    console.log(this.sTimeout);
     
     this.timerService.startTimer();
     this.isResponseAllowed = true;
@@ -230,7 +225,6 @@ export class SmileyFaceComponent implements OnInit {
 
 
   async showFeedback() {
-    console.log(this.sTimeout);
     clearTimeout(this.sTimeout)
     this.feedbackShown = true;
     this.isStimulus = false;
@@ -279,8 +273,6 @@ export class SmileyFaceComponent implements OnInit {
         this.continueGame();
         return;
       } else {
-        console.log(this.data);
-        
         this.currentBlockNum = 0;
         this.proceedtoNextStep();
         await wait(2000);
@@ -292,7 +284,6 @@ export class SmileyFaceComponent implements OnInit {
         this.continueGame();
         return;
       } else {
-        console.log(this.data);
         this.proceedtoNextStep();
 
         if(this.currentBlockNum < 3) {
@@ -387,7 +378,9 @@ export class SmileyFaceComponent implements OnInit {
 
   resetData() {
     this.currentTrial = 0;
-    this.totalScore = 0;
+    if(!this.isPractice && this.currentBlockNum <= 1) {
+      this.totalScore = 0;
+    }
   }
 
 
