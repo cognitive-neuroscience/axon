@@ -25,7 +25,7 @@ export class FingerTappingTaskComponent implements OnInit {
   isBreak: boolean = false;
   step: number = 1;
   practiceTrialDuration: number = environment.production ? 10000 : 5000;
-  actualTrialDuration: number = environment.production ? 60000 : 10000;
+  actualTrialDuration: number[] = environment.production ? [60000, 60000, 20000]: [10000, 10000, 5000];
   block: number = 0;
   isResponseAllowed: boolean;
   hand: string;
@@ -67,7 +67,7 @@ export class FingerTappingTaskComponent implements OnInit {
         experimentCode: this.taskManager.getExperimentCode(),
         block: this.block,
         dominantHand: this.dominantHand,
-        shouldUseDominantHand: this.askedToUseDominantHand(),
+        handUsed: this.getHandUsed(),
         timeFromLastKeyPress: responseTime,
         keyPressed: keyPressed
       });
@@ -82,12 +82,18 @@ export class FingerTappingTaskComponent implements OnInit {
     }
   }
 
-  askedToUseDominantHand(): boolean {
+  getHandUsed(): UserResponse {
     if(this.isPractice) {
-      return this.dominantHand === UserResponse.RIGHT
+      return UserResponse.RIGHT
     }
-    if(this.block == 1 || this.block == 3 || this.block == 5) return true;
-    return false;
+    switch (this.block) {
+      case 1:
+        return this.dominantHand;
+      case 2:
+        return this.dominantHand === UserResponse.RIGHT ? UserResponse.LEFT : UserResponse.RIGHT;
+      case 3:
+        return UserResponse.BOTH;
+    }
   }
 
   private flashFixation() {
@@ -174,7 +180,7 @@ export class FingerTappingTaskComponent implements OnInit {
   }
 
   startBlockTimer() {
-    const duration = this.isPractice ? this.practiceTrialDuration : this.actualTrialDuration;
+    const duration: number = this.isPractice ? this.practiceTrialDuration : this.actualTrialDuration[this.block - 1];
     this.isBreak = false;
     this.timerService.clearTimer();
     this.timerService.startTimer();
@@ -193,7 +199,7 @@ export class FingerTappingTaskComponent implements OnInit {
 
     // no break if practice
     if(!this.isPractice) {
-      if (this.block < 6) {
+      if (this.block < 3) {
         await this.wait(2000);
         this.proceedtoNextStep();
         this.isBreak = true;

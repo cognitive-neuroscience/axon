@@ -96,7 +96,7 @@ export class TrailMaking extends TaskData {
 export class FingerTapping extends TaskData {
     block: number;
     dominantHand: UserResponse;
-    shouldUseDominantHand: boolean;
+    handUsed: string;
     timeFromLastKeyPress: number;
     keyPressed: Key;
 }

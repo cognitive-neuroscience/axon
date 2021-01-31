@@ -96,6 +96,7 @@ export enum UserResponse {
     YES = "YES",
     LEFT = "LEFT",
     RIGHT = "RIGHT",
+    BOTH = "BOTH",
     SHORT = "SHORT",
     LONG = "LONG"
 }
