@@ -1,16 +1,16 @@
-<div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
+<div class="container-fluid wrapper task-text flex-column-center">
 
     <!-- Show welcome message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 1">
+    <div class="full-box flex-column-space-between" *ngIf="step === 1">
 
         <!-- Introduction -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="h-100 flex-column-center uppercase instructions" align="center">
             <img class="w-100" src="/assets/images/instructions/trailmaking/1.png" alt="Trailmaking instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -34,16 +34,16 @@
     </div>
 
     <!-- Show practice round message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 2">
+    <div class="full-box flex-column-space-between" *ngIf="step === 2">
 
         <!-- Introduction -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="h-100 flex-column-center uppercase instructions" align="center">
             <img class="w-100" src="/assets/images/instructions/trailmaking/2.png" alt="Trailmaking instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -67,12 +67,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 3">
+    <div class="full-box flex-column-center" *ngIf="step === 3">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- practice around -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 4">
+    <div class="full-box flex-column-center" *ngIf="step === 4">
 
         <div align="center">
             <table>
@@ -86,21 +86,21 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 5">
+    <div class="full-box flex-column-center" *ngIf="step === 5">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show practice round finished message, intro to actual game -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 6">
+    <div class="full-box flex-column-space-between" *ngIf="step === 6">
 
         <!-- Intro to actual game -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="h-100 flex-column-center uppercase instructions" align="center">
             <img class="w-100" src="/assets/images/instructions/trailmaking/3.png" alt="Trailmaking instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -124,12 +124,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 7">
+    <div class="full-box flex-column-center" *ngIf="step === 7">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Actual game part 1 -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 8">
+    <div class="full-box flex-column-center" *ngIf="step === 8">
         <div align="center">
             <table>
                 <tr *ngFor="let row of gridConfig.grid">
@@ -142,21 +142,21 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 9">
+    <div class="full-box flex-column-center" *ngIf="step === 9">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Trail making task part 2 intro -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 10">
+    <div class="full-box flex-column-space-between" *ngIf="step === 10">
 
         <!-- Intro to part 2 practice -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="h-100 flex-column-center uppercase instructions" align="center">
             <img class="w-100" src="/assets/images/instructions/trailmaking/4.png" alt="Trailmaking instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -180,16 +180,16 @@
     </div>
 
     <!-- Start part 2 practice round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 11">
+    <div class="full-box flex-column-space-between" *ngIf="step === 11">
 
         <!-- Start part 2 practice -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="h-100 flex-column-center uppercase instructions" align="center">
             <img class="w-100" src="/assets/images/instructions/trailmaking/5.png" alt="Trailmaking instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -213,12 +213,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 12">
+    <div class="full-box flex-column-center" *ngIf="step === 12">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- part 2 practice round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 13">
+    <div class="full-box flex-column-center" *ngIf="step === 13">
 
         <div align="center">
             <table>
@@ -233,21 +233,21 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 14">
+    <div class="full-box flex-column-center" *ngIf="step === 14">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 15">
+    <div class="full-box flex-column-space-between" *ngIf="step === 15">
 
         <!-- Start part 2 practice -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="h-100 flex-column-center uppercase instructions" align="center">
             <img class="w-100" src="/assets/images/instructions/trailmaking/6.png" alt="Trailmaking instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -271,12 +271,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 16">
+    <div class="full-box flex-column-center" *ngIf="step === 16">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Actual game part 2 -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 17">
+    <div class="full-box flex-column-center" *ngIf="step === 17">
         <div align="center">
             <table>
                 <tr *ngFor="let row of gridConfig.grid">
@@ -289,20 +289,20 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="step === 18">
+    <div class="full-box flex-column-center" *ngIf="step === 18">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show actual game finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="step === 19">
+    <div class="full-box flex-column-space-between" *ngIf="step === 19">
 
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="h-100 flex-column-center uppercase instructions" align="center">
             <img class="w-100" src="/assets/images/instructions/trailmaking/7.png" alt="Trailmaking instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
