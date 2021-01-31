@@ -28,7 +28,6 @@ export class SmileyFaceComponent implements OnInit {
   showFeedbackAfterEveryTrial: boolean | number = true;
   maxResponseTime: number = 3000;        // In milliseconds
   durationOfFeedback: number = 1000;    // In milliseconds
-  interTrialDelay: number = 500;       // In milliseconds
   durationFixationShown: number = 500;
   durationStimulusShown: number = 100;
   practiceTrials: number = environment.production ? 10 : 4;
@@ -41,7 +40,7 @@ export class SmileyFaceComponent implements OnInit {
   feedback: string = '';
   scoreForSpecificTrial: number = 0;
   totalScore: number = 0;
-  isPractice: boolean = false;
+  isPractice: boolean = true;
   isStimulus: boolean = false;
   isBreak: boolean = false;
   currentTrial: number = 0;
@@ -121,6 +120,7 @@ export class SmileyFaceComponent implements OnInit {
 
 
   async startPractice() {
+    this.isPractice = true;
     const numEachTrial = this.practiceTrials / 2;
     // reward all correct answers in the practice
     this.currentBlock = new SmileyFaceBlock(numEachTrial, numEachTrial, numEachTrial, numEachTrial);
@@ -130,13 +130,13 @@ export class SmileyFaceComponent implements OnInit {
     this.proceedtoNextStep();
     await wait(2000);
     this.proceedtoNextStep();
-    this.isPractice = true;
     this.showStimulus();
   }
 
 
 
   async startActualGame() {
+    this.isPractice = false;
     const numEachTrial = this.actualTrials / 2;
     // counterbalanced
     this.currentBlock = this.shortMouthRewardedMore ? 
@@ -147,7 +147,6 @@ export class SmileyFaceComponent implements OnInit {
     this.resetData();
     this.proceedtoNextStep();
     await wait(2000);
-    this.isPractice = false;
     this.startCountDownTimer();
   }
 
@@ -335,7 +334,6 @@ export class SmileyFaceComponent implements OnInit {
 
   async continueGame() {
     this.reset();
-    await wait(this.interTrialDelay);
     this.showStimulus();
   }
 
