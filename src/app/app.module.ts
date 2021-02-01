@@ -39,6 +39,7 @@ import { DataTableComponent } from './pages/dashboard/data/data-table/data-table
 import { LoaderComponent } from './services/loader/loader.component';
 import { NumpadComponent } from './pages/tasks/digit-span/numpad/numpad.component';
 import { ManageGuestsComponent } from './pages/dashboard/manage-guests/manage-guests.component';
+import { CreateGuestDialogComponent } from './pages/dashboard/manage-guests/create-guest-dialog/create-guest-dialog.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { ManageGuestsComponent } from './pages/dashboard/manage-guests/manage-gu
     DataTableComponent,
     LoaderComponent,
     NumpadComponent,
-    ManageGuestsComponent
+    ManageGuestsComponent,
+    CreateGuestDialogComponent
   ],
   imports: [
     BrowserModule,

@@ -3,11 +3,13 @@
         <h2>Your Guests</h2>
     </div>
 
-    <table mat-table [dataSource]="guests" class="mat-elevation-z3 w-100">
+    <div *ngIf="(guests | async)?.length == 0" style="color: red;">No guests</div>
+
+    <table *ngIf="(guests | async)?.length > 0" mat-table [dataSource]="guests" class="mat-elevation-z3 w-100">
 
         <ng-container matColumnDef="email">
             <th mat-header-cell *matHeaderCellDef> Email </th>
-            <td class="first-col-width" mat-cell *matCellDef="let guest"> {{guest.Email}} </td>
+            <td class="first-col-width" mat-cell *matCellDef="let guest"> {{guest.email}} </td>
         </ng-container>
 
         <ng-container matColumnDef="password">
@@ -18,8 +20,7 @@
         <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef> Action </th>
             <td mat-cell *matCellDef="let guest">
-                <button class="btn btn-warning mr-3">Edit</button>
-                <button class="btn btn-danger">Delete</button>
+                <button (click)="deleteGuest(guest.email)" class="btn btn-danger">Delete</button>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumnsForGuests"></tr>
@@ -27,6 +28,6 @@
 
     </table>
 
-    <button class="btn btn-success mt-3">Add new guest</button>
+    <button class="btn btn-success mt-3" (click)="openCreateGuestModal()">Add new guest</button>
 
 </div>

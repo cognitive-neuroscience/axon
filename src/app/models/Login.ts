@@ -9,10 +9,15 @@ export class LoginCredentials {
 }
 
 export class User {
+    userID: string;
+    email: string;
+    role: Role;
+    exp: number;
+}
+
+export class JWT {
     UserID: string;
     Email: string;
     Role: Role;
     exp: number;
 }
-
-export class JWT extends User {}

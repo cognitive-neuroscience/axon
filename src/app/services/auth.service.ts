@@ -34,14 +34,6 @@ export class AuthService {
     return this.http.post<HttpResponse<any>>(`${environment.apiBaseURL}/login/turker`, obj, { observe: "response" });
   }
 
-  register(email: string, password: string): Observable<HttpResponse<any>> {
-    const obj = {
-      email: email,
-      password: password
-    }
-    return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/users', obj, { observe: "response" });
-  }
-
   // backend validates token in header so payload doesn't actually matter
   // TODO: refactor this
   validateToken(token: string): Observable<HttpResponse<any>> {

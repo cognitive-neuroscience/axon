@@ -1,15 +1,44 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { User } from "../models/Login";
+import { AuthService } from "./auth.service";
+import { Role } from "../models/InternalDTOs";
 
 @Injectable({
     providedIn: "root"
 })
 export class UserService {
 
-    constructor(private http: HttpClient) {}
+    private _guestExperimentSubject: BehaviorSubject<User[]>;
+    public guests: Observable<User[]>;
+
+
+    constructor(private http: HttpClient, private authService: AuthService) {
+        this._guestExperimentSubject = new BehaviorSubject(null);
+        this.guests = this._guestExperimentSubject.asObservable();
+    }
+
+    createGuest(username: string, password: string): Observable<HttpResponse<any>> {
+        return this.register(username, password, Role.GUEST);
+    }
+
+    deleteUser(email: string): Observable<HttpResponse<any>> {
+        return this.http.delete(`${environment.apiBaseURL}/users/${email}`, {observe: "response"})
+    }
+
+    updateGuests(): void {
+        // do not get all experiments if role is not auth as it will result in HTTP forbidden
+        const jwt = this.authService.getDecodedToken()
+        const role = jwt ? jwt.Role : null
+        if(role && (role === Role.ADMIN || role === Role.GUEST)) {
+            this._getGuests().pipe(take(1)).subscribe(experiments => {
+                this._guestExperimentSubject.next(experiments)
+            })
+        }
+    }
     
     markUserAsComplete(userID: string, experimentCode: string): Observable<HttpResponse<any>> {
         const obj = {
@@ -23,5 +52,21 @@ export class UserService {
         return this.http.get(`${environment.apiBaseURL}/users/${userID}/${experimentCode}`, {observe: "response"}).pipe(
             map(res => res.body as string)
         )
+    }
+
+    
+    register(email: string, password: string, role?: Role): Observable<HttpResponse<any>> {
+        const obj = {
+            email: email,
+            password: password
+        }
+        if(role) obj['role'] = role;
+        console.log(obj);
+        
+        return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/users', obj, { observe: "response" });
+    }
+
+    private _getGuests() {
+        return this.http.get<User[]>(`${environment.apiBaseURL}/users/guests`)
     }
 }
