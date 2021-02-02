@@ -14,6 +14,11 @@ export class ConsentForm {
     endMessage: string;
 }
 
+export class JitteredInterval {
+    lowerbound: number;
+    upperbound: number;
+}
+
 export enum SnackbarType {
     SUCCESS = "SUCCESS",
     ERROR = "ERROR",

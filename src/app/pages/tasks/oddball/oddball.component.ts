@@ -1,11 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, HostListener, ChangeDetectorRef, ApplicationRef } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { idIsEven } from 'src/app/common/commonMethods';
-import { Feedback, Key, Role, UserResponse } from 'src/app/models/InternalDTOs';
+import { getRandomNumber, idIsEven } from 'src/app/common/commonMethods';
+import { Feedback, JitteredInterval, Key, Role, UserResponse } from 'src/app/models/InternalDTOs';
 import { Oddball, TaskNames } from 'src/app/models/TaskData';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader.service';
@@ -33,7 +32,7 @@ export class OddballComponent implements OnInit {
   maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 200;       // In milliseconds
-  durationFixationPresented: number = environment.production ? 2000 : 200;
+  durationFixationPresented: JitteredInterval = environment.production ? { lowerbound: 1000, upperbound: 2000 } : { lowerbound: 100, upperbound: 500 }
   durationStimulusPresented: number = 450;
   practiceTrials: number = environment.production ? 10 : 2;
   actualTrials: number = environment.production ? 60 : 5;
@@ -104,7 +103,6 @@ export class OddballComponent implements OnInit {
     private timerService: TimerService,
     private http: HttpClient,
     private loader: LoaderService,
-    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit() {
@@ -190,7 +188,7 @@ export class OddballComponent implements OnInit {
     this.reset();
     this.generateStimulus();
     this.showFixation = true;
-    await this.wait(this.durationFixationPresented);
+    await this.wait( getRandomNumber(this.durationFixationPresented.lowerbound, this.durationFixationPresented.upperbound) );
     this.showFixation = false;
     this.isResponseAllowed = true;
     this.timerService.startTimer();
