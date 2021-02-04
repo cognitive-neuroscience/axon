@@ -36,7 +36,7 @@ export class NBackComponent implements OnInit {
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
   practiceTrials: number = environment.production ? 15 : 5;
-  actualTrials: number = environment.production ? 143 : 10;
+  actualTrials: number = environment.production ? 70 : 10;
 
   step: number = 1;
   feedback: string = '';
@@ -285,9 +285,7 @@ export class NBackComponent implements OnInit {
             console.error("There was an error downloading results")
             this.taskManager.handleErr()
           })
-
         }
-
       }
     }
   }

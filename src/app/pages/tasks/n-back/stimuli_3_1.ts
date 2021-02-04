@@ -1,717 +1,353 @@
 export const set = [
   {
     "trial": 1,
-    "currentLetter": "Y",
+    "currentLetter": "K",
     "nback": null
   },
   {
     "trial": 2,
-    "currentLetter": "H",
+    "currentLetter": "L",
     "nback": null
   },
   {
     "trial": 3,
+    "currentLetter": "A",
+    "nback": "K"
+  },
+  {
+    "trial": 4,
+    "currentLetter": "Q",
+    "nback": "L"
+  },
+  {
+    "trial": 5,
+    "currentLetter": "Y",
+    "nback": "A"
+  },
+  {
+    "trial": 6,
+    "currentLetter": "W",
+    "nback": "Q"
+  },
+  {
+    "trial": 7,
     "currentLetter": "Y",
     "nback": "Y"
   },
   {
-    "trial": 4,
-    "currentLetter": "H",
-    "nback": "H"
+    "trial": 8,
+    "currentLetter": "W",
+    "nback": "W"
   },
   {
-    "trial": 5,
+    "trial": 9,
+    "currentLetter": "Y",
+    "nback": "Y"
+  },
+  {
+    "trial": 10,
+    "currentLetter": "V",
+    "nback": "W"
+  },
+  {
+    "trial": 11,
+    "currentLetter": "J",
+    "nback": "Y"
+  },
+  {
+    "trial": 12,
+    "currentLetter": "F",
+    "nback": "V"
+  },
+  {
+    "trial": 13,
+    "currentLetter": "J",
+    "nback": "J"
+  },
+  {
+    "trial": 14,
+    "currentLetter": "Y",
+    "nback": "F"
+  },
+  {
+    "trial": 15,
+    "currentLetter": "J",
+    "nback": "J"
+  },
+  {
+    "trial": 16,
     "currentLetter": "L",
     "nback": "Y"
   },
   {
-    "trial": 6,
-    "currentLetter": "P",
-    "nback": "H"
-  },
-  {
-    "trial": 7,
-    "currentLetter": "W",
-    "nback": "L"
-  },
-  {
-    "trial": 8,
-    "currentLetter": "P",
-    "nback": "P"
-  },
-  {
-    "trial": 9,
-    "currentLetter": "S",
-    "nback": "W"
-  },
-  {
-    "trial": 10,
-    "currentLetter": "W",
-    "nback": "P"
-  },
-  {
-    "trial": 11,
-    "currentLetter": "H",
-    "nback": "S"
-  },
-  {
-    "trial": 12,
-    "currentLetter": "P",
-    "nback": "W"
-  },
-  {
-    "trial": 13,
-    "currentLetter": "H",
-    "nback": "H"
-  },
-  {
-    "trial": 14,
-    "currentLetter": "S",
-    "nback": "P"
-  },
-  {
-    "trial": 15,
-    "currentLetter": "Z",
-    "nback": "H"
-  },
-  {
-    "trial": 16,
-    "currentLetter": "S",
-    "nback": "S"
-  },
-  {
     "trial": 17,
-    "currentLetter": "W",
-    "nback": "Z"
+    "currentLetter": "B",
+    "nback": "J"
   },
   {
     "trial": 18,
-    "currentLetter": "S",
-    "nback": "S"
+    "currentLetter": "P",
+    "nback": "L"
   },
   {
     "trial": 19,
-    "currentLetter": "A",
-    "nback": "W"
+    "currentLetter": "C",
+    "nback": "B"
   },
   {
     "trial": 20,
-    "currentLetter": "V",
-    "nback": "S"
+    "currentLetter": "S",
+    "nback": "P"
   },
   {
     "trial": 21,
-    "currentLetter": "S",
-    "nback": "A"
+    "currentLetter": "Z",
+    "nback": "C"
   },
   {
     "trial": 22,
-    "currentLetter": "M",
-    "nback": "V"
-  },
-  {
-    "trial": 23,
-    "currentLetter": "R",
+    "currentLetter": "P",
     "nback": "S"
   },
   {
+    "trial": 23,
+    "currentLetter": "L",
+    "nback": "Z"
+  },
+  {
     "trial": 24,
-    "currentLetter": "B",
-    "nback": "M"
+    "currentLetter": "P",
+    "nback": "P"
   },
   {
     "trial": 25,
+    "currentLetter": "L",
+    "nback": "L"
+  },
+  {
+    "trial": 26,
+    "currentLetter": "A",
+    "nback": "P"
+  },
+  {
+    "trial": 27,
+    "currentLetter": "S",
+    "nback": "L"
+  },
+  {
+    "trial": 28,
+    "currentLetter": "A",
+    "nback": "A"
+  },
+  {
+    "trial": 29,
+    "currentLetter": "W",
+    "nback": "S"
+  },
+  {
+    "trial": 30,
+    "currentLetter": "R",
+    "nback": "A"
+  },
+  {
+    "trial": 31,
+    "currentLetter": "L",
+    "nback": "W"
+  },
+  {
+    "trial": 32,
     "currentLetter": "W",
     "nback": "R"
   },
   {
-    "trial": 26,
+    "trial": 33,
     "currentLetter": "U",
-    "nback": "B"
-  },
-  {
-    "trial": 27,
-    "currentLetter": "R",
-    "nback": "W"
-  },
-  {
-    "trial": 28,
-    "currentLetter": "K",
-    "nback": "U"
-  },
-  {
-    "trial": 29,
-    "currentLetter": "S",
-    "nback": "R"
-  },
-  {
-    "trial": 30,
-    "currentLetter": "L",
-    "nback": "K"
-  },
-  {
-    "trial": 31,
-    "currentLetter": "S",
-    "nback": "S"
-  },
-  {
-    "trial": 32,
-    "currentLetter": "D",
     "nback": "L"
   },
   {
-    "trial": 33,
-    "currentLetter": "X",
-    "nback": "S"
-  },
-  {
     "trial": 34,
-    "currentLetter": "D",
-    "nback": "D"
+    "currentLetter": "W",
+    "nback": "W"
   },
   {
     "trial": 35,
-    "currentLetter": "E",
-    "nback": "X"
+    "currentLetter": "U",
+    "nback": "U"
   },
   {
     "trial": 36,
     "currentLetter": "W",
-    "nback": "D"
+    "nback": "W"
   },
   {
     "trial": 37,
-    "currentLetter": "T",
-    "nback": "E"
+    "currentLetter": "I",
+    "nback": "U"
   },
   {
     "trial": 38,
-    "currentLetter": "D",
+    "currentLetter": "W",
     "nback": "W"
   },
   {
     "trial": 39,
-    "currentLetter": "H",
-    "nback": "T"
+    "currentLetter": "R",
+    "nback": "I"
   },
   {
     "trial": 40,
-    "currentLetter": "D",
-    "nback": "D"
-  },
-  {
-    "trial": 41,
-    "currentLetter": "U",
-    "nback": "H"
-  },
-  {
-    "trial": 42,
-    "currentLetter": "Q",
-    "nback": "D"
-  },
-  {
-    "trial": 43,
-    "currentLetter": "V",
-    "nback": "U"
-  },
-  {
-    "trial": 44,
-    "currentLetter": "J",
-    "nback": "Q"
-  },
-  {
-    "trial": 45,
-    "currentLetter": "M",
-    "nback": "V"
-  },
-  {
-    "trial": 46,
-    "currentLetter": "J",
-    "nback": "J"
-  },
-  {
-    "trial": 47,
-    "currentLetter": "Z",
-    "nback": "M"
-  },
-  {
-    "trial": 48,
-    "currentLetter": "L",
-    "nback": "J"
-  },
-  {
-    "trial": 49,
-    "currentLetter": "Z",
-    "nback": "Z"
-  },
-  {
-    "trial": 50,
-    "currentLetter": "L",
-    "nback": "L"
-  },
-  {
-    "trial": 51,
-    "currentLetter": "X",
-    "nback": "Z"
-  },
-  {
-    "trial": 52,
-    "currentLetter": "L",
-    "nback": "L"
-  },
-  {
-    "trial": 53,
-    "currentLetter": "C",
-    "nback": "X"
-  },
-  {
-    "trial": 54,
-    "currentLetter": "B",
-    "nback": "L"
-  },
-  {
-    "trial": 55,
-    "currentLetter": "E",
-    "nback": "C"
-  },
-  {
-    "trial": 56,
-    "currentLetter": "Z",
-    "nback": "B"
-  },
-  {
-    "trial": 57,
-    "currentLetter": "E",
-    "nback": "E"
-  },
-  {
-    "trial": 58,
-    "currentLetter": "S",
-    "nback": "Z"
-  },
-  {
-    "trial": 59,
     "currentLetter": "W",
-    "nback": "E"
-  },
-  {
-    "trial": 60,
-    "currentLetter": "C",
-    "nback": "S"
-  },
-  {
-    "trial": 61,
-    "currentLetter": "S",
     "nback": "W"
   },
   {
-    "trial": 62,
-    "currentLetter": "A",
-    "nback": "C"
-  },
-  {
-    "trial": 63,
-    "currentLetter": "D",
-    "nback": "S"
-  },
-  {
-    "trial": 64,
-    "currentLetter": "A",
-    "nback": "A"
-  },
-  {
-    "trial": 65,
-    "currentLetter": "J",
-    "nback": "D"
-  },
-  {
-    "trial": 66,
-    "currentLetter": "J",
-    "nback": "A"
-  },
-  {
-    "trial": 67,
-    "currentLetter": "R",
-    "nback": "J"
-  },
-  {
-    "trial": 68,
-    "currentLetter": "H",
-    "nback": "J"
-  },
-  {
-    "trial": 69,
-    "currentLetter": "M",
+    "trial": 41,
+    "currentLetter": "B",
     "nback": "R"
   },
   {
-    "trial": 70,
+    "trial": 42,
+    "currentLetter": "C",
+    "nback": "W"
+  },
+  {
+    "trial": 43,
+    "currentLetter": "X",
+    "nback": "B"
+  },
+  {
+    "trial": 44,
+    "currentLetter": "Y",
+    "nback": "C"
+  },
+  {
+    "trial": 45,
+    "currentLetter": "F",
+    "nback": "X"
+  },
+  {
+    "trial": 46,
+    "currentLetter": "B",
+    "nback": "Y"
+  },
+  {
+    "trial": 47,
     "currentLetter": "I",
+    "nback": "F"
+  },
+  {
+    "trial": 48,
+    "currentLetter": "B",
+    "nback": "B"
+  },
+  {
+    "trial": 49,
+    "currentLetter": "W",
+    "nback": "I"
+  },
+  {
+    "trial": 50,
+    "currentLetter": "Q",
+    "nback": "B"
+  },
+  {
+    "trial": 51,
+    "currentLetter": "W",
+    "nback": "W"
+  },
+  {
+    "trial": 52,
+    "currentLetter": "B",
+    "nback": "Q"
+  },
+  {
+    "trial": 53,
+    "currentLetter": "W",
+    "nback": "W"
+  },
+  {
+    "trial": 54,
+    "currentLetter": "O",
+    "nback": "B"
+  },
+  {
+    "trial": 55,
+    "currentLetter": "W",
+    "nback": "W"
+  },
+  {
+    "trial": 56,
+    "currentLetter": "H",
+    "nback": "O"
+  },
+  {
+    "trial": 57,
+    "currentLetter": "W",
+    "nback": "W"
+  },
+  {
+    "trial": 58,
+    "currentLetter": "Q",
     "nback": "H"
   },
   {
-    "trial": 71,
-    "currentLetter": "M",
-    "nback": "M"
+    "trial": 59,
+    "currentLetter": "V",
+    "nback": "W"
   },
   {
-    "trial": 72,
-    "currentLetter": "I",
-    "nback": "I"
-  },
-  {
-    "trial": 73,
-    "currentLetter": "D",
-    "nback": "M"
-  },
-  {
-    "trial": 74,
-    "currentLetter": "I",
-    "nback": "I"
-  },
-  {
-    "trial": 75,
-    "currentLetter": "M",
-    "nback": "D"
-  },
-  {
-    "trial": 76,
-    "currentLetter": "J",
-    "nback": "I"
-  },
-  {
-    "trial": 77,
-    "currentLetter": "G",
-    "nback": "M"
-  },
-  {
-    "trial": 78,
-    "currentLetter": "K",
-    "nback": "J"
-  },
-  {
-    "trial": 79,
-    "currentLetter": "G",
-    "nback": "G"
-  },
-  {
-    "trial": 80,
-    "currentLetter": "R",
-    "nback": "K"
-  },
-  {
-    "trial": 81,
-    "currentLetter": "I",
-    "nback": "G"
-  },
-  {
-    "trial": 82,
-    "currentLetter": "T",
-    "nback": "R"
-  },
-  {
-    "trial": 83,
-    "currentLetter": "I",
-    "nback": "I"
-  },
-  {
-    "trial": 84,
-    "currentLetter": "O",
-    "nback": "T"
-  },
-  {
-    "trial": 85,
-    "currentLetter": "I",
-    "nback": "I"
-  },
-  {
-    "trial": 86,
-    "currentLetter": "Q",
-    "nback": "O"
-  },
-  {
-    "trial": 87,
-    "currentLetter": "R",
-    "nback": "I"
-  },
-  {
-    "trial": 88,
-    "currentLetter": "Y",
-    "nback": "Q"
-  },
-  {
-    "trial": 89,
-    "currentLetter": "A",
-    "nback": "R"
-  },
-  {
-    "trial": 90,
-    "currentLetter": "M",
-    "nback": "Y"
-  },
-  {
-    "trial": 91,
-    "currentLetter": "Y",
-    "nback": "A"
-  },
-  {
-    "trial": 92,
-    "currentLetter": "F",
-    "nback": "M"
-  },
-  {
-    "trial": 93,
-    "currentLetter": "Y",
-    "nback": "Y"
-  },
-  {
-    "trial": 94,
-    "currentLetter": "R",
-    "nback": "F"
-  },
-  {
-    "trial": 95,
-    "currentLetter": "Y",
-    "nback": "Y"
-  },
-  {
-    "trial": 96,
-    "currentLetter": "C",
-    "nback": "R"
-  },
-  {
-    "trial": 97,
-    "currentLetter": "F",
-    "nback": "Y"
-  },
-  {
-    "trial": 98,
-    "currentLetter": "D",
-    "nback": "C"
-  },
-  {
-    "trial": 99,
-    "currentLetter": "J",
-    "nback": "F"
-  },
-  {
-    "trial": 100,
-    "currentLetter": "F",
-    "nback": "D"
-  },
-  {
-    "trial": 101,
-    "currentLetter": "E",
-    "nback": "J"
-  },
-  {
-    "trial": 102,
-    "currentLetter": "Y",
-    "nback": "F"
-  },
-  {
-    "trial": 103,
-    "currentLetter": "O",
-    "nback": "E"
-  },
-  {
-    "trial": 104,
-    "currentLetter": "J",
-    "nback": "Y"
-  },
-  {
-    "trial": 105,
-    "currentLetter": "I",
-    "nback": "O"
-  },
-  {
-    "trial": 106,
-    "currentLetter": "O",
-    "nback": "J"
-  },
-  {
-    "trial": 107,
-    "currentLetter": "Z",
-    "nback": "I"
-  },
-  {
-    "trial": 108,
-    "currentLetter": "O",
-    "nback": "O"
-  },
-  {
-    "trial": 109,
-    "currentLetter": "J",
-    "nback": "Z"
-  },
-  {
-    "trial": 110,
-    "currentLetter": "Q",
-    "nback": "O"
-  },
-  {
-    "trial": 111,
-    "currentLetter": "T",
-    "nback": "J"
-  },
-  {
-    "trial": 112,
-    "currentLetter": "K",
-    "nback": "Q"
-  },
-  {
-    "trial": 113,
-    "currentLetter": "F",
-    "nback": "T"
-  },
-  {
-    "trial": 114,
-    "currentLetter": "L",
-    "nback": "K"
-  },
-  {
-    "trial": 115,
-    "currentLetter": "L",
-    "nback": "F"
-  },
-  {
-    "trial": 116,
-    "currentLetter": "T",
-    "nback": "L"
-  },
-  {
-    "trial": 117,
-    "currentLetter": "E",
-    "nback": "L"
-  },
-  {
-    "trial": 118,
-    "currentLetter": "M",
-    "nback": "T"
-  },
-  {
-    "trial": 119,
-    "currentLetter": "B",
-    "nback": "E"
-  },
-  {
-    "trial": 120,
-    "currentLetter": "P",
-    "nback": "M"
-  },
-  {
-    "trial": 121,
-    "currentLetter": "B",
-    "nback": "B"
-  },
-  {
-    "trial": 122,
-    "currentLetter": "D",
-    "nback": "P"
-  },
-  {
-    "trial": 123,
-    "currentLetter": "M",
-    "nback": "B"
-  },
-  {
-    "trial": 124,
-    "currentLetter": "D",
-    "nback": "D"
-  },
-  {
-    "trial": 125,
-    "currentLetter": "E",
-    "nback": "M"
-  },
-  {
-    "trial": 126,
-    "currentLetter": "D",
-    "nback": "D"
-  },
-  {
-    "trial": 127,
-    "currentLetter": "L",
-    "nback": "E"
-  },
-  {
-    "trial": 128,
+    "trial": 60,
     "currentLetter": "U",
-    "nback": "D"
+    "nback": "Q"
   },
   {
-    "trial": 129,
-    "currentLetter": "R",
-    "nback": "L"
+    "trial": 61,
+    "currentLetter": "V",
+    "nback": "V"
   },
   {
-    "trial": 130,
-    "currentLetter": "D",
+    "trial": 62,
+    "currentLetter": "U",
     "nback": "U"
   },
   {
-    "trial": 131,
-    "currentLetter": "R",
-    "nback": "R"
-  },
-  {
-    "trial": 132,
-    "currentLetter": "T",
-    "nback": "D"
-  },
-  {
-    "trial": 133,
-    "currentLetter": "R",
-    "nback": "R"
-  },
-  {
-    "trial": 134,
-    "currentLetter": "T",
-    "nback": "T"
-  },
-  {
-    "trial": 135,
-    "currentLetter": "K",
-    "nback": "R"
-  },
-  {
-    "trial": 136,
+    "trial": 63,
     "currentLetter": "G",
-    "nback": "T"
+    "nback": "V"
   },
   {
-    "trial": 137,
-    "currentLetter": "R",
-    "nback": "K"
+    "trial": 64,
+    "currentLetter": "T",
+    "nback": "U"
   },
   {
-    "trial": 138,
-    "currentLetter": "D",
+    "trial": 65,
+    "currentLetter": "N",
     "nback": "G"
   },
   {
-    "trial": 139,
-    "currentLetter": "O",
-    "nback": "R"
+    "trial": 66,
+    "currentLetter": "N",
+    "nback": "T"
   },
   {
-    "trial": 140,
-    "currentLetter": "D",
-    "nback": "D"
+    "trial": 67,
+    "currentLetter": "N",
+    "nback": "N"
   },
   {
-    "trial": 141,
-    "currentLetter": "G",
-    "nback": "O"
+    "trial": 68,
+    "currentLetter": "B",
+    "nback": "N"
   },
   {
-    "trial": 142,
-    "currentLetter": "M",
-    "nback": "D"
+    "trial": 69,
+    "currentLetter": "J",
+    "nback": "N"
   },
   {
-    "trial": 143,
-    "currentLetter": "E",
-    "nback": "G"
+    "trial": 70,
+    "currentLetter": "Y",
+    "nback": "B"
   }
 ]
+
