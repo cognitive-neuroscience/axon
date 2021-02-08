@@ -22,9 +22,6 @@ declare function setFullScreen(): any;
   styleUrls: ['./oddball.component.scss']
 })
 export class OddballComponent implements OnInit {
-
-  userID: string = "";
-
   // Default Experiment config
   isScored: boolean | number = true;
   showFeedbackAfterEveryTrial: boolean | number = true;
@@ -117,15 +114,7 @@ export class OddballComponent implements OnInit {
       this.taskManager.handleErr();
     })
 
-    const decodedToken = this.authService.getDecodedToken();
-    if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {;
-      this.router.navigate(['/login/onlineparticipant']);
-      this.snackbarService.openErrorSnackbar("Refresh has occurred");
-    };
-    const jwt = this.authService.getDecodedToken();
-    this.userID = jwt.UserID;
-
-    this.targetResponse = idIsEven(this.userID) ? Key.M : Key.Z;
+    this.targetResponse = idIsEven(this.authService.getDecodedToken().UserID) ? Key.M : Key.Z;
     this.targetImage = 'triangle.png';
   }
 
@@ -221,7 +210,7 @@ export class OddballComponent implements OnInit {
     const nonTargetResponse = this.targetResponse === Key.Z ? Key.M : Key.Z;
 
     this.data.push({
-      userID: this.userID,
+      userID: this.authService.getDecodedToken().UserID,
       stimulus: this.currentTrialConfig.stimuli,
       targetResponse: this.targetResponse,
       responseTime: 0,
@@ -382,7 +371,7 @@ export class OddballComponent implements OnInit {
       this.router.navigate(['/dashboard/tasks'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
-      this.taskManager.nextExperiment()
+      this.taskManager.next()
     }
   }
 

@@ -109,5 +109,6 @@ export enum UserResponse {
 
 export enum TaskType {
     NAB = "NAB",
-    Experimental = "Experimental"
+    Experimental = "Experimental",
+    Questionnaire = "Questionnaire"
 }

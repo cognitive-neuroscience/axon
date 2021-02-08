@@ -19,11 +19,11 @@ export class ArrayChangeObject {
 }
 
 @Component({
-  selector: 'app-create-experiment-dialog',
-  templateUrl: './create-experiment-dialog.component.html',
-  styleUrls: ['./create-experiment-dialog.component.scss']
+  selector: 'app-create-studies-dialog',
+  templateUrl: './create-studies-dialog.component.html',
+  styleUrls: ['./create-studies-dialog.component.scss']
 })
-export class CreateExperimentDialogComponent implements OnInit, OnDestroy {
+export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
 
   tasks: Task[] = [];
   completedTasks: string[] = [];
@@ -38,7 +38,7 @@ export class CreateExperimentDialogComponent implements OnInit, OnDestroy {
   })
 
   constructor(
-    public dialogRef: MatDialogRef<CreateExperimentDialogComponent>,
+    public dialogRef: MatDialogRef<CreateStudiesDialogComponent>,
     private tasklistService: TasklistService,
     private fb: FormBuilder,
     private _snackbar: SnackbarService

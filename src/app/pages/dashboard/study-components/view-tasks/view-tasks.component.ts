@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { TasklistService } from 'src/app/services/tasklist.service';
-import { Task } from 'src/app/models/Task';
+import { TasklistService } from '../../../../services/tasklist.service';
+import { Task } from '../../../../models/Task';
 import { Subscription } from 'rxjs';
-import { RouteMap } from '../../../routing/routes';
-import { TaskType } from 'src/app/models/InternalDTOs';
+import { RouteMap } from '../../../../routing/routes';
+import { TaskType } from '../../../../models/InternalDTOs';
 
 @Component({
   selector: 'app-view-tasks',

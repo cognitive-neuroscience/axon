@@ -21,8 +21,6 @@ import { SmileyFaceType, SmileyFaceBlock } from './BlockGenerator';
   styleUrls: ['./smiley-face.component.scss']
 })
 export class SmileyFaceComponent implements OnInit {
-
-  userID = "";
   countdownDisplayValue: number = 10;
   // Default Experiment config
   showFeedbackAfterEveryTrial: boolean | number = true;
@@ -94,15 +92,7 @@ export class SmileyFaceComponent implements OnInit {
 
 
   ngOnInit() {
-    const decodedToken = this.authService.getDecodedToken();
-    if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {;
-      this.router.navigate(['/login/onlineparticipant']);
-      this.snackbarService.openErrorSnackbar("Refresh has occurred");
-    };
-    const jwt = this.authService.getDecodedToken();
-    this.userID = jwt.UserID;
-
-    this.shortMouthRewardedMore = idIsEven(this.userID);
+    this.shortMouthRewardedMore = idIsEven(this.authService.getDecodedToken().UserID);
   }
 
 
@@ -212,7 +202,7 @@ export class SmileyFaceComponent implements OnInit {
       keyPressed: UserResponse.NA,
       rewarded: false,
       trial: this.currentTrial,
-      userID: this.userID,
+      userID: this.authService.getDecodedToken().UserID,
       submitted: this.timerService.getCurrentTimestamp(),
       isPractice: this.isPractice,
       experimentCode: this.taskManager.getExperimentCode(),
@@ -358,7 +348,7 @@ export class SmileyFaceComponent implements OnInit {
       this.router.navigate(['/dashboard/tasks'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
-      this.taskManager.nextExperiment()
+      this.taskManager.next()
     }
   }
 

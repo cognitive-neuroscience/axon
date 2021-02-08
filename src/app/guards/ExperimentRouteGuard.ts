@@ -25,9 +25,9 @@ export class ExperimentRouteGuard implements CanActivate {
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
 
-        const decodedToken = this._authService.getDecodedToken()
+        const decodedToken = this._authService.getDecodedToken();
 
-        if(decodedToken && (decodedToken.Role === Role.ADMIN || this.hasExperiment())) {
+        if(decodedToken && (this.hasExperiment() || this.nonParticipantsAllowed(decodedToken.Role) )) {
             return true
         } else {
             this._router.navigate(['/login/onlineparticipant'])
@@ -40,6 +40,11 @@ export class ExperimentRouteGuard implements CanActivate {
     // checks to see if an experiment is loaded in memory. If not, the user has probably refreshed the page
     hasExperiment() {
         return this._taskManager.hasExperiment()
+    }
+
+    nonParticipantsAllowed(role: Role): boolean {
+        const allowedRoles = [Role.ADMIN, Role.GUEST]
+        return allowedRoles.includes(role);
     }
     
 }

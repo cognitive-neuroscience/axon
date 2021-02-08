@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Experiment } from 'src/app/models/Experiment';
-import { ExperimentsService } from 'src/app/services/experiments.service';
+import { Experiment } from '../../../models/Experiment';
+import { ExperimentsService } from '../../../services/experiments.service';
 import { MatDialog } from '@angular/material/dialog';
-import { CreateExperimentDialogComponent } from './create-experiment-dialog/create-experiment-dialog.component';
+import { CreateStudiesDialogComponent } from './create-studies-dialog/create-studies-dialog.component';
 import { HttpResponse } from '@angular/common/http';
 import { ConfirmationService } from '../../../services/confirmation.service';
 import { SnackbarService } from '../../../services/snackbar.service';
@@ -10,14 +10,14 @@ import { Observable, Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { map, tap } from 'rxjs/operators';
 import { mapTaskIdToTitle } from '../../../models/TaskData';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
-  selector: 'app-view-experiments',
-  templateUrl: './view-experiments.component.html',
-  styleUrls: ['./view-experiments.component.scss']
+  selector: 'app-view-studies',
+  templateUrl: './view-studies.component.html',
+  styleUrls: ['./view-studies.component.scss']
 })
-export class ViewExperimentsComponent implements OnInit, OnDestroy {
+export class ViewStudiesComponent implements OnInit, OnDestroy {
 
   mapTaskIdToTitle = mapTaskIdToTitle;
 
@@ -52,7 +52,7 @@ export class ViewExperimentsComponent implements OnInit, OnDestroy {
   }
 
   openCreateExperimentDialog() {
-    const dialogRef = this.dialog.open(CreateExperimentDialogComponent, {width: "30%"})
+    const dialogRef = this.dialog.open(CreateStudiesDialogComponent, {width: "30%"})
     this.subscriptions.push(
       dialogRef.afterClosed().subscribe((data: Experiment) => {      
         if(data) this._createExperiment(data);

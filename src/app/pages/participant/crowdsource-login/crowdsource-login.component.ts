@@ -1,17 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SnackbarService } from '../../services/snackbar.service';
-import { AuthService } from '../../services/auth.service';
-import { TaskManagerService } from '../../services/task-manager.service';
-import { SessionStorageService } from '../../services/sessionStorage.service';
+import { SnackbarService } from '../../../services/snackbar.service';
+import { AuthService } from '../../../services/auth.service';
+import { TaskManagerService } from '../../../services/task-manager.service';
+import { SessionStorageService } from '../../../services/sessionStorage.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-mturk-login',
-  templateUrl: './mturk-login.component.html',
-  styleUrls: ['./mturk-login.component.scss']
+  selector: 'app-crowdsource-login',
+  templateUrl: './crowdsource-login.component.html',
+  styleUrls: ['./crowdsource-login.component.scss']
 })
-export class MturkLoginComponent implements OnInit, OnDestroy {
+export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
 
   workerId: string = "";
   experimentCode: string = "";

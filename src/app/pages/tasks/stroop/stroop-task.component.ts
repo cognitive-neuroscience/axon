@@ -24,9 +24,7 @@ declare function setFullScreen(): any;
   styleUrls: ['./stroop-task.component.scss']
 })
 export class StroopTaskComponent implements OnInit {
-
   // Default Experiment config
-  userID: string;
   isScored: boolean | number = true;
   showFeedbackAfterEveryTrial: boolean | number = true;
   showScoreAfterEveryTrial: boolean | number = false;
@@ -95,14 +93,7 @@ export class StroopTaskComponent implements OnInit {
 
 
   ngOnInit() {
-    const decodedToken = this.authService.getDecodedToken()
-    if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {
-      this.router.navigate(['/login/onlineparticipant'])
-      this.snackbarService.openErrorSnackbar("Refresh has occurred")
-    }
     this.set = Math.floor(Math.random() * 4) + 1;
-    const jwt = this.authService.getDecodedToken()
-    this.userID = jwt.UserID
   }
 
 
@@ -195,7 +186,7 @@ export class StroopTaskComponent implements OnInit {
     this.text = selectedSet.set[this.currentTrial - 1].word
 
     this.data.push({
-      userID: this.userID,
+      userID: this.authService.getDecodedToken().UserID,
       trial: this.currentTrial,
       actualAnswer: (this.color.toUpperCase() === UserResponse.RED) ? UserResponse.RED : ((this.color.toUpperCase() === UserResponse.BLUE) ? UserResponse.BLUE : UserResponse.GREEN),
       userAnswer: UserResponse.NA,
@@ -315,7 +306,7 @@ export class StroopTaskComponent implements OnInit {
       this.router.navigate(['/dashboard/tasks'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
-      this.taskManager.nextExperiment()
+      this.taskManager.next()
     }
   }
 

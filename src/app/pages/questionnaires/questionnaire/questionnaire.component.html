@@ -1,0 +1,28 @@
+<div class="w-100 h-100 flex-column-space-between">
+    <iframe id="surveyFrame" class="w-100 h-100" src="https://www.surveymonkey.com/r/D8N8TJB?s="></iframe>
+
+    <!-- Navigation buttons -->
+    <div class="w-100 p-4 uppercase">
+        <div class="flex-row-space-between">
+            <div>
+                <button mat-raised-button color="primary" disabled>
+                    <mat-icon>
+                        arrow_backward
+                    </mat-icon>
+                    &nbsp;
+                    PREVIOUS
+                </button>
+            </div>
+            <div>
+                <button mat-raised-button color="primary" [disabled]="isNextDisabled" (click)="proceed()">
+                    NEXT
+                    &nbsp;
+                    <mat-icon>
+                        arrow_forward
+                    </mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>

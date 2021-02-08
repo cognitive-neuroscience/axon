@@ -83,7 +83,7 @@ export class DemographicsQuestionnaireComponent implements OnInit {
     }
     this.questionnaireService.saveDemographicsQuestionnaireResponse(response).pipe(take(1)).subscribe(ok => {
       if(ok) {
-        this.taskManager.nextExperiment()
+        this.taskManager.next()
       } else {
         this.taskManager.handleErr()
       }

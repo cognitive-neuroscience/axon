@@ -15,19 +15,20 @@ import { FingerTappingTaskComponent } from '../pages/tasks/finger-tapping/finger
 import { NBackComponent } from '../pages/tasks/n-back/n-back.component';
 import { StroopTaskComponent } from '../pages/tasks/stroop/stroop-task.component';
 import { TrailMakingComponent } from '../pages/tasks/trail-making/trail-making.component';
-import { ViewExperimentsComponent } from '../pages/dashboard/view-experiments/view-experiments.component';
-import { ViewTasksComponent } from '../pages/dashboard/view-tasks/view-tasks.component';
-import { MturkLoginComponent } from '../pages/mturk-login/mturk-login.component'
+import { ViewStudiesComponent } from '../pages/dashboard/view-studies/view-studies.component';
+import { CrowdSourceLoginComponent } from '../pages/participant/crowdsource-login/crowdsource-login.component'
 import { Role } from '../models/InternalDTOs';
 import { RouteMap } from './routes';
 import { CanActivateRouteGuard } from '../guards/CanActivateRouteGuard';
 import { FinalPageComponent } from '../pages/participant/final-page/final-page.component';
 import { ExperimentRouteGuard } from '../guards/ExperimentRouteGuard';
 import { DataComponent } from '../pages/dashboard/data/data.component';
-import { ConsentComponent } from '../services/consent/consent.component';
+import { ConsentComponent } from '../pages/questionnaires/consent/consent.component';
 import { DemographicsQuestionnaireComponent } from '../pages/questionnaires/demographics-questionnaire/demographics-questionnaire.component';
 import { FeedbackQuestionnaireComponent } from '../pages/questionnaires/feedback-questionnaire/feedback-questionnaire.component';
 import { ManageGuestsComponent } from '../pages/dashboard/manage-guests/manage-guests.component';
+import { QuestionnaireComponent } from '../pages/questionnaires/questionnaire/questionnaire.component';
+import { StudyComponentsComponent } from '../pages/dashboard/study-components/study-components.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login/onlineparticipant', pathMatch: 'full' },
@@ -38,17 +39,17 @@ const routes: Routes = [
     canActivate: [CanActivateRouteGuard],
     children: [
       { path: '', redirectTo: 'experiments', pathMatch: 'full' },
-      { path: 'experiments', component: ViewExperimentsComponent },
-      { path: 'tasks', component: ViewTasksComponent },
+      { path: 'experiments', component: ViewStudiesComponent },
+      { path: 'components', component: StudyComponentsComponent },
       { path: 'data', component: DataComponent },
       { path: 'guests', component: ManageGuestsComponent }
     ]
   },
-  { path: 'login/onlineparticipant', component: MturkLoginComponent },
-  { path: 'questionnaire/demographics', component: DemographicsQuestionnaireComponent },
+  { path: 'login/onlineparticipant', component: CrowdSourceLoginComponent },
+  { path: RouteMap.demographicsQuestionnaire.route , component: DemographicsQuestionnaireComponent },
   { path: 'questionnaire/feedback', component: FeedbackQuestionnaireComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'consent', component: ConsentComponent },
+  { path: RouteMap.consent.route, component: ConsentComponent },
   { path: RouteMap.colorgame.route, component: ColorGameComponent },
   { path: RouteMap.shapegame.route, component: ShapeGameComponent },
   { path: RouteMap.oddball.route, component: OddballComponent },
@@ -63,6 +64,7 @@ const routes: Routes = [
   { path: RouteMap.stroop.route, component: StroopTaskComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.trailmaking.route, component: TrailMakingComponent, canActivate: [ExperimentRouteGuard] },
   { path: 'complete', component: FinalPageComponent, canActivate: [ExperimentRouteGuard] },
+  { path: RouteMap.surveyMonkeyQuestionnaire.route, component: QuestionnaireComponent },
   { path: '**', redirectTo: '/login/onlineparticipant', pathMatch: 'full' }
 ];
 

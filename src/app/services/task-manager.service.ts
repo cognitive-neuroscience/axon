@@ -12,7 +12,7 @@ import { ConsentService } from './consentService';
 import { ConfirmationService } from './confirmation.service';
 import { RouteMap } from '../routing/routes';
 import { switchMap, take } from "rxjs/operators";
-import { EMPTY, of, Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 
 @Injectable({
     providedIn: "root"
@@ -24,7 +24,6 @@ export class TaskManagerService {
     
     private _currentTaskIndex: number = 0;
     private _experiment: Experiment = null;
-    private _subscriptions: Subscription[] = [];
 
     constructor(
         private _experimentService: ExperimentsService,
@@ -33,8 +32,6 @@ export class TaskManagerService {
         private _userService: UserService,
         private _authService: AuthService,
         private _sessionStorageService: SessionStorageService,
-        private _consentService: ConsentService,
-        private _confirmationService: ConfirmationService
     ) {}
 
     // 1. call startExperiment, which gets experiment from backend DB and extracts tasks
@@ -42,52 +39,25 @@ export class TaskManagerService {
     // 3. when finished, the task will call taskFinished and we increment the task number
     // 4. repeat until we are out of tasks. Display completion code
 
-    startExperiment() {
+    startExperiment(): void {
         const code = this._sessionStorageService.getExperimentCodeFromSessionStorage()
         if(!code) {
             this.handleErr()
-            return
+            return;
         }
         this._experimentService.getExperiment(code).pipe(take(1)).subscribe(experiment => {
             // keep experiment in local memory to ensure participant does not refresh
             this._experiment = experiment
-            this.getConsent()
+            this.next();
+            return;
         }, err => {
             console.error(err)
             this.handleErr()
+            return;
         })
     }
 
-    private getConsent() {
-        this._router.navigate(['/consent']).then(() => {
-            this._subscriptions.push(
-                this._consentService.consentSubject.pipe(switchMap(accepted => {
-                    if(accepted) {
-                        this.showDemographicsQuestionnaire()
-                        return of(false);
-                    } else {
-                        const msg = "Are you sure you want to quit? You will not be able to register again."
-                        // inner subscription is automatically unsubscribed by switchMap
-                        return this._confirmationService.openConfirmationDialog(msg)
-                    }
-                })).subscribe(ok => {
-                    if(ok) {
-                        this._sessionStorageService.clearSessionStorage()
-                        this._router.navigate(['/login/onlineparticipant'])
-                        this._snackbarService.openInfoSnackbar("Experiment was cancelled.")
-                    }
-                })
-            )
-        })
-    }
-
-    private showDemographicsQuestionnaire() {
-        // clear subscriptions for consentSubject
-        this._subscriptions.forEach(sub => sub.unsubscribe());
-        this._router.navigate(['/questionnaire/demographics'])
-    }
-
-    handleErr() {
+    handleErr(): void {
         this._sessionStorageService.clearSessionStorage()
         this._router.navigate(['/login/onlineparticipant'])
         this._snackbarService.openErrorSnackbar("There was an error. Please contact the sharplab")
@@ -103,27 +73,28 @@ export class TaskManagerService {
         }
     }
 
-    private _routeToFinalPage() {
+    private _routeToFinalPage(): void {
         this._router.navigate(['/complete'])
     }
 
-    getExperimentCode() {
+    getExperimentCode(): string {
         const token = this._sessionStorageService.getExperimentCodeFromSessionStorage()
         return token ? token : ""
     }
 
-    nextExperiment() {
+    next(): void {
         const totalTasks = this._experiment.tasks.length
         // route to next task if there is still another task to go to
         if(this._currentTaskIndex < totalTasks) {
             this._routeToTask(this._experiment.tasks[this._currentTaskIndex])
             this._currentTaskIndex++;
+            return;
         } else {
-            const jwt = this._authService.getDecodedToken()
-            const userID = jwt ? jwt.UserID : ""
+            const userID = this._authService.getDecodedToken().UserID
             const experimentCode = this._sessionStorageService.getExperimentCodeFromSessionStorage()
-            this._userService.markUserAsComplete(userID, experimentCode).pipe(take(1)).subscribe((data) => {
+            this._userService.markUserAsComplete(userID, experimentCode).pipe(take(1)).subscribe(() => {
                 this._routeToFinalPage()
+                return;
             }, err => {
                 this.handleErr()
                 return

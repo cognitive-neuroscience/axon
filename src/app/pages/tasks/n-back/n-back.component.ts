@@ -25,9 +25,7 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['./n-back.component.scss']
 })
 export class NBackComponent implements OnInit {
-
   // Default Experiment config
-  userID: string = ""
   isScored: boolean | number = true;
   showFeedbackAfterEveryTrial: boolean | number = true;
   showScoreAfterEveryTrial: boolean | number = false;
@@ -91,14 +89,7 @@ export class NBackComponent implements OnInit {
 
 
   ngOnInit() {
-    const decodedToken = this.authService.getDecodedToken()
-    if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {
-      this.router.navigate(['/login/onlineparticipant'])
-      this.snackbarService.openErrorSnackbar("Refresh has occurred")
-    }
     this.set = Math.floor(Math.random() * 4) + 1;
-    const jwt = this.authService.getDecodedToken()
-    this.userID = jwt.UserID
   }
 
 
@@ -189,7 +180,7 @@ export class NBackComponent implements OnInit {
 
     this.data.push({
       trial: this.currentTrial,
-      userID: this.userID,
+      userID: this.authService.getDecodedToken().UserID,
       actualAnswer: this.currentLetter === this.nback ? UserResponse.YES : UserResponse.NO,
       userAnswer: UserResponse.NA,
       responseTime: 0,
@@ -323,7 +314,7 @@ export class NBackComponent implements OnInit {
       this.router.navigate(['/dashboard/tasks'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
-      this.taskManager.nextExperiment()
+      this.taskManager.next()
     }
   }
 
