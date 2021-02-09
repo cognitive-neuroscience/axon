@@ -4,11 +4,19 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { RouteMap } from '../routing/routes';
 
 @Injectable({
     providedIn: "root"
 })
 export class QuestionnaireService {
+
+    private readonly QUESTIONNAIRE_HTTP_PREFIX = "/questionnaire/"
+
+    readonly includedRouteMapQuestionnaires: string[] = [
+        "consent",
+        "demographicsQuestionnaire"
+    ];
 
     private _questionnaireExperimentSubject: BehaviorSubject<Questionnaire[]>;
     public questionnaires: Observable<Questionnaire[]>;
@@ -20,43 +28,48 @@ export class QuestionnaireService {
 
     updateQuestionnaires(): void {
         this._getQuestionnaires().subscribe(questionnaires => {
+
+            for(const [key, value] of Object.entries(RouteMap)) {
+                if(this.includedRouteMapQuestionnaires.includes(key)) {
+                    questionnaires.push({
+                        questionnaireID: value.id,
+                        url: null,
+                        name: value.title,
+                        description: value.description
+                    })
+                }
+            }
+
             this._questionnaireExperimentSubject.next(questionnaires);
         })
     }
 
-    createQuestionnaire(): Observable<HttpResponse<any>> {
-        return of(null)
+    createQuestionnaire(questionnaire: Questionnaire): Observable<boolean> {
+        return this.http.post(`${environment.apiBaseURL}${this.QUESTIONNAIRE_HTTP_PREFIX}`, questionnaire, {observe: "response"}).pipe(
+            map(x => x.ok)
+        )
     }
 
+    deleteQuestionnaireByID(id: string): Observable<boolean> {
+        return this.http.delete(`${environment.apiBaseURL}${this.QUESTIONNAIRE_HTTP_PREFIX}${id}`, { observe: "response" }).pipe(
+            map(x => x.ok)
+        )
+    }
 
-    saveDemographicsQuestionnaireResponse(response: DemographicsQuestionnaireResponse): Observable<any> {
-        return this.http.post(`${environment.apiBaseURL}/questionnaire/demographics`, response, { observe: "response" }).pipe(
+    saveDemographicsQuestionnaireResponse(response: DemographicsQuestionnaireResponse): Observable<boolean> {
+        return this.http.post(`${environment.apiBaseURL}${this.QUESTIONNAIRE_HTTP_PREFIX}demographics`, response, { observe: "response" }).pipe(
             map(x => x.ok)
         )
     }
 
     saveFeedQuestionnaireResponse(response: FeedbackQuestionnaireResponse): Observable<boolean> {
-        return this.http.post(`${environment.apiBaseURL}/questionnaire/feedback`, response, { observe: "response" }).pipe(
+        return this.http.post(`${environment.apiBaseURL}${this.QUESTIONNAIRE_HTTP_PREFIX}feedback`, response, { observe: "response" }).pipe(
             map(x => x.ok)
         )
     }
 
     private _getQuestionnaires(): Observable<Questionnaire[]> {
-        return of([
-            {
-                questionnaireID: 1,
-                URL: "somequestionnaire.com",
-                name: "my questionnaire",
-                description: "my test questionnaire description"
-            },
-            {
-                questionnaireID: 2,
-                URL: "somequestionnaire.com",
-                name: "another questionnaire",
-                description: "my other questionnaire description"
-            }
-        ])
-        // return this.http.get<Questionnaire[]>(`${environment.apiBaseURL}/questionnaire`)
+        return this.http.get<Questionnaire[]>(`${environment.apiBaseURL}${this.QUESTIONNAIRE_HTTP_PREFIX}`)
     }
 
 }

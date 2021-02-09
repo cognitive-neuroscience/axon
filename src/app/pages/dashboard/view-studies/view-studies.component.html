@@ -18,7 +18,7 @@
                         <h3>Tasks</h3>
                         <div class="max-list-height">
                             <mat-list role="list">
-                                <mat-list-item style="justify-content: center;" role="listitem" *ngFor="let task of experiment.tasks">{{ mapTaskIdToTitle(task) }}</mat-list-item>
+                                <mat-list-item style="justify-content: center;" role="listitem" *ngFor="let task of taskToTitle(experiment.tasks, experiment.questionnaires)">{{ task }}</mat-list-item>
                             </mat-list>
                         </div>
                     </div>
@@ -27,7 +27,7 @@
                 <mat-card-footer>
                     <div class="text-center py-3">
                         <span>Link to experiment: 
-                            <span style="cursor: pointer;" (click)="showCopiedMessage()" [cdkCopyToClipboard]="SHOWN_LINK + experiment.code" class="link">{{ SHOWN_LINK }}{{ experiment.code }}</span>
+                            <span style="cursor: pointer;" (click)="showCopiedMessage()" [cdkCopyToClipboard]="LINK + experiment.code" class="link">{{ LINK }}{{ experiment.code }}</span>
                         </span>
                     </div>
                     <div>

@@ -8,9 +8,11 @@ import { ConfirmationService } from '../../../services/confirmation.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { Observable, Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { mapTaskIdToTitle } from '../../../models/TaskData';
 import { AuthService } from '../../../services/auth.service';
+import { Questionnaire } from 'src/app/models/Questionnaire';
+import { hasSurveyMonkeyQuestionnaire } from 'src/app/common/commonMethods';
 
 @Component({
   selector: 'app-view-studies',
@@ -19,11 +21,7 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class ViewStudiesComponent implements OnInit, OnDestroy {
 
-  mapTaskIdToTitle = mapTaskIdToTitle;
-
-  PROD_LINK: string = "https://psharplab.campus.mcgill.ca/#/login/onlineparticipant?code=";
-  DEV_LINK: string = "http://localhost:4200/#/login/onlineparticipant?code="
-  SHOWN_LINK: string;
+  LINK: string = environment.production ? "https://psharplab.campus.mcgill.ca/#/login/onlineparticipant?code=" : "http://localhost:4200/#/login/onlineparticipant?code="
 
   subscriptions: Subscription[] = []
 
@@ -35,16 +33,28 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
     private authService: AuthService
   ) { }
 
-
   experiments: Observable<Experiment[]>;
+
+  taskToTitle(task: string[], questionnaires: Questionnaire[]): string[] {
+    return task.map(t => {
+
+      // embedded survey monkey questionnaire
+      if(hasSurveyMonkeyQuestionnaire(t)) {
+        const ID = t.split("-")[1];
+        // non strict equals for "1" == 1
+        return questionnaires.find(q => q.questionnaireID == ID)?.name
+        
+      } else {
+        return mapTaskIdToTitle(t)
+      }
+    })
+  }
 
   isAdmin(): boolean {
     return this.authService.isAdmin();
   }
 
   ngOnInit(): void {
-    this.setLink()
-
     this.experiments = this.experimentsService.experiments.pipe(
       map(x => x?.filter(experiment => !experiment.deleted))
     )
@@ -70,10 +80,6 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
         this.updateExperiments()
       })
     )
-  }
-
-  private setLink(): void {
-    this.SHOWN_LINK = environment.production ? this.PROD_LINK : this.DEV_LINK
   }
 
   onDelete(code: string) {

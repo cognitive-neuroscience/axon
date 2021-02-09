@@ -1,6 +1,7 @@
 import { Component, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { ConfirmationService } from 'src/app/services/confirmation.service';
 import { ConsentForm } from '../../../models/InternalDTOs';
 import { ConsentService } from '../../../services/consentService';
 import { SessionStorageService } from '../../../services/sessionStorage.service';
@@ -23,10 +24,15 @@ export class ConsentComponent implements OnInit, OnDestroy {
     private _consentService: ConsentService,
     private _sessionStorageService: SessionStorageService,
     private _router: Router,
-    private _snackbarService: SnackbarService
+    private _snackbarService: SnackbarService,
+    private confirmationService: ConfirmationService
   ) { }
 
   ngOnInit() {
+    if(!this.taskManager.hasExperiment()) {
+      this.taskManager.handleErr();
+    }
+
     this.subscriptions.push(
       this._consentService.loadConsentFormJSON().subscribe((formData: ConsentForm) => {
         this.consentMetaData = formData;
@@ -38,9 +44,15 @@ export class ConsentComponent implements OnInit, OnDestroy {
     if(answer) {
       this.taskManager.next();
     } else {
-      this._sessionStorageService.clearSessionStorage()
-      this._router.navigate(['/login/onlineparticipant'])
-      this._snackbarService.openInfoSnackbar("Experiment was cancelled.")
+      this.subscriptions.push(
+        this.confirmationService.openConfirmationDialog("Are you sure you want to cancel?").subscribe(ok => {
+          if(ok) {
+            this._sessionStorageService.clearSessionStorage()
+            this._router.navigate(['/login/onlineparticipant'])
+            this._snackbarService.openInfoSnackbar("Experiment was cancelled.")
+          }
+        })
+      )
     }
   }
 

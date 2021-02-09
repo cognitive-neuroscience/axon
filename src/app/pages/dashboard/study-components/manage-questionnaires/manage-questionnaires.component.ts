@@ -1,6 +1,8 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subscription } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { Questionnaire } from 'src/app/models/Questionnaire';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
 import { QuestionnaireService } from 'src/app/services/questionnaire.service';
@@ -33,42 +35,42 @@ export class ManageQuestionnairesComponent implements OnInit {
     this.questionnaireService.updateQuestionnaires();
   }
 
-  openCreateGuestModal() {
+  openCreateQuestionnaireModal() {
     const dialogRef = this.dialog.open(CreateQuestionnaireDialogComponent, {width: "30%"})
-    // this.subscriptions.push(
-    //   dialogRef.afterClosed().subscribe((data: Questionnaire) => {  
-    //     if(data) this._createGuest(data);
-    //   })
-    // )
+    this.subscriptions.push(
+      dialogRef.afterClosed().subscribe((data: Questionnaire) => {  
+        if(data) this._createQuestionnaire(data);
+      })
+    )
   }
 
   private _createQuestionnaire(questionnaire: Questionnaire) {
-    // this.questionnaireService.createQuestionnaire(questionnaire.email, "guest").subscribe((data) => {
-    //   this.userService.updateGuests();
-    //   this.snackbarService.openSuccessSnackbar("Successfully created new guest")
-    // }, (err: HttpErrorResponse) => {
-    //   let errMsg = err.error?.message;
-    //   if(!errMsg) {
-    //     errMsg = "Could not create guest"
-    //   }
-    //   this.snackbarService.openErrorSnackbar(err.error?.message)
-    // })
+    this.questionnaireService.createQuestionnaire(questionnaire).subscribe((data) => {
+      this.questionnaireService.updateQuestionnaires();
+      this.snackbarService.openSuccessSnackbar("Successfully created new questionnaire");
+    }, (err: HttpErrorResponse) => {
+      let errMsg = err.error?.message;
+      if(!errMsg) {
+        errMsg = "Could not create guest"
+      }
+      this.snackbarService.openErrorSnackbar(err.error?.message)
+    })
   }
 
-  deleteQuestionnaire(email: string) {
-    // this.confirmationService.openConfirmationDialog("Are you sure you want to delete the guest: " + email + "?").pipe(
-    //   mergeMap(ok => {
-    //     if(ok) {
-    //       return this.userService.deleteUser(email)
-    //     }
-    //   })
-    // ).subscribe(data => {
-    //   this.userService.updateGuests()
-    //   this.snackbarService.openSuccessSnackbar("Successfully deleted " + email)
-    // }, err => {
-    //   console.error(err)
-    //   this.snackbarService.openErrorSnackbar("There was an error deleting the user")
-    // })
+  deleteQuestionnaire(questionnaire: Questionnaire) {
+    this.confirmationService.openConfirmationDialog("Are you sure you want to delete the questionnaire: " + questionnaire.name + "?").pipe(
+      mergeMap(ok => {
+        if(ok) {
+          return this.questionnaireService.deleteQuestionnaireByID(questionnaire.questionnaireID);
+        }
+      })
+    ).subscribe(data => {
+      this.questionnaireService.updateQuestionnaires();
+      this.snackbarService.openSuccessSnackbar("Successfully deleted " + questionnaire.name);
+    }, err => {
+      console.error(err)
+      this.snackbarService.openErrorSnackbar("There was an error deleting the user")
+    })
   }
 
   ngOnDestroy() {

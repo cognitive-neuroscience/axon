@@ -1,1 +1,29 @@
-<p>create-questionnaire-dialog works!</p>
+<div class="p-3" class="overflow-scroll">
+    <div>
+        <h3>Create a new questionnaire</h3>
+        <hr>
+    </div>
+    <div>
+        <mat-form-field class="w-100">
+            <mat-label>Questionnaire Name</mat-label>
+            <input required [(ngModel)]="name" matInput type="text" placeholder="My survey monkey questionnaire">
+            <mat-error *ngIf="name.length === 0">Name is required</mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field class="w-100">
+            <mat-label>Questionnaire Description</mat-label>
+            <input [(ngModel)]="description" matInput type="text" placeholder="A survey for the SHAPS questionnaire hosted on survey monkey">
+        </mat-form-field>
+        <br>
+        <mat-form-field class="w-100">
+            <mat-label>Questionnaire URL</mat-label>
+            <input required [(ngModel)]="URL" matInput type="text" placeholder="https://www.surveymonkey.com/ABCDEFG">
+            <mat-error *ngIf="URL.length === 0">URL is required</mat-error>
+        </mat-form-field>
+    </div>
+
+    <div class="d-flex flex-column">
+        <button (click)="sendDataToParent()" class="btn btn-primary w-100 mb-2" [disabled]="!isValid()">Create</button>
+        <button mat-dialog-close class="btn btn-danger w-100">Close</button>
+    </div>
+</div>

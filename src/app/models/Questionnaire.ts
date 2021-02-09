@@ -19,8 +19,8 @@ export class FeedbackQuestionnaireResponse extends QuestionnaireResponse {
 }
 
 export class Questionnaire {
-    questionnaireID: number;
-    URL: string;
+    questionnaireID: string;
+    url: string;
     name: string;
     description: string;
 }

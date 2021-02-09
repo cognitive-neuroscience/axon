@@ -1,5 +1,8 @@
 <div class="w-100 h-100 flex-column-space-between">
-    <iframe id="surveyFrame" class="w-100 h-100" src="https://www.surveymonkey.com/r/D8N8TJB?s="></iframe>
+    <iframe *ngIf="embeddedSurveyLink" id="surveyFrame" class="w-100 h-100" [src]="embeddedSurveyLink | safe"></iframe>
+    <div *ngIf="!embeddedSurveyLink" class="w-100 h-100 flex-column-center" style="color: red;">
+        <h1>Could not find survey</h1>
+    </div>
 
     <!-- Navigation buttons -->
     <div class="w-100 p-4 uppercase">
@@ -14,7 +17,7 @@
                 </button>
             </div>
             <div>
-                <button mat-raised-button color="primary" [disabled]="isNextDisabled" (click)="proceed()">
+                <button mat-raised-button color="primary" (click)="proceed()">
                     NEXT
                     &nbsp;
                     <mat-icon>
@@ -24,5 +27,4 @@
             </div>
         </div>
     </div>
-
 </div>

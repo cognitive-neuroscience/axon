@@ -4,9 +4,13 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { TasklistService } from 'src/app/services/tasklist.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Experiment } from 'src/app/models/Experiment';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SnackbarService } from '../../../../services/snackbar.service';
+import { Questionnaire } from 'src/app/models/Questionnaire';
+import { QuestionnaireService } from 'src/app/services/questionnaire.service';
+import { TaskType } from 'src/app/models/InternalDTOs';
+import { RouteMap } from 'src/app/routing/routes';
 
 export enum ArrayChange {
   REMOVED,
@@ -15,7 +19,14 @@ export enum ArrayChange {
 
 export class ArrayChangeObject {
   change: ArrayChange;
-  item: Task;
+  item: ListItem;
+}
+
+// generic list item to combine questionnaires and tasks
+export class ListItem {
+  displayName: string;
+  id: string;
+  type: TaskType
 }
 
 @Component({
@@ -27,7 +38,8 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
 
   tasks: Task[] = [];
   completedTasks: string[] = [];
-  selectedTasks: Task[] = [];
+  selectedTasks: ListItem[] = [];
+  questionnaires: Observable<Questionnaire[]>;
 
   private subscriptions: Subscription[] = [];
 
@@ -41,21 +53,44 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<CreateStudiesDialogComponent>,
     private tasklistService: TasklistService,
     private fb: FormBuilder,
-    private _snackbar: SnackbarService
+    private _snackbar: SnackbarService,
+    private questionnaireService: QuestionnaireService
   ) {}
 
   ngOnInit(): void {
-    this.tasklistService.updateTasks()
-    this.getTasklist()
-    this.getCompletedTasklist()
+    this.tasklistService.updateTasks();
+    this.questionnaires = this.questionnaireService.questionnaires;
+    this.questionnaireService.updateQuestionnaires();
+    this.getTasklist();
+    
+    this.getCompletedTasklist();
     this.subscriptions.push(
-      this.experimentForm.get("tasks").valueChanges.subscribe((tasks: Task[]) => {
-        this.handleSelectChange(tasks)
+      // tasks will be either of type Questionnaire or Task
+      this.experimentForm.get("tasks").valueChanges.subscribe((tasks: any[]) => {
+
+        const conversionToListItem = tasks.map(task => {
+          // task object
+          if(task["title"]) {
+            return {
+              displayName: task["title"],
+              id: task["id"],
+              type: RouteMap[task["id"]].type
+            }
+          }
+          // questionnaire object
+          return {
+            displayName: task["name"],
+            id: task["questionnaireID"],
+            type: TaskType.Questionnaire
+          }
+        })
+
+        this.handleSelectChange(conversionToListItem)
       })
     )
   }
 
-  handleSelectChange(newTasks: Task[]) {
+  handleSelectChange(newTasks: ListItem[]) {
     const change = this._findDifference(this.selectedTasks, newTasks)
     switch (change.change) {
       case ArrayChange.ADDED:
@@ -74,7 +109,7 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
   }
 
   // takes in 2 arrays and returns the single change between the two
-  private _findDifference(oldArr: Task[], newArr: Task[]): ArrayChangeObject {
+  private _findDifference(oldArr: ListItem[], newArr: ListItem[]): ArrayChangeObject {
     // will either be 1 or -1 since only one change occurs at a time
     const sizeDiff = newArr.length - oldArr.length
     // element has been added to the array
@@ -125,7 +160,22 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
       this.experimentForm.get("name").value,
       null, // code is populated in the backend
       this.experimentForm.get("description").value,
-      this.selectedTasks.map(x => x.id)
+      this.selectedTasks.map(x => {
+        switch (x.type) {
+          case TaskType.Experimental:
+          case TaskType.NAB:
+            return x.id;
+          case TaskType.Questionnaire:
+
+            // questionnaires that we have hard coded on the frontend vs embedded survey monkey questionnaires
+            return this.questionnaireService.includedRouteMapQuestionnaires.includes(x.id) ? x.id : `${RouteMap.surveyMonkeyQuestionnaire.id}-${x.id}`
+
+          default:
+            // should never get here
+            console.error("No task type found")
+            throw new Error("No task type found!")
+        }
+      })
     )
     this.dialogRef.close({experiment})
   }

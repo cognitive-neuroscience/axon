@@ -1,18 +1,15 @@
-import { Injectable } from "@angular/core";
+import { HostListener, Injectable } from "@angular/core";
 import { Experiment } from '../models/Experiment';
 import { ExperimentsService } from './experiments.service';
-import { Task } from '../models/Task';
-import { TasklistService } from './tasklist.service';
 import { SnackbarService } from './snackbar.service';
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
 import { AuthService } from './auth.service';
 import { SessionStorageService } from './sessionStorage.service';
-import { ConsentService } from './consentService';
-import { ConfirmationService } from './confirmation.service';
 import { RouteMap } from '../routing/routes';
-import { switchMap, take } from "rxjs/operators";
-import { of, Subscription } from 'rxjs';
+import { take } from "rxjs/operators";
+import { hasSurveyMonkeyQuestionnaire } from "../common/commonMethods";
+import { Questionnaire } from "../models/Questionnaire";
 
 @Injectable({
     providedIn: "root"
@@ -57,6 +54,12 @@ export class TaskManagerService {
         })
     }
 
+    // only use to force the experiment to break
+    clear() {
+        this._experiment = null;
+        this._currentTaskIndex = 0;
+    }
+
     handleErr(): void {
         this._sessionStorageService.clearSessionStorage()
         this._router.navigate(['/login/onlineparticipant'])
@@ -64,13 +67,24 @@ export class TaskManagerService {
     }
 
     private _routeToTask(task: string) {
-        const route = RouteMap[task].route;
-        if(!route) {
-            this._snackbarService.openErrorSnackbar("There was an error, please try again later.")
+        if(hasSurveyMonkeyQuestionnaire(task)) {
+            const questionnaire = task.split("-")[0];
+            const id = task.split("-")[1];
+            const URL = this.getExperimentQuestionnaires().find(q => q.questionnaireID == id)?.url;
+            if(!URL || !questionnaire || !id) {
+                this.handleErr();
+                return;
+            }
+            this._router.navigate([RouteMap[questionnaire].route], { state: {questionnaireURL: URL} })
         } else {
+            const route = RouteMap[task].route;
+            if(!route) {
+                this.handleErr();
+                return;
+            }
             this._router.navigate([route])
-            this._snackbarService.openSuccessSnackbar("Redirecting you to task number " + (this._currentTaskIndex + 1))
         }
+        this._snackbarService.openSuccessSnackbar("Redirecting you to the next step")
     }
 
     private _routeToFinalPage(): void {
@@ -80,6 +94,10 @@ export class TaskManagerService {
     getExperimentCode(): string {
         const token = this._sessionStorageService.getExperimentCodeFromSessionStorage()
         return token ? token : ""
+    }
+
+    getExperimentQuestionnaires(): Questionnaire[] {
+        return this._experiment?.questionnaires ?? null;
     }
 
     next(): void {
