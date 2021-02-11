@@ -9,15 +9,20 @@
     <mat-accordion multi class="align-accordion-headers">
         <mat-expansion-panel *ngFor="let experiment of experiments | async">
             <mat-expansion-panel-header>
-                <mat-panel-title><b style="font-size: 1rem;">{{ experiment.name }}</b></mat-panel-title>
+                <mat-panel-title>
+                    <span style="font-size: 1rem;">
+                        <b>{{experiment.code}}:</b>
+                        {{ experiment.name }}
+                    </span>
+                </mat-panel-title>
                 <mat-panel-description><span style="font-size: 1rem;">{{ experiment.description ? experiment.description : 'No description' }}</span></mat-panel-description>
                 <mat-panel-description>
                     <span   #tooltip="matTooltip" 
                             matTooltip="Copy to clipboard" 
-                            style="cursor: pointer;" 
                             (click)="showCopiedMessage()"
                             (click)="$event.stopPropagation()"
-                            [cdkCopyToClipboard]="LINK + experiment.code" class="link">
+                            [cdkCopyToClipboard]="LINK + experiment.code" 
+                            class="link">
                             {{ LINK }}{{ experiment.code }}
                     </span>
                 </mat-panel-description>
