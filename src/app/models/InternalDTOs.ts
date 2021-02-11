@@ -112,3 +112,8 @@ export enum TaskType {
     Experimental = "Experimental",
     Questionnaire = "Questionnaire"
 }
+
+export enum BEStrings {
+    EXPERIMENTUSERS = "experiment_users",
+    FEEDBACKQUESTIONNAIRE = "feedback_questionnaire_responses"
+}

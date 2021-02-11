@@ -92,15 +92,15 @@ export const RouteMap: ExperimentRoutingMap = {
     type: TaskType.Questionnaire,
     route: "consent"
   },
-  demographicsQuestionnaire: {
-    id: "demographicsQuestionnaire",
+  demographicsquestionnaire: {
+    id: "demographicsquestionnaire",
     title: "Demographics Questionnaire",
     description: "Questionnaire Asking certain participant demographics questions",
     type: TaskType.Questionnaire,
     route: "task/demographics-questionnaire"
   },
-  surveyMonkeyQuestionnaire: {
-    id: "surveyMonkeyQuestionnaire",
+  surveymonkeyquestionnaire: {
+    id: "surveymonkeyquestionnaire",
     title: "Survey Monkey Questionnaire",
     description: "Linked Survey Monkey Questionnaire",
     type: TaskType.Questionnaire,

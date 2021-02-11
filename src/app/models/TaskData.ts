@@ -1,5 +1,5 @@
 import { RouteMap } from "../routing/routes";
-import { Key, UserResponse } from "./InternalDTOs";
+import { BEStrings, Key, UserResponse } from "./InternalDTOs";
 
 export enum TaskNames {
     ODDBALL = "oddball",
@@ -133,13 +133,13 @@ export class SmileyFace extends TaskData {
 
 export function mapTaskIdToTitle(task: string) {
     switch (task) {
-        case "consent":
+        case RouteMap.consent.id:
             return "Consent Form";
-        case "demographicsQuestionnaire":
+        case RouteMap.demographicsquestionnaire.id:
             return "Demographics Questionnaire";
-        case "feedback_questionnaire_responses":
+        case BEStrings.FEEDBACKQUESTIONNAIRE:
             return "Feedback Questionnaire";
-        case "experiment_user":
+        case BEStrings.EXPERIMENTUSERS:
             return "Registered Participants"
         default:
             return RouteMap[task]?.title

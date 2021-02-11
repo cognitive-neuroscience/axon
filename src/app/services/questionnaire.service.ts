@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { DemographicsQuestionnaireResponse, FeedbackQuestionnaireResponse, Questionnaire } from '../models/Questionnaire';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RouteMap } from '../routing/routes';
 
@@ -14,8 +14,8 @@ export class QuestionnaireService {
     private readonly QUESTIONNAIRE_HTTP_PREFIX = "/questionnaire/"
 
     readonly includedRouteMapQuestionnaires: string[] = [
-        "consent",
-        "demographicsQuestionnaire"
+        RouteMap.consent.id,
+        RouteMap.demographicsquestionnaire.id
     ];
 
     private _questionnaireExperimentSubject: BehaviorSubject<Questionnaire[]>;
@@ -29,8 +29,8 @@ export class QuestionnaireService {
     updateQuestionnaires(): void {
         this._getQuestionnaires().subscribe(questionnaires => {
 
-            for(const [key, value] of Object.entries(RouteMap)) {
-                if(this.includedRouteMapQuestionnaires.includes(key)) {
+            for(const [_, value] of Object.entries(RouteMap)) {
+                if(this.includedRouteMapQuestionnaires.includes(value.id)) {
                     questionnaires.push({
                         questionnaireID: value.id,
                         url: null,

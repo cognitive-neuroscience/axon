@@ -1,49 +1,25 @@
-.card-container {
-    width: 33%;
-    padding: 1%;
-    box-sizing: border-box;
-}
-
 .link {
     overflow-wrap: break-word;
-    display: block;
-    background-color: gainsboro;
-    border-radius: 4px;
     color: black;
-    padding: 3%;
+
 
     &:hover {
-        transition: ease-in 100ms;
-        color: white;
+        color: blue;
     }
 }
 
-mat-card {
-    height: 100%;
-    display: flex;              // to help keep footer stick to bottom of card
-    flex-direction: column;     // to help keep footer stick to bottom of card
+.badge {
+    font-size: 1rem;
+    background-color: gray;
+    padding: 10px;
+    color: white;
 }
 
-.mat-card-footer {
-    background-color: #f1f1f1;
-    padding: 4%;
+.colored-row:nth-child(2n + 1) {
+    background-color: #e8e8e896;
 }
 
-.mat-card-title {
-    display: flex;
-    justify-content: space-between;
-}
-
-.mat-card-header {
-    flex-shrink: 0;             // to help keep footer stick to bottom of card
-}
-
-.mat-card-content {
-    flex-grow: 1;               // to help keep footer stick to bottom of card
-    overflow: auto;             // to help keep footer stick to bottom of card
-}
-
-.max-list-height {
-    max-height: 20vh;
-    overflow-y: scroll;
+.delete-button {
+    display: block;
+    margin-left: auto;
 }

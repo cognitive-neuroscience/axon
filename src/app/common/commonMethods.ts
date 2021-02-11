@@ -34,5 +34,5 @@ export function wait(time: number): Promise<void> {
 }
 
 export function hasSurveyMonkeyQuestionnaire(task: string): boolean {
-    return task.includes(RouteMap.surveyMonkeyQuestionnaire.id);
+    return task.includes(RouteMap.surveymonkeyquestionnaire.id);
 }

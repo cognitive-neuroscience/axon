@@ -101,6 +101,10 @@ export class TaskManagerService {
     }
 
     next(): void {
+        if(!this.hasExperiment()) {
+            this.handleErr();
+            return;
+        }
         const totalTasks = this._experiment.tasks.length
         // route to next task if there is still another task to go to
         if(this._currentTaskIndex < totalTasks) {

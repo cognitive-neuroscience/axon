@@ -13,7 +13,8 @@ export class AppComponent {
   onPopState(event) {
     const role = this.authService.getDecodedToken()?.Role;
     if(role && role === Role.PARTICIPANT) {
-      this.taskManager.clear();
+      this.taskManager.handleErr()
+      return;
     }
   }
 

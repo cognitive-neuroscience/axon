@@ -219,6 +219,21 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
     white-space: nowrap;
 }
 
+.mat-expansion-panel-header-title {
+    width: 18% !important;
+    align-items: center;
+    flex-grow: 0 !important;
+}
+
+.mat-expansion-panel-header-description {
+    align-items: center;
+    width: 41% !important;
+}
+
+.mat-expansion-panel-header-description {
+    align-items: center;
+}
+
 .snack-bar-success {
     background-color: green;
 }
@@ -241,3 +256,4 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 .center-snackbar {
     margin-bottom: 50vh !important;
 }
+

@@ -14,6 +14,7 @@ import { TaskManagerService } from 'src/app/services/task-manager.service';
 export class QuestionnaireComponent implements OnInit, OnDestroy {
 
   checkSurveyComplete: Observable<number> = interval(1500);
+  isDisabled: boolean = true;
 
   embeddedSurveyLink: string = "";
   subscriptions: Subscription[] = [];

@@ -6,35 +6,36 @@
         </div>
     </div>
 
-    <div class="d-flex flex-wrap">
-        <div class="card-container" *ngFor="let experiment of experiments | async">
-            <mat-card>
-                <mat-card-title>{{ experiment.name }} <mat-icon>science</mat-icon> </mat-card-title>
-                <mat-card-subtitle>{{ experiment.description ? experiment.description : 'No description' }}</mat-card-subtitle>
-                <hr>
-                <mat-card-content>
+    <mat-accordion multi class="align-accordion-headers">
+        <mat-expansion-panel *ngFor="let experiment of experiments | async">
+            <mat-expansion-panel-header>
+                <mat-panel-title><b style="font-size: 1rem;">{{ experiment.name }}</b></mat-panel-title>
+                <mat-panel-description><span style="font-size: 1rem;">{{ experiment.description ? experiment.description : 'No description' }}</span></mat-panel-description>
+                <mat-panel-description>
+                    <span   #tooltip="matTooltip" 
+                            matTooltip="Copy to clipboard" 
+                            style="cursor: pointer;" 
+                            (click)="showCopiedMessage()"
+                            (click)="$event.stopPropagation()"
+                            [cdkCopyToClipboard]="LINK + experiment.code" class="link">
+                            {{ LINK }}{{ experiment.code }}
+                    </span>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
 
-                    <div>
-                        <h3>Tasks</h3>
-                        <div class="max-list-height">
-                            <mat-list role="list">
-                                <mat-list-item style="justify-content: center;" role="listitem" *ngFor="let task of taskToTitle(experiment.tasks, experiment.questionnaires)">{{ task }}</mat-list-item>
-                            </mat-list>
-                        </div>
-                    </div>
+            <div>
+                <mat-divider class="pb-3"></mat-divider>
+                <span class="badge">Tasks</span>
+                <div>
+                    <mat-list role="list">
+                        <ng-container *ngFor="let task of taskToTitle(experiment.tasks, experiment.questionnaires)">
+                            <mat-list-item class="colored-row" role="listitem">{{ task }}</mat-list-item>
+                        </ng-container>
+                    </mat-list>
+                </div>
+                <button [disabled]="!isAdmin()" (click)="onDelete(experiment.code)" class="btn btn-danger mt-3 delete-button">Delete Study</button>
+            </div>
 
-                </mat-card-content>
-                <mat-card-footer>
-                    <div class="text-center py-3">
-                        <span>Link to experiment: 
-                            <span style="cursor: pointer;" (click)="showCopiedMessage()" [cdkCopyToClipboard]="LINK + experiment.code" class="link">{{ LINK }}{{ experiment.code }}</span>
-                        </span>
-                    </div>
-                    <div>
-                        <button [disabled]="!isAdmin()" (click)="onDelete(experiment.code)" class="btn btn-danger w-100">Delete Study</button>
-                    </div>
-                </mat-card-footer>
-            </mat-card>
-        </div>
-    </div>
+        </mat-expansion-panel>
+    </mat-accordion>
 </div>

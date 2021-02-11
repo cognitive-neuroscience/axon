@@ -20,7 +20,7 @@
             <mat-label>Select tasks</mat-label>
             <mat-select formControlName="tasks" multiple required>
                 <mat-optgroup label="Tasks">
-                    <mat-option *ngFor="let task of tasks" [disabled]="!taskIsComplete(task)" [value]="task">{{ task.title }}</mat-option>
+                    <mat-option *ngFor="let task of tasks | async" [disabled]="!taskIsComplete(task)" [value]="task">{{ task.title }}</mat-option>
                 </mat-optgroup>
                 <mat-optgroup label="Questionnaires">
                     <mat-option *ngFor="let questionnaire of questionnaires | async" [value]="questionnaire">{{ questionnaire.name }}</mat-option>

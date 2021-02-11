@@ -46,7 +46,7 @@ const routes: Routes = [
     ]
   },
   { path: 'login/onlineparticipant', component: CrowdSourceLoginComponent },
-  { path: RouteMap.demographicsQuestionnaire.route , component: DemographicsQuestionnaireComponent },
+  { path: RouteMap.demographicsquestionnaire.route , component: DemographicsQuestionnaireComponent },
   { path: 'questionnaire/feedback', component: FeedbackQuestionnaireComponent },
   { path: 'login', component: LoginComponent },
   { path: RouteMap.consent.route, component: ConsentComponent },
@@ -64,7 +64,7 @@ const routes: Routes = [
   { path: RouteMap.stroop.route, component: StroopTaskComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.trailmaking.route, component: TrailMakingComponent, canActivate: [ExperimentRouteGuard] },
   { path: 'complete', component: FinalPageComponent, canActivate: [ExperimentRouteGuard] },
-  { path: RouteMap.surveyMonkeyQuestionnaire.route, component: QuestionnaireComponent },
+  { path: RouteMap.surveymonkeyquestionnaire.route, component: QuestionnaireComponent },
   { path: '**', redirectTo: '/login/onlineparticipant', pathMatch: 'full' }
 ];
 

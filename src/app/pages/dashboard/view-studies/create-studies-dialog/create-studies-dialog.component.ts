@@ -36,7 +36,7 @@ export class ListItem {
 })
 export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
 
-  tasks: Task[] = [];
+  tasks: Observable<Task[]>;
   completedTasks: string[] = [];
   selectedTasks: ListItem[] = [];
   questionnaires: Observable<Questionnaire[]>;
@@ -58,10 +58,10 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.tasklistService.updateTasks();
     this.questionnaires = this.questionnaireService.questionnaires;
+    this.tasks = this.tasklistService.taskList;
+    this.tasklistService.updateTasks();
     this.questionnaireService.updateQuestionnaires();
-    this.getTasklist();
     
     this.getCompletedTasklist();
     this.subscriptions.push(
@@ -147,14 +147,6 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
     moveItemInArray(this.selectedTasks, event.previousIndex, event.currentIndex)
   }
 
-  private getTasklist(): void {
-    this.subscriptions.push(
-        this.tasklistService.taskList.subscribe(tasklist => {
-        this.tasks = tasklist
-      })
-    )
-  }
-
   sendDataToParent() {
     const experiment = new Experiment(
       this.experimentForm.get("name").value,
@@ -168,7 +160,7 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
           case TaskType.Questionnaire:
 
             // questionnaires that we have hard coded on the frontend vs embedded survey monkey questionnaires
-            return this.questionnaireService.includedRouteMapQuestionnaires.includes(x.id) ? x.id : `${RouteMap.surveyMonkeyQuestionnaire.id}-${x.id}`
+            return this.questionnaireService.includedRouteMapQuestionnaires.includes(x.id) ? x.id : `${RouteMap.surveymonkeyquestionnaire.id}-${x.id}`
 
           default:
             // should never get here
