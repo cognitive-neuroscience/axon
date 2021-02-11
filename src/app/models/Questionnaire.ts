@@ -17,3 +17,10 @@ export class FeedbackQuestionnaireResponse extends QuestionnaireResponse {
     additionalFeedback: string;
     browser: string;
 }
+
+export class Questionnaire {
+    questionnaireID: string;
+    url: string;
+    name: string;
+    description: string;
+}

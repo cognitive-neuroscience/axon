@@ -22,7 +22,6 @@
         <ng-template matMenuContent let-menuCode="code">
             <button (click)="getAndDisplayData(menuCode, option)" mat-menu-item *ngFor="let option of optionsList(menuCode) | async">{{ mapTaskIdToTitle(option) }}</button>
             <button (click)="getAndDisplayData(menuCode, 'experiment_users')" mat-menu-item>Registered Participants</button>
-            <button (click)="getAndDisplayData(menuCode, 'demographics_questionnaire_responses')" mat-menu-item>Demographics Questionnaire</button>
             <button (click)="getAndDisplayData(menuCode, 'feedback_questionnaire_responses')" mat-menu-item>Feedback Questionnaire</button>
         </ng-template>
     </mat-menu>

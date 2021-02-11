@@ -1,4 +1,7 @@
 // generates a list of length <size> of non repeating random numbers
+
+import { RouteMap } from "../routing/routes";
+
 // random numbers generated are lowerbound inclusive and upperbound exclusive: [lowerbound, upperbound)
 export function generateRandomNonrepeatingNumberList(size: number, lowerBound: number, upperBound: number): number[] {
     if(size > (upperBound - lowerBound)) throw new Error("Size cannot be greater than the bounds")
@@ -24,8 +27,12 @@ export function idIsEven(id: string): boolean {
 
 export function wait(time: number): Promise<void> {
     return new Promise((resolve) => {
-      setTimeout(() => {
+        setTimeout(() => {
         resolve();
-      }, time);
+        }, time);
     });
-  }
+}
+
+export function hasSurveyMonkeyQuestionnaire(task: string): boolean {
+    return task.includes(RouteMap.surveymonkeyquestionnaire.id);
+}

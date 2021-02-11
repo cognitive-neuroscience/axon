@@ -1,0 +1,37 @@
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between">
+        <h2>Your Questionnaires</h2>
+    </div>
+
+    <div *ngIf="(questionnaires | async)?.length == 0" style="color: red;">No questionnaires</div>
+
+    <table *ngIf="(questionnaires | async)?.length > 0" mat-table [dataSource]="questionnaires" class="mat-elevation-z3 w-100">
+
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td class="first-col-width" mat-cell *matCellDef="let questionnaire"> {{questionnaire.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef> Description </th>
+            <td mat-cell *matCellDef="let questionnaire"> {{questionnaire.description}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="url">
+            <th mat-header-cell *matHeaderCellDef> URL </th>
+            <td mat-cell *matCellDef="let questionnaire">{{questionnaire.url}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let questionnaire">
+                <button  class="btn btn-danger" (click)="deleteQuestionnaire(questionnaire)">Delete</button>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsForGuests"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsForGuests;"></tr>
+
+    </table>
+
+    <button class="btn btn-success mt-3" (click)="openCreateQuestionnaireModal()">Add new Questionnaire</button>
+</div>

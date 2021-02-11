@@ -21,7 +21,6 @@ declare function setFullScreen(): any;
 export class FingerTappingTaskComponent implements OnInit {
 
   isPractice: boolean = true;
-  userID: string;
   isBreak: boolean = false;
   step: number = 1;
   practiceTrialDuration: number = environment.production ? 10000 : 5000;
@@ -59,7 +58,7 @@ export class FingerTappingTaskComponent implements OnInit {
 
       this.data.push({
         trial: ++this.pressNum,
-        userID: this.userID,
+        userID: this.authService.getDecodedToken().UserID,
         score: null,
         submitted: this.timerService.getCurrentTimestamp(),
         isPractice: this.isPractice,
@@ -120,13 +119,6 @@ export class FingerTappingTaskComponent implements OnInit {
 
 
   ngOnInit() {
-    const decodedToken = this.authService.getDecodedToken()
-    if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {
-      this.router.navigate(['/login/onlineparticipant'])
-      this.snackbarService.openErrorSnackbar("Refresh has occurred")
-    }
-    const jwt = this.authService.getDecodedToken()
-    this.userID = jwt.UserID
   }
 
 
@@ -275,7 +267,7 @@ export class FingerTappingTaskComponent implements OnInit {
       this.router.navigate(['/dashboard/tasks'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
-      this.taskManager.nextExperiment()
+      this.taskManager.next()
     }
   }
 
