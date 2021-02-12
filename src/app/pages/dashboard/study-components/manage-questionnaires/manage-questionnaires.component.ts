@@ -2,8 +2,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subscription } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { filter, map, mergeAll, mergeMap } from 'rxjs/operators';
+import { BEStrings } from 'src/app/models/InternalDTOs';
 import { Questionnaire } from 'src/app/models/Questionnaire';
+import { RouteMap } from 'src/app/routing/routes';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
 import { QuestionnaireService } from 'src/app/services/questionnaire.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
@@ -25,13 +27,14 @@ export class ManageQuestionnairesComponent implements OnInit {
   ) { }
 
   questionnaires: Observable<Questionnaire[]>;
-
   subscriptions: Subscription[] = [];
-
   displayedColumnsForGuests = ['name', 'description', 'url', 'action'];
+  hiddenQuestionnaires = [RouteMap.consent.id, RouteMap.demographicsquestionnaire.id]
 
   ngOnInit(): void {
-    this.questionnaires = this.questionnaireService.questionnaires;
+    this.questionnaires = this.questionnaireService.questionnaires.pipe(
+      map(questionnaireList => questionnaireList.filter(questionnaire => !this.hiddenQuestionnaires.includes(questionnaire.questionnaireID)))
+    );
     this.questionnaireService.updateQuestionnaires();
   }
 

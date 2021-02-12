@@ -22,7 +22,7 @@
                             (click)="showCopiedMessage()"
                             (click)="$event.stopPropagation()"
                             [cdkCopyToClipboard]="LINK + experiment.code" 
-                            class="link">
+                            class="link badge">
                             {{ LINK }}{{ experiment.code }}
                     </span>
                 </mat-panel-description>
