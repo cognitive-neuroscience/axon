@@ -1,6 +1,9 @@
 <div class="container-fluid p-4">
     <div class="d-flex justify-content-between">
-        <h2>Your Guests</h2>
+        <h2 class="mb-5">Your Guests</h2>
+        <div>
+            <button class="btn btn-success mt-3" (click)="openCreateGuestModal()">Add new guest</button>
+        </div>
     </div>
 
     <div *ngIf="(guests | async)?.length == 0" style="color: red;">No guests</div>
@@ -27,6 +30,4 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumnsForGuests;"></tr>
 
     </table>
-
-    <button class="btn btn-success mt-3" (click)="openCreateGuestModal()">Add new guest</button>
 </div>

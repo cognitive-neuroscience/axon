@@ -33,7 +33,7 @@ export class ManageQuestionnairesComponent implements OnInit {
 
   ngOnInit(): void {
     this.questionnaires = this.questionnaireService.questionnaires.pipe(
-      map(questionnaireList => questionnaireList.filter(questionnaire => !this.hiddenQuestionnaires.includes(questionnaire.questionnaireID)))
+      map(questionnaireList => questionnaireList ? questionnaireList.filter(questionnaire => !this.hiddenQuestionnaires.includes(questionnaire.questionnaireID)) : [])
     );
     this.questionnaireService.updateQuestionnaires();
   }
