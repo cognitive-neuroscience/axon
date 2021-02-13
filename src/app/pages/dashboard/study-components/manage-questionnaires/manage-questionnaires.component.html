@@ -25,10 +25,13 @@
             <td mat-cell *matCellDef="let questionnaire">{{questionnaire.url}}</td>
         </ng-container>
 
-        <ng-container matColumnDef="action">
-            <th mat-header-cell *matHeaderCellDef> Action </th>
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let questionnaire">
-                <button  class="btn btn-danger" (click)="deleteQuestionnaire(questionnaire)">Delete</button>
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-primary" style="width: 49%;" (click)="previewQuestionnaire(questionnaire)">Preview</button>
+                    <button  class="btn btn-danger" style="width: 49%;" (click)="deleteQuestionnaire(questionnaire)">Delete</button>
+                </div>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumnsForGuests"></tr>

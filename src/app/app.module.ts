@@ -45,6 +45,7 @@ import { SafePipe } from './pipes/safe.pipe';
 import { StudyComponentsComponent } from './pages/dashboard/study-components/study-components.component';
 import { ManageQuestionnairesComponent } from './pages/dashboard/study-components/manage-questionnaires/manage-questionnaires.component';
 import { CreateQuestionnaireDialogComponent } from './pages/dashboard/study-components/manage-questionnaires/create-questionnaire-dialog/create-questionnaire-dialog.component';
+import { PreviewQuestionnaireDialogComponent } from './pages/dashboard/study-components/manage-questionnaires/preview-questionnaire-dialog/preview-questionnaire-dialog.component';
 
 @NgModule({
   declarations: [
@@ -87,6 +88,7 @@ import { CreateQuestionnaireDialogComponent } from './pages/dashboard/study-comp
     StudyComponentsComponent,
     ManageQuestionnairesComponent,
     CreateQuestionnaireDialogComponent,
+    PreviewQuestionnaireDialogComponent,
   ],
   imports: [
     BrowserModule,

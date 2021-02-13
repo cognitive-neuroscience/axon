@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { interval, Observable, of, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
@@ -13,6 +13,10 @@ import { TaskManagerService } from 'src/app/services/task-manager.service';
 })
 export class QuestionnaireComponent implements OnInit, OnDestroy {
 
+  // Link sent in as an admin to preview the embedded survey
+  @Input()
+  previewLink: string = "";
+
   checkSurveyComplete: Observable<number> = interval(1500);
   isDisabled: boolean = true;
 
@@ -23,19 +27,28 @@ export class QuestionnaireComponent implements OnInit, OnDestroy {
     private authService: AuthService, 
     private confirmationService: ConfirmationService,
     private taskManager: TaskManagerService,
-    private router: Router,
+    private route: ActivatedRoute,
     private snackbar: SnackbarService
   ) {
-    const URL = this.router.getCurrentNavigation()?.extras?.state?.questionnaireURL;
-    if(!URL) {
-      this.snackbar.openErrorSnackbar("There was an error getting the questionnaire. Please click 'NEXT' to continue")
-    } else {
-      const subjectID = this.authService.getDecodedToken().UserID;
-      this.embeddedSurveyLink = URL + subjectID
-    }
   }
 
   ngOnInit(): void {
+    if(this.authService.isAdmin() && this.previewLink) {
+      const subjectID = this.authService.getDecodedToken().Email;
+      this.embeddedSurveyLink = this.previewLink + subjectID;
+    } else {
+      this.subscriptions.push(
+        this.route.params.subscribe((params: {link: string}) => {
+          if(!params && !params.link) {
+            this.snackbar.openErrorSnackbar("Could not find survey link. Please proceed to next step and reach out to the sharplab.")
+          } else {
+            const URL = params.link
+            const subjectID = this.authService.getDecodedToken().UserID;
+            this.embeddedSurveyLink = URL + subjectID
+          }
+        })
+      )
+    }
   }
 
 

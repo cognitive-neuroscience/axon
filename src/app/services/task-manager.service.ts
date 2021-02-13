@@ -75,7 +75,7 @@ export class TaskManagerService {
                 this.handleErr();
                 return;
             }
-            this._router.navigate([RouteMap[questionnaire].route], { state: {questionnaireURL: URL} })
+            this._router.navigate([RouteMap[questionnaire].route, {link: URL}])
         } else {
             const route = RouteMap[task].route;
             if(!route) {
@@ -105,7 +105,7 @@ export class TaskManagerService {
             this.handleErr();
             return;
         }
-        const totalTasks = this._experiment.tasks.length
+        const totalTasks = this._experiment.tasks.length;
         // route to next task if there is still another task to go to
         if(this._currentTaskIndex < totalTasks) {
             this._routeToTask(this._experiment.tasks[this._currentTaskIndex])
