@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { catchError, map, mergeMap, take } from 'rxjs/operators';
 import { User } from 'src/app/models/Login';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
@@ -61,11 +61,15 @@ export class ManageGuestsComponent implements OnInit, OnDestroy {
       mergeMap(ok => {
         if(ok) {
           return this.userService.deleteUser(email)
+        } else {
+          return of(false)
         }
       })
     ).subscribe(data => {
-      this.userService.updateGuests()
-      this.snackbarService.openSuccessSnackbar("Successfully deleted " + email)
+      if(data) {
+        this.userService.updateGuests()
+        this.snackbarService.openSuccessSnackbar("Successfully deleted " + email)
+      }
     }, err => {
       console.error(err)
       this.snackbarService.openErrorSnackbar("There was an error deleting the user")

@@ -1,5 +1,5 @@
 <div class="w-100 h-100 flex-column-space-between">
-    <iframe (load)="isDisabled = false" *ngIf="embeddedSurveyLink" id="surveyFrame" class="w-100 h-100" [src]="embeddedSurveyLink | safe"></iframe>
+    <iframe *ngIf="embeddedSurveyLink" id="surveyFrame" class="w-100 h-100" [src]="embeddedSurveyLink | safe"></iframe>
     <div *ngIf="!embeddedSurveyLink" class="w-100 h-100 flex-column-center" style="color: red;">
         <h1>Could not find survey</h1>
     </div>
@@ -17,7 +17,7 @@
                 </button>
             </div>
             <div>
-                <button mat-raised-button color="primary" [disabled]="isDisabled" (click)="proceed()">
+                <button mat-raised-button color="primary" [disabled]="adminPreviewing()" (click)="proceed()">
                     NEXT
                     &nbsp;
                     <mat-icon>

@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { filter, map, mergeAll, mergeMap } from 'rxjs/operators';
 import { BEStrings } from 'src/app/models/InternalDTOs';
 import { Questionnaire } from 'src/app/models/Questionnaire';
@@ -68,11 +68,15 @@ export class ManageQuestionnairesComponent implements OnInit {
       mergeMap(ok => {
         if(ok) {
           return this.questionnaireService.deleteQuestionnaireByID(questionnaire.questionnaireID);
+        } else {
+          return of(false)
         }
       })
     ).subscribe(data => {
-      this.questionnaireService.updateQuestionnaires();
-      this.snackbarService.openSuccessSnackbar("Successfully deleted " + questionnaire.name);
+      if(data) {
+        this.questionnaireService.updateQuestionnaires();
+        this.snackbarService.openSuccessSnackbar("Successfully deleted " + questionnaire.name);
+      }
     }, err => {
       console.error(err)
       this.snackbarService.openErrorSnackbar("There was an error deleting the user")

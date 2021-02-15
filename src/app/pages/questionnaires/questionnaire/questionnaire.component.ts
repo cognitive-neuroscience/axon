@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { interval, Observable, of, Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { interval, Observable, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
@@ -18,7 +18,6 @@ export class QuestionnaireComponent implements OnInit, OnDestroy {
   previewLink: string = "";
 
   checkSurveyComplete: Observable<number> = interval(1500);
-  isDisabled: boolean = true;
 
   embeddedSurveyLink: string = "";
   subscriptions: Subscription[] = [];
@@ -33,7 +32,7 @@ export class QuestionnaireComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if(this.authService.isAdmin() && this.previewLink) {
+    if(this.adminPreviewing()) {
       const subjectID = this.authService.getDecodedToken().Email;
       this.embeddedSurveyLink = this.previewLink + subjectID;
     } else {
@@ -49,6 +48,10 @@ export class QuestionnaireComponent implements OnInit, OnDestroy {
         })
       )
     }
+  }
+
+  adminPreviewing(): boolean {
+    return this.authService.isAdmin() && !!this.previewLink;
   }
 
 
