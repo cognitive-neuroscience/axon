@@ -1,3 +1,4 @@
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Task } from './Task';
 export class ConsentForm {
     img: string;
@@ -43,6 +44,7 @@ export class SnackbarData {
     message: string;
     action: string;
     type: SnackbarType;
+    snackbarRef: MatSnackBar;
 
     constructor(msg: string, act: string, type: SnackbarType) {
         this.message = msg;

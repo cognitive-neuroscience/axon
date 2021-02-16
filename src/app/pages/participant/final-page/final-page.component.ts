@@ -58,7 +58,7 @@ export class FinalPageComponent implements OnInit {
   logout() {
     this._sessionStorage.clearSessionStorage()
     this._router.navigate(['/login/onlineparticipant'])
-    this._snackbar.openSuccessSnackbar("Thanks for taking part in our study! To finish, paste your completion code into the original site.", undefined, 10000, 'center');
+    this._snackbar.openSuccessSnackbar("Thanks for taking part in our study! To finish, paste your completion code into the original site. You may close this page.", undefined, 10000, 'center');
   }
 
 }

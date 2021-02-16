@@ -33,6 +33,7 @@ import { StarksteinApathyScaleComponent } from '../pages/questionnaires/starkste
 import { ManageGuestsComponent } from '../pages/dashboard/manage-guests/manage-guests.component';
 import { QuestionnaireComponent } from '../pages/questionnaires/questionnaire/questionnaire.component';
 import { StudyComponentsComponent } from '../pages/dashboard/study-components/study-components.component';
+import { environment } from 'src/environments/environment';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login/onlineparticipant', pathMatch: 'full' },
@@ -66,8 +67,8 @@ const routes: Routes = [
   { path: RouteMap.smileyface.route, component: SmileyFaceComponent },
   { path: RouteMap.fingertapping.route, component: FingerTappingTaskComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.nback.route, component: NBackComponent, canActivate: [ExperimentRouteGuard] },
-  { path: RouteMap.stroop.route, component: StroopTaskComponent, canActivate: [ExperimentRouteGuard], data: { trials: 120 } },
-  { path: RouteMap.stroopshort.route, redirectTo: RouteMap.stroop.route, canActivate: [ExperimentRouteGuard], data: { trials: 60 } },
+  { path: RouteMap.stroop.route, component: StroopTaskComponent, canActivate: [ExperimentRouteGuard], data: { trials: (environment.production ? 120 : 10) } },
+  { path: RouteMap.stroopshort.route, component: StroopTaskComponent, canActivate: [ExperimentRouteGuard], data: { trials: (environment.production ? 60 : 5) } },
   { path: RouteMap.trailmaking.route, component: TrailMakingComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.rating.route, component: RatingComponent },
   { path: RouteMap.choice.route, component: ChoiceComponent },

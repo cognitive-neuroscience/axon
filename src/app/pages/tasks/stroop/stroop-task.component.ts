@@ -33,7 +33,7 @@ export class StroopTaskComponent implements OnInit {
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
   practiceTrials: number = environment.production ? 15 : 5;
-  actualTrials: number = environment.production ? 120 : 10;
+  actualTrials: number = 120;
 
   step: number = 1;
   color: string = '';

@@ -57,7 +57,10 @@ export class SnackbarService {
 
     private openSnackbar(data: SnackbarData, panelClasses: string[], duration: number = 4000, verticalPos: MatSnackBarVerticalPosition = 'bottom', horizontalPos: MatSnackBarHorizontalPosition = 'center'): void {
         this._snackbar.openFromComponent(SnackbarComponent, {
-            data: data,
+            data: {
+                ...data,
+                snackbarRef: this._snackbar
+            },
             panelClass: panelClasses,
             duration: duration,
             verticalPosition: verticalPos,
