@@ -35,7 +35,6 @@ export class GridConfig {
   styleUrls: ['./trail-making.component.scss']
 })
 export class TrailMakingComponent implements OnInit {
-  userID: string = "";
   step: number = 1;
   isScored: number | boolean;
   showFeedbackAfterEveryTrial: number | boolean;
@@ -69,13 +68,6 @@ export class TrailMakingComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    const decodedToken = this.authService.getDecodedToken()
-    if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {
-      this.router.navigate(['/login/mturk'])
-      this.snackbarService.openErrorSnackbar("Refresh has occurred")
-    }
-    const jwt = this.authService.getDecodedToken()
-    this.userID = jwt.UserID
   }
 
   proceedtoPreviousStep() {
@@ -102,7 +94,7 @@ export class TrailMakingComponent implements OnInit {
 
     // record the click if actual game
     this.data.push({
-      userID: this.userID,
+      userID: this.authService.getDecodedToken().UserID,
       score: null,
       trial: ++this.clickNum,
       timeFromLastClick: this.timerService.stopTimerAndGetTime(),
@@ -225,11 +217,11 @@ export class TrailMakingComponent implements OnInit {
     if(decodedToken.Role === Role.ADMIN) {
       if(!environment.production) console.log(this.data);
       
-      this.router.navigate(['/dashboard/tasks'])
+      this.router.navigate(['/dashboard/components'])
       this.snackbarService.openInfoSnackbar("Task completed")
 
     } else {
-      this.taskManager.nextExperiment();
+      this.taskManager.next();
     }
   }
 

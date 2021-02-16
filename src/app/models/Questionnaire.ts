@@ -25,3 +25,10 @@ export class ApathyQuestionnaireResponse extends QuestionnaireResponse {
    Q4: string;
    Q5: string;
 }
+
+export class Questionnaire {
+    questionnaireID: string;
+    url: string;
+    name: string;
+    description: string;
+}

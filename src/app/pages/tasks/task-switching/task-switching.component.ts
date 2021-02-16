@@ -19,7 +19,6 @@ declare function setFullScreen(): any;
   styleUrls: ['./task-switching.component.scss']
 })
 export class TaskSwitchingComponent implements OnInit {
-  userID: string;
   isScored: boolean = false;
   showFeedbackAfterEveryTrial: boolean = true;
   showScoreAfterEveryTrial: boolean = false;
@@ -146,13 +145,6 @@ export class TaskSwitchingComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    const decodedToken = this.authService.getDecodedToken()
-    if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {
-      this.router.navigate(['/login/mturk'])
-      this.snackbarService.openErrorSnackbar("Refresh has occurred")
-    }
-    const jwt = this.authService.getDecodedToken()
-    this.userID = jwt.UserID
   }
 
   proceedtoPreviousStep(steps = 1) {
@@ -283,7 +275,7 @@ export class TaskSwitchingComponent implements OnInit {
     this.number = digit;
     this.data.push({
       trial: this.currentTrial,
-      userID: this.userID,
+      userID: this.authService.getDecodedToken().UserID,
       color: this.color,
       digit: digit,
       actualAnswer: answer,
@@ -405,10 +397,10 @@ export class TaskSwitchingComponent implements OnInit {
     const decodedToken = this.authService.getDecodedToken()
     if(decodedToken.Role === Role.ADMIN) {
       if(!environment.production) console.log(this.data)
-      this.router.navigate(['/dashboard/tasks'])
+      this.router.navigate(['/dashboard/components'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
-      this.taskManager.nextExperiment()
+      this.taskManager.next()
     }
   }
 

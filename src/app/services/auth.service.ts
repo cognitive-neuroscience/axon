@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import jwt_decode from 'jwt-decode';
 import { JWT } from '../models/Login';
 import { TimerService } from './timer.service';
+import { Role } from '../models/InternalDTOs';
 
 @Injectable({
   providedIn: 'root'
@@ -33,14 +34,6 @@ export class AuthService {
     return this.http.post<HttpResponse<any>>(`${environment.apiBaseURL}/login/turker`, obj, { observe: "response" });
   }
 
-  register(email: string, password: string): Observable<HttpResponse<any>> {
-    const obj = {
-      email: email,
-      password: password
-    }
-    return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/users', obj, { observe: "response" });
-  }
-
   // backend validates token in header so payload doesn't actually matter
   // TODO: refactor this
   validateToken(token: string): Observable<HttpResponse<any>> {
@@ -48,6 +41,11 @@ export class AuthService {
       token: token
     }
     return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/token', obj, { observe: "response" });
+  }
+
+  isAdmin(): boolean {
+    const token = this.getDecodedToken();
+    return token ? token.Role === Role.ADMIN : false;
   }
 
   isAuthenticated(): Observable<boolean> {

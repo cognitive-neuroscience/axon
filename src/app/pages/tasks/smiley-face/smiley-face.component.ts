@@ -1,7 +1,19 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { idIsEven, wait } from 'src/app/common/commonMethods';
+import { Feedback, Key, Role, UserResponse } from 'src/app/models/InternalDTOs';
+import { SmileyFace, TaskNames } from 'src/app/models/TaskData';
+import { AuthService } from 'src/app/services/auth.service';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { TaskManagerService } from 'src/app/services/task-manager.service';
+import { TimerService } from 'src/app/services/timer.service';
 import { UploadDataService } from 'src/app/services/uploadData.service';
+import { environment } from 'src/environments/environment';
+
 declare function setFullScreen(): any;
+import { SmileyFaceType, SmileyFaceBlock } from './BlockGenerator';
 
 @Component({
   selector: 'app-smiley-face',
@@ -9,94 +21,78 @@ declare function setFullScreen(): any;
   styleUrls: ['./smiley-face.component.scss']
 })
 export class SmileyFaceComponent implements OnInit {
-
+  countdownDisplayValue: number = 10;
   // Default Experiment config
-  isScored: boolean | number = true;
   showFeedbackAfterEveryTrial: boolean | number = true;
-  showScoreAfterEveryTrial: boolean | number = true;
-  numberOfBreaks: number = 2;
-  maxResponseTime: number = 800;        // In milliseconds
-  durationOfFeedback: number = 1750;    // In milliseconds
-  interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 5;
-  actualTrials: number = 10;
+  maxResponseTime: number = 3000;        // In milliseconds
+  durationOfFeedback: number = 1000;    // In milliseconds
+  durationFixationShown: number = 500;
+  durationStimulusShown: number = 100;
+  practiceTrials: number = environment.production ? 10 : 4;
+  actualTrials: number = environment.production ? 100: 4;
+  rewardedMoreNum: number = environment.production ? 30 : 2;
+  rewardedLessNum: number = environment.production ? 10 : 1;
 
   step: number = 1;
-  size: string = 'no';
+  smileyFaceType: string = SmileyFaceType.NONE;
   feedback: string = '';
   scoreForSpecificTrial: number = 0;
   totalScore: number = 0;
-  isPractice: boolean = false;
+  isPractice: boolean = true;
   isStimulus: boolean = false;
   isBreak: boolean = false;
   currentTrial: number = 0;
   isResponseAllowed: boolean = false;
-  data: {
-    actualAnswer: string,
-    userAnswer: string,
-    responseTime: number,
-    isCorrect: number,
-    score: number
-  }[] = [];
-  timer: {
-    started: number,
-    ended: number
-  } = {
-      started: 0,
-      ended: 0
-    };
+  data: SmileyFace[] = [];
   showFixation: boolean = false;
-  sTimeout: any;
+  
+  // global timers
+  countdownTimer: number;
+  sTimeout: number;
+
+
   feedbackShown: boolean = false;
+  currentBlock: SmileyFaceBlock;
+  currentBlockNum: number = 0;
+  
+  shortMouthRewardedMore: boolean = false;
+
 
   @HostListener('window:keypress', ['$event'])
   onKeyPress(event: KeyboardEvent) {
-    if (this.isResponseAllowed) {
+    if (this.isResponseAllowed && this.isValidKey(event.key)) {
       this.isResponseAllowed = false;
-      try {
-        if (event.key === 'Z' || event.key === 'z') {
-          this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
-          this.data[this.data.length - 1].userAnswer = 'Z';
-          try {
-            clearTimeout(this.sTimeout);
-            this.showFeedback();
-          } catch (error) {
-          }
-        } else if (event.key === 'M' || event.key === 'm') {
-          this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
-          this.data[this.data.length - 1].userAnswer = 'M';
-          try {
-            clearTimeout(this.sTimeout);
-            this.showFeedback();
-          } catch (error) {
-          }
-        } else {
-          this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
-          this.data[this.data.length - 1].userAnswer = 'INVALID';
-          try {
-            clearTimeout(this.sTimeout);
-            this.showFeedback();
-          } catch (error) {
-          }
-        }
-      } catch (error) {
-      }
+      clearTimeout(this.sTimeout);
+      const thisTrial = this.data[this.data.length - 1];
+      thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
+      thisTrial.submitted = this.timerService.getCurrentTimestamp();
+      thisTrial.userAnswer = event.key === Key.Z ? UserResponse.SHORT : UserResponse.LONG;
+      thisTrial.keyPressed = event.key === Key.Z ? Key.Z : Key.M;
+
+      this.showFeedback();
     }
+  }
+
+  private isValidKey(key: string): boolean {
+    if(key === Key.Z || key === Key.M) return true;
+    return false;
   }
 
 
 
   constructor(
     private router: Router,
-    private uploadDataService: UploadDataService
+    private uploadDataService: UploadDataService,
+    private authService: AuthService,
+    private taskManager: TaskManagerService,
+    private snackbarService: SnackbarService,
+    private timerService: TimerService
   ) { }
 
 
 
   ngOnInit() {
+    this.shortMouthRewardedMore = idIsEven(this.authService.getDecodedToken().UserID);
   }
 
 
@@ -114,101 +110,146 @@ export class SmileyFaceComponent implements OnInit {
 
 
   async startPractice() {
+    this.isPractice = true;
+    const numEachTrial = this.practiceTrials / 2;
+    // reward all correct answers in the practice
+    this.currentBlock = new SmileyFaceBlock(numEachTrial, numEachTrial, numEachTrial, numEachTrial);
+    this.currentBlockNum++;
     this.startGameInFullScreen();
     this.resetData();
     this.proceedtoNextStep();
-    await this.wait(2000);
+    await wait(2000);
     this.proceedtoNextStep();
-    this.isPractice = true;
-    this.currentTrial = 0;
     this.showStimulus();
   }
 
 
 
   async startActualGame() {
+    this.isPractice = false;
+    const numEachTrial = this.actualTrials / 2;
+    // counterbalanced
+    this.currentBlock = this.shortMouthRewardedMore ? 
+      new SmileyFaceBlock(numEachTrial, this.rewardedMoreNum, numEachTrial, this.rewardedLessNum) :
+      new SmileyFaceBlock(numEachTrial, this.rewardedLessNum, numEachTrial, this.rewardedMoreNum);
+
+    this.currentBlockNum++;
     this.resetData();
     this.proceedtoNextStep();
-    await this.wait(2000);
+    await wait(2000);
+    this.startCountDownTimer();
+  }
+
+  startCountDownTimer() {
+    this.startGameInFullScreen();
     this.proceedtoNextStep();
-    this.isPractice = false;
-    this.currentTrial = 0;
-    this.showStimulus();
+    this.countdownDisplayValue = 10;
+    this.countdownTimer = setInterval(() => {
+      this.countdownDisplayValue -= 1;
+      if (this.countdownDisplayValue <= 0) {
+        clearInterval(this.countdownTimer);
+        this.proceedtoNextStep();
+        this.showStimulus();
+      }
+    }, 1000);
   }
 
 
 
   async showStimulus() {
-
     this.reset();
-    this.showFixation = true;
-    await this.wait(500);
-    this.showFixation = false;
-    this.isStimulus = true;
-    this.size = 'no';
-    await this.wait(500);
-
     this.currentTrial += 1;
+    this.showFixation = true;
+    await wait(this.durationFixationShown);
+    this.showFixation = false;
+
+    this.isStimulus = true;
+    await wait(500);
+    
     this.generateStimulus();
 
-    await this.wait(100);
-    this.size = 'no';
-
+    
+    // This is the delay between showing the stimulus and showing the feedback
+    // note: have to set this before isResponseAllowed is true, or else there is
+    // the possibility that there is a response before sTimeout is set
+    this.sTimeout = setTimeout(() => {
+      clearTimeout(this.sTimeout)
+      
+      this.showFeedback();
+    }, this.maxResponseTime);
+    
+    this.timerService.startTimer();
     this.isResponseAllowed = true;
-
-    this.timer.started = new Date().getTime();
-    this.timer.ended = 0;
-
-    console.log(this.isPractice ? `Practice trial: ${this.currentTrial}` : `Actual trial: ${this.currentTrial}`);
+    await wait(this.durationStimulusShown);
+    this.smileyFaceType = SmileyFaceType.NONE;
   }
 
 
 
   generateStimulus() {
 
-    this.size = Math.random() > 0.5 ? 'short' : 'long';
+    const nextTrial = this.currentBlock.getAndSetNextTrial();
+    this.smileyFaceType = nextTrial.faceShown;
 
     this.data.push({
-      actualAnswer: this.size === 'short' ? 'Z' : 'M',
-      userAnswer: '',
+      actualAnswer: this.smileyFaceType,
+      userAnswer: UserResponse.NA,
       responseTime: 0,
-      isCorrect: 0,
-      score: 0
+      isCorrect: false,
+      score: 0,
+      block: this.currentBlockNum,
+      stimulus: nextTrial.faceShown,
+      keyPressed: UserResponse.NA,
+      rewarded: false,
+      trial: this.currentTrial,
+      userID: this.authService.getDecodedToken().UserID,
+      submitted: this.timerService.getCurrentTimestamp(),
+      isPractice: this.isPractice,
+      experimentCode: this.taskManager.getExperimentCode(),
+      isRescheduledReward: nextTrial.isRescheduledReward,
+      rewardedMore: this.shortMouthRewardedMore ? UserResponse.SHORT : UserResponse.LONG
     });
-
   }
 
 
 
   async showFeedback() {
+    clearTimeout(this.sTimeout)
     this.feedbackShown = true;
     this.isStimulus = false;
     this.isResponseAllowed = false;
 
-    if (this.data[this.data.length - 1].responseTime === 0) {
-      this.timer.ended = new Date().getTime();
-      this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
+    let thisTrial = this.data[this.data.length - 1];
+
+    const userAnswer = thisTrial.userAnswer;
+    const actualAnswer = thisTrial.actualAnswer;
+
+    switch (userAnswer) {
+      case actualAnswer:
+        thisTrial.isCorrect = true;
+        // only give feedback for the specific trials
+        if(this.currentBlock.getCurrentTrial().isRewarded) {
+          thisTrial.score = 50;
+          this.scoreForSpecificTrial = 50;
+          this.totalScore += 50;
+          this.feedback = "+50";
+          thisTrial.rewarded = true;
+        }
+        break;
+      case UserResponse.NA:
+        this.feedback = Feedback.TOOSLOW;
+        this.currentBlock.postponeReward();
+        thisTrial.responseTime = this.maxResponseTime;
+        this.scoreForSpecificTrial = 0;
+        break;
+      default:
+        this.scoreForSpecificTrial = 0;
+        this.currentBlock.postponeReward();
+        break;
     }
 
-    if (this.data[this.data.length - 1].actualAnswer === this.data[this.data.length - 1].userAnswer) {
-      this.feedback = "Correct";
-      this.data[this.data.length - 1].isCorrect = 1;
-      this.data[this.data.length - 1].score = 10;
-      this.scoreForSpecificTrial = 10;
-      this.totalScore += 10;
-    } else {
-      if (this.data[this.data.length - 1].userAnswer === '') {
-        this.feedback = "Too slow";
-      } else {
-        this.feedback = "Incorrect";
-      }
-      this.data[this.data.length - 1].isCorrect = 0;
-      this.data[this.data.length - 1].score = 0;
-      this.scoreForSpecificTrial = 0;
-    }
-
-    if (this.showFeedbackAfterEveryTrial || this.isPractice) {
-      await this.wait(this.durationOfFeedback);
+    if (this.feedback !== "") {
+      await wait(this.durationOfFeedback);
     }
     this.decideToContinue();
   }
@@ -219,35 +260,56 @@ export class SmileyFaceComponent implements OnInit {
     if (this.isPractice) {
       if (this.currentTrial < this.practiceTrials) {
         this.continueGame();
+        return;
       } else {
+        this.currentBlockNum = 0;
         this.proceedtoNextStep();
-        await this.wait(2000);
+        await wait(2000);
         this.proceedtoNextStep();
+        return;
       }
     } else {
       if (this.currentTrial < this.actualTrials) {
-        if (this.numberOfBreaks === 0) {
-          this.continueGame();
-        } else {
-          const breakAtTrailIndices = [];
-          const setSize = this.actualTrials / (this.numberOfBreaks + 1);
-          for (let i = 1; i < this.numberOfBreaks + 1; i++) {
-            breakAtTrailIndices.push(setSize * i);
-          }
-          if (breakAtTrailIndices.includes(this.currentTrial)) {
-            this.isBreak = true;
-          } else {
-            this.isBreak = false;
-            this.continueGame();
-          }
-        }
+        this.continueGame();
+        return;
       } else {
         this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
-        console.log(this.data);
+
+        if(this.currentBlockNum < 3) {
+          this.takeBreak();
+          return;
+        } else {
+          const decodedToken = this.authService.getDecodedToken()
+
+          if(decodedToken.Role === Role.ADMIN) {
+            this.proceedtoNextStep();
+            return;
+          } else {
+  
+            this.uploadResults(this.data).pipe(take(1)).subscribe(ok => {
+              if(ok) {
+                this.proceedtoNextStep();
+                return;
+              } else {
+                console.error("There was an error downloading results")
+                this.taskManager.handleErr();
+                return;
+              }
+            }, err => {
+              console.error("There was an error downloading results")
+              this.taskManager.handleErr();
+              return;
+            })
+
+          }
+        }
       }
     }
+  }
+
+  async takeBreak() {
+    await wait(2000);
+    this.isBreak = true;
   }
 
 
@@ -255,32 +317,46 @@ export class SmileyFaceComponent implements OnInit {
   resume() {
     this.reset();
     this.isBreak = false;
-    this.continueGame();
+    this.startActualGame();
   }
 
 
 
   async continueGame() {
-    await this.wait(this.interTrialDelay);
+    this.reset();
     this.showStimulus();
   }
 
 
 
-  uploadResults() {
+
+  uploadResults(data: SmileyFace[]): Observable<boolean> {
+    const experimentCode = this.taskManager.getExperimentCode()
+    return this.uploadDataService.uploadData(experimentCode, TaskNames.SMILEYFACE, data).pipe(
+      map(ok => ok.ok)
+    )
   }
 
 
 
+
   continueAhead() {
-    this.router.navigate(['/dashboard']);
+    const decodedToken = this.authService.getDecodedToken()
+    if(decodedToken.Role === Role.ADMIN) {
+      if(!environment.production) console.log(this.data)
+      
+      this.router.navigate(['/dashboard/components'])
+      this.snackbarService.openInfoSnackbar("Task completed")
+    } else {
+      this.taskManager.next()
+    }
   }
 
 
 
 
   reset() {
-    this.size = '';
+    this.smileyFaceType = SmileyFaceType.NONE;
     this.feedback = '';
     this.feedbackShown = false;
     this.scoreForSpecificTrial = 0;
@@ -289,8 +365,10 @@ export class SmileyFaceComponent implements OnInit {
 
 
   resetData() {
-    this.data = [];
-    this.totalScore = 0;
+    this.currentTrial = 0;
+    if(!this.isPractice && this.currentBlockNum <= 1) {
+      this.totalScore = 0;
+    }
   }
 
 
@@ -298,15 +376,4 @@ export class SmileyFaceComponent implements OnInit {
   startGameInFullScreen() {
     setFullScreen();
   }
-
-
-
-  wait(time: number): Promise<void> {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve();
-      }, time);
-    });
-  }
-
 }

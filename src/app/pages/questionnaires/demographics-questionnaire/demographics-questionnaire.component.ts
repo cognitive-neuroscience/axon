@@ -62,7 +62,7 @@ export class DemographicsQuestionnaireComponent implements OnInit {
     this.confirmationService.openConfirmationDialog(msg).subscribe(accept => {
       if(accept) {
         this.sessionStorage.clearSessionStorage()
-        this.router.navigate(['/login/mturk'])
+        this.router.navigate(['/login/onlineparticipant'])
       }
     })
   }
@@ -83,7 +83,7 @@ export class DemographicsQuestionnaireComponent implements OnInit {
     }
     this.questionnaireService.saveDemographicsQuestionnaireResponse(response).pipe(take(1)).subscribe(ok => {
       if(ok) {
-        this.taskManager.nextExperiment()
+        this.taskManager.next()
       } else {
         this.taskManager.handleErr()
       }

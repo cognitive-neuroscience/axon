@@ -3,8 +3,9 @@ import { Observable, BehaviorSubject, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Task } from '../models/Task';
 import { AuthService } from './auth.service';
-import { Role } from '../models/InternalDTOs';
+import { Role, TaskType } from '../models/InternalDTOs';
 import { RouteMap } from '../routing/routes';
+import { filter, take } from "rxjs/operators";
 
 @Injectable({
     providedIn: "root"
@@ -36,15 +37,16 @@ export class TasklistService {
         const jwt = this.authService.getDecodedToken()
         const role = jwt ? jwt.Role : null
 
-        if(role && role === Role.ADMIN) {
-            this._getTasks().subscribe((tasks: Task[]) => {                
-                this._taskBehaviorSubject.next(tasks)
+        if(role && (role === Role.ADMIN || role === Role.GUEST)) {
+            this._getTasks().subscribe((tasks: Task[]) => {
+                const filteredTasks = tasks.filter(task => task.type !== TaskType.Questionnaire);             
+                this._taskBehaviorSubject.next(filteredTasks)
             })
         }
     }
 
     private _updateCompletedTaskBehaviorSubject() {
-        this._getCompletedTaskIds().subscribe((completedTasks: string[]) => {
+        this._getCompletedTaskIds().pipe(take(1)).subscribe((completedTasks: string[]) => {
             this._completedTaskBehaviorSubject.next(completedTasks)
         })
     }

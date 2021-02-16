@@ -1,5 +1,5 @@
 import { RouteMap } from "../routing/routes";
-import { Key, UserResponse } from "./InternalDTOs";
+import { BEStrings, Key, UserResponse } from "./InternalDTOs";
 
 export enum TaskNames {
     ODDBALL = "oddball",
@@ -13,7 +13,10 @@ export enum TaskNames {
     TASKSWITCHING = "taskswitching",
     DEMANDSELECTION = "demandselection",
     SIMON = "simon",
-    SMILEYFACE = "smileyface"
+    SMILEYFACE = "smileyface",
+    RATING = "rating",
+    CHOICE = "choice",
+    POSTCHOICE = "postchoice"
 }
 
 export abstract class TaskData {
@@ -96,7 +99,7 @@ export class TrailMaking extends TaskData {
 export class FingerTapping extends TaskData {
     block: number;
     dominantHand: UserResponse;
-    shouldUseDominantHand: boolean;
+    handUsed: string;
     timeFromLastKeyPress: number;
     keyPressed: Key;
 }
@@ -109,41 +112,64 @@ export class DigitSpan extends TaskData {
     isForwardMemoryMode: boolean;
 }
 
-export class ratingTask extends TaskData {
+export class RatingTask extends TaskData {
     counterbalance: number;
     ratingType: string; 
     trial: number; 
     activity: string;
-    userAnswer: number;
+    userAnswer: string;
     responseTime: number;
-
 }
 
-export class choiceTask extends TaskData {
+export class ChoiceTask extends TaskData {
     trial: number; 
     activityLeft: string;
     activityRight: string;
-    userAnswer: number;
+    userAnswer: string;
     responseTime: number;
 }
 
-export class postChoiceRatingTask extends TaskData {
+export class PostChoiceTask extends TaskData {
     ratingType: string; 
     trial: number; 
     activity: string;
-    userAnswer: number;
+    userAnswer: string;
     responseTime: number;
+}
+
+export class Oddball extends TaskData {
+    stimulus: string;
+    targetResponse: string;
+    responseTime: number;
+    actualAnswer: Key;
+    userAnswer: string;
+    target: string;
+    block: number;
+}
+
+export class SmileyFace extends TaskData {
+    actualAnswer: string;
+    userAnswer: string;
+    responseTime: number;
+    block: number;
+    stimulus: string;
+    keyPressed: string;
+    rewarded: boolean;
+    isRescheduledReward: boolean;
+    rewardedMore: UserResponse.SHORT | UserResponse.LONG;
 }
 
 export function mapTaskIdToTitle(task: string) {
     switch (task) {
-        case "demographics_questionnaire_responses":
+        case RouteMap.consent.id:
+            return "Consent Form";
+        case RouteMap.demographicsquestionnaire.id:
             return "Demographics Questionnaire";
-        case "feedback_questionnaire_responses":
+        case BEStrings.FEEDBACKQUESTIONNAIRE:
             return "Feedback Questionnaire";
-        case "experiment_user":
+        case BEStrings.EXPERIMENTUSERS:
             return "Registered Participants"
         default:
-            return RouteMap[task].title
+            return RouteMap[task]?.title
     }
   }

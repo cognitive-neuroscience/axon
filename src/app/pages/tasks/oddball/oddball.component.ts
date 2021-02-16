@@ -1,6 +1,19 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { getRandomNumber, idIsEven } from 'src/app/common/commonMethods';
+import { Feedback, JitteredInterval, Key, Role, UserResponse } from 'src/app/models/InternalDTOs';
+import { Oddball, TaskNames } from 'src/app/models/TaskData';
+import { AuthService } from 'src/app/services/auth.service';
+import { LoaderService } from 'src/app/services/loader.service';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { TaskManagerService } from 'src/app/services/task-manager.service';
+import { TimerService } from 'src/app/services/timer.service';
 import { UploadDataService } from 'src/app/services/uploadData.service';
+import { environment } from 'src/environments/environment';
+import { OddballTrial, BlockGenerator } from './BlockGenerator';
 declare function setFullScreen(): any;
 
 @Component({
@@ -9,20 +22,23 @@ declare function setFullScreen(): any;
   styleUrls: ['./oddball.component.scss']
 })
 export class OddballComponent implements OnInit {
-
   // Default Experiment config
   isScored: boolean | number = true;
   showFeedbackAfterEveryTrial: boolean | number = true;
   showScoreAfterEveryTrial: boolean | number = true;
-  numberOfBreaks: number = 2;
-  maxResponseTime: number = 800;        // In milliseconds
+  maxResponseTime: number = 2000;        // In milliseconds
   durationOfFeedback: number = 500;    // In milliseconds
-  interTrialDelay: number = 1000;       // In milliseconds
-  practiceTrials: number = 5;
-  actualTrials: number = 10;
+  interTrialDelay: number = 200;       // In milliseconds
+  durationFixationPresented: JitteredInterval = environment.production ? { lowerbound: 1000, upperbound: 2000 } : { lowerbound: 100, upperbound: 500 }
+  durationStimulusPresented: number = 450;
+  practiceTrials: number = environment.production ? 10 : 2;
+  actualTrials: number = environment.production ? 60 : 5;
+
+  studyLoaded: boolean = false;
 
   step: number = 1;
-  color: string = '';
+  block: number = 0;
+  stimulusShown: string | ArrayBuffer = null;
   feedback: string = '';
   scoreForSpecificTrial: number = 0;
   totalScore: number = 0;
@@ -31,54 +47,75 @@ export class OddballComponent implements OnInit {
   isBreak: boolean = false;
   currentTrial: number = 0;
   isResponseAllowed: boolean = false;
-  data: {
-    actualAnswer: string,
-    userAnswer: string,
-    responseTime: number,
-    isCorrect: number,
-    score: number
-  }[] = [];
-  timer: {
-    started: number,
-    ended: number
-  } = {
-      started: 0,
-      ended: 0
-    };
+
+  breakTimeDisplayValue: number = 0;
+  breakDuration: number = 31;
+
+  trials: OddballTrial[];
+  currentTrialConfig: OddballTrial;
+  novelStimuliUsed: string[] = [];
+  includeNovelStimuli: boolean = false;
+
+  targetResponse: Key;
+  targetImage: 'square.png' | 'triangle.png';
+
+  data: Oddball[] = [];
+
   showFixation: boolean = false;
-  sTimeout: any;
+
+  // timers
+  responseTimeout: number;
+  stimulusShownTimeout: number;
+  breakTimer: number;
+
   feedbackShown: boolean = false;
 
   @HostListener('window:keypress', ['$event'])
   onKeyPress(event: KeyboardEvent) {
-    if (this.isResponseAllowed) {
+    if (this.isResponseAllowed && this.isValidKey(event.key)) {
+      clearTimeout(this.responseTimeout);
+      clearTimeout(this.stimulusShownTimeout)
       this.isResponseAllowed = false;
-      try {
-        if (event.key === ' ') {
-          this.timer.ended = new Date().getTime();
-          this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
-          this.data[this.data.length - 1].userAnswer = 'responded';
-          try {
-            clearTimeout(this.sTimeout);
-            this.showFeedback();
-          } catch (error) {
-          }
-        }
-      } catch (error) {
-      }
+      const thisTrial = this.data[this.data.length - 1];
+      
+      thisTrial.userAnswer = event.key;
+      thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
+
+      this.showFeedback();
     }
   }
 
+  private isValidKey(key: string): boolean {
+    if(key === Key.Z || key === Key.M) return true;
+    return false;
+  }
 
 
   constructor(
     private router: Router,
-    private uploadDataService: UploadDataService
+    private uploadDataService: UploadDataService,
+    private authService: AuthService,
+    private taskManager: TaskManagerService,
+    private snackbarService: SnackbarService,
+    private timerService: TimerService,
+    private http: HttpClient,
+    private loader: LoaderService,
   ) { }
 
-
-
   ngOnInit() {
+
+    this.loader.showLoader()
+
+    // call initialize once to preload images
+    BlockGenerator.initialize(this.http).subscribe(data => {
+      this.loader.hideLoader()
+      this.studyLoaded = true;
+    }, err => {
+      this.taskManager.handleErr();
+    })
+
+    this.targetResponse = idIsEven(this.authService.getDecodedToken().UserID) ? Key.M : Key.Z;
+    this.targetImage = 'triangle.png';
   }
 
 
@@ -96,6 +133,10 @@ export class OddballComponent implements OnInit {
 
 
   async startPractice() {
+    this.trials = new BlockGenerator(this.targetImage, 2, 0, 10).trials;
+
+    this.block = 1;
+
     this.startGameInFullScreen();
     this.resetData();
     this.proceedtoNextStep();
@@ -106,11 +147,19 @@ export class OddballComponent implements OnInit {
     this.showStimulus();
   }
 
-
-
   async startActualGame() {
+    // restart block from 0 after practice
+    if(this.isPractice) this.block = 0;
+
+    // note - novel stimuli is constantly updated as we are sending a reference to it to the block generator
+    this.trials = this.includeNovelStimuli ? new BlockGenerator(this.targetImage, 6, 6, 60, this.novelStimuliUsed).trials : new BlockGenerator(this.targetImage, 12, 0, 60).trials;
+    this.block++;
+
     this.resetData();
     this.proceedtoNextStep();
+    await this.wait(2000);
+    this.proceedtoNextStep();
+    // show the get ready slide
     await this.wait(2000);
     this.proceedtoNextStep();
     this.isPractice = false;
@@ -120,89 +169,100 @@ export class OddballComponent implements OnInit {
 
 
 
+
+
+
   async showStimulus() {
-
-    this.reset();
-    this.showFixation = true;
-    await this.wait(500);
-    this.showFixation = false;
-    await this.wait(200);
-
     this.currentTrial += 1;
+    this.reset();
     this.generateStimulus();
-    this.isStimulus = true;
+    this.showFixation = true;
+    await this.wait( getRandomNumber(this.durationFixationPresented.lowerbound, this.durationFixationPresented.upperbound) );
+    this.showFixation = false;
     this.isResponseAllowed = true;
+    this.timerService.startTimer();
+    this.isStimulus = true;
 
-    this.timer.started = new Date().getTime();
-    this.timer.ended = 0;
-
-    console.log(this.isPractice ? `Practice trial: ${this.currentTrial}` : `Actual trial: ${this.currentTrial}`);
+    this.stimulusShownTimeout = setTimeout(() => {
+      clearTimeout(this.stimulusShownTimeout)
+      this.isStimulus = false;
+    }, this.durationStimulusPresented)
 
     // This is the delay between showing the stimulus and showing the feedback
-    this.sTimeout = setTimeout(() => {
+    this.responseTimeout = setTimeout(() => {
       if (!this.feedbackShown) {
         this.showFeedback();
       }
     }, this.maxResponseTime);
   }
 
-
-
-  generateStimulus() {
-    const random = Math.random();
-    if (random < 0.5) {
-      this.color = 'green';
-      this.data.push({
-        actualAnswer: 'responded',
-        userAnswer: 'not-responded',
-        responseTime: 0,
-        isCorrect: 0,
-        score: 0
-      });
-    } else {
-      this.color = 'orange';
-      this.data.push({
-        actualAnswer: 'not-responded',
-        userAnswer: 'not-responded',
-        responseTime: 0,
-        isCorrect: 0,
-        score: 0
-      });
-    }
+  private showImage(blob: Blob) {
+    const fr = new FileReader();
+    fr.addEventListener("load", () => {
+      this.stimulusShown = fr.result;
+    })
+    fr.readAsDataURL(blob);
   }
 
+  generateStimulus() {
+    this.currentTrialConfig = this.trials[this.currentTrial - 1]
+    this.showImage(this.currentTrialConfig.blob);
+    const nonTargetResponse = this.targetResponse === Key.Z ? Key.M : Key.Z;
 
+    this.data.push({
+      userID: this.authService.getDecodedToken().UserID,
+      stimulus: this.currentTrialConfig.stimuli,
+      targetResponse: this.targetResponse,
+      responseTime: 0,
+      trial: this.currentTrial,
+      isCorrect: false,
+      score: 0,
+      userAnswer: UserResponse.NA,
+      actualAnswer: this.currentTrialConfig.isTarget ? this.targetResponse : nonTargetResponse,
+      submitted: this.timerService.getCurrentTimestamp(),
+      isPractice: this.isPractice,
+      experimentCode: this.taskManager.getExperimentCode(),
+      target: this.targetImage,
+      block: this.block
+    })
+  }
 
   async showFeedback() {
+    clearTimeout(this.responseTimeout);
+    clearTimeout(this.stimulusShownTimeout)
     this.feedbackShown = true;
     this.isStimulus = false;
     this.isResponseAllowed = false;
 
-    if (this.data[this.data.length - 1].responseTime === 0) {
-      this.timer.ended = new Date().getTime();
-      this.data[this.data.length - 1].responseTime = Number(((this.timer.ended - this.timer.started) / 1000).toFixed(2));
+    const thisTrial = this.data[this.data.length - 1];
+    const userAnswer = thisTrial.userAnswer;
+    const actualAnswer = thisTrial.actualAnswer;
+
+    switch (userAnswer) {
+      case actualAnswer:
+        this.feedback = Feedback.CORRECT;
+        thisTrial.isCorrect = true;
+        thisTrial.score = 10;
+        this.scoreForSpecificTrial = 10;
+        this.totalScore += 10;
+        break;
+      case UserResponse.NA:
+        this.feedback = Feedback.TOOSLOW;
+        thisTrial.responseTime = this.maxResponseTime;
+        this.scoreForSpecificTrial = 0;
+        break;
+      default:
+        this.feedback = Feedback.INCORRECT;
+        this.scoreForSpecificTrial = 0;
+        break;
     }
 
-    if (this.data[this.data.length - 1].actualAnswer === this.data[this.data.length - 1].userAnswer) {
-      this.feedback = "Correct";
-      this.data[this.data.length - 1].isCorrect = 1;
-      this.data[this.data.length - 1].score = 10;
-      this.scoreForSpecificTrial = 10;
-      this.totalScore += 10;
-    } else {
-      if (this.data[this.data.length - 1].userAnswer === 'responded') {
-        this.feedback = "Incorrect";
-      } else {
-        this.feedback = "Too slow";
-      }
-      this.data[this.data.length - 1].isCorrect = 0;
-      this.data[this.data.length - 1].score = 0;
-      this.scoreForSpecificTrial = 0;
-    }
-
-    if (this.showFeedbackAfterEveryTrial || this.isPractice) {
+    // show feedback either if it is a practice trial, or if the feedback is telling the user
+    // they are too slow. Don't show for other feedback during actual game
+    if (this.isPractice || (this.showFeedbackAfterEveryTrial && this.feedback === Feedback.TOOSLOW)) {
       await this.wait(this.durationOfFeedback);
     }
+
     this.decideToContinue();
   }
 
@@ -212,43 +272,77 @@ export class OddballComponent implements OnInit {
     if (this.isPractice) {
       if (this.currentTrial < this.practiceTrials) {
         this.continueGame();
+        return;
       } else {
         this.proceedtoNextStep();
         await this.wait(2000);
         this.proceedtoNextStep();
+        return;
       }
     } else {
       if (this.currentTrial < this.actualTrials) {
-        if (this.numberOfBreaks === 0) {
-          this.continueGame();
-        } else {
-          const breakAtTrailIndices = [];
-          const setSize = this.actualTrials / (this.numberOfBreaks + 1);
-          for (let i = 1; i < this.numberOfBreaks + 1; i++) {
-            breakAtTrailIndices.push(setSize * i);
-          }
-          if (breakAtTrailIndices.includes(this.currentTrial)) {
-            this.isBreak = true;
-          } else {
-            this.isBreak = false;
-            this.continueGame();
-          }
-        }
+        // continue the block
+        this.continueGame();
+        return;
       } else {
+        // we have finished the block
         this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
-        console.log(this.data);
+
+        // add in the novel stimuli for the last two trials
+        if(this.block >= 2) this.includeNovelStimuli = true;
+        
+        // we have finished all the blocks
+        if(this.block >= 4) {
+
+          const decodedToken = this.authService.getDecodedToken()
+          if(decodedToken.Role === Role.ADMIN) {
+            this.proceedtoNextStep();
+            return;
+          } else {
+  
+            this.uploadResults(this.data).pipe(take(1)).subscribe(ok => {
+              if(ok) {
+                this.proceedtoNextStep();
+                return;
+              } else {
+                console.error("There was an error downloading results")
+                this.taskManager.handleErr();
+                return;
+              }
+            }, err => {
+              console.error("There was an error downloading results")
+              this.taskManager.handleErr();
+              return;
+            })
+          }
+        } else {
+          // if we are not done with the task, take a break
+          await this.wait(2000)
+          this.startBreak();
+        }
+
       }
     }
   }
 
 
 
-  resume() {
-    this.reset();
+  startBreak() {
+    this.isBreak = true;
+    this.breakTimeDisplayValue = 1;
+    this.breakTimer = setInterval(() => {
+      this.breakTimeDisplayValue += 1;
+      if(this.breakTimeDisplayValue >= this.breakDuration) {
+        this.stopBreak();
+        return;
+      }
+    }, 1000)
+  }
+
+  async stopBreak() {
+    clearInterval(this.breakTimer)
     this.isBreak = false;
-    this.continueGame();
+    this.startActualGame();
   }
 
 
@@ -260,20 +354,33 @@ export class OddballComponent implements OnInit {
 
 
 
-  uploadResults() {
+  uploadResults(data: Oddball[]): Observable<boolean> {
+    const experimentCode = this.taskManager.getExperimentCode()
+    return this.uploadDataService.uploadData(experimentCode, TaskNames.ODDBALL, data).pipe(
+      map(ok => ok.ok)
+    )
   }
 
 
 
   continueAhead() {
-    this.router.navigate(['/dashboard']);
+    const decodedToken = this.authService.getDecodedToken()
+    if(decodedToken.Role === Role.ADMIN) {
+      if(!environment.production) console.log(this.data)
+      
+      this.router.navigate(['/dashboard/components'])
+      this.snackbarService.openInfoSnackbar("Task completed")
+    } else {
+      this.taskManager.next()
+    }
   }
 
 
 
 
+
   reset() {
-    this.color = '';
+    this.stimulusShown = null;
     this.feedback = '';
     this.feedbackShown = false;
     this.scoreForSpecificTrial = 0;
@@ -282,7 +389,6 @@ export class OddballComponent implements OnInit {
 
 
   resetData() {
-    this.data = [];
     this.totalScore = 0;
   }
 

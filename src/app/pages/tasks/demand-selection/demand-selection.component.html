@@ -1,20 +1,17 @@
-<!-- STILL IN PROGRESS -->
+<div class="container-fluid wrapper task-text flex-column-center">
 
 
-<div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
-
-
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 1">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 1">
         <!-- Introduction -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/demandselection/1.png" alt="Demand Selection instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
+                    <button mat-raised-button color="primary" disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -35,15 +32,15 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 2">
         <!-- Introduction -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/demandselection/2.png" alt="Demand Selection instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -66,15 +63,15 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 3">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 3">
         <!-- Introduction -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/demandselection/3.png" alt="Demand Selection instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -97,14 +94,14 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 4">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 4">
         <!-- Instructions -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/demandselection/4.png" alt="Demand Selection instructions">
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -127,15 +124,15 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 5">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 5">
         <!-- Instructions -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/demandselection/5.png" alt="Demand Selection instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -158,14 +155,14 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 6">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 6">
         <!-- First Practice -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/demandselection/6.png" alt="Demand Selection instructions">
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -189,11 +186,11 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 7">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 7">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 8">
         <!-- practice round -->
         <div *ngIf="isStimulus">
 
@@ -206,13 +203,13 @@
                 <div class="patch-container d-flex justify-content-between" rotate [rotation]="currentBlock.blockConfig.rotation">
                     <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
                         <img (mouseenter)="onHoverPatch($event, 'firstPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.firstPatchImg}}" alt="First Patch">
-                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 flex-column-center">
                             <span class="displayed-number" [style.color]="color">{{ number }}</span>
                         </div>
                     </div>
                     <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
                         <img (mouseenter)="onHoverPatch($event, 'secondPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.secondPatchImg}}" alt="Second Patch">
-                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 flex-column-center">
                             <span class="displayed-number" [style.color]="color">{{ number }}</span>
                         </div>
                     </div>
@@ -232,12 +229,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 9">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 10">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 10">
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Practice Round Is Now Complete</h2>
@@ -246,14 +243,14 @@
         <!-- Introduction -->
         <div class="w-100 p-4 uppercase" align="center">
 
-            <div class="statement">
+            <div>
                 You got {{totalScore/10}} out of {{practiceTrials}} trials correct
             </div>
 
             <br>
 
 
-            <div class="statement-final">
+            <div>
                 Click 'NEXT' when you are ready for the next stage.
             </div>
 
@@ -261,9 +258,9 @@
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
-                    <button mat-raised-button disabled (click)="proceedtoPreviousStep();">
+                    <button mat-raised-button disabled>
                         <mat-icon>
                             arrow_backward
                         </mat-icon>
@@ -284,14 +281,14 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 11">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 11">
         <!-- Recap instructions -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/demandselection/7.png" alt="Demand Selection instructions">
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -315,12 +312,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 12">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 12">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- second practice round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 13">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 13">
         <!-- practice round -->
         <div *ngIf="isStimulus">
 
@@ -333,13 +330,13 @@
                 <div class="patch-container d-flex justify-content-between" rotate [rotation]="currentBlock.blockConfig.rotation">
                     <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
                         <img (mouseenter)="onHoverPatch($event, 'firstPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.firstPatchImg}}" alt="First Patch">
-                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 flex-column-center">
                             <span class="displayed-number" [style.color]="color">{{ number }}</span>
                         </div>
                     </div>
                     <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
                         <img (mouseenter)="onHoverPatch($event, 'secondPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.secondPatchImg}}" alt="Second Patch">
-                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 flex-column-center">
                             <span class="displayed-number" [style.color]="color">{{ number }}</span>
                         </div>
                     </div>
@@ -355,18 +352,18 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 14">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 14">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 15">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 15">
         <!-- Intro to main game -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/demandselection/8.png" alt="Demand Selection instructions">
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -390,24 +387,24 @@
     </div>
 
     <!-- Actual game: Round 1 Intro -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 16">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 16">
 
         <!-- Introduction -->
         <div class="w-100 h-100 d-flex flex-column justify-content-center p-4 uppercase" align="center">
 
-            <div class="statement">
+            <div>
                 <span>This is part 1 of the game.</span>
             </div>
 
             <br>
-            <div class="statement-final">
+            <div>
                 Click 'NEXT' to proceed
             </div>
 
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -430,14 +427,14 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 17">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 17">
         <!-- Recap instructions -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/demandselection/10.png" alt="Demand Selection instructions">
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -460,14 +457,14 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 18">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 18">
         <!-- Recap instructions -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/demandselection/9.png" alt="Demand Selection instructions">
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -490,14 +487,14 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 19">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 19">
         <!-- Recap instructions -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/demandselection/10.png" alt="Demand Selection instructions">
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -520,14 +517,14 @@
         </div>
     </div>
 
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 20">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 20">
         <!-- Recap instructions -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/demandselection/11.png" alt="Demand Selection instructions">
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -551,12 +548,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 21">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 21">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- actual game for block 1 -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 22">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 22">
 
         <div *ngIf="isStimulus">
 
@@ -568,13 +565,13 @@
                 <div class="patch-container d-flex justify-content-between" rotate [rotation]="currentBlock.blockConfig.rotation">
                     <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
                         <img (mouseenter)="onHoverPatch($event, 'firstPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.firstPatchImg}}" alt="First Patch">
-                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 flex-column-center">
                             <span class="displayed-number" [style.color]="color">{{ number }}</span>
                         </div>
                     </div>
                     <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
                         <img (mouseenter)="onHoverPatch($event, 'secondPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.secondPatchImg}}" alt="Second Patch">
-                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 flex-column-center">
                             <span class="displayed-number" [style.color]="color">{{ number }}</span>
                         </div>
                     </div>
@@ -590,29 +587,29 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 23">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 23">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Actual game: Round 1 Complete message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 24">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 24">
 
         <!-- Introduction -->
         <div class="w-100 h-100 d-flex flex-column justify-content-center p-4 uppercase" align="center">
 
-            <div class="statement">
+            <div>
                 <span>Part 1 is now complete.</span>
             </div>
 
             <br>
-            <div class="statement-final">
+            <div>
                 Click 'NEXT' to proceed
             </div>
 
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -636,24 +633,24 @@
     </div>
 
     <!-- Actual game: Round 2,3,4 Intro -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 25">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 25">
 
         <!-- Introduction -->
         <div class="w-100 h-100 d-flex flex-column justify-content-center p-4 uppercase" align="center">
 
-            <div class="statement">
+            <div>
                 <span>This is part {{blockNum}} of the game.</span>
             </div>
 
             <br>
-            <div class="statement-final">
+            <div>
                 Click 'NEXT' to proceed
             </div>
 
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -677,14 +674,14 @@
     </div>
 
     <!-- instructions recap -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 26">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 26">
         <!-- Recap instructions -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/demandselection/11.png" alt="Demand Selection instructions">
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -708,12 +705,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 27">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 27">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- actual game for blocks 2, 3, and 4 -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 28">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 28">
 
         <div *ngIf="isStimulus">
 
@@ -725,13 +722,13 @@
                 <div class="patch-container d-flex justify-content-between" rotate [rotation]="currentBlock.blockConfig.rotation">
                     <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
                         <img (mouseenter)="onHoverPatch($event, 'firstPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.firstPatchImg}}" alt="First Patch">
-                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 flex-column-center">
                             <span class="displayed-number" [style.color]="color">{{ number }}</span>
                         </div>
                     </div>
                     <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
                         <img (mouseenter)="onHoverPatch($event, 'secondPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.secondPatchImg}}" alt="Second Patch">
-                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 flex-column-center">
                             <span class="displayed-number" [style.color]="color">{{ number }}</span>
                         </div>
                     </div>
@@ -747,32 +744,32 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 29">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 29">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Actual game: Round 2,3,4 Complete message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 30">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 30">
 
         <!-- Introduction -->
         <div class="w-100 h-100 d-flex flex-column justify-content-center p-4 uppercase" align="center">
 
-            <div class="statement">
+            <div>
                 <span>Part {{blockNum}} is now complete.</span>
             </div>
             <br>
             <!-- at the 4th block, we want to introduce counterbalancing -->
-            <div *ngIf="blockNum === 4" class="statement">
+            <div *ngIf="blockNum === 4">
                 <span style="color: red;" class="uppercase">We will be asking you to do something different!!!</span>
             </div>
             <br>
-            <div class="statement-final">
+            <div>
                 Click 'NEXT' to proceed
             </div>
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -798,25 +795,25 @@
     <!-- start counter balancing -->
 
     <!-- counter balancing, block 5 -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 31">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 31">
 
         <ng-container *ngIf="counterBalance === 'Select hard patch'">
             <!-- instructions for round 5 -->
-            <div class="w-100 px-4 uppercase instructions" align="center">
+            <div class="uppercase instructions h-100 flex-column-center" align="center">
                 <img class="w-100" src="/assets/images/instructions/demandselection/12a.png" alt="Demand Selection instructions">
             </div>
         </ng-container>
 
         <ng-container *ngIf="counterBalance === 'Select easy patch'">
             <!-- instructions for round 5 -->
-            <div class="w-100 px-4 uppercase instructions" align="center">
+            <div class="uppercase instructions h-100 flex-column-center" align="center">
                 <img class="w-100" src="/assets/images/instructions/demandselection/12b.png" alt="Demand Selection instructions">
             </div>
         </ng-container>
 
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -840,14 +837,14 @@
     </div>
 
     <!-- instructions recap -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 32">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 32">
         <!-- Recap instructions -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/demandselection/11.png" alt="Demand Selection instructions">
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -871,12 +868,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 33">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 33">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- actual game for block 5-->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 34">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 34">
 
         <div *ngIf="isStimulus">
 
@@ -888,13 +885,13 @@
                 <div class="patch-container d-flex justify-content-between" rotate [rotation]="currentBlock.blockConfig.rotation">
                     <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
                         <img (mouseenter)="onHoverPatch($event, 'firstPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.firstPatchImg}}" alt="First Patch">
-                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 flex-column-center">
                             <span class="displayed-number" [style.color]="color">{{ number }}</span>
                         </div>
                     </div>
                     <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
                         <img (mouseenter)="onHoverPatch($event, 'secondPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.secondPatchImg}}" alt="Second Patch">
-                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 flex-column-center">
                             <span class="displayed-number" [style.color]="color">{{ number }}</span>
                         </div>
                     </div>
@@ -910,31 +907,31 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 35">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 35">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Actual game: Round 5 Complete message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 36">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 36">
 
         <!-- Introduction -->
         <div class="w-100 h-100 d-flex flex-column justify-content-center p-4 uppercase" align="center">
 
-            <div class="statement">
+            <div>
                 <span>Part {{blockNum}} is now complete.</span>
             </div>
             <br>
-            <div class="statement">
+            <div>
                 <span style="color: red;" class="uppercase">We will be asking you to do something different!!!</span>
             </div>
             <br>
-            <div class="statement-final">
+            <div>
                 Click 'NEXT' to proceed
             </div>
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -958,25 +955,25 @@
     </div>
 
     <!-- counter balancing, block 6 -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 37">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 37">
 
         <ng-container *ngIf="counterBalance === 'Select hard patch'">
             <!-- instructions for round 5 -->
-            <div class="w-100 px-4 uppercase instructions" align="center">
+            <div class="uppercase instructions h-100 flex-column-center" align="center">
                 <img class="w-100" src="/assets/images/instructions/demandselection/13b.png" alt="Demand Selection instructions">
             </div>
         </ng-container>
 
         <ng-container *ngIf="counterBalance === 'Select easy patch'">
             <!-- instructions for round 5 -->
-            <div class="w-100 px-4 uppercase instructions" align="center">
+            <div class="uppercase instructions h-100 flex-column-center" align="center">
                 <img class="w-100" src="/assets/images/instructions/demandselection/13a.png" alt="Demand Selection instructions">
             </div>
         </ng-container>
 
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -1000,14 +997,14 @@
     </div>
 
     <!-- instructions recap -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 38">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 38">
         <!-- Recap instructions -->
-        <div class="w-100 px-4 uppercase instructions" align="center">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/demandselection/11.png" alt="Demand Selection instructions">
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -1031,12 +1028,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 39">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 39">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- actual game for block 6-->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 40">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 40">
 
         <div *ngIf="isStimulus">
 
@@ -1048,13 +1045,13 @@
                 <div class="patch-container d-flex justify-content-between" rotate [rotation]="currentBlock.blockConfig.rotation">
                     <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
                         <img (mouseenter)="onHoverPatch($event, 'firstPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.firstPatchImg}}" alt="First Patch">
-                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                        <div *ngIf="showNumber && selectedPatch === 'firstPatch'" class="w-100 h-100 flex-column-center">
                             <span class="displayed-number" [style.color]="color">{{ number }}</span>
                         </div>
                     </div>
                     <div rotate [rotation]="-currentBlock.blockConfig.rotation" class="patch">
                         <img (mouseenter)="onHoverPatch($event, 'secondPatch')" *ngIf="!showNumber" class="w-100 h-100" src="{{imagePath + currentBlock.blockConfig.secondPatchImg}}" alt="Second Patch">
-                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 d-flex justify-content-center align-items-center">
+                        <div *ngIf="showNumber && selectedPatch === 'secondPatch'" class="w-100 h-100 flex-column-center">
                             <span class="displayed-number" [style.color]="color">{{ number }}</span>
                         </div>
                     </div>
@@ -1070,12 +1067,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 41">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 41">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Actual game: Round 6 Complete message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 42">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 42">
 
         <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
@@ -1085,14 +1082,14 @@
         <!-- Introduction -->
         <div class="w-100 p-4 uppercase" align="center">
 
-            <div class="statement-final">
+            <div>
                 Click 'NEXT' when you are ready for the next stage.
             </div>
 
         </div>
 
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>

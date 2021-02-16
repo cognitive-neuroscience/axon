@@ -1,7 +1,9 @@
+import { TaskType } from "./InternalDTOs";
+
 export class Task {
     id: string;
     title: string;
     description: string;
-    type: string;
+    type: TaskType;
     route: string;
 }

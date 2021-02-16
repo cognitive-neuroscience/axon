@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DownloadDataService } from '../../../services/downloadData.service';
-import { Observable } from 'rxjs';
+import { Observable, VirtualTimeScheduler } from 'rxjs';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { DateTime } from 'luxon';
 import { ExperimentsService } from '../../../services/experiments.service';
@@ -8,6 +8,9 @@ import { Experiment } from '../../../models/Experiment';
 import { filter, map, mergeAll } from 'rxjs/operators';
 import { mapTaskIdToTitle } from '../../../models/TaskData';
 import { LoaderService } from '../../../services/loader.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { hasSurveyMonkeyQuestionnaire } from 'src/app/common/commonMethods';
+import { RouteMap } from 'src/app/routing/routes';
 
 @Component({
   selector: 'app-data',
@@ -29,7 +32,8 @@ export class DataComponent implements OnInit {
     private _downloadDataService: DownloadDataService, 
     private snackbarService: SnackbarService,
     private experimentService: ExperimentsService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -41,11 +45,21 @@ export class DataComponent implements OnInit {
     return this.experiments.pipe(
       mergeAll(),
       filter(experiment => experiment?.code === code),
-      map(x => x?.tasks),
+      map((x: Experiment) => x?.tasks),
+      map((taskList: string[]) => taskList.filter(taskName => !hasSurveyMonkeyQuestionnaire(taskName) && taskName !== RouteMap.consent.id))
     )
   }
 
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
+
   getAndDisplayData(code: string, option: string) { 
+    if(!this.isAdmin()) {
+      this.snackbarService.openErrorSnackbar("You are not authorized to view the given data")
+      return;
+    }
+
     this.loaderService.showLoader();   
     this._downloadDataService.getTableData(code, option).pipe(
       map(jsonData => this.formatDates(jsonData))

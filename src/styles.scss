@@ -7,6 +7,43 @@ button{
     outline: none !important;
 }
 
+.underline {
+    text-decoration: underline;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.task-text {
+    line-height: normal;
+    text-align: center;
+}
+
+@include for-small-device-only {
+    .task-text {
+        font-size: 14px;
+    }
+}
+
+@include for-small-desktop-only {
+    .task-text {
+        font-size: 18px;
+    }
+}
+
+@include for-desktop-up {
+    .task-text {
+        font-size: 22px;
+    }
+}
+
+@include for-large-desktop-up {
+    .task-text {
+        font-size: 24px;
+    }
+}
+
 // handles global breakpoints for experiment instructions. These instructions are in the format
 // of .pngs. Pass in the png, create a div wrapper and set the class of the div wrapper to "instructions"
 .instructions {
@@ -27,6 +64,27 @@ button{
         max-width: 1100px;
     }
 }
+
+.flex-column-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-row-space-between {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flex-column-space-between {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+};
 
 .wrapper {
 
@@ -85,26 +143,6 @@ button{
 
     .uppercase{
         text-transform: uppercase;
-    }
-
-    .title{
-        text-decoration: underline;
-        padding: 25px;
-    }
-    .statement {
-        padding: 15px;
-        font-size: 20px;
-    }
-
-    .statement-final {
-        padding: 30px;
-        font-size: 20px;
-        font-weight: bold;
-    }
-
-    .square {
-        height: 200px;
-        width: 200px;
     }
 
     .feedback {
@@ -181,6 +219,21 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
     white-space: nowrap;
 }
 
+.mat-expansion-panel-header-title {
+    width: 20% !important;
+    align-items: center;
+    flex-grow: 0 !important;
+}
+
+.mat-expansion-panel-header-description {
+    align-items: center;
+    width: 40%;
+}
+
+.mat-expansion-panel {
+    padding: 8px 0;
+}
+
 .snack-bar-success {
     background-color: green;
 }
@@ -203,3 +256,4 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 .center-snackbar {
     margin-bottom: 50vh !important;
 }
+

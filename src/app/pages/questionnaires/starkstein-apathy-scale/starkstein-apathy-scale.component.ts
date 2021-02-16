@@ -68,7 +68,7 @@ export class StarksteinApathyScaleComponent implements OnInit {
     }
     this.questionnaireService.saveApathyQuestionnaireResponse(response).pipe(take(1)).subscribe(ok => {
       if(ok) {
-        this.taskManager.nextExperiment()
+        this.taskManager.next();
       } else {
         this.taskManager.handleErr()
       }

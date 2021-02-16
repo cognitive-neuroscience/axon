@@ -1,16 +1,16 @@
-<div class="container-fluid wrapper d-flex flex-column align-items-center justify-content-center">
+<div class="container-fluid wrapper task-text flex-column-center">
 
     <!-- Show welcome message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 1">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 1">
 
         <!-- Introduction -->
-        <div class="w-100 p-4 uppercase instructions" align="center">
+        <div class="h-100 uppercase instructions flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/digitspan/1.png" alt="Digit Span instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -34,16 +34,16 @@
     </div>
 
     <!-- Show practice round message for forward memory -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 2">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 2">
 
         <!-- practice round instructions -->
-        <div class="w-100 p-4 uppercase instructions" align="center">
+        <div class="h-100 uppercase instructions flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/digitspan/2.png" alt="Digit Span instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -67,12 +67,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 3">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 3">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start Practice Round for forward memory -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 4">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 4">
 
         <div *ngIf="isStimulus">
             <div style="font-size: 100px;">
@@ -94,20 +94,20 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 5">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 5">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show practice round finished message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 6">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 6">
         <!-- end of practice round, start real game -->
-        <div class="w-100 p-4 uppercase instructions" align="center">
+        <div class="h-100 uppercase instructions flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/digitspan/3.png" alt="Digit Span instructions">
         </div>
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disable>
                         <mat-icon>
@@ -131,12 +131,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 7">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 7">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start Actual Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 8">
         <div *ngIf="isStimulus">
             <div style="font-size: 100px;">
                 {{digitShown}}
@@ -157,21 +157,21 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 9">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 9">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show instructions for backwards memory game -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 10">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 10">
         <!-- show instructions for backwards memory game -->
-        <div class="w-100 p-4 uppercase instructions" align="center">
+        <div class="h-100 uppercase instructions flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/digitspan/4.png" alt="Digit Span instructions">
         </div>
 
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -195,16 +195,16 @@
     </div>
 
     <!-- practice message for backwards memory game -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 11">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 11">
         <!-- show practice message for backwards memory game -->
-        <div class="w-100 p-4 uppercase instructions" align="center">
+        <div class="h-100 uppercase instructions flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/digitspan/5.png" alt="Digit Span instructions">
         </div>
 
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
                         <mat-icon>
@@ -228,12 +228,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 12">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 12">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start Practice Round for backward memory -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 13">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 13">
 
         <div *ngIf="isStimulus">
             <div style="font-size: 100px;">
@@ -255,21 +255,21 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 14">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 14">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show backwards memory actual game message -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 15">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 15">
         <!-- show backwards memory game message -->
-        <div class="w-100 p-4 uppercase instructions" align="center">
+        <div class="h-100 uppercase instructions flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/digitspan/6.png" alt="Digit Span instructions">
         </div>
 
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -293,12 +293,12 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 16">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 16">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Start Actual Round -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 17">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 17">
         <div *ngIf="isStimulus">
             <div style="font-size: 100px;">
                 {{digitShown}}
@@ -319,21 +319,21 @@
     </div>
 
     <!-- Show loader -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 18">
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 18">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
     <!-- Show finished game -->
-    <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="!isBreak && step === 19">
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 19">
         <!-- game complete -->
-        <div class="w-100 p-4 uppercase instructions" align="center">
+        <div class="h-100 uppercase instructions flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/digitspan/7.png" alt="Digit Span instructions">
         </div>
 
 
         <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
+            <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
                         <mat-icon>
@@ -355,52 +355,5 @@
             </div>
         </div>
     </div>
-
-
-    <!-- div block for break view. Do not need but keep just in case -->
-    <!-- <div class="full-box d-flex flex-column align-items-center justify-content-between" *ngIf="isBreak">
-        <div class="w-100 p-4 uppercase" align="center">
-            <h2>It's break time</h2>
-        </div>
-
-        <div class="w-100 p-4 uppercase" align="center">
-
-
-            <div class="statement">
-                Take a short break
-            </div>
-
-            <br>
-
-            <div class="statement-final">
-                Click 'RESUME' when you are ready
-            </div>
-
-        </div>
-
-        <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
-                <div>
-                    <button mat-raised-button color="primary" disabled (click)="proceedtoPreviousStep()">
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary" (click)="resume()">
-                        RESUME
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
 
 </div>

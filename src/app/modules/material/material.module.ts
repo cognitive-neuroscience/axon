@@ -19,6 +19,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatDividerModule } from '@angular/material/divider';
 
 const modules = [
   MatInputModule,
@@ -39,7 +42,10 @@ const modules = [
   MatTooltipModule,
   ClipboardModule,
   MatMenuModule,
-  MatPaginatorModule
+  MatPaginatorModule,
+  MatTabsModule,
+  MatExpansionModule,
+  MatDividerModule
 ];
 
 @NgModule({

@@ -55,8 +55,6 @@ export class DemandSelectionComponent implements OnInit {
   sTimeout: any;
   snackbarTimeout: any;
 
-  userID: string;
-
   // what practice phase we are currently at
   currentPracticeRound: {
     phase: number,
@@ -157,14 +155,6 @@ export class DemandSelectionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    const decodedToken = this.authService.getDecodedToken()
-    if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {
-      this.router.navigate(['/login/mturk'])
-      this.snackbarService.openErrorSnackbar("Refresh has occurred")
-    }
-    const jwt = this.authService.getDecodedToken()
-    this.userID = jwt.UserID
-
     // generate the blockset for the 6 blocks to be run
     // we are creating a blockset where the harder patch is the second one (higher prob of switching)
     this.blockset = new BlockSet(this.blockTrials, 10, 90, Color.BLUE, Color.ORANGE, false);
@@ -316,7 +306,7 @@ export class DemandSelectionComponent implements OnInit {
 
     this.data.push({
       trial: this.currentTrial,
-      userID: this.userID,
+      userID: this.authService.getDecodedToken().UserID,
       harderPatch: blockConfig.secondPatchImg,
       firstPatch: blockConfig.firstPatchImg,
       secondPatch: blockConfig.secondPatchImg,
@@ -477,10 +467,10 @@ export class DemandSelectionComponent implements OnInit {
     if(decodedToken.Role === Role.ADMIN) {
       if(!environment.production) console.log(this.data)
       
-      this.router.navigate(['/dashboard/tasks'])
+      this.router.navigate(['/dashboard/components'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
-      this.taskManager.nextExperiment()
+      this.taskManager.next()
     }
   }
 

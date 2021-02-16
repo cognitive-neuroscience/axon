@@ -8,6 +8,7 @@ import { SnackbarService } from 'src/app/services/snackbar.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginMode, Role } from 'src/app/models/InternalDTOs';
 import { SessionStorageService } from '../../services/sessionStorage.service';
+import { UserService } from 'src/app/services/user.service';
 
 function passwordMatchingValidator(fg: FormGroup): {[key: string]: string} | null {
   if(fg.controls.password.value !== fg.controls.confirmPassword.value) {
@@ -58,7 +59,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private snackbarService: SnackbarService,
     private fb: FormBuilder,
     private sessionStorageService: SessionStorageService,
-    private route: Router
+    private route: Router,
+    private userService: UserService
   ) { }
 
   ngOnInit() {
@@ -93,7 +95,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     const password = this.loginForm.controls.password.value
 
     this.subscriptions.push(
-      this.authService.register(email, password).subscribe((response: HttpResponse<LoginCredentials>) => {
+      this.userService.register(email, password).subscribe((response: HttpResponse<LoginCredentials>) => {
         this.mode = LoginMode.LOGIN
         this.snackbarService.openSuccessSnackbar(this.REGISTER_SUCCESS_STR)
       }, (error: HttpErrorResponse) => {

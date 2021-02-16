@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { Experiment } from '../models/Experiment';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { Role } from '../models/InternalDTOs';
 
@@ -28,8 +28,8 @@ export class ExperimentsService {
         // do not get all experiments if role is not auth as it will result in HTTP forbidden
         const jwt = this.authService.getDecodedToken()
         const role = jwt ? jwt.Role : null
-        if(role && role === Role.ADMIN) {
-            this._getExperiments().subscribe(experiments => {
+        if(role && (role === Role.ADMIN || role === Role.GUEST)) {
+            this._getExperiments().pipe(take(1)).subscribe(experiments => {
                 this._experimentBehaviorSubject.next(experiments)
             })
         }

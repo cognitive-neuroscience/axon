@@ -5,34 +5,44 @@
             <hr>
         </h3>
     
-        <div class="form">
+        <div [formGroup]="feedbackQuestionnaire" class="form">
             <div>
                 <label class="w-100 font-weight-bold">Did you encounter any issues during our study?</label>
                 <mat-form-field class="w-100">
-                    <textarea [(ngModel)]="issuesEncountered" (ngModelChange)="onChange()" class="w-100" matInput rows="3"></textarea>
+                    <textarea formControlName="issuesEncountered" placeholder="Max 250 characters" class="w-100" matInput rows="3" maxlength="250"></textarea>
                 </mat-form-field>
             </div>
             <br>
             <div>
                 <label class="w-100 font-weight-bold">Additional Feedback</label>
                 <mat-form-field class="w-100">
-                    <textarea [(ngModel)]="additionalFeedback" (ngModelChange)="onChange()" class="w-100" matInput rows="3"></textarea>
+                    <textarea formControlName="additionalFeedback" placeholder="Max 250 characters" class="w-100" maxlength="250" matInput rows="3"></textarea>
                 </mat-form-field>
             </div>
             <br>
-            <div>
-                <label class="w-100 font-weight-bold">Which browser are you using?</label>
-                <mat-form-field class="w-100">
-                    <input [placeholder]="browserPlaceholder" matInput type="text" [(ngModel)]="browser" class="w-100" (ngModelChange)="onChange()">
-                </mat-form-field>
+            <div class="d-flex">
+                <div class="d-flex flex-column" style="width: 200px; margin-right: 50px;">
+                    <label class="w-100 font-weight-bold">Which browser are you using?</label>
+                    <mat-form-field>
+                        <mat-select formControlName="browser" (selectionChange)="onSelectChange($event)">
+                            <mat-option [value]="browser" *ngFor="let browser of browserList">{{ browser }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="showOtherField" class="d-flex flex-column" style="width: 200px;">
+                    <label class="w-100 font-weight-bold">Other Browser</label>
+                    <mat-form-field>
+                        <input type="text" [(ngModel)]="otherField" [ngModelOptions]="{standalone: true}" matInput placeholder="SeaMonkey">
+                    </mat-form-field>
+                </div>
             </div>
             <br>
     
             <div class="d-flex justify-content-between">
-                <button [disabled]="!issuesEncountered && !additionalFeedback && !browser" (click)="submitForm()" mat-raised-button color="primary">Submit Feedback</button>
-                <mat-error class="d-flex align-items-center" *ngIf="!issuesEncountered && !additionalFeedback && !browser && touched">
+                <button [disabled]="!feedbackQuestionnaire.valid || !isValid()" (click)="submitForm()" mat-raised-button color="primary">Submit Feedback</button>
+                <!-- <mat-error class="d-flex align-items-center" *ngIf="!issuesEncountered && !additionalFeedback && !browser && touched">
                     To submit feedback, please input any issues you encountered or any additional feedback you may have.
-                </mat-error>
+                </mat-error> -->
             </div>
         </div>
     </div>

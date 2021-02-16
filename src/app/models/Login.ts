@@ -1,3 +1,5 @@
+import { Role } from "./InternalDTOs";
+
 export class LoginCredentials {
     email: string;
     password: string;
@@ -6,9 +8,16 @@ export class LoginCredentials {
     role: string;
 }
 
+export class User {
+    userID: string;
+    email: string;
+    role: Role;
+    exp: number;
+}
+
 export class JWT {
     UserID: string;
     Email: string;
-    Role: string;
-    exp: number
+    Role: Role;
+    exp: number;
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UploadDataService } from 'src/app/services/uploadData.service';
 declare function setFullScreen(): any;
@@ -20,9 +20,7 @@ import { map } from 'rxjs/operators';
   templateUrl: './digit-span.component.html',
   styleUrls: ['./digit-span.component.scss']
 })
-export class DigitSpanComponent implements OnInit {
-  userID: string = "";
-
+export class DigitSpanComponent implements OnInit, OnDestroy {
   // Default Experiment config
   isScored: boolean | number = true;
   showFeedbackAfterEveryTrial: boolean | number = true;
@@ -78,13 +76,6 @@ export class DigitSpanComponent implements OnInit {
 
 
   ngOnInit() {
-    const decodedToken = this.authService.getDecodedToken()
-    if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {
-      this.router.navigate(['/login/mturk'])
-      this.snackbarService.openErrorSnackbar("Refresh has occurred")
-    }
-    const jwt = this.authService.getDecodedToken()
-    this.userID = jwt.UserID
   }
 
 
@@ -159,7 +150,7 @@ export class DigitSpanComponent implements OnInit {
     await this.generateStimulus();
 
     this.data.push({
-      userID: this.userID,
+      userID: this.authService.getDecodedToken().UserID,
       trial: this.currentTrial,
       submitted: this.timerService.getCurrentTimestamp(),
       isPractice: this.isPractice,
@@ -383,10 +374,10 @@ export class DigitSpanComponent implements OnInit {
     if(decodedToken.Role === Role.ADMIN) {
       if(!environment.production) console.log(this.data)
       
-      this.router.navigate(['/dashboard/tasks'])
+      this.router.navigate(['/dashboard/components'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
-      this.taskManager.nextExperiment()
+      this.taskManager.next()
     }
   }
 
@@ -422,6 +413,11 @@ export class DigitSpanComponent implements OnInit {
         resolve();
       }, time);
     });
+  }
+
+  ngOnDestroy() {
+    clearTimeout(this.responseTimeout);
+    clearTimeout(this.snackbarTimeout)
   }
 
 }

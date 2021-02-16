@@ -14,6 +14,11 @@ export class ConsentForm {
     endMessage: string;
 }
 
+export class JitteredInterval {
+    lowerbound: number;
+    upperbound: number;
+}
+
 export enum SnackbarType {
     SUCCESS = "SUCCESS",
     ERROR = "ERROR",
@@ -22,7 +27,8 @@ export enum SnackbarType {
 
 export enum Role {
     ADMIN = "ADMIN",
-    PARTICIPANT = "PARTICIPANT"
+    PARTICIPANT = "PARTICIPANT",
+    GUEST = "GUEST" // access to admin views but cannot make any calls to backend
 }
 
 export class ConfirmationDialogMessage {
@@ -50,6 +56,7 @@ export enum LoginMode {
     REGISTER = "REGISTER",
 }
 
+// enum that represents valid keys for the user to input
 export enum Key {
     ARROWLEFT = "ArrowLeft",
     ARROWRIGHT = "ArrowRight",
@@ -59,7 +66,9 @@ export enum Key {
     NUMFOUR = "4",
     NUMFIVE = "5",
     Q = "q",
-    P = "p"
+    P = "p",
+    Z = 'z',
+    M = 'm'
 }
 
 export enum Color {
@@ -79,6 +88,7 @@ export enum Feedback {
     NORESPONSE = "No response"
 }
 
+// an enum representing the semantic answer given by the user that gets uploaded to the database
 export enum UserResponse {
     GREATER = "GREATER",
     LESSER = "LESSER",
@@ -92,11 +102,20 @@ export enum UserResponse {
     NO = "NO",
     YES = "YES",
     LEFT = "LEFT",
-    RIGHT = "RIGHT"
+    RIGHT = "RIGHT",
+    BOTH = "BOTH",
+    SHORT = "SHORT",
+    LONG = "LONG"
 }
 
 
 export enum TaskType {
     NAB = "NAB",
-    Experimental = "Experimental"
+    Experimental = "Experimental",
+    Questionnaire = "Questionnaire"
+}
+
+export enum BEStrings {
+    EXPERIMENTUSERS = "experiment_users",
+    FEEDBACKQUESTIONNAIRE = "feedback_questionnaire_responses"
 }

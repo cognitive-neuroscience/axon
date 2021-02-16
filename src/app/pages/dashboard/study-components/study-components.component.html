@@ -1,0 +1,10 @@
+<mat-tab-group>
+    <mat-tab label="Tasks">
+        <app-view-tasks></app-view-tasks>
+    </mat-tab>
+    <mat-tab label="Embedded Questionnaires" [disabled]="!isAdmin()">
+        <app-manage-questionnaires></app-manage-questionnaires>
+    </mat-tab>
+    <mat-tab label="Embedded Tasks" disabled>
+    </mat-tab>
+</mat-tab-group>

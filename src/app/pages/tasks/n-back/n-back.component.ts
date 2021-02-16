@@ -25,9 +25,7 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['./n-back.component.scss']
 })
 export class NBackComponent implements OnInit {
-
   // Default Experiment config
-  userID: string = ""
   isScored: boolean | number = true;
   showFeedbackAfterEveryTrial: boolean | number = true;
   showScoreAfterEveryTrial: boolean | number = false;
@@ -36,7 +34,7 @@ export class NBackComponent implements OnInit {
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
   practiceTrials: number = environment.production ? 15 : 5;
-  actualTrials: number = environment.production ? 143 : 10;
+  actualTrials: number = environment.production ? 70 : 10;
 
   step: number = 1;
   feedback: string = '';
@@ -91,14 +89,7 @@ export class NBackComponent implements OnInit {
 
 
   ngOnInit() {
-    const decodedToken = this.authService.getDecodedToken()
-    if(!this.taskManager.hasExperiment() && decodedToken.Role !== Role.ADMIN) {
-      this.router.navigate(['/login/mturk'])
-      this.snackbarService.openErrorSnackbar("Refresh has occurred")
-    }
     this.set = Math.floor(Math.random() * 4) + 1;
-    const jwt = this.authService.getDecodedToken()
-    this.userID = jwt.UserID
   }
 
 
@@ -189,7 +180,7 @@ export class NBackComponent implements OnInit {
 
     this.data.push({
       trial: this.currentTrial,
-      userID: this.userID,
+      userID: this.authService.getDecodedToken().UserID,
       actualAnswer: this.currentLetter === this.nback ? UserResponse.YES : UserResponse.NO,
       userAnswer: UserResponse.NA,
       responseTime: 0,
@@ -285,9 +276,7 @@ export class NBackComponent implements OnInit {
             console.error("There was an error downloading results")
             this.taskManager.handleErr()
           })
-
         }
-
       }
     }
   }
@@ -322,10 +311,10 @@ export class NBackComponent implements OnInit {
     if(decodedToken.Role === Role.ADMIN) {
       if(!environment.production) console.log(this.data);
       
-      this.router.navigate(['/dashboard/tasks'])
+      this.router.navigate(['/dashboard/components'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
-      this.taskManager.nextExperiment()
+      this.taskManager.next()
     }
   }
 
