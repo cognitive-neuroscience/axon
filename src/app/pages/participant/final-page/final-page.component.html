@@ -7,7 +7,15 @@
         <p class='font-weight-bold'>Note: You will not be able to see this again once you close the page, so please make sure you copy the completion code</p>
 
         <div class="completion-code">
-            <span style="cursor: pointer; color: white" #tooltip="matTooltip" (click)="showCopiedMessage()" matTooltip="copy to clipboard" [cdkCopyToClipboard]="completionCode">{{ completionCode }}</span>
+            <span class="d-flex align-items-center" style="color: white">{{ completionCode }}</span>
+            <button class="btn btn-primary" 
+                    (click)="showCopiedMessage()" 
+                    [cdkCopyToClipboard]="completionCode" 
+                    matTooltip="copy to clipboard" 
+                    #tooltip="matTooltip"  
+                    style="margin-left: 20px; width: 100px;">
+                Copy
+            </button>
         </div>
 
         <div class="my-3">

@@ -5,7 +5,6 @@ import { TaskManagerService } from '../../../services/task-manager.service';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { SessionStorageService } from '../../../services/sessionStorage.service';
-import { environment } from 'src/environments/environment';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -59,7 +58,7 @@ export class FinalPageComponent implements OnInit {
   logout() {
     this._sessionStorage.clearSessionStorage()
     this._router.navigate(['/login/onlineparticipant'])
-    this._snackbar.openSuccessSnackbar("Thanks for taking part in our study!")
+    this._snackbar.openSuccessSnackbar("Thanks for taking part in our study! To finish, paste your completion code into the original site.", undefined, 10000, 'center');
   }
 
 }

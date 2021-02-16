@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UploadDataService } from 'src/app/services/uploadData.service';
 import * as Set1 from './stimuli_1_1';
 import * as Set2 from './stimuli_2_1';
@@ -33,7 +33,7 @@ export class StroopTaskComponent implements OnInit {
   durationOfFeedback: number = 500;    // In milliseconds
   interTrialDelay: number = 1000;       // In milliseconds
   practiceTrials: number = environment.production ? 15 : 5;
-  actualTrials: number = environment.production ? 60 : 10;
+  actualTrials: number = environment.production ? 120 : 10;
 
   step: number = 1;
   color: string = '';
@@ -86,13 +86,17 @@ export class StroopTaskComponent implements OnInit {
     private taskManager: TaskManagerService,
     private snackbarService: SnackbarService,
     private authService: AuthService,
-    private timerService: TimerService
+    private timerService: TimerService,
+    private activatedRoute: ActivatedRoute
   ) {
+    // either 60 or 120, defined in routes
+    this.actualTrials = this.activatedRoute.snapshot.data.trials;
   }
 
 
-
   ngOnInit() {
+    console.log();
+    
     this.set = Math.floor(Math.random() * 4) + 1;
   }
 

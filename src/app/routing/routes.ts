@@ -29,6 +29,13 @@ export const RouteMap: ExperimentRoutingMap = {
     type: TaskType.NAB,
     route: "task/stroop"
   },
+  stroopshort: {
+    id: "stroopshort",
+    title: "Stroop Task Short Version",
+    description: "The stroop task, but with 60 trials instead of 120",
+    type: TaskType.NAB,
+    route: "task/stroopshort"
+  },
   trailmaking: {
     id: "trailmaking",
     title: "Trail Making",
