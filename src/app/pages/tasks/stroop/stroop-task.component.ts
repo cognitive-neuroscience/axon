@@ -95,8 +95,6 @@ export class StroopTaskComponent implements OnInit {
 
 
   ngOnInit() {
-    console.log();
-    
     this.set = Math.floor(Math.random() * 4) + 1;
   }
 
