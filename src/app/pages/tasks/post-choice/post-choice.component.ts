@@ -130,8 +130,6 @@ export class PostChoiceComponent implements OnInit {
     this.showStimulus();
   }
 
-
-
   async showStimulus() {
 
     this.reset();
