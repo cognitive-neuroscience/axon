@@ -15,6 +15,7 @@ export function generateRandomNonrepeatingNumberList(size: number, lowerBound: n
     return randList;
 }
 
+// gets a random number: [lowerbound, upperbound)
 export function getRandomNumber(lowerbound: number, upperbound: number): number {
     return Math.floor(Math.random() * (upperbound - lowerbound)) + lowerbound;
 }

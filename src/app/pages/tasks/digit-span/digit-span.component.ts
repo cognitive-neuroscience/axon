@@ -374,7 +374,7 @@ export class DigitSpanComponent implements OnInit, OnDestroy {
     if(decodedToken.Role === Role.ADMIN) {
       if(!environment.production) console.log(this.data)
       
-      this.router.navigate(['/dashboard/tasks'])
+      this.router.navigate(['/dashboard/components'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
       this.taskManager.next()

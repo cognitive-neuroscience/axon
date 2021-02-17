@@ -14,4 +14,8 @@ export class SnackbarComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  closeSnackbar() {
+    this.snackbarData.snackbarRef.dismiss();
+  }
+
 }

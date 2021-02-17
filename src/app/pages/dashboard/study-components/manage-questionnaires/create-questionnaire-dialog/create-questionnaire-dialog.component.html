@@ -3,7 +3,7 @@
         <h3>Create a new questionnaire</h3>
         <hr>
     </div>
-    <div>
+    <div class="mb-4">
         <mat-form-field class="w-100">
             <mat-label>Questionnaire Name</mat-label>
             <input required [(ngModel)]="name" matInput type="text" placeholder="My survey monkey questionnaire">
@@ -20,6 +20,7 @@
             <input required [(ngModel)]="URL" matInput type="text" placeholder="https://www.surveymonkey.com/ABCDEFG">
             <mat-error *ngIf="URL.length === 0">URL is required</mat-error>
         </mat-form-field>
+        <div class="custom-mat-error" *ngIf="!validURL(URL)">Please enter a valid survey monkey URL</div>
     </div>
 
     <div class="d-flex flex-column">

@@ -14,6 +14,9 @@ export enum TaskNames {
     DEMANDSELECTION = "demandselection",
     SIMON = "simon",
     SMILEYFACE = "smileyface",
+    RATING = "rating",
+    CHOICE = "choice",
+    POSTCHOICE = "postchoice"
 }
 
 export abstract class TaskData {
@@ -107,6 +110,31 @@ export class DigitSpan extends TaskData {
     responseTime: number;   // time from when keypad entered screen to participant submitting their response
     numberOfDigits: number;
     isForwardMemoryMode: boolean;
+}
+
+export class RatingTask extends TaskData {
+    counterbalance: number;
+    ratingType: string; 
+    trial: number; 
+    activity: string;
+    userAnswer: string;
+    responseTime: number;
+}
+
+export class ChoiceTask extends TaskData {
+    trial: number; 
+    activityLeft: string;
+    activityRight: string;
+    userAnswer: string;
+    responseTime: number;
+}
+
+export class PostChoiceTask extends TaskData {
+    ratingType: string; 
+    trial: number; 
+    activity: string;
+    userAnswer: string;
+    responseTime: number;
 }
 
 export class Oddball extends TaskData {

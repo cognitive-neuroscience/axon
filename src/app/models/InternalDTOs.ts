@@ -1,3 +1,4 @@
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Task } from './Task';
 export class ConsentForm {
     img: string;
@@ -43,6 +44,7 @@ export class SnackbarData {
     message: string;
     action: string;
     type: SnackbarType;
+    snackbarRef: MatSnackBar;
 
     constructor(msg: string, act: string, type: SnackbarType) {
         this.message = msg;
@@ -63,6 +65,8 @@ export enum Key {
     NUMONE = "1",
     NUMTWO = "2",
     NUMTHREE = "3",
+    NUMFOUR = "4",
+    NUMFIVE = "5",
     Q = "q",
     P = "p",
     Z = 'z',

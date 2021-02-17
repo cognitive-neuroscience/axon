@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DemographicsQuestionnaireResponse, FeedbackQuestionnaireResponse, Questionnaire } from '../models/Questionnaire';
+import { DemographicsQuestionnaireResponse, FeedbackQuestionnaireResponse, ApathyQuestionnaireResponse, Questionnaire } from '../models/Questionnaire';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -64,6 +64,12 @@ export class QuestionnaireService {
 
     saveFeedQuestionnaireResponse(response: FeedbackQuestionnaireResponse): Observable<boolean> {
         return this.http.post(`${environment.apiBaseURL}${this.QUESTIONNAIRE_HTTP_PREFIX}feedback`, response, { observe: "response" }).pipe(
+            map(x => x.ok)
+        )
+    }
+
+    saveApathyQuestionnaireResponse(response: ApathyQuestionnaireResponse): Observable<boolean> {
+        return this.http.post(`${environment.apiBaseURL}/questionnaire/apathy`, response, { observe: "response" }).pipe(
             map(x => x.ok)
         )
     }

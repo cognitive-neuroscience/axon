@@ -38,6 +38,10 @@ import { FeedbackQuestionnaireComponent } from './pages/questionnaires/feedback-
 import { DataTableComponent } from './pages/dashboard/data/data-table/data-table.component';
 import { LoaderComponent } from './services/loader/loader.component';
 import { NumpadComponent } from './pages/tasks/digit-span/numpad/numpad.component';
+import { StarksteinApathyScaleComponent } from './pages/questionnaires/starkstein-apathy-scale/starkstein-apathy-scale.component';
+import { RatingComponent } from './pages/tasks/rating/rating.component';
+import { ChoiceComponent } from './pages/tasks/choice/choice.component';
+import { PostChoiceComponent } from './pages/tasks/post-choice/post-choice.component';
 import { ManageGuestsComponent } from './pages/dashboard/manage-guests/manage-guests.component';
 import { CreateGuestDialogComponent } from './pages/dashboard/manage-guests/create-guest-dialog/create-guest-dialog.component';
 import { QuestionnaireComponent } from './pages/questionnaires/questionnaire/questionnaire.component';
@@ -46,6 +50,7 @@ import { StudyComponentsComponent } from './pages/dashboard/study-components/stu
 import { ManageQuestionnairesComponent } from './pages/dashboard/study-components/manage-questionnaires/manage-questionnaires.component';
 import { CreateQuestionnaireDialogComponent } from './pages/dashboard/study-components/manage-questionnaires/create-questionnaire-dialog/create-questionnaire-dialog.component';
 import { PreviewQuestionnaireDialogComponent } from './pages/dashboard/study-components/manage-questionnaires/preview-questionnaire-dialog/preview-questionnaire-dialog.component';
+import { NavigationButtonsComponent } from './pages/tasks/navigation-buttons/navigation-buttons.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +86,10 @@ import { PreviewQuestionnaireDialogComponent } from './pages/dashboard/study-com
     DataTableComponent,
     LoaderComponent,
     NumpadComponent,
+    StarksteinApathyScaleComponent,
+    RatingComponent,
+    ChoiceComponent,
+    PostChoiceComponent,
     ManageGuestsComponent,
     CreateGuestDialogComponent,
     QuestionnaireComponent,
@@ -89,6 +98,7 @@ import { PreviewQuestionnaireDialogComponent } from './pages/dashboard/study-com
     ManageQuestionnairesComponent,
     CreateQuestionnaireDialogComponent,
     PreviewQuestionnaireDialogComponent,
+    NavigationButtonsComponent,
   ],
   imports: [
     BrowserModule,

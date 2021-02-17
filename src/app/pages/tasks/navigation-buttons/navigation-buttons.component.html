@@ -1,0 +1,19 @@
+<!-- Navigation buttons -->
+<div class="w-100 p-4 uppercase">
+    <div class="d-flex flex-row-space-between">
+        <div>
+            <button mat-raised-button color="primary" [disabled]="previousDisabled" (click)="handlePrevious()">
+                <mat-icon>arrow_backward</mat-icon>
+                &nbsp;
+                PREVIOUS
+            </button>
+        </div>
+        <div>
+            <button mat-raised-button color="primary" [disabled]="nextDisabled" (click)="handleNext()">
+                {{isStart ? 'START' : 'NEXT'}}
+                &nbsp;
+                <mat-icon>arrow_forward</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>

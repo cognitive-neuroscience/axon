@@ -52,9 +52,9 @@ export class DemographicsQuestionnaireComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if(!this.taskManager.hasExperiment()) {
+   /*  if(!this.taskManager.hasExperiment()) {
       this.taskManager.handleErr()
-    }
+    } */
   }
 
   cancel() {

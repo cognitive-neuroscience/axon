@@ -368,7 +368,7 @@ export class OddballComponent implements OnInit {
     if(decodedToken.Role === Role.ADMIN) {
       if(!environment.production) console.log(this.data)
       
-      this.router.navigate(['/dashboard/tasks'])
+      this.router.navigate(['/dashboard/components'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
       this.taskManager.next()

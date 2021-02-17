@@ -15,6 +15,9 @@ import { FingerTappingTaskComponent } from '../pages/tasks/finger-tapping/finger
 import { NBackComponent } from '../pages/tasks/n-back/n-back.component';
 import { StroopTaskComponent } from '../pages/tasks/stroop/stroop-task.component';
 import { TrailMakingComponent } from '../pages/tasks/trail-making/trail-making.component';
+import { RatingComponent } from '../pages/tasks/rating/rating.component';
+import { ChoiceComponent } from '../pages/tasks/choice/choice.component';
+import { PostChoiceComponent } from '../pages/tasks/post-choice/post-choice.component';
 import { ViewStudiesComponent } from '../pages/dashboard/view-studies/view-studies.component';
 import { CrowdSourceLoginComponent } from '../pages/participant/crowdsource-login/crowdsource-login.component'
 import { Role } from '../models/InternalDTOs';
@@ -26,9 +29,11 @@ import { DataComponent } from '../pages/dashboard/data/data.component';
 import { ConsentComponent } from '../pages/questionnaires/consent/consent.component';
 import { DemographicsQuestionnaireComponent } from '../pages/questionnaires/demographics-questionnaire/demographics-questionnaire.component';
 import { FeedbackQuestionnaireComponent } from '../pages/questionnaires/feedback-questionnaire/feedback-questionnaire.component';
+import { StarksteinApathyScaleComponent } from '../pages/questionnaires/starkstein-apathy-scale/starkstein-apathy-scale.component';
 import { ManageGuestsComponent } from '../pages/dashboard/manage-guests/manage-guests.component';
 import { QuestionnaireComponent } from '../pages/questionnaires/questionnaire/questionnaire.component';
 import { StudyComponentsComponent } from '../pages/dashboard/study-components/study-components.component';
+import { environment } from 'src/environments/environment';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login/onlineparticipant', pathMatch: 'full' },
@@ -46,25 +51,30 @@ const routes: Routes = [
     ]
   },
   { path: 'login/onlineparticipant', component: CrowdSourceLoginComponent },
-  { path: RouteMap.demographicsquestionnaire.route , component: DemographicsQuestionnaireComponent },
+  { path: RouteMap.demographicsquestionnaire.route , component: DemographicsQuestionnaireComponent, canActivate: [ExperimentRouteGuard] },
   { path: 'questionnaire/feedback', component: FeedbackQuestionnaireComponent },
+  { path: 'questionnaire/apathy', component: StarksteinApathyScaleComponent},
   { path: 'login', component: LoginComponent },
-  { path: RouteMap.consent.route, component: ConsentComponent },
+  { path: RouteMap.consent.route, component: ConsentComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.colorgame.route, component: ColorGameComponent },
   { path: RouteMap.shapegame.route, component: ShapeGameComponent },
-  { path: RouteMap.oddball.route, component: OddballComponent },
-  { path: RouteMap.digitspan.route, component: DigitSpanComponent },
+  { path: RouteMap.oddball.route, component: OddballComponent, canActivate: [ExperimentRouteGuard] },
+  { path: RouteMap.digitspan.route, component: DigitSpanComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.taskswitching.route, component: TaskSwitchingComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.demandselection.route, component: DemandSelectionComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.simon.route, component: SimonTaskPrelimComponent },
   { path: 'experiments/simon-2', component: SimonTaskFinalComponent },
-  { path: RouteMap.smileyface.route, component: SmileyFaceComponent },
+  { path: RouteMap.smileyface.route, component: SmileyFaceComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.fingertapping.route, component: FingerTappingTaskComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.nback.route, component: NBackComponent, canActivate: [ExperimentRouteGuard] },
-  { path: RouteMap.stroop.route, component: StroopTaskComponent, canActivate: [ExperimentRouteGuard] },
+  { path: RouteMap.stroop.route, component: StroopTaskComponent, canActivate: [ExperimentRouteGuard], data: { trials: (environment.production ? 120 : 10) } },
+  { path: RouteMap.stroopshort.route, component: StroopTaskComponent, canActivate: [ExperimentRouteGuard], data: { trials: (environment.production ? 60 : 5) } },
   { path: RouteMap.trailmaking.route, component: TrailMakingComponent, canActivate: [ExperimentRouteGuard] },
+  { path: RouteMap.rating.route, component: RatingComponent, canActivate: [ExperimentRouteGuard] },
+  { path: RouteMap.choice.route, component: ChoiceComponent, canActivate: [ExperimentRouteGuard] },
+  { path: RouteMap.postchoice.route, component: PostChoiceComponent, canActivate: [ExperimentRouteGuard] },
+  { path: RouteMap.surveymonkeyquestionnaire.route, component: QuestionnaireComponent, canActivate: [ExperimentRouteGuard] },
   { path: 'complete', component: FinalPageComponent, canActivate: [ExperimentRouteGuard] },
-  { path: RouteMap.surveymonkeyquestionnaire.route, component: QuestionnaireComponent },
   { path: '**', redirectTo: '/login/onlineparticipant', pathMatch: 'full' }
 ];
 

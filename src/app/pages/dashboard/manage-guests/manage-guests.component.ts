@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, of, Subscription } from 'rxjs';
-import { catchError, map, mergeMap, take } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { User } from 'src/app/models/Login';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';

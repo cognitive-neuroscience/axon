@@ -41,13 +41,20 @@ export class QuestionnaireComponent implements OnInit, OnDestroy {
           if(!params && !params.link) {
             this.snackbar.openErrorSnackbar("Could not find survey link. Please proceed to next step and reach out to the sharplab.")
           } else {
-            const URL = params.link
             const subjectID = this.authService.getDecodedToken().UserID;
-            this.embeddedSurveyLink = URL + subjectID
+            const code = this.taskManager.getExperimentCode();
+            const parsedURL = this.parseSurveyMonkeyURL(params.link, subjectID, code);
+            this.embeddedSurveyLink = parsedURL;
           }
         })
       )
     }
+  }
+
+  private parseSurveyMonkeyURL(url: string, subjectID: string, experimentCode: string): string {
+    // we expect a url like https://www.surveymonkey.com/r/ABCDEFG?s=[s_value]&e=[e_value]
+    const urlArr = url.split("?");
+    return `${urlArr[0]}?s=${subjectID}&e=${experimentCode}`;
   }
 
   adminPreviewing(): boolean {
