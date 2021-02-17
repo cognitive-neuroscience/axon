@@ -4,27 +4,5 @@
         <h1>Could not find survey</h1>
     </div>
 
-    <!-- Navigation buttons -->
-    <div class="w-100 p-4 uppercase">
-        <div class="flex-row-space-between">
-            <div>
-                <button mat-raised-button color="primary" disabled>
-                    <mat-icon>
-                        arrow_backward
-                    </mat-icon>
-                    &nbsp;
-                    PREVIOUS
-                </button>
-            </div>
-            <div>
-                <button mat-raised-button color="primary" [disabled]="adminPreviewing()" (click)="proceed()">
-                    NEXT
-                    &nbsp;
-                    <mat-icon>
-                        arrow_forward
-                    </mat-icon>
-                </button>
-            </div>
-        </div>
-    </div>
+    <app-navigation-buttons class="w-100" previousDisabled="true" [nextDisabled]="adminPreviewing()" (onNext)="proceed()"></app-navigation-buttons>
 </div>

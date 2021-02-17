@@ -19,7 +19,12 @@ export class CreateQuestionnaireDialogComponent implements OnInit {
   }
 
   isValid(): boolean {
-    return this.URL.length > 0 && this.name.length > 0;
+    return this.URL.length > 0 && this.name.length > 0 && this.validURL(this.URL);
+  }
+
+  validURL(url: string): boolean {
+    const regex = new RegExp(/(https?:\/\/)(www\.)(surveymonkey\.com)(\/.\/)(.*)(\?)(s\=\[s\_value\]\&e\=\[e_value\])/gm);
+    return regex.test(url);
   }
 
   sendDataToParent() {
