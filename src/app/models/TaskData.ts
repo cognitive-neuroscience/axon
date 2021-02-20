@@ -115,14 +115,12 @@ export class DigitSpan extends TaskData {
 export class RatingTask extends TaskData {
     counterbalance: number;
     ratingType: string; 
-    trial: number; 
     activity: string;
     userAnswer: string;
     responseTime: number;
 }
 
 export class ChoiceTask extends TaskData {
-    trial: number; 
     activityLeft: string;
     activityRight: string;
     userAnswer: string;
@@ -130,8 +128,7 @@ export class ChoiceTask extends TaskData {
 }
 
 export class PostChoiceTask extends TaskData {
-    ratingType: string; 
-    trial: number; 
+    ratingType: string;
     activity: string;
     userAnswer: string;
     responseTime: number;

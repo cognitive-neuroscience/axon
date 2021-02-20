@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ChoiceComponent } from './choice.component';
+import { activityList } from './activityList';
 
 describe('ChoiceTaskComponent', () => {
   let component: ChoiceComponent;
@@ -39,27 +40,14 @@ describe('ChoiceTaskComponent', () => {
   })
 
   it('should generate random unique activity pairs given the activity list with 5 strings', () => {
-      const activityList = [
-          "a",
-          "b",
-          "c",
-          "d",
-          "e"
-      ]
+      const activities = activityList;
 
       // check that we get expected number of pairs
-      const generatedPairs = component.generatedRandomActivityPairs(activityList);
-      expect(generatedPairs.length == activityList.length);
-
-      // check that all pairs are unique
-      const mappedPairs = generatedPairs.map(pair => {
-          const [first, second] = [pair.activityA, pair.activityB].sort();
-          return first + second
-      });
-      expect(new Set<string>(mappedPairs).size).toEqual(activityList.length);
+      const generatedPairs = component.generatedRandomActivityPairs(activities);
+      expect(generatedPairs.length == activities.length);
 
       // check that each letter appears exactly twice
-      const map = new Map<string, number>(activityList.map(x => [x, 2]));
+      const map = new Map<string, number>(activities.map(x => [x, 2]));
       generatedPairs.forEach(pair => {
           map.set(pair.activityA, map.get(pair.activityA) - 1);
           map.set(pair.activityB, map.get(pair.activityB) - 1);
@@ -68,39 +56,5 @@ describe('ChoiceTaskComponent', () => {
           expect(element).toEqual(0)
       });
   })
-
-  it('should generate random unique activity pairs given the activity list with 6 strings', () => {
-    const activityList = [
-        "a",
-        "b",
-        "c",
-        "d",
-        "e",
-        "f"
-    ]
-
-    // check that we get expected number of pairs
-    const generatedPairs = component.generatedRandomActivityPairs(activityList);
-    expect(generatedPairs.length == activityList.length);
-
-    // check that all pairs are unique
-    const mappedPairs = generatedPairs.map(pair => {
-        const [first, second] = [pair.activityA, pair.activityB].sort();
-        return first + second
-    });
-    expect(new Set<string>(mappedPairs).size).toEqual(activityList.length);
-
-    // check that each letter appears exactly twice
-    const map = new Map<string, number>(activityList.map(x => [x, 2]));
-    generatedPairs.forEach(pair => {
-        map.set(pair.activityA, map.get(pair.activityA) - 1);
-        map.set(pair.activityB, map.get(pair.activityB) - 1);
-    })
-    map.forEach(element => {
-        expect(element).toEqual(0)
-    });
-    console.log(generatedPairs);
-    
-})
 
 });

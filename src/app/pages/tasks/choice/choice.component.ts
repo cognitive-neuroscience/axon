@@ -8,12 +8,18 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Key, UserResponse } from 'src/app/models/InternalDTOs';
 import { ChoiceTask, TaskNames } from '../../../models/TaskData';
-import { activityPair,  pracSet } from './stimuli_task';
+import { pracSet } from './stimuli_task';
 import { activityList } from './activityList';
 import { TimerService } from 'src/app/services/timer.service';
 import { generateRandomNonrepeatingNumberList, getRandomNumber, wait } from 'src/app/common/commonMethods';
 import { environment } from 'src/environments/environment';
 
+export class ActivityPair {
+  constructor(
+      readonly activityA: string,
+      readonly activityB: string
+  ) {}
+}
 
 declare function setFullScreen(): any;
 
@@ -33,8 +39,8 @@ export class ChoiceComponent implements OnInit {
   durationHelpMessageShown: number = 10000;
 
   step: number = 1;
-  currentSet: activityPair[]; //the stimulus set of choice pairs currently used (can be practice or task)
-  currentActivityPair: activityPair;
+  currentSet: ActivityPair[]; //the stimulus set of choice pairs currently used (can be practice or task)
+  currentActivityPair: ActivityPair;
   currentActivityLeft: string = '';
   currentActivityRight: string = '';
 
@@ -93,7 +99,7 @@ export class ChoiceComponent implements OnInit {
     this.startGameInFullScreen();
     this.proceedtoNextStep();
     await wait(2000);
-    this.currentSet = pracSet
+    this.currentSet = this.generatedRandomActivityPairs(pracSet);
     this.practiceTrials = this.currentSet.length;
     this.proceedtoNextStep();
     this.isPractice = true;
@@ -105,7 +111,7 @@ export class ChoiceComponent implements OnInit {
 
   async startActualGame() {
     this.proceedtoNextStep();
-    this.currentSet = this.shuffleStimulus(this.generatedRandomActivityPairs(environment.production ? activityList : activityList.slice(0, 10)));
+    this.currentSet = this.generatedRandomActivityPairs(environment.production ? activityList : activityList.slice(0, 10));
     this.actualTrials = this.currentSet.length;
     await wait(2000);
     this.proceedtoNextStep();
@@ -165,80 +171,25 @@ export class ChoiceComponent implements OnInit {
     clearTimeout(this.snackbarTimeout);
   }
 
-  generatedRandomActivityPairs(activities: string[]): activityPair[] {
-    // must be at least 2 elements
-    if(activities.length <= 1) {
-      throw new Error("At least two activities are needed to make a pair list")
-    }
-    // check that all string are unique
-    if(new Set<string>(activities).size !== activities.length) throw new Error("Cannot create pairs because there are duplicate activity strings");
-    
-    let remainder: string;
-    let pairsList = new Set<string>();
-    const pairs: activityPair[] = [];
-    // 1. generate set and pair them off
-    let activityList = [...activities]
-    
-    // first pass: pair up the activities and record them
-    // continue until we either have an empty map (for even elements) or one remaining item (for odd number of elements)
-    this.generateRandomActivityPairsHelper(pairs, pairsList, activityList);
+  generatedRandomActivityPairs(activities: string[]): ActivityPair[] {
+    if(activities.length <= 1) throw new Error("At least two activities are needed to make a pair list");
+    if(activities.length == 2) return [new ActivityPair(activities[0], activities[1])];
+    if(new Set<string>(activities).size !== activities.length) throw new Error("Cannot have duplicate activities");
 
-    // handle case where there was a remainder
-    if(activityList.length > 0) {
-      remainder = activityList[0];
-      activityList = [...activities.filter(activity => activity !== remainder)];
-      let randIndices = generateRandomNonrepeatingNumberList(2, 0, activityList.length).sort().reverse() // filter out remainder
+    // copy the array
+    const shuffledActivities = this.shuffleStimulus([...activities]);
+    const pairs: ActivityPair[] = [];
 
-      // will loop twice
-      for(const index of randIndices) {
-        pairs.push(new activityPair(remainder, activityList[index]));
-        let alphabeticalSorted = [remainder, activityList[index]].sort();
-        pairsList.add(alphabeticalSorted[0] + alphabeticalSorted[1]);
-        activityList.splice(index, 1);
-      }
-    } else {
-      activityList = [...activities];
+    for(let i = 0; i < shuffledActivities.length; i++) {
+      pairs.push(new ActivityPair(shuffledActivities[i], shuffledActivities[ (i+1) % shuffledActivities.length ]));
     }
 
-    // second pass
-    // activityList must be an even number here
-    this.generateRandomActivityPairsHelper(pairs, pairsList, activityList);
-
-    return this.shuffleStimulus(pairs);
+    return pairs;
   }
 
-  private generateRandomActivityPairsHelper(pairs: activityPair[], pairsSet: Set<string>, activityList: string[]) {
-    while(activityList.length > 1) {
-      let randIndexA = getRandomNumber(0, activityList.length);
-      let randIndexB = getRandomNumber(0, activityList.length);
-      let activityA = activityList[randIndexA];
-      let activityB = activityList[randIndexB];
-      let alphabeticalSorted = [activityA, activityB].sort();
-
-      // get random number until B is different from A
-      while(activityA === activityB || pairsSet.has(alphabeticalSorted[0] + alphabeticalSorted[1])) {
-        randIndexB = getRandomNumber(0, activityList.length);
-        activityB = activityList[randIndexB];
-        alphabeticalSorted = [activityA, activityB].sort();
-      }
-
-      pairs.push(new activityPair(activityA, activityB));
-
-      // remove from array and record pair in set
-      // splice the larger one first so that we don't splice any incorrect values
-      if(randIndexA > randIndexB) {
-        activityList.splice(randIndexA, 1);
-        activityList.splice(randIndexB, 1);
-      } else {
-        activityList.splice(randIndexB, 1);
-        activityList.splice(randIndexA, 1);
-      }
-      pairsSet.add(alphabeticalSorted[0] + alphabeticalSorted[1]);
-    }
-  }
-
-  private shuffleStimulus(array: activityPair[]) {
-    let currentIndex = array.length, temporaryValue: activityPair, randomIndex: number;
+  // takes an array of any type and shuffles the items inside (or the references)
+  private shuffleStimulus(array: any[]) {
+    let currentIndex = array.length, temporaryValue: any, randomIndex: number;
 
     // While there remain elements to shuffle
     while (0 !== currentIndex) {
@@ -346,6 +297,7 @@ export class ChoiceComponent implements OnInit {
 
   continueAhead() {
     if (this.authService.isAdmin()) {
+      console.log(this.data);
       this.router.navigate(['/dashboard/components'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {

@@ -36,7 +36,6 @@ export class RatingComponent implements OnInit {
   currentActivity: string = '';
   currentSet: string[];
   partOneComplete: boolean = false;
-  partTwoComplete: boolean = false;
 
   isPractice: boolean = false;
   isStimulus: boolean = false;
@@ -235,12 +234,6 @@ export class RatingComponent implements OnInit {
           this.proceedtoNextStep(); //loader
           await wait(2000);
           this.proceedtoNextStep();  //show first part complete msg
-          return;
-        } else if(!this.partTwoComplete) {
-          this.partTwoComplete = true;
-          this.proceedtoNextStep(); //loader
-          await wait(2000);
-          this.proceedtoNextStep();  //show second part complete msg
           return;
         } else {
           this.proceedtoNextStep();

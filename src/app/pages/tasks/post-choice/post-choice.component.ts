@@ -239,12 +239,6 @@ export class PostChoiceComponent implements OnInit {
           await wait(2000);
           this.proceedtoNextStep();  //show first part complete msg
           return;
-        } else if(!this.partTwoComplete) {
-          this.partTwoComplete = true;
-          this.proceedtoNextStep(); //loader
-          await wait(2000);
-          this.proceedtoNextStep();  //show second part complete msg
-          return;
         } else {
           this.proceedtoNextStep();
           if (this.authService.isAdmin()) {
@@ -291,6 +285,7 @@ export class PostChoiceComponent implements OnInit {
 
   continueAhead() {
     if (this.authService.isAdmin()) {
+      console.log(this.data);
       this.router.navigate(['/dashboard/components'])
       this.snackbarService.openInfoSnackbar("Task completed")
     } else {
@@ -302,7 +297,7 @@ export class PostChoiceComponent implements OnInit {
     this.timerService.clearTimer();
     this.currentActivity = '';
     this.feedbackShown = false;
-    this.ratingType = 'NA'; //CHANGE??
+    this.ratingType = 'NA';
   }
 
   startGameInFullScreen() {
