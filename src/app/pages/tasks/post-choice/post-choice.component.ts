@@ -12,6 +12,7 @@ import { map } from 'rxjs/operators';
 import { Key, Role, UserResponse } from 'src/app/models/InternalDTOs';
 import { TimerService } from 'src/app/services/timer.service';
 import { getRandomNumber, wait } from 'src/app/common/commonMethods';
+import { environment } from 'src/environments/environment';
 
 declare function setFullScreen(): any;
 
@@ -122,7 +123,7 @@ export class PostChoiceComponent implements OnInit {
   async startActualGame() {
     this.proceedtoNextStep();
     await wait(2000);
-    this.currentSet = this.shuffleStimulus(taskSet.slice(0, 10));
+    this.currentSet = this.shuffleStimulus(environment.production ? taskSet : taskSet.slice(0, 10));
     this.actualTrials = this.currentSet.length;
     this.proceedtoNextStep();
     this.isPractice = false;
