@@ -171,7 +171,7 @@ export class DigitSpanComponent implements OnInit, OnDestroy {
 
     this.showHelpMessage("Please enter your response", this.delayToShowHelpMessage, this.durationHelpMessageShown);
 
-    this.responseTimeout = setTimeout(() => {
+    this.responseTimeout = window.setTimeout(() => {
       const message = "Please do your best to provide your answer in the time allotted for the next trial.";
       this.snackbarService.openInfoSnackbar(message, undefined, this.durationHelpMessageShown);
       this.showFeedback();
@@ -179,7 +179,7 @@ export class DigitSpanComponent implements OnInit, OnDestroy {
   }
 
   private showHelpMessage(helpMessage: string, delay: number, duration: number) {
-    this.snackbarTimeout = setTimeout(() => {
+    this.snackbarTimeout = window.setTimeout(() => {
       this.snackbarService.openInfoSnackbar(helpMessage, undefined, duration, 'center');
     }, delay);
   }

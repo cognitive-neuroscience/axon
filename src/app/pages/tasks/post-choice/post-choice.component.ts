@@ -192,8 +192,7 @@ export class PostChoiceComponent implements OnInit {
     this.data.push({
       trial: this.currentTrial,
       userID: this.authService.getDecodedToken().UserID,
-      // counterbalance: this.counterbalance,
-      ratingType: this.partOneComplete ? 'effort' : 'frequency',
+      ratingType: this.partOneComplete ? 'frequency' : 'effort',
       userAnswer: UserResponse.NA,
       activity: this.currentActivity,
       responseTime: 0,

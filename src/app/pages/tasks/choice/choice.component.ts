@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { UploadDataService } from 'src/app/services/uploadData.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
@@ -11,7 +11,7 @@ import { ChoiceTask, TaskNames } from '../../../models/TaskData';
 import { pracSet } from './stimuli_task';
 import { activityList } from './activityList';
 import { TimerService } from 'src/app/services/timer.service';
-import { generateRandomNonrepeatingNumberList, getRandomNumber, wait } from 'src/app/common/commonMethods';
+import { getRandomNumber, wait } from 'src/app/common/commonMethods';
 import { environment } from 'src/environments/environment';
 
 export class ActivityPair {
@@ -28,7 +28,7 @@ declare function setFullScreen(): any;
   templateUrl: './choice.component.html',
   styleUrls: ['./choice.component.scss']
 })
-export class ChoiceComponent implements OnInit {
+export class ChoiceComponent implements OnInit, OnDestroy {
 
   isScored: boolean | number = false;
   maxResponseTime: number = 30000;       // In milliseconds
@@ -52,8 +52,8 @@ export class ChoiceComponent implements OnInit {
   isResponseAllowed: boolean = false;
   data: ChoiceTask[] = [];
 
-  sTimeout: any;
-  snackbarTimeout: any;
+  sTimeout: number;
+  snackbarTimeout: number;
 
   
   @HostListener('window:keypress', ['$event'])
@@ -133,7 +133,7 @@ export class ChoiceComponent implements OnInit {
     this.isRatingscale = true;
 
     // This is the delay between showing the stimulus and showing the feedback
-    this.sTimeout = setTimeout(() => {
+    this.sTimeout = window.setTimeout(() => {
       // If no response during response window, showing a reminder to respond in time next trial
       const message = "Please do your best to provide your answer in the time allotted for the next trial.";
       this.snackbarService.openInfoSnackbar(message, undefined, this.interTrialDelay);
@@ -161,7 +161,7 @@ export class ChoiceComponent implements OnInit {
   }
 
   private showHelpMessage(helpMessage: string, delay: number, duration: number) { //, duration: number
-    this.snackbarTimeout = setTimeout(() => {
+    this.snackbarTimeout = window.setTimeout(() => {
       this.snackbarService.openInfoSnackbar(helpMessage, "", duration);
     }, delay)
   }
@@ -176,7 +176,7 @@ export class ChoiceComponent implements OnInit {
     if(activities.length == 2) return [new ActivityPair(activities[0], activities[1])];
     if(new Set<string>(activities).size !== activities.length) throw new Error("Cannot have duplicate activities");
 
-    // copy the array
+    // copy the array and shuffle the elements inside to get random pairs
     const shuffledActivities = this.shuffleStimulus([...activities]);
     const pairs: ActivityPair[] = [];
 
@@ -184,7 +184,8 @@ export class ChoiceComponent implements OnInit {
       pairs.push(new ActivityPair(shuffledActivities[i], shuffledActivities[ (i+1) % shuffledActivities.length ]));
     }
 
-    return pairs;
+    // shuffle the elements again so that the pairs do not follow one another
+    return this.shuffleStimulus(pairs);
   }
 
   // takes an array of any type and shuffles the items inside (or the references)
@@ -317,6 +318,12 @@ export class ChoiceComponent implements OnInit {
 
   startGameInFullScreen() {
     setFullScreen();
+  }
+
+  ngOnDestroy() {
+    this.snackbarService.clearSnackbar();
+    clearTimeout(this.sTimeout);
+    clearTimeout(this.snackbarTimeout);
   }
 }
 
