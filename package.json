@@ -52,6 +52,7 @@
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
+    "build-deploy": "ng build --prod && cd dist && scp -r . nick@psharplab.campus.mcgill.ca:/var/www/html",
     "lint-fix": "ng lint --fix=true"
   },
   "repository": {
