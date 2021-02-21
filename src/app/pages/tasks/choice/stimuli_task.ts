@@ -1,5 +1,6 @@
 export let pracSet = [
-    "Bring the dog for a walk",
-    "Bring the car to the mechanic"
+    
+    "Bring the car to the mechanic",
+    "Dust your bookshelves",
 ]
 
