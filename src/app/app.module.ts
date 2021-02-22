@@ -51,6 +51,11 @@ import { ManageQuestionnairesComponent } from './pages/dashboard/study-component
 import { CreateQuestionnaireDialogComponent } from './pages/dashboard/study-components/manage-questionnaires/create-questionnaire-dialog/create-questionnaire-dialog.component';
 import { PreviewQuestionnaireDialogComponent } from './pages/dashboard/study-components/manage-questionnaires/preview-questionnaire-dialog/preview-questionnaire-dialog.component';
 import { NavigationButtonsComponent } from './pages/tasks/navigation-buttons/navigation-buttons.component';
+import { HelpQuestionnaireDialogComponent } from './pages/dashboard/study-components/manage-questionnaires/help-questionnaire-dialog/help-questionnaire-dialog.component';
+import { ManageCustomTasksComponent } from './pages/dashboard/study-components/manage-custom-tasks/manage-custom-tasks.component';
+import { CreateCustomTaskDialogComponent } from './pages/dashboard/study-components/manage-custom-tasks/create-custom-task-dialog/create-custom-task-dialog.component';
+import { CustomTaskHelpDialogComponent } from './pages/dashboard/study-components/manage-custom-tasks/custom-task-help-dialog/custom-task-help-dialog.component';
+import { CustomTaskPreviewDialogComponent } from './pages/dashboard/study-components/manage-custom-tasks/custom-task-preview-dialog/custom-task-preview-dialog.component';
 
 @NgModule({
   declarations: [
@@ -99,6 +104,11 @@ import { NavigationButtonsComponent } from './pages/tasks/navigation-buttons/nav
     CreateQuestionnaireDialogComponent,
     PreviewQuestionnaireDialogComponent,
     NavigationButtonsComponent,
+    HelpQuestionnaireDialogComponent,
+    ManageCustomTasksComponent,
+    CreateCustomTaskDialogComponent,
+    CustomTaskHelpDialogComponent,
+    CustomTaskPreviewDialogComponent,
   ],
   imports: [
     BrowserModule,

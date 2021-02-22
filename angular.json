@@ -113,6 +113,11 @@
     }
   },
   "defaultProject": "axon",
+  "schematics": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    }
+  },
   "cli": {
     "analytics": "df6da515-974d-42e6-89cd-f5660de09dce"
   }

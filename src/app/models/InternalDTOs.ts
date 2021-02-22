@@ -117,6 +117,7 @@ export enum TaskType {
     Questionnaire = "Questionnaire"
 }
 
+// special strings that are important to the backend
 export enum BEStrings {
     EXPERIMENTUSERS = "experiment_users",
     FEEDBACKQUESTIONNAIRE = "feedback_questionnaire_responses"

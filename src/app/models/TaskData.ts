@@ -169,4 +169,10 @@ export function mapTaskIdToTitle(task: string) {
         default:
             return RouteMap[task]?.title
     }
-  }
+}
+
+export class CustomTask {
+    name: string;
+    url: string;
+    description: string;
+}

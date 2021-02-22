@@ -2,7 +2,8 @@
     <div class="d-flex justify-content-between">
         <h2 class="mb-5">Your Questionnaires</h2>
         <div>
-            <button class="btn btn-success d-flex" (click)="openCreateQuestionnaireModal()">Add new Questionnaire</button>
+            <button class="btn btn-success" (click)="openCreateQuestionnaireModal()">Add new Questionnaire</button>
+            <button class="btn btn-primary ml-3" (click)="openQuestionnaireHelpModal()">Help</button>
         </div>
     </div>
 
@@ -34,8 +35,8 @@
                 </div>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumnsForGuests"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumnsForGuests;"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedQuestionnaireColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedQuestionnaireColumns;"></tr>
 
     </table>
 </div>

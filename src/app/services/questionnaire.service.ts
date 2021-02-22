@@ -11,7 +11,7 @@ import { RouteMap } from '../routing/routes';
 })
 export class QuestionnaireService {
 
-    private readonly QUESTIONNAIRE_HTTP_PREFIX = "/questionnaire/"
+    private readonly RESOURCE_PATH = "/questionnaire/"
 
     readonly includedRouteMapQuestionnaires: string[] = [
         RouteMap.consent.id,
@@ -45,25 +45,25 @@ export class QuestionnaireService {
     }
 
     createQuestionnaire(questionnaire: Questionnaire): Observable<boolean> {
-        return this.http.post(`${environment.apiBaseURL}${this.QUESTIONNAIRE_HTTP_PREFIX}`, questionnaire, {observe: "response"}).pipe(
+        return this.http.post(`${environment.apiBaseURL}${this.RESOURCE_PATH}`, questionnaire, {observe: "response"}).pipe(
             map(x => x.ok)
         )
     }
 
     deleteQuestionnaireByID(id: string): Observable<boolean> {
-        return this.http.delete(`${environment.apiBaseURL}${this.QUESTIONNAIRE_HTTP_PREFIX}${id}`, { observe: "response" }).pipe(
+        return this.http.delete(`${environment.apiBaseURL}${this.RESOURCE_PATH}${id}`, { observe: "response" }).pipe(
             map(x => x.ok)
         )
     }
 
     saveDemographicsQuestionnaireResponse(response: DemographicsQuestionnaireResponse): Observable<boolean> {
-        return this.http.post(`${environment.apiBaseURL}${this.QUESTIONNAIRE_HTTP_PREFIX}demographics`, response, { observe: "response" }).pipe(
+        return this.http.post(`${environment.apiBaseURL}${this.RESOURCE_PATH}demographics`, response, { observe: "response" }).pipe(
             map(x => x.ok)
         )
     }
 
     saveFeedQuestionnaireResponse(response: FeedbackQuestionnaireResponse): Observable<boolean> {
-        return this.http.post(`${environment.apiBaseURL}${this.QUESTIONNAIRE_HTTP_PREFIX}feedback`, response, { observe: "response" }).pipe(
+        return this.http.post(`${environment.apiBaseURL}${this.RESOURCE_PATH}feedback`, response, { observe: "response" }).pipe(
             map(x => x.ok)
         )
     }
@@ -75,7 +75,7 @@ export class QuestionnaireService {
     }
 
     private _getQuestionnaires(): Observable<Questionnaire[]> {
-        return this.http.get<Questionnaire[]>(`${environment.apiBaseURL}${this.QUESTIONNAIRE_HTTP_PREFIX}`)
+        return this.http.get<Questionnaire[]>(`${environment.apiBaseURL}${this.RESOURCE_PATH}`)
     }
 
 }

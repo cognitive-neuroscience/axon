@@ -1,0 +1,54 @@
+<mat-horizontal-stepper>
+    <mat-step>
+        <div>
+            <p>
+                Go to survey monkey and navigate to <b>My Surveys</b> and click on the survey you created.
+                <br>
+                Under <b>Design Survey</b>, click the <b>Logic</b> option on the left side toolbar.
+            </p>
+            <hr>
+            <img class="w-100" src="/assets/images/dashboard/surveymonkey-1.png" alt="Instruction 1">
+        </div>
+        <div class="w-100">
+            <button class="d-block ml-auto" mat-button matStepperNext>Next</button>
+        </div>
+    </mat-step>
+    <mat-step>
+        <div>
+            <p>
+                Click the <b>Custom Variables</b> option and add two custom variables.
+                <br>
+                Make sure that the first variable name you add is "s" (to collect the subject ID) and "e" (to collect the associated experiment code). 
+                <br>
+                The accompanying labels can be anything you want and will appear on the Excel spreadsheet when you download the responses.
+                <br>
+                In the below example, the labels are set as subjectID and experimentCode.
+            </p>
+            <hr>
+            <img src="/assets/images/dashboard/surveymonkey-2.png" alt="Instruction 2" class="d-block mx-auto" style="width: 30%;">
+        </div>
+        <div class="w-100 d-flex justify-content-between">
+            <button mat-button matStepperPrevious>Previous</button>
+            <button mat-button matStepperNext>Next</button>
+        </div>
+    </mat-step>
+    <mat-step>
+        <div>
+            <p>
+                Go to <b>Collect Responses</b> and click <b>Add New Collector</b>. Select Web Link Collector.
+                <br>
+                Copy the URL. This will be the URL that you paste into the sharplab platform. It will look like this:
+                <br>
+                <b>https://www.surveymonkey.com/r/XK8SD38?s=[s_value]&e=[e_value]</b>
+                <br>
+                <b>Important!</b> Make sure you set the value in the URL as <b> s=[s_value]&e=[e_value]</b> in this order.
+                <img src="/assets/images/dashboard/surveymonkey-3.png" alt="Instruction 3" class="w-100">
+            </p>
+            
+        </div>
+        <div class="w-100 d-flex justify-content-between">
+            <button mat-button matStepperPrevious>Previous</button>
+            <button mat-button (click)="closeDialog()">Close</button>
+        </div>
+    </mat-step>
+</mat-horizontal-stepper>

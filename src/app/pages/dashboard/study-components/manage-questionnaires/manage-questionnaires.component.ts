@@ -10,6 +10,7 @@ import { ConfirmationService } from 'src/app/services/confirmation.service';
 import { QuestionnaireService } from 'src/app/services/questionnaire.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { CreateQuestionnaireDialogComponent } from './create-questionnaire-dialog/create-questionnaire-dialog.component';
+import { HelpQuestionnaireDialogComponent } from './help-questionnaire-dialog/help-questionnaire-dialog.component';
 import { PreviewQuestionnaireDialogComponent } from './preview-questionnaire-dialog/preview-questionnaire-dialog.component';
 
 @Component({
@@ -30,7 +31,7 @@ export class ManageQuestionnairesComponent implements OnInit {
 
   questionnaires: Observable<Questionnaire[]>;
   subscriptions: Subscription[] = [];
-  displayedColumnsForGuests = ['name', 'description', 'url', 'actions'];
+  displayedQuestionnaireColumns = ['name', 'description', 'url', 'actions'];
   hiddenQuestionnaires = [RouteMap.consent.id, RouteMap.demographicsquestionnaire.id]
 
   ngOnInit(): void {
@@ -80,6 +81,10 @@ export class ManageQuestionnairesComponent implements OnInit {
       console.error(err)
       this.snackbarService.openErrorSnackbar("There was an error deleting the user")
     })
+  }
+
+  openQuestionnaireHelpModal() {
+    this.dialog.open(HelpQuestionnaireDialogComponent, {width: "70%"})
   }
 
   ngOnDestroy() {
