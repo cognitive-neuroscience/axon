@@ -1,4 +1,9 @@
+import { OverlayModule } from '@angular/cdk/overlay';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 
 import { ManageCustomTasksComponent } from './manage-custom-tasks.component';
 
@@ -8,7 +13,18 @@ describe('ManageCustomTasksComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ManageCustomTasksComponent ]
+      imports: [
+        HttpClientTestingModule,
+        OverlayModule
+      ],
+      declarations: [ 
+        ManageCustomTasksComponent
+      ],
+      providers: [
+        { provide: MatDialog, useValue: {} },
+        { provide: MatSnackBar, useVlaue: {} },
+        SnackbarService,
+    ]
     })
     .compileComponents();
   }));

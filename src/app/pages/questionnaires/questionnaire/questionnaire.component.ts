@@ -43,18 +43,20 @@ export class QuestionnaireComponent implements OnInit, OnDestroy {
           } else {
             const subjectID = this.authService.getDecodedToken().UserID;
             const code = this.taskManager.getExperimentCode();
-            const parsedURL = this.parseSurveyMonkeyURL(params.link, subjectID, code);
-            this.embeddedSurveyLink = parsedURL;
+            this.embeddedSurveyLink = this.parseURL(params.link, subjectID, code);
           }
         })
       )
     }
   }
 
-  private parseSurveyMonkeyURL(url: string, subjectID: string, experimentCode: string): string {
-    // we expect a url like https://www.surveymonkey.com/r/ABCDEFG?s=[s_value]&e=[e_value]
-    const urlArr = url.split("?");
-    return `${urlArr[0]}?s=${subjectID}&e=${experimentCode}`;
+  private parseURL(url: string, subjectID: string, experimentCode: string): string {
+    // we expect a url like https://www.surveymonkey.com/r/ABCDEFG?s=[s_value]&e=[e_value] OR
+    // https://run.pavlovia.org/Sharp_lab/corsi-test/html?subject=[s_value]&experimentCode=[e_value]
+    const sVal = "[s_value]";
+    const eVal = "[e_value]";
+
+    return (`${url.replace(sVal, subjectID)}`).replace(eVal, experimentCode);
   }
 
   adminPreviewing(): boolean {

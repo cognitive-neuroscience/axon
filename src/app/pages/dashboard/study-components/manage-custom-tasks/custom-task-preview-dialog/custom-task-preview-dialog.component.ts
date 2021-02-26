@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { CustomTask } from 'src/app/models/TaskData';
 
 @Component({
   selector: 'app-custom-task-preview-dialog',
@@ -7,9 +9,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CustomTaskPreviewDialogComponent implements OnInit {
 
-  constructor() { }
+  link: string = "";
+
+  constructor(@Inject(MAT_DIALOG_DATA) public customTaskData: CustomTask, private dialogRef: MatDialogRef<CustomTaskPreviewDialogComponent>) { }
 
   ngOnInit(): void {
+    this.link = this.customTaskData.url;
   }
 
+  closeDialog() {
+    this.dialogRef.close();
+  }
 }

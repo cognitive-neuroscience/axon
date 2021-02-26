@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogRef } from '@angular/material/dialog';
 
 import { CreateCustomTaskDialogComponent } from './create-custom-task-dialog.component';
 
@@ -8,7 +9,13 @@ describe('CreateCustomTaskDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CreateCustomTaskDialogComponent ]
+      declarations: [ CreateCustomTaskDialogComponent ],
+      providers: [
+        {
+            provide: MatDialogRef,
+            useValue: {}
+        }
+    ]
     })
     .compileComponents();
   }));

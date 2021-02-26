@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogRef } from '@angular/material/dialog';
 
 import { HelpQuestionnaireDialogComponent } from './help-questionnaire-dialog.component';
 
@@ -8,7 +9,13 @@ describe('HelpQuestionnaireDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HelpQuestionnaireDialogComponent ]
+      declarations: [ HelpQuestionnaireDialogComponent ],
+      providers: [
+        {
+            provide: MatDialogRef,
+            useValue: {}
+        }
+    ]
     })
     .compileComponents();
   }));

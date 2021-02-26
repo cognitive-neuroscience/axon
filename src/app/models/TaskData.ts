@@ -172,6 +172,7 @@ export function mapTaskIdToTitle(task: string) {
 }
 
 export class CustomTask {
+    customTaskID: string;
     name: string;
     url: string;
     description: string;

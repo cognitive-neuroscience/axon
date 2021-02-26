@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { CustomTask } from 'src/app/models/TaskData';
 
 @Component({
   selector: 'app-create-custom-task-dialog',
@@ -7,7 +9,29 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CreateCustomTaskDialogComponent implements OnInit {
 
-  constructor() { }
+  URL: string = "";
+  name: string = "";
+  description: string = "";
+
+  isValid(): boolean {
+    return this.URL.length > 0 && this.name.length > 0;
+  }
+
+  sendDataToParent() {
+    const customTask: CustomTask = {
+      customTaskID: null, // will be set in the backend
+      url: this.setQueryParameters(this.URL),
+      name: this.name,
+      description: this.description
+    };
+    this.dialogRef.close(customTask);
+  }
+
+  private setQueryParameters(url: string): string {
+    return `${url}?participant=[s_value]&experimentCode=[e_value]`;
+  }
+
+  constructor(private dialogRef: MatDialogRef<CreateCustomTaskDialogComponent>) { }
 
   ngOnInit(): void {
   }

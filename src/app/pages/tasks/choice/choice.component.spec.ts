@@ -4,8 +4,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ChoiceComponent } from './choice.component';
 import { activityList } from './activityList';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ConfirmationService } from 'src/app/services/confirmation.service';
 
-describe('ChoiceTaskComponent', () => {
+describe('ChoiceComponent', () => {
   let component: ChoiceComponent;
   let fixture: ComponentFixture<ChoiceComponent>;
 
@@ -19,6 +21,24 @@ describe('ChoiceTaskComponent', () => {
       declarations: [
         ChoiceComponent
       ],
+      providers: [
+        {
+          provide: MatDialog,
+          useValue: {}
+        },
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {}
+        },
+        {
+          provide: MatDialogRef,
+          useValue: {}
+        },
+        {
+          provide: ConfirmationService,
+          useValue: {}
+        }
+    ]
     }).compileComponents().then(() => {
         fixture = TestBed.createComponent(ChoiceComponent);
         component = fixture.componentInstance;

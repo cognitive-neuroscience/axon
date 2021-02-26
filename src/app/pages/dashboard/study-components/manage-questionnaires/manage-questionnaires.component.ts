@@ -57,7 +57,7 @@ export class ManageQuestionnairesComponent implements OnInit {
     }, (err: HttpErrorResponse) => {
       let errMsg = err.error?.message;
       if(!errMsg) {
-        errMsg = "Could not create guest"
+        errMsg = "Could not create questionnaire"
       }
       this.snackbarService.openErrorSnackbar(err.error?.message)
     })

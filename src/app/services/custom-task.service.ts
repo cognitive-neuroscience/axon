@@ -9,7 +9,7 @@ import { CustomTask } from "../models/TaskData";
     providedIn: "root"
 })
 export class CustomTaskService {
-    private readonly RESOURCE_PATH = "/customtask/"
+    private readonly RESOURCE_PATH = "/task/"
 
     private _customTaskExperimentSubject: BehaviorSubject<CustomTask[]>;
     public customTasks: Observable<CustomTask[]>;
@@ -38,19 +38,7 @@ export class CustomTaskService {
     }
 
     private _getQuestionnaires(): Observable<CustomTask[]> {
-        return of([
-            {
-                name: "test 1 name",
-                description: "test 1 description",
-                url: "www.test.com"
-            },
-            {
-                name: "test 2 name",
-                description: "test 2 description",
-                url: "www.test2.com"
-            }
-        ])
-        // return this.http.get<CustomTask[]>(`${environment.apiBaseURL}${this.RESOURCE_PATH}`)
+        return this.http.get<CustomTask[]>(`${environment.apiBaseURL}${this.RESOURCE_PATH}`)
     }
 
 }
