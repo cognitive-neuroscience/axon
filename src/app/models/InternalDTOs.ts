@@ -114,7 +114,8 @@ export enum UserResponse {
 export enum TaskType {
     NAB = "NAB",
     Experimental = "Experimental",
-    Questionnaire = "Questionnaire"
+    Questionnaire = "Questionnaire",
+    CustomTask = "CustomTask"
 }
 
 // special strings that are important to the backend

@@ -31,7 +31,7 @@ export class ManageCustomTasksComponent implements OnInit {
 
   ngOnInit(): void {
     this.customTasks = this.customTaskService.customTasks;
-    this.customTaskService.updateQuestionnaires();
+    this.customTaskService.update();
   }
 
   openCreateCustomTaskModal() {
@@ -43,7 +43,7 @@ export class ManageCustomTasksComponent implements OnInit {
 
   private _createCustomTask(customTask: CustomTask) {
     this.customTaskService.createQuestionnaire(customTask).subscribe((data) => {
-      this.customTaskService.updateQuestionnaires();
+      this.customTaskService.update();
       this.snackbarService.openSuccessSnackbar("Successfully created new custom task");
     }, (err: HttpErrorResponse) => {
       let errMsg = err.error?.message;
@@ -77,7 +77,7 @@ export class ManageCustomTasksComponent implements OnInit {
       })
     ).subscribe(data => {
       if(data) {
-        this.customTaskService.updateQuestionnaires();
+        this.customTaskService.update();
         this.snackbarService.openSuccessSnackbar("Successfully deleted " + customTask.name);
       }
     }, err => {

@@ -38,7 +38,7 @@ export class DataComponent implements OnInit {
 
   ngOnInit(): void {
     this.experiments = this.experimentService.experiments
-    this.experimentService.updateExperiments();
+    this.experimentService.update();
   }
 
   optionsList(code: string): Observable<string[]> {

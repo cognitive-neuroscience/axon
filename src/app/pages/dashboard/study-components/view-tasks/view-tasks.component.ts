@@ -28,7 +28,7 @@ export class ViewTasksComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.tasklistService.updateTasks()
+    this.tasklistService.update()
     this.getCompletedTasklist();
     this.getTasklist();
   }

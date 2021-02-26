@@ -24,7 +24,7 @@ export class ExperimentsService {
         this.experiments = this._experimentBehaviorSubject.asObservable();
     }
 
-    updateExperiments(): void {
+    update(): void {
         // do not get all experiments if role is not auth as it will result in HTTP forbidden
         const jwt = this.authService.getDecodedToken()
         const role = jwt ? jwt.Role : null

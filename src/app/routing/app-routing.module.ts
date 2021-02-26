@@ -29,9 +29,8 @@ import { DataComponent } from '../pages/dashboard/data/data.component';
 import { ConsentComponent } from '../pages/questionnaires/consent/consent.component';
 import { DemographicsQuestionnaireComponent } from '../pages/questionnaires/demographics-questionnaire/demographics-questionnaire.component';
 import { FeedbackQuestionnaireComponent } from '../pages/questionnaires/feedback-questionnaire/feedback-questionnaire.component';
-import { StarksteinApathyScaleComponent } from '../pages/questionnaires/starkstein-apathy-scale/starkstein-apathy-scale.component';
 import { ManageGuestsComponent } from '../pages/dashboard/manage-guests/manage-guests.component';
-import { QuestionnaireComponent } from '../pages/questionnaires/questionnaire/questionnaire.component';
+import { EmbeddedPageComponent } from '../pages/questionnaires/embedded-page/embedded-page.component';
 import { StudyComponentsComponent } from '../pages/dashboard/study-components/study-components.component';
 import { environment } from 'src/environments/environment';
 
@@ -53,7 +52,6 @@ const routes: Routes = [
   { path: 'login/onlineparticipant', component: CrowdSourceLoginComponent },
   { path: RouteMap.demographicsquestionnaire.route , component: DemographicsQuestionnaireComponent, canActivate: [ExperimentRouteGuard] },
   { path: 'questionnaire/feedback', component: FeedbackQuestionnaireComponent },
-  { path: 'questionnaire/apathy', component: StarksteinApathyScaleComponent},
   { path: 'login', component: LoginComponent },
   { path: RouteMap.consent.route, component: ConsentComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.colorgame.route, component: ColorGameComponent },
@@ -73,7 +71,7 @@ const routes: Routes = [
   { path: RouteMap.rating.route, component: RatingComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.choice.route, component: ChoiceComponent, canActivate: [ExperimentRouteGuard] },
   { path: RouteMap.postchoice.route, component: PostChoiceComponent, canActivate: [ExperimentRouteGuard] },
-  { path: RouteMap.surveymonkeyquestionnaire.route, component: QuestionnaireComponent, canActivate: [ExperimentRouteGuard] },
+  { path: RouteMap.surveymonkeyquestionnaire.route, component: EmbeddedPageComponent, canActivate: [ExperimentRouteGuard] },
   { path: 'complete', component: FinalPageComponent, canActivate: [ExperimentRouteGuard] },
   { path: '**', redirectTo: '/login/onlineparticipant', pathMatch: 'full' }
 ];

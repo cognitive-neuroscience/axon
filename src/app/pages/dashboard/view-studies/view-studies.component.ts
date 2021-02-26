@@ -71,7 +71,7 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
   }
 
   private updateExperiments() {
-    this.experimentsService.updateExperiments()
+    this.experimentsService.update()
   }
 
   private _createExperiment(experiment: Experiment) {

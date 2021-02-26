@@ -38,13 +38,12 @@ import { FeedbackQuestionnaireComponent } from './pages/questionnaires/feedback-
 import { DataTableComponent } from './pages/dashboard/data/data-table/data-table.component';
 import { LoaderComponent } from './services/loader/loader.component';
 import { NumpadComponent } from './pages/tasks/digit-span/numpad/numpad.component';
-import { StarksteinApathyScaleComponent } from './pages/questionnaires/starkstein-apathy-scale/starkstein-apathy-scale.component';
 import { RatingComponent } from './pages/tasks/rating/rating.component';
 import { ChoiceComponent } from './pages/tasks/choice/choice.component';
 import { PostChoiceComponent } from './pages/tasks/post-choice/post-choice.component';
 import { ManageGuestsComponent } from './pages/dashboard/manage-guests/manage-guests.component';
 import { CreateGuestDialogComponent } from './pages/dashboard/manage-guests/create-guest-dialog/create-guest-dialog.component';
-import { QuestionnaireComponent } from './pages/questionnaires/questionnaire/questionnaire.component';
+import { EmbeddedPageComponent } from './pages/questionnaires/embedded-page/embedded-page.component';
 import { SafePipe } from './pipes/safe.pipe';
 import { StudyComponentsComponent } from './pages/dashboard/study-components/study-components.component';
 import { ManageQuestionnairesComponent } from './pages/dashboard/study-components/manage-questionnaires/manage-questionnaires.component';
@@ -91,13 +90,12 @@ import { CustomTaskPreviewDialogComponent } from './pages/dashboard/study-compon
     DataTableComponent,
     LoaderComponent,
     NumpadComponent,
-    StarksteinApathyScaleComponent,
     RatingComponent,
     ChoiceComponent,
     PostChoiceComponent,
     ManageGuestsComponent,
     CreateGuestDialogComponent,
-    QuestionnaireComponent,
+    EmbeddedPageComponent,
     SafePipe,
     StudyComponentsComponent,
     ManageQuestionnairesComponent,

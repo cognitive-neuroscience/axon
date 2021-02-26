@@ -38,7 +38,7 @@ export class ManageQuestionnairesComponent implements OnInit {
     this.questionnaires = this.questionnaireService.questionnaires.pipe(
       map(questionnaireList => questionnaireList ? questionnaireList.filter(questionnaire => !this.hiddenQuestionnaires.includes(questionnaire.questionnaireID)) : [])
     );
-    this.questionnaireService.updateQuestionnaires();
+    this.questionnaireService.update();
   }
 
   openCreateQuestionnaireModal() {
@@ -52,7 +52,7 @@ export class ManageQuestionnairesComponent implements OnInit {
 
   private _createQuestionnaire(questionnaire: Questionnaire) {
     this.questionnaireService.createQuestionnaire(questionnaire).subscribe((data) => {
-      this.questionnaireService.updateQuestionnaires();
+      this.questionnaireService.update();
       this.snackbarService.openSuccessSnackbar("Successfully created new questionnaire");
     }, (err: HttpErrorResponse) => {
       let errMsg = err.error?.message;
@@ -74,7 +74,7 @@ export class ManageQuestionnairesComponent implements OnInit {
       })
     ).subscribe(data => {
       if(data) {
-        this.questionnaireService.updateQuestionnaires();
+        this.questionnaireService.update();
         this.snackbarService.openSuccessSnackbar("Successfully deleted " + questionnaire.name);
       }
     }, err => {

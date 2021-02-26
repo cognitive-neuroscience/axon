@@ -11,6 +11,9 @@ import { Questionnaire } from 'src/app/models/Questionnaire';
 import { QuestionnaireService } from 'src/app/services/questionnaire.service';
 import { TaskType } from 'src/app/models/InternalDTOs';
 import { RouteMap } from 'src/app/routing/routes';
+import { CustomTask } from '../../../../models/TaskData';
+import { CustomTaskService } from '../../../../services/custom-task.service';
+import { map, mergeAll, mergeMap } from 'rxjs/operators';
 
 export enum ArrayChange {
   REMOVED,
@@ -39,6 +42,7 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
   tasks: Observable<Task[]>;
   completedTasks: string[] = [];
   selectedTasks: ListItem[] = [];
+  customTasks: Observable<CustomTask[]>;
   questionnaires: Observable<Questionnaire[]>;
 
   private subscriptions: Subscription[] = [];
@@ -54,40 +58,52 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
     private tasklistService: TasklistService,
     private fb: FormBuilder,
     private _snackbar: SnackbarService,
-    private questionnaireService: QuestionnaireService
+    private questionnaireService: QuestionnaireService,
+    private customTaskService: CustomTaskService
   ) {}
 
   ngOnInit(): void {
     this.questionnaires = this.questionnaireService.questionnaires;
+    this.customTasks = this.customTaskService.customTasks;
     this.tasks = this.tasklistService.taskList;
-    this.tasklistService.updateTasks();
-    this.questionnaireService.updateQuestionnaires();
+    this.tasklistService.update();
+    this.questionnaireService.update();
+    this.customTaskService.update()
     
     this.getCompletedTasklist();
     this.subscriptions.push(
       // tasks will be either of type Questionnaire or Task
-      this.experimentForm.get("tasks").valueChanges.subscribe((tasks: any[]) => {
-
-        const conversionToListItem = tasks.map(task => {
-          // task object
-          if(task["title"]) {
-            return {
-              displayName: task["title"],
-              id: task["id"],
-              type: RouteMap[task["id"]].type
-            }
-          }
-          // questionnaire object
-          return {
-            displayName: task["name"],
-            id: task["questionnaireID"],
-            type: TaskType.Questionnaire
-          }
-        })
-
-        this.handleSelectChange(conversionToListItem)
+      this.experimentForm.get("tasks").valueChanges.pipe(
+        map((tasks: any[]) => tasks.map(this.convertToListItem))
+      ).subscribe((listItems) => {
+        this.handleSelectChange(listItems)
       })
     )
+  }
+
+  private convertToListItem(task): ListItem {
+    if(task["title"]) {
+      // for task objects
+      return {
+        displayName: task["title"],
+        id: task["id"],
+        type: RouteMap[task["id"]].type
+      }
+    } else if(task["customTaskID"]) {
+      // for custom tasks
+      return {
+        displayName: task["name"],
+        id: task["customTaskID"],
+        type: TaskType.CustomTask
+      }
+    } else {
+      // for questionnaire objects
+      return {
+        displayName: task["name"],
+        id: task["questionnaireID"],
+        type: TaskType.Questionnaire
+      }
+    }
   }
 
   handleSelectChange(newTasks: ListItem[]) {

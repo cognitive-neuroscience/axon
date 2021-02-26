@@ -26,7 +26,7 @@
                     <mat-option *ngFor="let questionnaire of questionnaires | async" [value]="questionnaire">{{ questionnaire.name }}</mat-option>
                 </mat-optgroup>
                 <mat-optgroup label="Custom Tasks">
-                    
+                    <mat-option *ngFor="let task of customTasks | async" [value]="task">{{ task.name }}</mat-option>
                 </mat-optgroup>
             </mat-select>
             <mat-error *ngIf="experimentForm.get('tasks')?.hasError('required')">At least one task is required</mat-error>

@@ -19,7 +19,7 @@ export class CustomTaskService {
         this.customTasks = this._customTaskExperimentSubject.asObservable();
     }
 
-    updateQuestionnaires(): void {
+    update(): void {
         this._getQuestionnaires().subscribe(questionnaires => {
             this._customTaskExperimentSubject.next(questionnaires);
         })

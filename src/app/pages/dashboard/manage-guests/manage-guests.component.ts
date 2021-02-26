@@ -31,7 +31,7 @@ export class ManageGuestsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.guests = this.userService.guests;
-    this.userService.updateGuests();
+    this.userService.update();
   }
 
   openCreateGuestModal() {
@@ -45,7 +45,7 @@ export class ManageGuestsComponent implements OnInit, OnDestroy {
 
   private _createGuest(user: User) {
     this.userService.createGuest(user.email, "guest").subscribe((data) => {
-      this.userService.updateGuests();
+      this.userService.update();
       this.snackbarService.openSuccessSnackbar("Successfully created new guest")
     }, (err: HttpErrorResponse) => {
       let errMsg = err.error?.message;
@@ -67,7 +67,7 @@ export class ManageGuestsComponent implements OnInit, OnDestroy {
       })
     ).subscribe(data => {
       if(data) {
-        this.userService.updateGuests()
+        this.userService.update()
         this.snackbarService.openSuccessSnackbar("Successfully deleted " + email)
       }
     }, err => {

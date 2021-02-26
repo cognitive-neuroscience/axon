@@ -33,7 +33,7 @@ export class TasklistService {
         this._updateCompletedTaskBehaviorSubject()
     }
 
-    public updateTasks() {
+    public update() {
         const jwt = this.authService.getDecodedToken()
         const role = jwt ? jwt.Role : null
 

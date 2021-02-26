@@ -7,11 +7,11 @@ import { SnackbarService } from 'src/app/services/snackbar.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
 
 @Component({
-  selector: 'app-questionnaire',
-  templateUrl: './questionnaire.component.html',
-  styleUrls: ['./questionnaire.component.scss']
+  selector: 'app-embedded-page',
+  templateUrl: './embedded-page.component.html',
+  styleUrls: ['./embedded-page.component.scss']
 })
-export class QuestionnaireComponent implements OnInit, OnDestroy {
+export class EmbeddedPageComponent implements OnInit, OnDestroy {
 
   // Link sent in as an admin to preview the embedded survey
   @Input()

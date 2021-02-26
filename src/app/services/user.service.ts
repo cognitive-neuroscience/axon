@@ -29,7 +29,7 @@ export class UserService {
         return this.http.delete(`${environment.apiBaseURL}/users/${email}`, {observe: "response"})
     }
 
-    updateGuests(): void {
+    update(): void {
         // do not get all experiments if role is not auth as it will result in HTTP forbidden
         const jwt = this.authService.getDecodedToken()
         const role = jwt ? jwt.Role : null

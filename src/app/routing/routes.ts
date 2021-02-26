@@ -133,5 +133,12 @@ export const RouteMap: ExperimentRoutingMap = {
     description: "Linked Survey Monkey Questionnaire",
     type: TaskType.Questionnaire,
     route: "task/questionnaire"
+  },
+  pavloviatask: {
+    id: "pavloviatask",
+    title: "Pavlovia Task",
+    description: "Linked Pavlovia Task",
+    type: TaskType.CustomTask,
+    route: "task/questionnaire"
   }
 };

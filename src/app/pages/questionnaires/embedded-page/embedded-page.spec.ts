@@ -3,11 +3,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
-import { QuestionnaireComponent } from './questionnaire.component';
+import { EmbeddedPageComponent } from './embedded-page.component';
 
-describe('QuestionnaireComponent', () => {
-  let component: QuestionnaireComponent;
-  let fixture: ComponentFixture<QuestionnaireComponent>;
+describe('EmbeddedPageComponent', () => {
+  let component: EmbeddedPageComponent;
+  let fixture: ComponentFixture<EmbeddedPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -17,7 +17,7 @@ describe('QuestionnaireComponent', () => {
           MatSnackBarModule,
       ],
       declarations: [
-        QuestionnaireComponent
+        EmbeddedPageComponent
       ],
       providers: [
           {
@@ -34,7 +34,7 @@ describe('QuestionnaireComponent', () => {
           }
       ]
     }).compileComponents().then(() => {
-        fixture = TestBed.createComponent(QuestionnaireComponent);
+        fixture = TestBed.createComponent(EmbeddedPageComponent);
         component = fixture.componentInstance;
     })
   });
