@@ -13,7 +13,7 @@ import { TaskType } from 'src/app/models/InternalDTOs';
 import { RouteMap } from 'src/app/routing/routes';
 import { CustomTask } from '../../../../models/TaskData';
 import { CustomTaskService } from '../../../../services/custom-task.service';
-import { map, mergeAll, mergeMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 export enum ArrayChange {
   REMOVED,
@@ -68,8 +68,8 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
     this.tasks = this.tasklistService.taskList;
     this.tasklistService.update();
     this.questionnaireService.update();
-    this.customTaskService.update()
-    
+    this.customTaskService.update();
+
     this.getCompletedTasklist();
     this.subscriptions.push(
       // tasks will be either of type Questionnaire or Task
@@ -173,15 +173,15 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
           case TaskType.Experimental:
           case TaskType.NAB:
             return x.id;
+          case TaskType.CustomTask:
+            return `${RouteMap.pavloviatask.id}-${x.id}`;
           case TaskType.Questionnaire:
-
             // questionnaires that we have hard coded on the frontend vs embedded survey monkey questionnaires
-            return this.questionnaireService.includedRouteMapQuestionnaires.includes(x.id) ? x.id : `${RouteMap.surveymonkeyquestionnaire.id}-${x.id}`
-
+            return this.questionnaireService.includedRouteMapQuestionnaires.includes(x.id) ? x.id : `${RouteMap.surveymonkeyquestionnaire.id}-${x.id}`;
           default:
             // should never get here
-            console.error("No task type found")
-            throw new Error("No task type found!")
+            console.error("No task type found");
+            throw new Error("No task type found!");
         }
       })
     )

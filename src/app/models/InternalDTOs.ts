@@ -53,6 +53,11 @@ export class SnackbarData {
     }
 }
 
+export class EmbeddedPageData {
+    ID: string;
+    taskType: TaskType;
+}
+
 export enum LoginMode {
     LOGIN = "LOGIN",
     REGISTER = "REGISTER",

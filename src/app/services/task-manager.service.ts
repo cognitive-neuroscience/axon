@@ -8,8 +8,9 @@ import { AuthService } from './auth.service';
 import { SessionStorageService } from './sessionStorage.service';
 import { RouteMap } from '../routing/routes';
 import { take } from "rxjs/operators";
-import { hasSurveyMonkeyQuestionnaire } from "../common/commonMethods";
+import { isSurveyMonkeyQuestionnaire } from "../common/commonMethods";
 import { Questionnaire } from "../models/Questionnaire";
+import { EmbeddedPageData } from "../models/InternalDTOs";
 
 @Injectable({
     providedIn: "root"
@@ -67,16 +68,19 @@ export class TaskManagerService {
     }
 
     private _routeToTask(task: string) {
-        if(hasSurveyMonkeyQuestionnaire(task)) {
-            const questionnaire = task.split("-")[0];
+        if(isSurveyMonkeyQuestionnaire(task)) {
+            // if task is of type survey monkey questionnaire
             const id = task.split("-")[1];
-            const URL = this.getExperimentQuestionnaires().find(q => q.questionnaireID == id)?.url;
-            if(!URL || !questionnaire || !id) {
+            if(!id) {
                 this.handleErr();
                 return;
             }
-            this._router.navigate([RouteMap[questionnaire].route, {link: URL}])
+            this._router.navigate([RouteMap.surveymonkeyquestionnaire.route, {data: EmbeddedPageData}])
+        } else if(this._isCustomTask(task)) {
+            // if task is a custom task
+            const id = task.split("-")[1];
         } else {
+            // if task is a normal hard coded task
             const route = RouteMap[task].route;
             if(!route) {
                 this.handleErr();
@@ -87,6 +91,10 @@ export class TaskManagerService {
         this._snackbarService.openSuccessSnackbar("Redirecting you to the next step")
     }
 
+    private _isCustomTask(task: string): boolean {
+        return task.includes(RouteMap.pavloviatask.id);
+    }
+
     private _routeToFinalPage(): void {
         this._router.navigate(['/complete'])
     }
@@ -94,10 +102,6 @@ export class TaskManagerService {
     getExperimentCode(): string {
         const token = this._sessionStorageService.getExperimentCodeFromSessionStorage()
         return token ? token : ""
-    }
-
-    getExperimentQuestionnaires(): Questionnaire[] {
-        return this._experiment?.questionnaires ?? null;
     }
 
     next(): void {

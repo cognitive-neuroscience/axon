@@ -9,7 +9,7 @@ import { filter, map, mergeAll } from 'rxjs/operators';
 import { mapTaskIdToTitle } from '../../../models/TaskData';
 import { LoaderService } from '../../../services/loader.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { hasSurveyMonkeyQuestionnaire } from 'src/app/common/commonMethods';
+import { isSurveyMonkeyQuestionnaire } from 'src/app/common/commonMethods';
 import { RouteMap } from 'src/app/routing/routes';
 
 @Component({
@@ -46,7 +46,7 @@ export class DataComponent implements OnInit {
       mergeAll(),
       filter(experiment => experiment?.code === code),
       map((x: Experiment) => x?.tasks),
-      map((taskList: string[]) => taskList.filter(taskName => !hasSurveyMonkeyQuestionnaire(taskName) && taskName !== RouteMap.consent.id))
+      map((taskList: string[]) => taskList.filter(taskName => !isSurveyMonkeyQuestionnaire(taskName) && taskName !== RouteMap.consent.id))
     )
   }
 

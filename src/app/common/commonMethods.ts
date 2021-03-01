@@ -34,6 +34,6 @@ export function wait(time: number): Promise<void> {
     });
 }
 
-export function hasSurveyMonkeyQuestionnaire(task: string): boolean {
+export function isSurveyMonkeyQuestionnaire(task: string): boolean {
     return task.includes(RouteMap.surveymonkeyquestionnaire.id);
 }

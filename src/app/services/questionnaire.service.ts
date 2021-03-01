@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DemographicsQuestionnaireResponse, FeedbackQuestionnaireResponse, Questionnaire } from '../models/Questionnaire';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -66,6 +66,10 @@ export class QuestionnaireService {
         return this.http.post(`${environment.apiBaseURL}${this.RESOURCE_PATH}feedback`, response, { observe: "response" }).pipe(
             map(x => x.ok)
         )
+    }
+
+    getQuestionnaireByID(id: string): Observable<Questionnaire> {
+        return this.http.get<Questionnaire>(`${environment.apiBaseURL}${this.RESOURCE_PATH}${id}`);
     }
 
     private _getQuestionnaires(): Observable<Questionnaire[]> {

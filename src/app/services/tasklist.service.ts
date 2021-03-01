@@ -5,7 +5,7 @@ import { Task } from '../models/Task';
 import { AuthService } from './auth.service';
 import { Role, TaskType } from '../models/InternalDTOs';
 import { RouteMap } from '../routing/routes';
-import { filter, take } from "rxjs/operators";
+import { take } from "rxjs/operators";
 
 @Injectable({
     providedIn: "root"
@@ -20,7 +20,7 @@ export class TasklistService {
     public taskList: Observable<Task[]>;
     public completedTaskList: Observable<string[]>;
 
-    private readonly route = "/assets/data"
+    private readonly RESOURCE_PATH = "/assets/data"
 
     // init the behavior subjects
     constructor(private http: HttpClient, private authService: AuthService) {
@@ -39,7 +39,7 @@ export class TasklistService {
 
         if(role && (role === Role.ADMIN || role === Role.GUEST)) {
             this._getTasks().subscribe((tasks: Task[]) => {
-                const filteredTasks = tasks.filter(task => task.type !== TaskType.Questionnaire);             
+                const filteredTasks = tasks.filter(task => task.type === TaskType.Experimental || task.type === TaskType.NAB);             
                 this._taskBehaviorSubject.next(filteredTasks)
             })
         }
@@ -57,6 +57,6 @@ export class TasklistService {
     }
 
     private _getCompletedTaskIds(): Observable<string[]> {
-        return this.http.get<string[]>(`${this.route}/completedtasklist.json`)
+        return this.http.get<string[]>(`${this.RESOURCE_PATH}/completedtasklist.json`)
     }
 }

@@ -1,8 +1,14 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { interval, Observable, Subscription } from 'rxjs';
+import { interval, Observable, of, Subscription } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+import { EmbeddedPageData, TaskType } from 'src/app/models/InternalDTOs';
+import { Questionnaire } from 'src/app/models/Questionnaire';
+import { CustomTask } from 'src/app/models/TaskData';
 import { AuthService } from 'src/app/services/auth.service';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
+import { CustomTaskService } from 'src/app/services/custom-task.service';
+import { QuestionnaireService } from 'src/app/services/questionnaire.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
 
@@ -27,8 +33,21 @@ export class EmbeddedPageComponent implements OnInit, OnDestroy {
     private confirmationService: ConfirmationService,
     private taskManager: TaskManagerService,
     private route: ActivatedRoute,
-    private snackbar: SnackbarService
-  ) {
+    private snackbar: SnackbarService,
+    private questionnaireService: QuestionnaireService,
+    private customTaskService: CustomTaskService
+  ) {}
+
+  getLink(params: EmbeddedPageData): Observable<Questionnaire> | Observable<CustomTask> {
+    switch (params.taskType) {
+      case TaskType.Questionnaire:
+        return this.questionnaireService.getQuestionnaireByID(params.ID);
+      case TaskType.CustomTask:
+        return this.customTaskService.getCustomTaskByID(params.ID);
+      default:
+        // should never reach here
+        return of(null)
+    }
   }
 
   ngOnInit(): void {
@@ -37,14 +56,14 @@ export class EmbeddedPageComponent implements OnInit, OnDestroy {
       this.embeddedSurveyLink = this.previewLink + subjectID;
     } else {
       this.subscriptions.push(
-        this.route.params.subscribe((params: {link: string}) => {
-          if(!params && !params.link) {
-            this.snackbar.openErrorSnackbar("Could not find survey link. Please proceed to next step and reach out to the sharplab.")
-          } else {
-            const subjectID = this.authService.getDecodedToken().UserID;
-            const code = this.taskManager.getExperimentCode();
-            this.embeddedSurveyLink = this.parseURL(params.link, subjectID, code);
+        this.route.params.pipe(mergeMap(this.getLink)).subscribe((params: Questionnaire | CustomTask) => {
+          if(!params || !params.url) {
+              this.snackbar.openErrorSnackbar("Could not find survey link. Please proceed to next step and reach out to the sharplab.")
+              return;
           }
+          const subjectID = this.authService.getDecodedToken().UserID;
+          const code = this.taskManager.getExperimentCode();
+          this.embeddedSurveyLink = this.parseURL(params.url, subjectID, code);
         })
       )
     }
@@ -73,9 +92,7 @@ export class EmbeddedPageComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.confirmationService.openConfirmationDialog(msg).subscribe(ok => {
-        if(ok) {
-          this.taskManager.next();
-        }
+        if(ok) this.taskManager.next();
       })
     )
   }

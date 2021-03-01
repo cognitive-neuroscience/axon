@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
@@ -41,4 +41,7 @@ export class CustomTaskService {
         return this.http.get<CustomTask[]>(`${environment.apiBaseURL}${this.RESOURCE_PATH}`)
     }
 
+    getCustomTaskByID(id: string): Observable<CustomTask> {
+        return this.http.get<CustomTask>(`${environment.apiBaseURL}${this.RESOURCE_PATH}${id}`);
+    }
 }

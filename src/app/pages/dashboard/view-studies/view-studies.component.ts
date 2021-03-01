@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 import { mapTaskIdToTitle } from '../../../models/TaskData';
 import { AuthService } from '../../../services/auth.service';
 import { Questionnaire } from 'src/app/models/Questionnaire';
-import { hasSurveyMonkeyQuestionnaire } from 'src/app/common/commonMethods';
+import { isSurveyMonkeyQuestionnaire } from 'src/app/common/commonMethods';
 
 @Component({
   selector: 'app-view-studies',
@@ -37,15 +37,13 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
 
   taskToTitle(task: string[], questionnaires: Questionnaire[]): string[] {
     return task.map(t => {
-
       // embedded survey monkey questionnaire
-      if(hasSurveyMonkeyQuestionnaire(t)) {
+      if(isSurveyMonkeyQuestionnaire(t)) {
         const ID = t.split("-")[1];
         // non strict equals for "1" == 1
-        return questionnaires.find(q => q.questionnaireID == ID)?.name
-        
+        return questionnaires.find(q => q.questionnaireID == ID)?.name;
       } else {
-        return mapTaskIdToTitle(t)
+        return mapTaskIdToTitle(t);
       }
     })
   }
@@ -76,9 +74,7 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
 
   private _createExperiment(experiment: Experiment) {
     this.subscriptions.push(
-      this.experimentsService.createExperiment(experiment).subscribe(() => {
-        this.updateExperiments()
-      })
+      this.experimentsService.createExperiment(experiment).subscribe(() => this.updateExperiments())
     )
   }
 
