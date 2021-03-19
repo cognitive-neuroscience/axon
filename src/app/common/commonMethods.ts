@@ -37,3 +37,7 @@ export function wait(time: number): Promise<void> {
 export function isSurveyMonkeyQuestionnaire(task: string): boolean {
     return task.includes(RouteMap.surveymonkeyquestionnaire.id);
 }
+
+export function isCustomTask(task: string): boolean {
+    return task.includes(RouteMap.pavloviatask.id);
+}

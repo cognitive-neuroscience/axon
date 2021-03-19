@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DownloadDataService } from '../../../services/downloadData.service';
-import { Observable, VirtualTimeScheduler } from 'rxjs';
+import { Observable, } from 'rxjs';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { DateTime } from 'luxon';
 import { ExperimentsService } from '../../../services/experiments.service';
@@ -9,7 +9,7 @@ import { filter, map, mergeAll } from 'rxjs/operators';
 import { mapTaskIdToTitle } from '../../../models/TaskData';
 import { LoaderService } from '../../../services/loader.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { isSurveyMonkeyQuestionnaire } from 'src/app/common/commonMethods';
+import { isCustomTask, isSurveyMonkeyQuestionnaire } from 'src/app/common/commonMethods';
 import { RouteMap } from 'src/app/routing/routes';
 
 @Component({
@@ -46,7 +46,11 @@ export class DataComponent implements OnInit {
       mergeAll(),
       filter(experiment => experiment?.code === code),
       map((x: Experiment) => x?.tasks),
-      map((taskList: string[]) => taskList.filter(taskName => !isSurveyMonkeyQuestionnaire(taskName) && taskName !== RouteMap.consent.id))
+      map((taskList: string[]) => taskList.filter(taskName => 
+        !isSurveyMonkeyQuestionnaire(taskName) && 
+        !isCustomTask(taskName) &&
+        taskName !== RouteMap.consent.id)
+      )
     )
   }
 

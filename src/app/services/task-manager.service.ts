@@ -8,9 +8,8 @@ import { AuthService } from './auth.service';
 import { SessionStorageService } from './sessionStorage.service';
 import { RouteMap } from '../routing/routes';
 import { take } from "rxjs/operators";
-import { isSurveyMonkeyQuestionnaire } from "../common/commonMethods";
-import { Questionnaire } from "../models/Questionnaire";
-import { EmbeddedPageData } from "../models/InternalDTOs";
+import { isCustomTask, isSurveyMonkeyQuestionnaire } from "../common/commonMethods";
+import { EmbeddedPageData, TaskType } from "../models/InternalDTOs";
 
 @Injectable({
     providedIn: "root"
@@ -75,10 +74,23 @@ export class TaskManagerService {
                 this.handleErr();
                 return;
             }
-            this._router.navigate([RouteMap.surveymonkeyquestionnaire.route, {data: EmbeddedPageData}])
-        } else if(this._isCustomTask(task)) {
+            const data: EmbeddedPageData = {
+                ID: id,
+                taskType: TaskType.Questionnaire
+            }
+            this._router.navigate([RouteMap.surveymonkeyquestionnaire.route, data])
+        } else if(isCustomTask(task)) {
             // if task is a custom task
             const id = task.split("-")[1];
+            if(!id) {
+                this.handleErr();
+                return;
+            }
+            const data: EmbeddedPageData = {
+                ID: id,
+                taskType: TaskType.CustomTask
+            }
+            this._router.navigate([RouteMap.pavloviatask.route, data])
         } else {
             // if task is a normal hard coded task
             const route = RouteMap[task].route;
@@ -89,10 +101,6 @@ export class TaskManagerService {
             this._router.navigate([route])
         }
         this._snackbarService.openSuccessSnackbar("Redirecting you to the next step")
-    }
-
-    private _isCustomTask(task: string): boolean {
-        return task.includes(RouteMap.pavloviatask.id);
     }
 
     private _routeToFinalPage(): void {

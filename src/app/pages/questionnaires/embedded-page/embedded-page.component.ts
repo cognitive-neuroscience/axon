@@ -56,7 +56,7 @@ export class EmbeddedPageComponent implements OnInit, OnDestroy {
       this.embeddedSurveyLink = this.previewLink + subjectID;
     } else {
       this.subscriptions.push(
-        this.route.params.pipe(mergeMap(this.getLink)).subscribe((params: Questionnaire | CustomTask) => {
+        this.route.params.pipe(mergeMap((params: EmbeddedPageData) => this.getLink(params))).subscribe((params: Questionnaire | CustomTask) => {
           if(!params || !params.url) {
               this.snackbar.openErrorSnackbar("Could not find survey link. Please proceed to next step and reach out to the sharplab.")
               return;

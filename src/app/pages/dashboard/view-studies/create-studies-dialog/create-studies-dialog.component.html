@@ -1,4 +1,4 @@
-<div class="p-3" class="overflow-scroll">
+<div class="p-3" style="padding: 1%;" class="overflow-scroll">
     <div>
         <h3>Create a new study</h3>
         <hr>
@@ -18,18 +18,18 @@
         <br>
         <mat-form-field class="w-100">
             <mat-label>Select tasks</mat-label>
-            <mat-select formControlName="tasks" multiple required>
+            <mat-select required>
                 <mat-optgroup label="Tasks">
-                    <mat-option *ngFor="let task of tasks | async" [disabled]="!taskIsComplete(task)" [value]="task">{{ task.title }}</mat-option>
+                    <mat-option (click)="handleSelection(task)" *ngFor="let task of tasks | async" [disabled]="!taskIsComplete(task)" [value]="task">{{ task.title }}</mat-option>
                 </mat-optgroup>
                 <mat-optgroup label="Questionnaires">
-                    <mat-option *ngFor="let questionnaire of questionnaires | async" [value]="questionnaire">{{ questionnaire.name }}</mat-option>
+                    <mat-option (click)="handleSelection(questionnaire)" *ngFor="let questionnaire of questionnaires | async" [value]="questionnaire">{{ questionnaire.name }}</mat-option>
                 </mat-optgroup>
                 <mat-optgroup label="Custom Tasks">
-                    <mat-option *ngFor="let task of customTasks | async" [value]="task">{{ task.name }}</mat-option>
+                    <mat-option (click)="handleSelection(task)" *ngFor="let task of customTasks | async" [value]="task">{{ task.name }}</mat-option>
                 </mat-optgroup>
             </mat-select>
-            <mat-error *ngIf="experimentForm.get('tasks')?.hasError('required')">At least one task is required</mat-error>
+            <mat-error *ngIf="selectedTasks.length < 1">At least one task is required</mat-error>
         </mat-form-field>
     </div>
 
@@ -37,12 +37,15 @@
         <div class="droplist" cdkDropList (cdkDropListDropped)="drop($event)">
             <!-- <div *ngFor="let "></div> -->
             <div class="dropbox {{ selected.type }}" *ngFor="let selected of selectedTasks; let i = index" cdkDrag>
-                <div class="d-flex flex-row}">
-                    <div class="w-25">
+                <div class="d-flex flex-row" style="align-items: center;">
+                    <div style="width: 20%;">
                         {{i+1}}
                     </div>
-                    <div class="w-75">
+                    <div style="width: 60%;">
                         {{selected.displayName}}
+                    </div>
+                    <div style="width: 20%; text-align: center">
+                        <mat-icon (click)="removeElement(i)" style="color: red; font-size: 2rem; cursor: pointer;">cancel</mat-icon>
                     </div>
                 </div>
             </div>

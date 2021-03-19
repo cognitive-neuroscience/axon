@@ -9,10 +9,10 @@ import { SnackbarService } from '../../../services/snackbar.service';
 import { Observable, Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { map } from 'rxjs/operators';
-import { mapTaskIdToTitle } from '../../../models/TaskData';
+import { CustomTask, mapTaskIdToTitle } from '../../../models/TaskData';
 import { AuthService } from '../../../services/auth.service';
 import { Questionnaire } from 'src/app/models/Questionnaire';
-import { isSurveyMonkeyQuestionnaire } from 'src/app/common/commonMethods';
+import { isCustomTask, isSurveyMonkeyQuestionnaire } from 'src/app/common/commonMethods';
 
 @Component({
   selector: 'app-view-studies',
@@ -35,13 +35,16 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
 
   experiments: Observable<Experiment[]>;
 
-  taskToTitle(task: string[], questionnaires: Questionnaire[]): string[] {
+  taskToTitle(task: string[], questionnaires: Questionnaire[], customTasks: CustomTask[]): string[] {
     return task.map(t => {
       // embedded survey monkey questionnaire
       if(isSurveyMonkeyQuestionnaire(t)) {
         const ID = t.split("-")[1];
         // non strict equals for "1" == 1
         return questionnaires.find(q => q.questionnaireID == ID)?.name;
+      } else if(isCustomTask(t)) {
+        const ID = t.split("-")[1];
+        return customTasks.find(c => c.customTaskID == ID)?.name;
       } else {
         return mapTaskIdToTitle(t);
       }

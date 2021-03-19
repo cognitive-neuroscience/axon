@@ -13,7 +13,7 @@ import { TaskType } from 'src/app/models/InternalDTOs';
 import { RouteMap } from 'src/app/routing/routes';
 import { CustomTask } from '../../../../models/TaskData';
 import { CustomTaskService } from '../../../../services/custom-task.service';
-import { map } from 'rxjs/operators';
+import { MatSelectChange } from '@angular/material/select';
 
 export enum ArrayChange {
   REMOVED,
@@ -50,14 +50,12 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
   experimentForm = this.fb.group({
     name: ['', Validators.required],
     description: ['', Validators.maxLength(255)],
-    tasks: [[], Validators.required]
   })
 
   constructor(
     public dialogRef: MatDialogRef<CreateStudiesDialogComponent>,
     private tasklistService: TasklistService,
     private fb: FormBuilder,
-    private _snackbar: SnackbarService,
     private questionnaireService: QuestionnaireService,
     private customTaskService: CustomTaskService
   ) {}
@@ -71,14 +69,11 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
     this.customTaskService.update();
 
     this.getCompletedTasklist();
-    this.subscriptions.push(
-      // tasks will be either of type Questionnaire or Task
-      this.experimentForm.get("tasks").valueChanges.pipe(
-        map((tasks: any[]) => tasks.map(this.convertToListItem))
-      ).subscribe((listItems) => {
-        this.handleSelectChange(listItems)
-      })
-    )
+  }
+
+  handleSelection(event: Questionnaire | Task | CustomTask) {
+    const listItem = this.convertToListItem(event);
+    this.selectedTasks.push(listItem);
   }
 
   private convertToListItem(task): ListItem {
@@ -106,51 +101,6 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleSelectChange(newTasks: ListItem[]) {
-    const change = this._findDifference(this.selectedTasks, newTasks)
-    switch (change.change) {
-      case ArrayChange.ADDED:
-        this.selectedTasks.push(change.item)
-        break;
-      case ArrayChange.REMOVED:
-        const indexOfRemovedItem = this.selectedTasks.findIndex(x => x.id === change.item.id)
-        this.selectedTasks.splice(indexOfRemovedItem, 1)
-        break;
-      default:
-        // we should never reach here
-        console.error("ArrayChange option not found")
-        this._snackbar.openErrorSnackbar("There was an error")
-        break;
-    }
-  }
-
-  // takes in 2 arrays and returns the single change between the two
-  private _findDifference(oldArr: ListItem[], newArr: ListItem[]): ArrayChangeObject {
-    // will either be 1 or -1 since only one change occurs at a time
-    const sizeDiff = newArr.length - oldArr.length
-    // element has been added to the array
-    if(sizeDiff > 0) {
-      // !<some-string> is false, !undefined is true so we search through
-      // until we come across a string in newArr that is not found in oldArr
-      const task = newArr.find(x => !oldArr.find(y => x.id === y.id))
-
-      return {
-        change: ArrayChange.ADDED,
-        item: task
-      }
-    } else {
-      // element has been removed from the array
-
-      // same logic as above, but reversed
-      const task = oldArr.find(x => !newArr.find(y => x.id === y.id))
-
-      return {
-        change: ArrayChange.REMOVED,
-        item: task
-      }
-    }
-  }
-
   private getCompletedTasklist(): void {
     this.subscriptions.push(
       this.tasklistService.completedTaskList.subscribe(completedTasks => {
@@ -161,6 +111,10 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
 
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.selectedTasks, event.previousIndex, event.currentIndex)
+  }
+
+  removeElement(index: number) {
+    this.selectedTasks.splice(index, 1);
   }
 
   sendDataToParent() {

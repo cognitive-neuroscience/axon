@@ -33,7 +33,7 @@
                 <span class="badge">Tasks</span>
                 <div>
                     <mat-list role="list">
-                        <ng-container *ngFor="let task of taskToTitle(experiment.tasks, experiment.questionnaires)">
+                        <ng-container *ngFor="let task of taskToTitle(experiment.tasks, experiment.questionnaires, experiment.customTasks)">
                             <mat-list-item class="colored-row" role="listitem">{{ task }}</mat-list-item>
                         </ng-container>
                     </mat-list>
