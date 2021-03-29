@@ -139,7 +139,7 @@ export class CreateStudiesDialogComponent implements OnInit, OnDestroy {
         }
       })
     )
-    this.dialogRef.close({experiment})
+    this.dialogRef.close(experiment)
   }
 
   taskIsComplete(task: Task): boolean {

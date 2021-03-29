@@ -1,8 +1,10 @@
-import { Component, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { RouteMap } from 'src/app/routing/routes';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
-import { ConsentForm } from '../../../models/InternalDTOs';
+import { EmbeddedPageData, JsonForm } from '../../../models/InternalDTOs';
 import { ConsentService } from '../../../services/consentService';
 import { SessionStorageService } from '../../../services/sessionStorage.service';
 import { SnackbarService } from '../../../services/snackbar.service';
@@ -17,7 +19,7 @@ export class ConsentComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
 
-  consentMetaData: ConsentForm;
+  metaData: JsonForm;
 
   constructor(
     private taskManager: TaskManagerService,
@@ -26,18 +28,43 @@ export class ConsentComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _snackbarService: SnackbarService,
     private confirmationService: ConfirmationService
-  ) { }
-
-  ngOnInit() {
+  ) {
     if(!this.taskManager.hasExperiment()) {
       this.taskManager.handleErr();
-    }
+    } else {
+      const params = this._router.getCurrentNavigation().extras.state as EmbeddedPageData;
 
-    this.subscriptions.push(
-      this._consentService.loadConsentFormJSON().subscribe((formData: ConsentForm) => {
-        this.consentMetaData = formData;
-      })
-    )
+      this.subscriptions.push(
+        this.getConsent(params.ID).pipe(take(1)).subscribe(json => {
+          this.metaData = json;
+        })
+      )
+    }
+  }
+
+  private getConsent(task: string): Observable<any> {
+    switch (task) {
+      case RouteMap.consent.id:
+        return this._consentService.loadWebPhenoPilotConsentFormJSON();
+      case RouteMap.stressClinicalDebrief.id:
+        return this._consentService.loadStressClinicalDebriefFormJSON();
+      case RouteMap.webPhenoClinical.id:
+        return this._consentService.loadWebPhenoClinicalConsentFormJSON();
+      case RouteMap.webPhenoClinicalFR.id:
+        return this._consentService.loadWebPhenoFRClinicalConsentFormJSON();
+      case RouteMap.stressClinical.id:
+        return this._consentService.loadStressClinicalConsentFormJSON();
+      case RouteMap.stressClinicalFR.id:
+        return this._consentService.loadStressClinicalFRConsentFormJSON();
+      case RouteMap.stressPilot.id:
+        return this._consentService.loadStressPilotConsentFormJSON();
+      default:
+        this.taskManager.handleErr();
+        return;
+    }
+  }
+
+  ngOnInit() {
   }
 
   consent(answer: boolean) {
@@ -45,7 +72,7 @@ export class ConsentComponent implements OnInit, OnDestroy {
       this.taskManager.next();
     } else {
       this.subscriptions.push(
-        this.confirmationService.openConfirmationDialog("Are you sure you want to cancel?").subscribe(ok => {
+        this.confirmationService.openConfirmationDialog("Are you sure you want to cancel?").pipe(take(1)).subscribe(ok => {
           if(ok) {
             this._sessionStorageService.clearSessionStorage()
             this._router.navigate(['/login/onlineparticipant'])

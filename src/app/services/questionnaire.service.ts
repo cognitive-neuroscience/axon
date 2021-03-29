@@ -15,6 +15,12 @@ export class QuestionnaireService {
 
     readonly includedRouteMapQuestionnaires: string[] = [
         RouteMap.consent.id,
+        RouteMap.webPhenoClinical.id,
+        RouteMap.webPhenoClinicalFR.id,
+        RouteMap.stressClinical.id,
+        RouteMap.stressClinicalFR.id,
+        RouteMap.stressClinicalDebrief.id,
+        RouteMap.stressPilot.id,
         RouteMap.demographicsquestionnaire.id
     ];
 

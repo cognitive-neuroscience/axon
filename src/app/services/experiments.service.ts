@@ -42,8 +42,7 @@ export class ExperimentsService {
     }
 
     createExperiment(experiment: Experiment): Observable<any> {
-        let exp = experiment["experiment"]
-        return this._http.post(`${environment.apiBaseURL}/experiments`, exp, {observe: "response"})
+        return this._http.post(`${environment.apiBaseURL}/experiments`, experiment, {observe: "response"})
     }
 
     deleteExperiment(code: string): Observable<any> {

@@ -9,8 +9,7 @@ import { filter, map, mergeAll } from 'rxjs/operators';
 import { mapTaskIdToTitle } from '../../../models/TaskData';
 import { LoaderService } from '../../../services/loader.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { isCustomTask, isSurveyMonkeyQuestionnaire } from 'src/app/common/commonMethods';
-import { RouteMap } from 'src/app/routing/routes';
+import { isConsent, isCustomTask, isSurveyMonkeyQuestionnaire } from 'src/app/common/commonMethods';
 
 @Component({
   selector: 'app-data',
@@ -49,8 +48,10 @@ export class DataComponent implements OnInit {
       map((taskList: string[]) => taskList.filter(taskName => 
         !isSurveyMonkeyQuestionnaire(taskName) && 
         !isCustomTask(taskName) &&
-        taskName !== RouteMap.consent.id)
-      )
+        !isConsent(taskName))
+      ),
+      // return distinct items
+      map((taskList: string[]) => [...new Set(taskList)])
     )
   }
 

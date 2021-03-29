@@ -53,7 +53,7 @@ const routes: Routes = [
   { path: RouteMap.demographicsquestionnaire.route , component: DemographicsQuestionnaireComponent, canActivate: [ExperimentRouteGuard] },
   { path: 'questionnaire/feedback', component: FeedbackQuestionnaireComponent },
   { path: 'login', component: LoginComponent },
-  { path: RouteMap.consent.route, component: ConsentComponent, canActivate: [ExperimentRouteGuard] },
+  { path: RouteMap.consent.route, component: ConsentComponent, /*canActivate: [ExperimentRouteGuard]*/ },
   { path: RouteMap.colorgame.route, component: ColorGameComponent },
   { path: RouteMap.shapegame.route, component: ShapeGameComponent },
   { path: RouteMap.oddball.route, component: OddballComponent, canActivate: [ExperimentRouteGuard] },

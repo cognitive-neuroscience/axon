@@ -1,4 +1,4 @@
-import { HostListener, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Experiment } from '../models/Experiment';
 import { ExperimentsService } from './experiments.service';
 import { SnackbarService } from './snackbar.service';
@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 import { SessionStorageService } from './sessionStorage.service';
 import { RouteMap } from '../routing/routes';
 import { take } from "rxjs/operators";
-import { isCustomTask, isSurveyMonkeyQuestionnaire } from "../common/commonMethods";
+import { isConsent, isCustomTask, isSurveyMonkeyQuestionnaire } from "../common/commonMethods";
 import { EmbeddedPageData, TaskType } from "../models/InternalDTOs";
 
 @Injectable({
@@ -66,6 +66,8 @@ export class TaskManagerService {
         this._snackbarService.openErrorSnackbar("There was an error. Please contact the sharplab")
     }
 
+    // ------------------------------------
+
     private _routeToTask(task: string) {
         if(isSurveyMonkeyQuestionnaire(task)) {
             // if task is of type survey monkey questionnaire
@@ -78,7 +80,9 @@ export class TaskManagerService {
                 ID: id,
                 taskType: TaskType.Questionnaire
             }
-            this._router.navigate([RouteMap.surveymonkeyquestionnaire.route, data])
+            this._router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                this._router.navigate([RouteMap.surveymonkeyquestionnaire.route], { state: data })
+            })
         } else if(isCustomTask(task)) {
             // if task is a custom task
             const id = task.split("-")[1];
@@ -90,7 +94,17 @@ export class TaskManagerService {
                 ID: id,
                 taskType: TaskType.CustomTask
             }
-            this._router.navigate([RouteMap.pavloviatask.route, data])
+            this._router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                this._router.navigate([RouteMap.pavloviatask.route], { state: data })
+            })
+        } else if(isConsent(task)) {
+            const data: EmbeddedPageData = {
+                taskType: TaskType.Questionnaire,
+                ID: task
+            }
+            this._router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                this._router.navigate([RouteMap[task].route], { state: data })
+            })
         } else {
             // if task is a normal hard coded task
             const route = RouteMap[task].route;
@@ -98,7 +112,9 @@ export class TaskManagerService {
                 this.handleErr();
                 return;
             }
-            this._router.navigate([route])
+            this._router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                this._router.navigate([route])
+            })
         }
         this._snackbarService.openSuccessSnackbar("Redirecting you to the next step")
     }

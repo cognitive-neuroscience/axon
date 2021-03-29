@@ -158,8 +158,6 @@ export class SmileyFace extends TaskData {
 
 export function mapTaskIdToTitle(task: string) {
     switch (task) {
-        case RouteMap.consent.id:
-            return "Consent Form";
         case RouteMap.demographicsquestionnaire.id:
             return "Demographics Questionnaire";
         case BEStrings.FEEDBACKQUESTIONNAIRE:

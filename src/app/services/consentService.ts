@@ -17,8 +17,36 @@ export class ConsentService {
         this.consentSubject = this._consentSubject.asObservable()
     }
 
-    loadConsentFormJSON(): Observable<any> {
-        return this.http.get(`${this.route}/consent.json`)
+    loadWebPhenoPilotConsentFormJSON(): Observable<any> {
+        return this.http.get(`${this.route}/webPheno_Pilot.json`)
+    }
+
+    loadStressClinicalDebriefFormJSON(): Observable<any> {
+        return this.http.get(`${this.route}/stressClinicalDebrief.json`)
+    }
+
+    loadWebPhenoClinicalConsentFormJSON(): Observable<any> {
+        return this.http.get(`${this.route}/webPheno_Clinical.json`)
+    }
+
+    loadWebPhenoFRClinicalConsentFormJSON(): Observable<any> {
+        return this.http.get(`${this.route}/webPheno_Clinical_FR.json`)
+    }
+
+    loadStressClinicalConsentFormJSON(): Observable<any> {
+        return this.http.get(`${this.route}/stress_Clinical.json`)
+    }
+
+    loadStressClinicalFRConsentFormJSON(): Observable<any> {
+        return this.http.get(`${this.route}/stress_Clinical_FR.json`)
+    }
+
+    loadStressPilotConsentFormJSON(): Observable<any> {
+        return this.http.get(`${this.route}/stress_Pilot.json`)
+    }
+
+    load(): Observable<any> {
+        return this.http.get(`${this.route}/stressClinicalDebrief.json`)
     }
 
     emitResponse(res: boolean): void {

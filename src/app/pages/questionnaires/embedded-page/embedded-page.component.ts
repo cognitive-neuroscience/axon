@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { interval, Observable, of, Subscription } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { EmbeddedPageData, TaskType } from 'src/app/models/InternalDTOs';
 import { Questionnaire } from 'src/app/models/Questionnaire';
 import { CustomTask } from 'src/app/models/TaskData';
@@ -23,8 +23,6 @@ export class EmbeddedPageComponent implements OnInit, OnDestroy {
   @Input()
   previewLink: string = "";
 
-  checkSurveyComplete: Observable<number> = interval(1500);
-
   embeddedSurveyLink: string = "";
   subscriptions: Subscription[] = [];
   
@@ -32,13 +30,29 @@ export class EmbeddedPageComponent implements OnInit, OnDestroy {
     private authService: AuthService, 
     private confirmationService: ConfirmationService,
     private taskManager: TaskManagerService,
-    private route: ActivatedRoute,
     private snackbar: SnackbarService,
     private questionnaireService: QuestionnaireService,
-    private customTaskService: CustomTaskService
-  ) {}
+    private customTaskService: CustomTaskService,
+    private _router: Router
+  ) {
+    // bandaid fix. Must improve this later
+    const params = this._router.getCurrentNavigation()?.extras.state as EmbeddedPageData;
+    if(params) {
+      this.subscriptions.push(
+        this.getLink(params).pipe(take(1)).subscribe(data => {
+          if(!data || !data.url) {
+            this.snackbar.openErrorSnackbar("Could not find page. Please proceed to the next step and contact the sharp lab.")
+            return;
+          }
+          const subjectID = this.authService.getDecodedToken().UserID;
+          const code = this.taskManager.getExperimentCode();
+          this.embeddedSurveyLink = this.parseURL(data.url, subjectID, code);
+        })
+      )
+    }
+  }
 
-  getLink(params: EmbeddedPageData): Observable<Questionnaire> | Observable<CustomTask> {
+  getLink(params: EmbeddedPageData): Observable<Questionnaire | CustomTask> {
     switch (params.taskType) {
       case TaskType.Questionnaire:
         return this.questionnaireService.getQuestionnaireByID(params.ID);
@@ -53,19 +67,7 @@ export class EmbeddedPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if(this.adminPreviewing()) {
       const subjectID = this.authService.getDecodedToken().Email;
-      this.embeddedSurveyLink = this.previewLink + subjectID;
-    } else {
-      this.subscriptions.push(
-        this.route.params.pipe(mergeMap((params: EmbeddedPageData) => this.getLink(params))).subscribe((params: Questionnaire | CustomTask) => {
-          if(!params || !params.url) {
-              this.snackbar.openErrorSnackbar("Could not find survey link. Please proceed to next step and reach out to the sharplab.")
-              return;
-          }
-          const subjectID = this.authService.getDecodedToken().UserID;
-          const code = this.taskManager.getExperimentCode();
-          this.embeddedSurveyLink = this.parseURL(params.url, subjectID, code);
-        })
-      )
+      this.embeddedSurveyLink = this.parseURL(this.previewLink, subjectID, "NOTAPPLICABLE")
     }
   }
 
@@ -88,7 +90,7 @@ export class EmbeddedPageComponent implements OnInit, OnDestroy {
   }
 
   proceed() {
-    const msg = "Did you complete the survey? Please note that we will not be able to compensate you if you have not completed the survey.";
+    const msg = "Did you finish? Please note that we will not be able to compensate you if you have not completed the given activity.";
 
     this.subscriptions.push(
       this.confirmationService.openConfirmationDialog(msg).subscribe(ok => {

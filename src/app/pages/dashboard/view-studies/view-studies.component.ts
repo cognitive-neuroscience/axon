@@ -77,7 +77,12 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
 
   private _createExperiment(experiment: Experiment) {
     this.subscriptions.push(
-      this.experimentsService.createExperiment(experiment).subscribe(() => this.updateExperiments())
+      this.experimentsService.createExperiment(experiment).subscribe(() => {
+        this.snackbarService.openSuccessSnackbar(`Successfully created experiment ${experiment.name}`, undefined, 10000000)
+        this.updateExperiments();
+      }, err => {
+        this.snackbarService.openErrorSnackbar(`There was an error creating the experiment`)
+      })
     )
   }
 

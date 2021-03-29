@@ -42,7 +42,7 @@
         {
             "caption": "PROCEDURES",
             "words": [
-                "If you choose to participate you will be asked to:",
+                "If you choose to participate you will be asked to:<br><br>",
                 "1. Provide basic information about your demographics and your health (age, sex, education, medication use, history of neurological and psychiatric disorders).",
                 "2. Complete a combination of short ‘brain games’ and questionnaires, designed to examine different aspects of cognition, where you will be required to use the keys of your keyboard to provide responses.",
                 "This will take under 60 minutes"
@@ -92,5 +92,15 @@
             ]
         }
     ],
-    "endMessage": "By clicking \"Accept\", you are confirming that you reviewed the information and consent form and that you agree to participate in the study in accordance with the conditions stated above."
+    "endMessage": "By clicking \"Accept\", you are confirming that you reviewed the information and consent form and that you agree to participate in the study in accordance with the conditions stated above.",
+    "buttons": {
+        "reject": {
+            "show": true,
+            "text": "DECLINE"
+        },
+        "accept": {
+            "show": true,
+            "text": "ACCEPT"
+        }
+    }
 }

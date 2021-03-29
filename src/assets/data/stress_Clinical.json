@@ -1,0 +1,113 @@
+{
+    "img": "../../../assets/images/consent/consentOrgs.png",
+    "title": [
+        "BEFORE YOU CAN PROCEED YOU MUST READ THE FOLLOWING CONSENT FORM"
+    ],
+    "summary": [
+        {
+            "caption": "Study title:",
+            "words": [
+                "Stress in Parkinson’s disease and its effects on cognition and mood: A pilot study"
+            ]
+        },
+        {
+            "caption": "Principal investigator:",
+            "words": [
+                "Madeleine Sharp MD MSc, Department of Neurology and Neurosurgery"
+            ]
+        },
+        {
+            "caption": "Sponsor:",
+            "words": [
+                "internal"
+            ]
+        },
+        {
+            "caption": "Protocol:",
+            "words": [
+                "2020-6116, version 3"
+            ]
+        }
+    ],
+    "body": [
+        {
+            "caption": "",
+            "words": [
+                "We are inviting you to take part in this research study because you are either affected by Parkinson’s disease or are interested in participating as a healthy volunteer. Please take the time to read the following information."
+            ]
+        },
+        {
+            "caption": "STUDY PURPOSE",
+            "words": [
+                "Strong emotions and lifetime exposure to stress are known to influence our cognitive processes, i.e. how we think, how well we concentrate, etc. In Parkinson’s disease, there is some evidence that emotions are processed differently, and that the way the body reacts may also be different. The purpose of this study is to examine the impact of Parkinson’s disease on emotional processing and the body’s response to emotions. For this research study, we will recruit a total of 400 participants, men and women, aged between 45 and 80."
+            ]
+        },
+        {
+            "caption": "WHAT WILL YOU BE ASKED TO DO?",
+            "words": [
+                "If you choose to participate you will be asked to:<br><br>",
+                "1. &nbsp;&nbsp; Provide basic information about your demographics and your health (age, sex, education, medication use, history of neurological and psychiatric disorders).",
+                "2. &nbsp;&nbsp; Complete a combination of short ‘brain games’ and questionnaires, designed to examine different aspects of cognition, where you will be required to use the keys of your keyboard to provide responses.",
+                " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This will take under 2 hours <br><br>",
+                "In addition, we will ask you whether you are interested in receiving offers to participate in other online research. If you are, you can check the appropriate box at the end of this consent form.<br><br>",
+                "You can choose to terminate your participation at any time."
+            ]
+        },
+        {
+            "caption": "POTENTIAL RISKS AND CONFIDENTIALITY",
+            "words": [
+                "This study involves collecting and storing personal, identifiable information about you, so there is a potential for invasion of privacy or breach in confidentiality. To minimize these risks, your email will be stored in a password-protected file separately from your responses on the questionnaires and brain games. Your information will be assigned a unique code number and stored in a secure manner on a McGill University server, protected by standard physical and digital security measures, and will be stored for 20 years. No personal, identifiable information will be shared outside the study team. For monitoring, control, and security your study file may be examined by representatives of the institution or the Research Ethics Board. All these individuals and organizations adhere to policies on confidentiality.",
+                "Your email address will be kept for the duration of the study so that we may enter it in the draw. It will be kept separate from all other information collected from you. If you choose to agree below, we will also use your email address to contact you about similar research opportunities, in which case it will be saved securely for 10 years. Your email address will not be used for any other purposes nor shared with anyone."
+            ]
+        },
+        {
+            "caption": "BENEFITS ",
+            "words": [
+                "There is no direct benefit to you for participating in this research.  However, we hope that the study results will contribute to the advancement of scientific knowledge in this field."
+            ]
+        },
+        {
+            "caption": "POTENTIAL RISKS",
+            "words": [
+                "Despite removal of identifying information and the use of standard security measures to collect and store data, in some circumstances it may be possible to re-identify individuals, however we believe this risk to be very low. There are no anticipated physical risks of participating in this research. You may find the tasks dull or tiring."
+            ]
+        },
+        {
+            "caption": "VOLUNTARY PARTICIPATION AND THE RIGHT TO WITHDRAW",
+            "words": [
+                "Your participation in this research project is voluntary. Therefore, you may refuse to participate. You may also withdraw from the project at any time, without giving any reason, though you may also email <a href=\"#\">sharplab.neuro@mcgill.ca</a> to discuss this with us. Your decision will not result in any penalty.<br><br>",
+                "If you withdraw from the study, the information already collected for the study will be stored, analyzed and used to ensure the integrity of the study."
+            ]
+        },
+        {
+            "caption": "WILL YOU BE PAID?",
+            "words": [
+                "You will be entered to win one of four $100 Amazon e-gift cards."
+            ]
+        },
+        {
+            "caption": "CONTACT INFORMATION",
+            "words": [
+                "If you have questions or if you have a problem you think may be related to your participation in this research study, or if you would like to withdraw, you may communicate with the study researcher, Dr. Madeleine Sharp, or with someone on the research team at the following number Monday to Friday 9h00 to 17h00 EST: (514) 398-5174. You may also reach the study team at <a href=\"#\">sharplab.neuro@mcgill.ca</a>.<br><br>",
+                "For any question concerning your rights as a research participant taking part in this study, or if you have comments, or wish to file a complaint, you may communicate with the Ombudsman of the Montreal Neurological Hospital at (514) 934-1934 ext. 22223."
+            ]
+        },
+        {
+            "caption": "OVERVIEW OF ETHICAL ASPECTS OF THE RESEARCH",
+            "words": [
+                "The McGill University Health Centre Research Ethics Board reviewed this research and is responsible for monitoring the study."
+            ]
+        }
+    ],
+    "endMessage": "By clicking \"Accept\", you are confirming that you reviewed the information and consent form and that you agree to participate in the study in accordance with the conditions stated above.",
+    "buttons": {
+        "reject": {
+            "show": true,
+            "text": "DECLINE"
+        },
+        "accept": {
+            "show": true,
+            "text": "ACCEPT"
+        }
+    }
+}

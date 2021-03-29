@@ -1,6 +1,6 @@
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Task } from './Task';
-export class ConsentForm {
+export class JsonForm {
     img: string;
     title: string;
     summary: {
@@ -13,6 +13,16 @@ export class ConsentForm {
         words: string[]
     }[];
     endMessage: string;
+    buttons: {
+        reject: {
+            show: boolean,
+            text: string
+        },
+        accept: {
+            show: boolean,
+            text: string
+        }
+    }
 }
 
 export class JitteredInterval {

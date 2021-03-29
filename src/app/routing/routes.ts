@@ -115,7 +115,49 @@ export const RouteMap: ExperimentRoutingMap = {
   },
   consent: {
     id: "consent",
-    title: "Consent Form",
+    title: "WebPheno_Pilot",
+    description: "Consent Form",
+    type: TaskType.Questionnaire,
+    route: "consent"
+  },
+  webPhenoClinical: {
+    id: "webPhenoClinical",
+    title: "WebPheno_Clinical",
+    description: "Consent Form",
+    type: TaskType.Questionnaire,
+    route: "consent"
+  },
+  webPhenoClinicalFR: {
+    id: "webPhenoClinicalFR",
+    title: "WebPheno_Clinical_FR",
+    description: "Consent Form FR",
+    type: TaskType.Questionnaire,
+    route: "consent"
+  },
+  stressClinical: {
+    id: "stressClinical",
+    title: "Stress_Clinical",
+    description: "Consent Form",
+    type: TaskType.Questionnaire,
+    route: "consent"
+  },
+  stressClinicalFR: {
+    id: "stressClinicalFR",
+    title: "Stress_Clinical_FR",
+    description: "Consent Form FR",
+    type: TaskType.Questionnaire,
+    route: "consent"
+  },
+  stressClinicalDebrief: {
+    id: "stressClinicalDebrief",
+    title: "Stress Clinical Debrief",
+    description: "Debrief",
+    type: TaskType.Questionnaire,
+    route: "consent"
+  },
+  stressPilot: {
+    id: "stressPilot",
+    title: "Stress_Pilot",
     description: "Consent Form",
     type: TaskType.Questionnaire,
     route: "consent"
