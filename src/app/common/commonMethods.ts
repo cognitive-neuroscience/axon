@@ -42,17 +42,16 @@ export function isCustomTask(task: string): boolean {
     return task.includes(RouteMap.pavloviatask.id);
 }
 
+export const ConsentIds = [
+    RouteMap.consent.id,
+    RouteMap.webPhenoClinical.id,
+    RouteMap.webPhenoClinicalFR.id,
+    RouteMap.stressClinical.id,
+    RouteMap.stressClinicalFR.id,
+    RouteMap.stressClinicalDebrief.id,
+    RouteMap.stressPilot.id
+]
 // remove later, this is a bandaid fix
 export function isConsent(id: string): boolean {
-    const consentIds = [
-        RouteMap.consent.id,
-        RouteMap.webPhenoClinical.id,
-        RouteMap.webPhenoClinicalFR.id,
-        RouteMap.stressClinical.id,
-        RouteMap.stressClinicalFR.id,
-        RouteMap.stressClinicalDebrief.id,
-        RouteMap.stressPilot.id
-    ]
-
-    return consentIds.includes(id);
+    return ConsentIds.includes(id);
 }

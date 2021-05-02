@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
+import { ConsentIds } from 'src/app/common/commonMethods';
 import { Questionnaire } from 'src/app/models/Questionnaire';
 import { RouteMap } from 'src/app/routing/routes';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
@@ -32,7 +33,11 @@ export class ManageQuestionnairesComponent implements OnInit {
   questionnaires: Observable<Questionnaire[]>;
   subscriptions: Subscription[] = [];
   displayedQuestionnaireColumns = ['name', 'description', 'url', 'actions'];
-  hiddenQuestionnaires = [RouteMap.consent.id, RouteMap.demographicsquestionnaire.id]
+  hiddenQuestionnaires = [
+    ...ConsentIds,
+    RouteMap.consent.id, 
+    RouteMap.demographicsquestionnaire.id
+  ]
 
   ngOnInit(): void {
     this.questionnaires = this.questionnaireService.questionnaires.pipe(

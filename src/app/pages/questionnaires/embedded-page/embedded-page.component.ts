@@ -1,6 +1,6 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { interval, Observable, of, Subscription } from 'rxjs';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable, of, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { EmbeddedPageData, TaskType } from 'src/app/models/InternalDTOs';
 import { Questionnaire } from 'src/app/models/Questionnaire';
@@ -18,6 +18,8 @@ import { TaskManagerService } from 'src/app/services/task-manager.service';
   styleUrls: ['./embedded-page.component.scss']
 })
 export class EmbeddedPageComponent implements OnInit, OnDestroy {
+
+  @ViewChild('iframe') iframe: ElementRef;
 
   // Link sent in as an admin to preview the embedded survey
   @Input()
@@ -94,9 +96,19 @@ export class EmbeddedPageComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.confirmationService.openConfirmationDialog(msg).subscribe(ok => {
-        if(ok) this.taskManager.next();
+        if (ok) {
+          this.taskManager.next();
+          return;
+        } else {
+          this.refocusIframe();
+        }
       })
     )
+  }
+
+  // iframe loses focus if the user clicks outside of it, and clicking back in it does not help
+  refocusIframe() {
+    if (this.iframe && this.iframe.nativeElement) this.iframe.nativeElement.focus();
   }
 
 }
