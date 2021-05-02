@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CustomTaskHelpDialogComponent } from './custom-task-help-dialog.component';
 
@@ -6,7 +6,7 @@ describe('CustomTaskHelpDialogComponent', () => {
   let component: CustomTaskHelpDialogComponent;
   let fixture: ComponentFixture<CustomTaskHelpDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CustomTaskHelpDialogComponent ]
     })

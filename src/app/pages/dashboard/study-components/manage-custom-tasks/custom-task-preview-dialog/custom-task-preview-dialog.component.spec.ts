@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { CustomTaskPreviewDialogComponent } from './custom-task-preview-dialog.component';
@@ -7,7 +7,7 @@ describe('CustomTaskPreviewDialogComponent', () => {
   let component: CustomTaskPreviewDialogComponent;
   let fixture: ComponentFixture<CustomTaskPreviewDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CustomTaskPreviewDialogComponent ],
       providers: [

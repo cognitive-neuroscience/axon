@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialogRef } from '@angular/material/dialog';
 
 import { HelpQuestionnaireDialogComponent } from './help-questionnaire-dialog.component';
@@ -7,7 +7,7 @@ describe('HelpQuestionnaireDialogComponent', () => {
   let component: HelpQuestionnaireDialogComponent;
   let fixture: ComponentFixture<HelpQuestionnaireDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ HelpQuestionnaireDialogComponent ],
       providers: [
