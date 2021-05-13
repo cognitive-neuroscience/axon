@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 @Injectable({
-    providedIn: "root"
+    providedIn: "root",
 })
 export class TimerService {
-
     private timer = null;
 
     constructor() {}
@@ -19,13 +18,21 @@ export class TimerService {
 
     // returns time in milliseconds since timer was started
     stopTimerAndGetTime(): number {
-        if(!this.timer) {
-            console.error("Error getting time")
+        if (!this.timer) {
+            console.error("Error getting time");
             return 0;
         }
         const time = Date.now() - this.timer;
         this.timer = null;
         return time;
+    }
+
+    getTime(): number {
+        if (!this.timer) {
+            console.error("Error getting time");
+            return 0;
+        }
+        return Date.now() - this.timer;
     }
 
     getCurrentTimestamp(): string {

@@ -1,0 +1,10 @@
+<div class="slider-container">
+    <nz-slider
+        [nzMarks]="marks"
+        [nzReverse]="shouldReverseLegend"
+        nzTooltipVisible="never"
+        (nzOnAfterChange)="onSelectSlideValue($event)"
+        [nzIncluded]="false"
+        [ngModel]="startingValue"
+    ></nz-slider>
+</div>

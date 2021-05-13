@@ -1,0 +1,105 @@
+@import "/src/app/sass/mixins";
+
+.loader-container {
+    width: 100px;
+    .loader {
+        width: 100%;
+        height: 100%;
+        animation: loadingImage 1s infinite cubic-bezier(0.45, 0.84, 0.67, 0.32);
+    }
+
+    @-webkit-keyframes loadingImage {
+    }
+
+    @keyframes loadingImage {
+        from {
+            transform: rotateY(0deg);
+        }
+        to {
+            transform: rotateY(360deg);
+        }
+    }
+}
+
+.activity-container {
+    width: 80%;
+    height: 12%;
+    text-align: center;
+
+    .activity {
+        font-weight: bold;
+    }
+}
+
+.button-container {
+    width: 100%;
+}
+
+.question-container {
+    width: 80%;
+    height: 30%;
+    text-align: center;
+
+    .question {
+        line-height: normal;
+        color: gray;
+    }
+}
+
+.slider-container {
+    height: 200px;
+}
+
+.stimulus-top {
+    height: 50%;
+    align-items: center;
+}
+
+.stimulus-middle {
+    height: 50%;
+    align-items: center;
+}
+
+@include for-small-device-only {
+    .slider-container {
+        width: 400px;
+    }
+
+    .activity,
+    .question {
+        font-size: 1.5rem;
+    }
+}
+
+@include for-small-desktop-only {
+    .slider-container {
+        width: 700px;
+    }
+
+    .activity,
+    .question {
+        font-size: 2rem;
+    }
+}
+
+@include for-desktop-up {
+    .slider-container {
+        width: 800px;
+    }
+
+    .activity,
+    .question {
+        font-size: 2.5rem;
+    }
+}
+
+@include for-large-desktop-up {
+    .slider-container {
+        width: 1000px;
+    }
+
+    .activity,
+    .question {
+        font-size: 3rem;
+    }
+}

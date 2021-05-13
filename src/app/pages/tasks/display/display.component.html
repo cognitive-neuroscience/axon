@@ -1,0 +1,34 @@
+<div class="display-container">
+    <div class="display-instructions overflow-scrollable">
+        <div>
+            <ng-container *ngIf="title">
+                <h1 class="title" [innerHTML]="title"></h1>
+                <hr />
+            </ng-container>
+            <ng-container *ngIf="subtitle">
+                <h1 class="subtitle" [innerHTML]="subtitle"></h1>
+            </ng-container>
+        </div>
+
+        <div>
+            <ng-container *ngFor="let section of displaySections">
+                <ng-container *ngIf="section.sectionType === 'text'">
+                    <div class="section" [innerHTML]="section.textContent"></div>
+                </ng-container>
+                <div
+                    class="image-container"
+                    *ngIf="section.sectionType === 'image-horizontal' || section.sectionType === 'image-square'"
+                >
+                    <img class="{{ section.sectionType }}" [src]="section.imagePath" alt="Instruction Image" />
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <app-navigation-buttons
+        (onNext)="onButtonPress($event)"
+        (onPrevious)="onButtonPress($event)"
+        [isStart]="buttonConfig.isStart"
+        [previousDisabled]="buttonConfig.previousDisabled"
+        [nextDisabled]="buttonConfig.nextDisabled"
+    ></app-navigation-buttons>
+</div>

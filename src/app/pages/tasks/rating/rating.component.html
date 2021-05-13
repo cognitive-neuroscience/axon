@@ -1,74 +1,107 @@
 <div class="container-fluid wrapper flex-column-center">
-
     <!-- Show welcome message -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 1">
-
         <!-- Introduction -->
 
         <div class="h-100 uppercase instructions flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide01.png"
-                alt="Rating Task Instructions">
+            <img
+                class="w-100"
+                src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide01.png"
+                alt="Rating Task Instructions"
+            />
         </div>
-        <app-navigation-buttons class="w-100" previousDisabled="true" (onNext)="proceedtoNextStep()"></app-navigation-buttons>
+        <app-navigation-buttons
+            class="w-100"
+            previousDisabled="true"
+            (onNext)="proceedtoNextStep()"
+        ></app-navigation-buttons>
     </div>
 
     <!--first rating task-->
     <!-- Show instruction -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 2">
-
         <!-- Introduction -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide02.png"
-                alt="Rating Task Instructions">
+            <img
+                class="w-100"
+                src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide02.png"
+                alt="Rating Task Instructions"
+            />
         </div>
-        <app-navigation-buttons class="w-100" (onPrevious)="proceedtoPreviousStep()" (onNext)="proceedtoNextStep()"></app-navigation-buttons>
+        <app-navigation-buttons
+            class="w-100"
+            (onPrevious)="proceedtoPreviousStep()"
+            (onNext)="proceedtoNextStep()"
+        ></app-navigation-buttons>
     </div>
-
 
     <!-- Show instruction -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 3">
-
         <!-- Introduction -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide03.png" alt="Rating Task Instructions">
+            <img
+                class="w-100"
+                src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide03.png"
+                alt="Rating Task Instructions"
+            />
         </div>
-        <app-navigation-buttons class="w-100" (onPrevious)="proceedtoPreviousStep()" (onNext)="proceedtoNextStep()"></app-navigation-buttons>
+        <app-navigation-buttons
+            class="w-100"
+            (onPrevious)="proceedtoPreviousStep()"
+            (onNext)="proceedtoNextStep()"
+        ></app-navigation-buttons>
     </div>
-
 
     <!-- Show instruction -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 4">
-
         <!-- Introduction -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide04.png"
-                alt="Rating Task Instructions">
+            <img
+                class="w-100"
+                src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide04.png"
+                alt="Rating Task Instructions"
+            />
         </div>
-        <app-navigation-buttons class="w-100" (onPrevious)="proceedtoPreviousStep()" (onNext)="proceedtoNextStep()"></app-navigation-buttons>
+        <app-navigation-buttons
+            class="w-100"
+            (onPrevious)="proceedtoPreviousStep()"
+            (onNext)="proceedtoNextStep()"
+        ></app-navigation-buttons>
     </div>
-
 
     <!-- Show instruction -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 5">
-
         <!-- Introduction -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide05.png"
-                alt="Rating Task Instructions">
+            <img
+                class="w-100"
+                src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide05.png"
+                alt="Rating Task Instructions"
+            />
         </div>
-        <app-navigation-buttons class="w-100" (onPrevious)="proceedtoPreviousStep()" (onNext)="proceedtoNextStep()"></app-navigation-buttons>
+        <app-navigation-buttons
+            class="w-100"
+            (onPrevious)="proceedtoPreviousStep()"
+            (onNext)="proceedtoNextStep()"
+        ></app-navigation-buttons>
     </div>
-
-
 
     <!-- Show practice round message -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 6">
         <!-- Introduction -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide06.png"
-                alt="Rating Task Instructions">
+            <img
+                class="w-100"
+                src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide06.png"
+                alt="Rating Task Instructions"
+            />
         </div>
-        <app-navigation-buttons class="w-100" isStart="true" (onPrevious)="proceedtoPreviousStep()" (onNext)="startPractice()"></app-navigation-buttons>
+        <app-navigation-buttons
+            class="w-100"
+            isStart="true"
+            (onPrevious)="proceedtoPreviousStep()"
+            (onNext)="startPractice()"
+        ></app-navigation-buttons>
     </div>
 
     <!-- Show loader -->
@@ -78,31 +111,35 @@
 
     <!-- Start Practice Round -->
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 8">
-
         <!-- top half -->
-        <div style="height: 50%;" class="d-flex justify-content-between align-items-center w-100">
-
+        <div style="height: 50%" class="d-flex justify-content-between align-items-center w-100">
             <div *ngIf="isStimulus" class="w-100 text-center">
-                <span style="font-size: 3rem; width: 50%; line-height: normal;">
-                    {{currentActivity}}
+                <span style="font-size: 3rem; width: 50%; line-height: normal">
+                    {{ currentActivity }}
                 </span>
             </div>
         </div>
 
         <!-- bottom half -->
-        <div style="height: 50%;" class="d-flex justify-content-center w-100">
+        <div style="height: 50%" class="d-flex justify-content-center w-100">
             <div *ngIf="isRatingscale">
                 <div *ngIf="counterbalance === 0; else elseBlock">
-                    <img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png" alt="Rating scale">
+                    <img
+                        src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png"
+                        alt="Rating scale"
+                    />
                 </div>
                 <ng-template #elseBlock>
-                    <img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_should.png" alt="Rating scale">
+                    <img
+                        src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_should.png"
+                        alt="Rating scale"
+                    />
                 </ng-template>
             </div>
         </div>
 
         <div *ngIf="showFixation">
-            <i class="material-icons" style="font-size: 60px;">add</i>
+            <i class="material-icons" style="font-size: 60px">add</i>
         </div>
     </div>
 
@@ -113,13 +150,20 @@
 
     <!-- Show practice round finished message -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 10">
-
         <!-- Practice round complete -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide07.png"
-                alt="Rating Task Instructions">
+            <img
+                class="w-100"
+                src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide07.png"
+                alt="Rating Task Instructions"
+            />
         </div>
-        <app-navigation-buttons class="w-100" previousDisabled="true" isStart="true" (onNext)="startActualGame()"></app-navigation-buttons>
+        <app-navigation-buttons
+            class="w-100"
+            previousDisabled="true"
+            isStart="true"
+            (onNext)="startActualGame()"
+        ></app-navigation-buttons>
     </div>
 
     <!-- Show loader -->
@@ -129,33 +173,35 @@
 
     <!-- Start Actual Round -->
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 12">
-
         <!-- top half -->
-        <div style="height: 50%;" class="d-flex justify-content-between align-items-center w-100">
-
+        <div style="height: 50%" class="d-flex justify-content-between align-items-center w-100">
             <div *ngIf="isStimulus" class="w-100 text-center">
-                <span style="font-size: 3rem; width: 50%; line-height: normal;">
-                    {{currentActivity}}
+                <span style="font-size: 3rem; width: 50%; line-height: normal">
+                    {{ currentActivity }}
                 </span>
             </div>
         </div>
 
         <!-- bottom half -->
-        <div style="height: 50%;" class="d-flex justify-content-center w-100">
+        <div style="height: 50%" class="d-flex justify-content-center w-100">
             <div *ngIf="isRatingscale">
                 <div *ngIf="counterbalance === 0; else elseBlock">
-                    <img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png"
-                        alt="Rating scale">
+                    <img
+                        src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png"
+                        alt="Rating scale"
+                    />
                 </div>
-                <ng-template #elseBlock><img
+                <ng-template #elseBlock
+                    ><img
                         src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_should.png"
-                        alt="Rating scale">
+                        alt="Rating scale"
+                    />
                 </ng-template>
             </div>
         </div>
 
         <div *ngIf="showFixation">
-            <i class="material-icons" style="font-size: 60px;">add</i>
+            <i class="material-icons" style="font-size: 60px">add</i>
         </div>
     </div>
 
@@ -167,45 +213,71 @@
 
     <!-- Show first part complete message -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 14">
-
         <!-- First part complete -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/everydaychoice-rating/cb{{counterbalance}}/Slide08.png"
-                alt="Rating Task Instructions">
+            <img
+                class="w-100"
+                src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide08.png"
+                alt="Rating Task Instructions"
+            />
         </div>
-        <app-navigation-buttons class="w-100" previousDisabled="true" (onNext)="proceedtoNextStep()"></app-navigation-buttons>
+        <app-navigation-buttons
+            class="w-100"
+            previousDisabled="true"
+            (onNext)="proceedtoNextStep()"
+        ></app-navigation-buttons>
     </div>
 
     <!-- Show instruction -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 15">
-
         <!-- Introduction -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/everydaychoice-rating/cb{{counterbalance}}/Slide09.png"
-                alt="Rating Task Instructions">
+            <img
+                class="w-100"
+                src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide09.png"
+                alt="Rating Task Instructions"
+            />
         </div>
-        <app-navigation-buttons class="w-100" (onPrevious)="proceedtoPreviousStep()" (onNext)="proceedtoNextStep()"></app-navigation-buttons>
+        <app-navigation-buttons
+            class="w-100"
+            (onPrevious)="proceedtoPreviousStep()"
+            (onNext)="proceedtoNextStep()"
+        ></app-navigation-buttons>
     </div>
 
     <!-- Show instruction -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 16">
-
         <!-- Introduction -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/everydaychoice-rating/cb{{counterbalance}}/Slide10.png"
-                alt="Rating Task Instructions">
+            <img
+                class="w-100"
+                src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide10.png"
+                alt="Rating Task Instructions"
+            />
         </div>
-        <app-navigation-buttons class="w-100" (onPrevious)="proceedtoPreviousStep()" (onNext)="proceedtoNextStep()"></app-navigation-buttons>
+        <app-navigation-buttons
+            class="w-100"
+            (onPrevious)="proceedtoPreviousStep()"
+            (onNext)="proceedtoNextStep()"
+        ></app-navigation-buttons>
     </div>
 
     <!-- Show practice round message -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 17">
         <!-- Show practice -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/everydaychoice-rating/cb{{counterbalance}}/Slide11.png"
-                alt="Rating Task Instructions">
+            <img
+                class="w-100"
+                src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide11.png"
+                alt="Rating Task Instructions"
+            />
         </div>
-        <app-navigation-buttons class="w-100" isStart="true" (onPrevious)="proceedtoPreviousStep()" (onNext)="startPractice()"></app-navigation-buttons>
+        <app-navigation-buttons
+            class="w-100"
+            isStart="true"
+            (onPrevious)="proceedtoPreviousStep()"
+            (onNext)="startPractice()"
+        ></app-navigation-buttons>
     </div>
 
     <!-- Show loader -->
@@ -215,34 +287,37 @@
 
     <!-- Start Practice Round -->
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 19">
-
         <!-- top half -->
-        <div style="height: 50%;" class="d-flex justify-content-between align-items-center w-100">
+        <div style="height: 50%" class="d-flex justify-content-between align-items-center w-100">
             <div *ngIf="isStimulus" class="w-100 text-center">
-                <span style="font-size: 3rem; width: 50%; line-height: normal;">
-                    {{currentActivity}}
+                <span style="font-size: 3rem; width: 50%; line-height: normal">
+                    {{ currentActivity }}
                 </span>
             </div>
         </div>
 
         <!-- bottom half -->
-        <div style="height: 50%;" class="d-flex justify-content-center w-100">
+        <div style="height: 50%" class="d-flex justify-content-center w-100">
             <div *ngIf="isRatingscale">
                 <div *ngIf="counterbalance === 0; else elseBlock">
-                    <img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_should.png"
-                        alt="Rating scale">
+                    <img
+                        src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_should.png"
+                        alt="Rating scale"
+                    />
                 </div>
                 <ng-template #elseBlock>
                     <div class="h-100 uppercase instructions flex-column-center" align="center">
-                    <img
-                        src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png" alt="Rating scale">
+                        <img
+                            src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png"
+                            alt="Rating scale"
+                        />
                     </div>
                 </ng-template>
             </div>
         </div>
 
         <div *ngIf="showFixation">
-            <i class="material-icons" style="font-size: 60px;">add</i>
+            <i class="material-icons" style="font-size: 60px">add</i>
         </div>
     </div>
 
@@ -251,16 +326,22 @@
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-
     <!-- Show practice round finished message -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 21">
-
         <!-- Practice round complete -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/everydaychoice-rating/cb{{counterbalance}}/Slide12.png"
-                alt="Rating Task Instructions">
+            <img
+                class="w-100"
+                src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide12.png"
+                alt="Rating Task Instructions"
+            />
         </div>
-        <app-navigation-buttons class="w-100" previousDisabled="true" isStart="true" (onNext)="startActualGame()"></app-navigation-buttons>
+        <app-navigation-buttons
+            class="w-100"
+            previousDisabled="true"
+            isStart="true"
+            (onNext)="startActualGame()"
+        ></app-navigation-buttons>
     </div>
 
     <!-- Show loader -->
@@ -270,36 +351,36 @@
 
     <!-- Start Actual Round -->
     <div class="full-box d-flex flex-column align-items-center justify-content-center" *ngIf="!isBreak && step === 23">
-
         <!-- top half -->
-        <div style="height: 50%;" class="d-flex justify-content-between align-items-center w-100">
-
+        <div style="height: 50%" class="d-flex justify-content-between align-items-center w-100">
             <div *ngIf="isStimulus" class="w-100 text-center">
-
-                <span style="font-size: 3rem; width: 50%; line-height: normal;">
-                    {{currentActivity}}
+                <span style="font-size: 3rem; width: 50%; line-height: normal">
+                    {{ currentActivity }}
                 </span>
             </div>
-
         </div>
 
         <!-- bottom half -->
-        <div style="height: 50%;" class="d-flex justify-content-center w-100">
+        <div style="height: 50%" class="d-flex justify-content-center w-100">
             <div *ngIf="isRatingscale">
                 <div *ngIf="counterbalance === 0; else elseBlock">
-                    <img src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_should.png"
-                        alt="Rating scale">
+                    <img
+                        src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_should.png"
+                        alt="Rating scale"
+                    />
                 </div>
-                <ng-template #elseBlock><img
-                        src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png" alt="Rating scale">
+                <ng-template #elseBlock
+                    ><img
+                        src="/assets/images/stimuli/everydayChoice_ratingScale/ratingScale_like.png"
+                        alt="Rating scale"
+                    />
                 </ng-template>
             </div>
         </div>
 
         <div *ngIf="showFixation">
-            <i class="material-icons" style="font-size: 60px;">add</i>
+            <i class="material-icons" style="font-size: 60px">add</i>
         </div>
-
     </div>
 
     <!-- Show loader -->
@@ -311,10 +392,16 @@
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 25">
         <!-- Second part complete -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/everydaychoice-rating/cb{{counterbalance}}/Slide13.png"
-                alt="Rating Task Instructions">
+            <img
+                class="w-100"
+                src="/assets/images/instructions/everydaychoice-rating/cb{{ counterbalance }}/Slide13.png"
+                alt="Rating Task Instructions"
+            />
         </div>
-        <app-navigation-buttons class="w-100" previousDisabled="true" (onNext)="continueAhead()"></app-navigation-buttons>
+        <app-navigation-buttons
+            class="w-100"
+            previousDisabled="true"
+            (onNext)="continueAhead()"
+        ></app-navigation-buttons>
     </div>
-
 </div>

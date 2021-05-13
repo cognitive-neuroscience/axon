@@ -1,0 +1,35 @@
+<div class="wrapper">
+    <!-- Start Practice Round -->
+    <div *ngIf="showStimulus" class="full-box flex-column-center">
+        <div class="activity-container flex-column-center">
+            <span class="activity">{{ activityShown }}</span>
+        </div>
+        <div class="question-container flex-column-center">
+            <span class="question">{{ questionShown }}</span>
+        </div>
+        <div class="slider-container">
+            <ng-container *ngIf="showSlider">
+                <div *ngIf="isPractice" class="text-center py-3">
+                    Please use your mouse to drag the cursor to the spot on the scale that corresponds to your answer.
+                </div>
+                <app-slider
+                    [shouldReverseLegend]="shouldReverse"
+                    [marks]="currentSliderMarks"
+                    (sliderValueSelected)="handleRoundInteraction($event)"
+                ></app-slider>
+                <div class="button-container pt-5">
+                    <button
+                        (click)="completeRound()"
+                        *ngIf="showNextButton"
+                        mat-raised-button
+                        color="primary"
+                        class="d-block ml-auto"
+                    >
+                        Next &nbsp;
+                        <mat-icon>arrow_forward</mat-icon>
+                    </button>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

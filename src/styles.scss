@@ -1,9 +1,18 @@
-@import './app/sass/mixins';
+@import "~ng-zorro-antd/ng-zorro-antd.min.css";
+@import "~ng-zorro-antd/style/index.min.css";
+@import "./app/sass/mixins";
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: white; }
+html,
+body {
+    height: 100%;
+}
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    background-color: white;
+}
 
-button{
+button {
     outline: none !important;
 }
 
@@ -51,15 +60,15 @@ button{
     @include for-small-device-only {
         max-width: 600px;
     }
-    
+
     @include for-small-desktop-only {
         max-width: 900px;
     }
-    
+
     @include for-desktop-up {
         max-width: 1100px;
     }
-    
+
     @include for-large-desktop-up {
         max-width: 1100px;
     }
@@ -84,34 +93,38 @@ button{
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-};
+}
+
+.flex-column-space-around {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
 
 .wrapper {
-
     @include for-small-device-only {
         min-height: 445px;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
     @include for-small-desktop-only {
         min-height: 612px;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
     @include for-desktop-up {
         min-height: 698px;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
     @include for-large-desktop-up {
         min-height: 772px;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
     height: 100%;
     padding: 10px;
-    font-family: 'Roboto Mono', monospace;
-
     .consent-box {
         width: 100%;
         height: 100%;
@@ -119,29 +132,29 @@ button{
         border-radius: 5px;
     }
 
-    .full-box{
+    .full-box {
         width: 100%;
         height: 100%;
         border: solid thin #cccccc;
         border-radius: 5px;
     }
 
-    .scrollable{
+    .scrollable {
         max-height: 100%;
         overflow-y: auto;
         background: #eeeeee;
     }
 
-    .bottom-button-bar{
+    .bottom-button-bar {
         margin-top: 50px;
         margin-bottom: 50px;
     }
 
-    p{
+    p {
         text-align: justify;
     }
 
-    .uppercase{
+    .uppercase {
         text-transform: uppercase;
     }
 
@@ -150,63 +163,63 @@ button{
         text-transform: uppercase;
     }
 
-    .rect{
-    height: 50px;
-    width: 50px;
-    border-radius: 0%;
-    margin: 5px;
-    text-align: left;
-    border: solid thin #000;
+    .rect {
+        height: 50px;
+        width: 50px;
+        border-radius: 0%;
+        margin: 5px;
+        text-align: left;
+        border: solid thin #000;
     }
 
-    .circle{
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
-    margin: 5px;
-    text-align: left;
-    border: solid thin #000;
+    .circle {
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        margin: 5px;
+        text-align: left;
+        border: solid thin #000;
     }
 
-    .teal{
+    .teal {
         background-color: green;
     }
-    .red{
+    .red {
         background-color: red;
     }
-    .orange{
+    .orange {
         background-color: orange;
     }
-    .purple{
+    .purple {
         background-color: purple;
     }
-    .pink{
+    .pink {
         background-color: pink;
     }
-    .brown{
+    .brown {
         background-color: brown;
     }
-    .grey{
+    .grey {
         background-color: grey;
     }
-    .blue{
+    .blue {
         background-color: blue;
     }
 
-
-    .light{
+    .light {
         font-weight: lighter;
     }
 
-    .big{
+    .big {
         height: 75px;
         width: 75px;
     }
-
 }
 
-*:fullscreen, *:-webkit-full-screen, *:-moz-full-screen {
-    background-color: rgba(255,255,255,0);
+*:fullscreen,
+*:-webkit-full-screen,
+*:-moz-full-screen {
+    background-color: rgba(255, 255, 255, 0);
 }
 
 // global angular materials CSS overrides
@@ -214,7 +227,9 @@ button{
     color: #3f51b5 !important;
 }
 
-th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
+th.mat-header-cell,
+td.mat-cell,
+td.mat-footer-cell {
     padding: 0px 8px !important;
     white-space: nowrap;
 }
@@ -236,6 +251,16 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 
 .mat-mini-fab {
     border-radius: 4px !important;
+}
+
+.snack-bar {
+    color: white;
+
+    .mat-simple-snackbar-action {
+        background-color: #323232;
+        border-radius: 5px;
+        color: white;
+    }
 }
 
 .snack-bar-success {
@@ -261,3 +286,20 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
     margin-bottom: 50vh !important;
 }
 
+// ng zorro styling overrides
+
+.ant-slider-handle {
+    width: 20px;
+    height: 20px;
+    margin-top: -8px;
+}
+
+.ant-slider-rail {
+    background-color: #3f51b5;
+}
+
+.ant-slider-mark-text {
+    white-space: nowrap;
+    transform: translate3d(-50%, 15px, 0px) !important;
+    color: #3f51b5;
+}

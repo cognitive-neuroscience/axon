@@ -1,26 +1,20 @@
-import { Injectable } from '@angular/core';
-import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
-import { SnackbarData, SnackbarType } from '../models/InternalDTOs';
-import { SnackbarComponent } from './snackbar/snackbar.component';
+import { Injectable } from "@angular/core";
+import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from "@angular/material/snack-bar";
+import { SnackbarData, SnackbarType } from "../models/InternalDTOs";
 
 @Injectable({
-    providedIn: "root"
+    providedIn: "root",
 })
 export class SnackbarService {
-
     constructor(private _snackbar: MatSnackBar) {}
 
-    public openInfoSnackbar(message: string, action?: string, duration?: number, verticalPos?: 'center') {
-        let panelClasses = ["snack-bar-info"]
-        if(verticalPos && verticalPos === 'center') {
+    public openInfoSnackbar(message: string, action?: string, duration?: number, verticalPos?: "center") {
+        let panelClasses = ["snack-bar", "snack-bar-info"];
+        if (verticalPos && verticalPos === "center") {
             panelClasses.push("center-snackbar");
         }
 
-        this.openSnackbar(
-            new SnackbarData(message, action, SnackbarType.INFO),
-            panelClasses,
-            duration
-        )
+        this.openSnackbar(new SnackbarData(message, action, SnackbarType.INFO), panelClasses, duration);
     }
 
     public clearSnackbar() {
@@ -28,44 +22,47 @@ export class SnackbarService {
     }
 
     // action doesn't do anything right now, kept in case we want to implement later
-    public openSuccessSnackbar(message: string, action?: string, duration?: number, verticalPos?: 'center') {
-        let panelClasses = ["snack-bar-success"]
-        if(verticalPos && verticalPos === 'center') {
+    public openSuccessSnackbar(message: string, action?: string, duration?: number, verticalPos?: "center") {
+        let panelClasses = ["snack-bar", "snack-bar-success"];
+        if (verticalPos && verticalPos === "center") {
             panelClasses.push("center-snackbar");
         }
 
-        this.openSnackbar(
-            new SnackbarData(message, action, SnackbarType.SUCCESS),
-            panelClasses,
-            duration
-        )
+        this.openSnackbar(new SnackbarData(message, action, SnackbarType.SUCCESS), panelClasses, duration);
     }
 
     // action doesn't do anything right now, kept in case we want to implement later
-    public openErrorSnackbar(message: string, action?: string, duration?: number, verticalPos?: 'center') {
-        let panelClasses = ["snack-bar-error"]
-        if(verticalPos && verticalPos === 'center') {
+    public openErrorSnackbar(message: string, action?: string, duration?: number, verticalPos?: "center") {
+        let panelClasses = ["snack-bar", "snack-bar-error"];
+        if (verticalPos && verticalPos === "center") {
             panelClasses.push("center-snackbar");
         }
 
-        this.openSnackbar(
-            new SnackbarData(message, action, SnackbarType.ERROR),
-            panelClasses,
-            duration
-        )
+        this.openSnackbar(new SnackbarData(message, action, SnackbarType.ERROR), panelClasses, duration);
     }
 
-    private openSnackbar(data: SnackbarData, panelClasses: string[], duration: number = 4000, verticalPos: MatSnackBarVerticalPosition = 'bottom', horizontalPos: MatSnackBarHorizontalPosition = 'center'): void {
-        this._snackbar.openFromComponent(SnackbarComponent, {
-            data: {
-                ...data,
-                snackbarRef: this._snackbar
-            },
+    private openSnackbar(
+        data: SnackbarData,
+        panelClasses: string[],
+        duration: number = 4000,
+        verticalPos: MatSnackBarVerticalPosition = "bottom",
+        horizontalPos: MatSnackBarHorizontalPosition = "center"
+    ): void {
+        this._snackbar.open(data.message, "Close", {
             panelClass: panelClasses,
             duration: duration,
             verticalPosition: verticalPos,
-            horizontalPosition: horizontalPos
-        })
+            horizontalPosition: horizontalPos,
+        });
+        // this._snackbar.openFromComponent(SnackbarComponent, {
+        //     data: {
+        //         ...data,
+        //         snackbarRef: this._snackbar
+        //     },
+        //     panelClass: panelClasses,
+        //     duration: duration,
+        //     verticalPosition: verticalPos,
+        //     horizontalPosition: horizontalPos
+        // })
     }
-
 }
