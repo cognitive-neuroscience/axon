@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewContainerRef } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
@@ -37,7 +37,7 @@ export interface TaskConfig {
     templateUrl: "./rating-new.component.html",
     styleUrls: ["./rating-new.component.scss"],
 })
-export class RatingNewComponent implements OnInit {
+export class RatingNewComponent implements OnInit, OnDestroy {
     constructor(
         private componentFactoryService: ComponentFactoryService,
         private viewContainer: ViewContainerRef,
@@ -149,5 +149,9 @@ export class RatingNewComponent implements OnInit {
         } else {
             this.taskManager.next();
         }
+    }
+
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 }

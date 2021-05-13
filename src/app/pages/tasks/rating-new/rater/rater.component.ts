@@ -44,6 +44,8 @@ export class RatingTaskData extends TaskData {
     styleUrls: ["./rater.component.scss"],
 })
 export class RaterComponent extends AbstractBaseTaskComponent implements OnDestroy {
+    private isDestroyed = false;
+
     // metadata
     protected ratingComponentMetadata: RaterTaskMetadata;
 
@@ -79,7 +81,6 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
     activityShown: string = "";
     questionShown: string = "";
 
-    isResponseAllowed: boolean = false;
     maxResponseTimer: any;
     helpMessageTimeout: any;
 
@@ -152,6 +153,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         this.showStimulus = true;
 
         await wait(this.delayToShowRatingSlider);
+        if (this.isDestroyed) return;
 
         this.timerService.startTimer();
         this.showSlider = true;
@@ -197,6 +199,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         const thisTrial = this.taskData[this.taskData.length - 1];
         if (event === null) {
             await wait(this.durationOutOftimeMessageShown);
+            if (this.isDestroyed) return;
             // no input, ran out of time
             thisTrial.responseTime = this.maxResponseTime;
             super.handleRoundInteraction(event);
@@ -233,6 +236,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         }
         this.loaderService.showLoader();
         await wait(this.interTrialDelay);
+        if (this.isDestroyed) return;
         this.loaderService.hideLoader();
         this.beginRound();
         return;
@@ -267,6 +271,8 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
     }
 
     ngOnDestroy() {
+        this.isDestroyed = true;
         this.cancelAllTimers();
+        this.loaderService.hideLoader();
     }
 }
