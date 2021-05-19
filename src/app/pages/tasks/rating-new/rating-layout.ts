@@ -133,12 +133,12 @@ export const RatingLayoutMetadata = {
             component: ComponentName.RATING_COMPONMENT,
             config: {
                 isPractice: true,
-                maxResponseTime: 30000,
-                interTrialDelay: 1000,
-                delayToShowHelpMessage: 20000,
-                durationHelpMessageShown: 10000,
-                durationOutOftimeMessageShown: 4000,
-                delayToShowRatingSlider: 1500,
+                maxResponseTime: 15000,
+                interTrialDelay: 100,
+                delayToShowHelpMessage: 10000,
+                durationHelpMessageShown: 5000,
+                durationOutOftimeMessageShown: 1000,
+                delayToShowRatingSlider: 0,
                 stimuliConfig: {
                     type: "hardcoded",
                     stimuli: [
@@ -195,12 +195,12 @@ export const RatingLayoutMetadata = {
             component: ComponentName.RATING_COMPONMENT,
             config: {
                 isPractice: false,
-                maxResponseTime: 30000,
-                interTrialDelay: 1000,
-                delayToShowHelpMessage: 20000,
-                durationHelpMessageShown: 10000,
-                durationOutOftimeMessageShown: 4000,
-                delayToShowRatingSlider: 1500,
+                maxResponseTime: 15000,
+                interTrialDelay: 100,
+                delayToShowHelpMessage: 10000,
+                durationHelpMessageShown: 5000,
+                durationOutOftimeMessageShown: 1000,
+                delayToShowRatingSlider: 0,
                 stimuliConfig: {
                     type: "generated",
                     stimuli: null,

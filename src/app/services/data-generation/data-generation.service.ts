@@ -10,7 +10,7 @@ export class DataGenerationService {
     constructor() {}
 
     generateRatingTaskData(): RatingTaskStimuli[] {
-        const doSomethingActivities = selectNRandomElementsNoRepeats(RatingTaskActivities.DoSomething, 20);
+        const doSomethingActivities = selectNRandomElementsNoRepeats(RatingTaskActivities.DoSomething, 21);
         const doNothingActivities = deepClone(RatingTaskActivities.DoNothing);
         const activities = shuffle(doSomethingActivities.concat(doNothingActivities));
 

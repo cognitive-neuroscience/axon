@@ -5,7 +5,6 @@ export enum RatingTaskCounterBalance {
 
 export const RatingTaskActivities = {
     DoNothing: [
-        "Take a break",
         "Rest",
         "Take a nap",
         "Daydream/stare out of the window",
@@ -152,7 +151,7 @@ export const RatingTaskQuestionList = [
     },
     {
         question: "How much time does it usually take to do this activity?",
-        legend: ["A few minutes", "10-30 minutes", "Around an hour", "A few hours", "Most of the day"],
+        legend: ["A few minutes", "30 minutes", "Around an hour", "A few hours", "Most of the day"],
     },
     {
         question: "How much money does it take to do this activity?",
