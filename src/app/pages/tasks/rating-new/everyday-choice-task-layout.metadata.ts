@@ -205,7 +205,7 @@ export const EverydayChoiceLayoutMetadata = {
                 durationHelpMessageShown: 5000,
                 durationOutOftimeMessageShown: 2000,
                 delayToShowRatingSlider: 0,
-                numDoSomethingActivities: 1,
+                numDoSomethingActivities: 21,
                 stimuliConfig: {
                     type: "generated",
                     stimuli: null,
@@ -353,29 +353,8 @@ export const EverydayChoiceLayoutMetadata = {
                 durationOutOftimeMessageShown: 2000,
                 delayToShowRatingSlider: 0,
                 stimuliConfig: {
-                    type: "hardcoded",
-                    stimuli: [
-                        {
-                            firstActivity: "Bring the car to the mechanic",
-                            secondActivity: "Dust your bookshelves",
-                            legend: ["Strongly choose left", "Strongly choose right"],
-                        },
-                        {
-                            firstActivity: "Do a thing",
-                            secondActivity: "do another thing",
-                            legend: ["Strongly choose left", "Strongly choose right"],
-                        },
-                        {
-                            firstActivity: "and do another thing",
-                            secondActivity: "but you wanna do a thing",
-                            legend: ["Strongly choose left", "Strongly choose right"],
-                        },
-                        {
-                            firstActivity: "thing a",
-                            secondActivity: "thing b",
-                            legend: ["Strongly choose left", "Strongly choose right"],
-                        },
-                    ],
+                    type: "generated",
+                    stimuli: null,
                 },
             },
         },

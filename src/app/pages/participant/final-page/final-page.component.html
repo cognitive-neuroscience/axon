@@ -1,6 +1,6 @@
 <div
     class="d-flex align-items-center justify-content-center w-100"
-    style="background-color: #3f51b5; line-height: normal"
+    style="background-color: #3f51b5; line-height: normal; min-height: 100%"
 >
     <div style="width: 75%; flex-direction: column" class="my-3 d-flex">
         <div class="title py-3" style="color: white">Thanks for participating in our study!</div>
@@ -9,12 +9,13 @@
             <div class="number-container">1</div>
             <div class="content-container">
                 <span>
-                    Copy your completion code below and input it into the original site to collect your reward.
+                    Copy your completion code below and input it into the original site to register your completion of
+                    this study
                 </span>
                 <div class="completion-code">
-                    <span class="d-flex align-items-center font-weight-bold" style="color: white"
-                        >{{ completionCode }}29f8b9hb</span
-                    >
+                    <span class="d-flex align-items-center font-weight-bold" style="color: white">{{
+                        completionCode
+                    }}</span>
                     <button
                         class="btn btn-primary d-flex"
                         (click)="showCopiedMessage()"
@@ -48,8 +49,8 @@
             <div class="number-container text">3</div>
             <div class="content-container">
                 <span class="my-3 text">
-                    Close this page and return back to the original site with your completion code</span
-                >
+                    Close this window and return back to the original site with your completion code
+                </span>
             </div>
         </div>
     </div>

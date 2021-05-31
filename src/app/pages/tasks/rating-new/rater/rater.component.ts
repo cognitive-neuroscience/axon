@@ -211,6 +211,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
             if (this.isDestroyed) return;
             // no input, ran out of time
             thisTrial.responseTime = this.maxResponseTime;
+            thisTrial.userAnswer = 50; // set anchor to default middle
             super.handleRoundInteraction(sliderValue);
             return;
         }

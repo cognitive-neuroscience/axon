@@ -1,3 +1,13 @@
+.page-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: #3f51b5;
+    line-height: normal;
+    min-height: 100%;
+}
+
 .completion-code {
     background-color: darkgray;
     justify-content: center;
