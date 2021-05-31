@@ -1,73 +1,74 @@
 {
-  "name": "axon",
-  "version": "0.1.0",
-  "description": "Dashboard for delivering neuroscience experiments on the web for the Neurodegenration Research Laboratory at The Neuro",
-  "main": "src/main.ts",
-  "dependencies": {
-    "@angular/animations": "~11.2.12",
-    "@angular/cdk": "~11.2.11",
-    "@angular/common": "~11.2.12",
-    "@angular/compiler": "~11.2.12",
-    "@angular/core": "~11.2.12",
-    "@angular/forms": "~11.2.12",
-    "@angular/material": "^11.2.11",
-    "@angular/platform-browser": "~11.2.12",
-    "@angular/platform-browser-dynamic": "~11.2.12",
-    "@angular/router": "~11.2.12",
-    "classlist.js": "^1.1.20150312",
-    "file-saver": "^2.0.2",
-    "jwt-decode": "^3.0.0-beta.2",
-    "ng-zorro-antd": "^11.4.1",
-    "rxjs": "~6.6.2",
-    "tslib": "^2.0.0",
-    "web-animations-js": "^2.3.2",
-    "xlsx": "^0.16.8",
-    "zone.js": "~0.10.2"
-  },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "^0.1102.11",
-    "@angular/cli": "~11.2.11",
-    "@angular/compiler-cli": "~11.2.12",
-    "@angular/language-service": "~11.2.12",
-    "@types/file-saver": "^2.0.1",
-    "@types/jasmine": "~3.6.0",
-    "@types/luxon": "^1.25.0",
-    "@types/node": "^12.11.1",
-    "codelyzer": "^6.0.0",
-    "jasmine-core": "~3.6.0",
-    "jasmine-spec-reporter": "~5.0.0",
-    "karma": "~6.3.2",
-    "karma-chrome-launcher": "~3.1.0",
-    "karma-coverage": "~2.0.3",
-    "karma-jasmine": "~4.0.0",
-    "karma-jasmine-html-reporter": "^1.5.0",
-    "luxon": "^1.25.0",
-    "prettier": "^2.3.0",
-    "protractor": "~7.0.0",
-    "ts-node": "~8.9.0",
-    "tslint": "~6.1.0",
-    "typescript": "^4.0.7"
-  },
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve -o",
-    "build": "ng build --prod",
-    "test": "ng test",
-    "lint": "ng lint",
-    "build-deploy": "ng build --prod && cd dist && scp -r . nick@psharplab.campus.mcgill.ca:/var/www/html",
-    "lint-fix": "ng lint --fix=true"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cognitive-neuroscience/axon.git"
-  },
-  "keywords": [
-    "neuroscience"
-  ],
-  "author": "Praveen Ravichandran (me@pravinba9495.dev)",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/cognitive-neuroscience/axon/issues"
-  },
-  "homepage": "https://github.com/cognitive-neuroscience/axon#readme"
+    "name": "axon",
+    "version": "0.1.0",
+    "description": "Dashboard for delivering neuroscience experiments on the web for the Neurodegenration Research Laboratory at The Neuro",
+    "main": "src/main.ts",
+    "dependencies": {
+        "@angular/animations": "~11.2.12",
+        "@angular/cdk": "~11.2.11",
+        "@angular/common": "~11.2.12",
+        "@angular/compiler": "~11.2.12",
+        "@angular/core": "~11.2.12",
+        "@angular/forms": "~11.2.12",
+        "@angular/material": "^11.2.11",
+        "@angular/platform-browser": "~11.2.12",
+        "@angular/platform-browser-dynamic": "~11.2.12",
+        "@angular/router": "~11.2.12",
+        "classlist.js": "^1.1.20150312",
+        "file-saver": "^2.0.2",
+        "jwt-decode": "^3.0.0-beta.2",
+        "ng-zorro-antd": "^11.4.1",
+        "rxjs": "~6.6.2",
+        "tslib": "^2.0.0",
+        "web-animations-js": "^2.3.2",
+        "xlsx": "^0.16.8",
+        "zone.js": "~0.10.2"
+    },
+    "devDependencies": {
+        "@angular-devkit/build-angular": "^0.1102.11",
+        "@angular/cli": "~11.2.11",
+        "@angular/compiler-cli": "~11.2.12",
+        "@angular/language-service": "~11.2.12",
+        "@types/file-saver": "^2.0.1",
+        "@types/jasmine": "~3.6.0",
+        "@types/luxon": "^1.25.0",
+        "@types/node": "^12.11.1",
+        "codelyzer": "^6.0.0",
+        "jasmine-core": "~3.6.0",
+        "jasmine-spec-reporter": "~5.0.0",
+        "karma": "~6.3.2",
+        "karma-chrome-launcher": "~3.1.0",
+        "karma-coverage": "~2.0.3",
+        "karma-jasmine": "~4.0.0",
+        "karma-jasmine-html-reporter": "^1.5.0",
+        "luxon": "^1.25.0",
+        "prettier": "^2.3.0",
+        "protractor": "~7.0.0",
+        "ts-node": "~8.9.0",
+        "tslint": "~6.1.0",
+        "typescript": "^4.0.7"
+    },
+    "scripts": {
+        "ng": "ng",
+        "start": "ng serve -o",
+        "build": "ng build --prod",
+        "test": "ng test",
+        "lint": "ng lint",
+        "deploy": "cd dist && scp -r . nick@psharplab.campus.mcgill.ca:/var/www/html",
+        "build-deploy": "npm run build && npm run deploy",
+        "lint-fix": "ng lint --fix=true"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/cognitive-neuroscience/axon.git"
+    },
+    "keywords": [
+        "neuroscience"
+    ],
+    "author": "Praveen Ravichandran (me@pravinba9495.dev)",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/cognitive-neuroscience/axon/issues"
+    },
+    "homepage": "https://github.com/cognitive-neuroscience/axon#readme"
 }
