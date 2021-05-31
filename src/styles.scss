@@ -88,6 +88,13 @@ button {
     justify-content: space-between;
 }
 
+.flex-row-space-around {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
 .flex-column-space-between {
     display: flex;
     flex-direction: column;
@@ -302,4 +309,7 @@ td.mat-footer-cell {
     white-space: nowrap;
     transform: translate3d(-50%, 15px, 0px) !important;
     color: #3f51b5;
+    font-size: 20px;
+    width: 20%;
+    white-space: normal;
 }

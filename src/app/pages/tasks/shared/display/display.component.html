@@ -3,10 +3,8 @@
         <div>
             <ng-container *ngIf="title">
                 <h1 class="title" [innerHTML]="title"></h1>
+                <h3 *ngIf="subtitle" class="subtitle" [innerHTML]="subtitle"></h3>
                 <hr />
-            </ng-container>
-            <ng-container *ngIf="subtitle">
-                <h1 class="subtitle" [innerHTML]="subtitle"></h1>
             </ng-container>
         </div>
 

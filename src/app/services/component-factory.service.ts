@@ -1,12 +1,15 @@
-import { ComponentFactoryResolver, ComponentRef, Injectable, Injector, ViewRef } from "@angular/core";
-import { DisplayComponent } from "../pages/tasks/display/display.component";
+import { ComponentFactoryResolver, ComponentRef, Injectable, Injector } from "@angular/core";
+import { DisplayComponent } from "../pages/tasks/shared/display/display.component";
 import { Playable } from "../pages/tasks/Playable";
 import { RaterComponent } from "../pages/tasks/rating-new/rater/rater.component";
+import { ChoicerComponent } from "../pages/tasks/rating-new/choicer/choicer.component";
 
 export enum ComponentName {
     DISPLAY_COMPONENT = "DISPLAYCOMPONENT",
 
     RATING_COMPONMENT = "RATINGCOMPONENT",
+
+    CHOICE_COMPONENT = "CHOICECOMPONENT",
 }
 
 @Injectable({
@@ -25,6 +28,8 @@ export class ComponentFactoryService {
                 return this.buildComponent(DisplayComponent);
             case ComponentName.RATING_COMPONMENT:
                 return this.buildComponent(RaterComponent);
+            case ComponentName.CHOICE_COMPONENT:
+                return this.buildComponent(ChoicerComponent);
             default:
                 throw new Error("Component doesn't exist: " + componentMapping);
         }

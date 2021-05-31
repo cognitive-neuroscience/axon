@@ -1,0 +1,34 @@
+<div class="wrapper">
+    <!-- Start Practice Round -->
+    <div *ngIf="showStimulus" class="full-box flex-column-center">
+        <div class="activity-container flex-row-space-around">
+            <span class="activity">{{ activityLeft }}</span>
+            <span class="activity">{{ activityRight }}</span>
+        </div>
+        <div class="slider-container">
+            <ng-container *ngIf="showSlider">
+                <div *ngIf="isPractice" class="text-center py-3">
+                    To make your choice, use the sliding scale below to tell us HOW STRONGLY you choose the activity on
+                    the left or on the right.
+                </div>
+                <app-slider
+                    [shouldReverseLegend]="false"
+                    [marks]="currentSliderMarks"
+                    (sliderValueSelected)="handleRoundInteraction($event)"
+                ></app-slider>
+                <div class="button-container pt-5">
+                    <button
+                        (click)="completeRound()"
+                        *ngIf="showNextButton"
+                        mat-raised-button
+                        color="primary"
+                        class="d-block ml-auto"
+                    >
+                        Next &nbsp;
+                        <mat-icon>arrow_forward</mat-icon>
+                    </button>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

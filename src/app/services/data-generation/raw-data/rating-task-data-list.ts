@@ -1,6 +1,7 @@
 export enum RatingTaskCounterBalance {
     LOWTOHIGHENDORSEMENT = "LOWTOHIGH",
     HIGHTOLOWENDORSEMENT = "HIGHTOLOW",
+    NA = "NA",
 }
 
 export const RatingTaskActivities = {

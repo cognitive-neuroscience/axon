@@ -18,6 +18,7 @@ export enum TaskNames {
     CHOICE = "choice",
     POSTCHOICE = "postchoice",
     RATINGNEW = "ratingnew",
+    CHOICENEW = "choicenew",
 }
 
 export abstract class TaskData {

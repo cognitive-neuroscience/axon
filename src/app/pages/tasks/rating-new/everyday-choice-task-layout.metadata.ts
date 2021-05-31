@@ -1,6 +1,7 @@
+import { TaskNames } from "src/app/models/TaskData";
 import { ComponentName } from "src/app/services/component-factory.service";
 
-export const RatingLayoutMetadata = {
+export const EverydayChoiceLayoutMetadata = {
     config: {
         counterbalanced: true,
     },
@@ -133,12 +134,14 @@ export const RatingLayoutMetadata = {
             component: ComponentName.RATING_COMPONMENT,
             config: {
                 isPractice: true,
-                maxResponseTime: 15000,
+                maxResponseTime: 150000,
                 interTrialDelay: 100,
+                interActivityDelay: 1000,
                 delayToShowHelpMessage: 10000,
                 durationHelpMessageShown: 5000,
-                durationOutOftimeMessageShown: 1000,
+                durationOutOftimeMessageShown: 2000,
                 delayToShowRatingSlider: 0,
+                numDoSomethingActivities: 21,
                 stimuliConfig: {
                     type: "hardcoded",
                     stimuli: [
@@ -197,13 +200,203 @@ export const RatingLayoutMetadata = {
                 isPractice: false,
                 maxResponseTime: 15000,
                 interTrialDelay: 100,
+                interActivityDelay: 1000,
                 delayToShowHelpMessage: 10000,
                 durationHelpMessageShown: 5000,
-                durationOutOftimeMessageShown: 1000,
+                durationOutOftimeMessageShown: 2000,
                 delayToShowRatingSlider: 0,
+                numDoSomethingActivities: 1,
                 stimuliConfig: {
                     type: "generated",
                     stimuli: null,
+                },
+            },
+        },
+        {
+            component: ComponentName.DISPLAY_COMPONENT,
+            content: {
+                title: "",
+                sections: [
+                    {
+                        sectionType: "text",
+                        textContent: "Thank you for completing Part 1 of the game!",
+                    },
+                ],
+                buttons: {
+                    isStart: false,
+                    previousDisabled: true,
+                    nextDisabled: false,
+                },
+            },
+        },
+        {
+            component: ComponentName.DISPLAY_COMPONENT,
+            content: {
+                title: "Everyday Activities Game - Part 2",
+                sections: [
+                    {
+                        sectionType: "text",
+                        textContent: "Please read the following instructions carefully.",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent:
+                            "For this part of the task, you will be asked to choose between two different activities.",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent:
+                            "Your job is to <b>imagine yourself faced with this choice in your everyday life, and to indicate which activity you would choose.</b>",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent: "Click NEXT for an example",
+                    },
+                ],
+                buttons: {
+                    isStart: false,
+                    previousDisabled: true,
+                    nextDisabled: false,
+                },
+            },
+        },
+        {
+            component: ComponentName.DISPLAY_COMPONENT,
+            content: {
+                title: "",
+                sections: [
+                    {
+                        sectionType: "text",
+                        textContent: "For example:",
+                    },
+                    {
+                        sectionType: "image-horizontal",
+                        imagePath: "/assets/images/instructions/everydaychoice-new/choice-example.PNG",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent:
+                            "We ask that you try to picture the choice you would make in real life, even if some of the choices may not be ones you have ever been faced with.",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent: "Tell us: <b>which activity would you MOST LIKELY CHOOSE TO DO?</b>",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent: "Click START to practice",
+                    },
+                ],
+                buttons: {
+                    isStart: true,
+                    previousDisabled: false,
+                    nextDisabled: false,
+                },
+            },
+        },
+        {
+            component: ComponentName.CHOICE_COMPONENT,
+            config: {
+                isPractice: true,
+                maxResponseTime: 15000,
+                interTrialDelay: 100,
+                delayToShowHelpMessage: 10000,
+                durationHelpMessageShown: 5000,
+                durationOutOftimeMessageShown: 2000,
+                delayToShowRatingSlider: 0,
+                stimuliConfig: {
+                    type: "hardcoded",
+                    stimuli: [
+                        {
+                            firstActivity: "Bring the car to the mechanic",
+                            secondActivity: "Dust your bookshelves",
+                            legend: ["Strongly choose left", "Strongly choose right"],
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            component: ComponentName.DISPLAY_COMPONENT,
+            content: {
+                title: "",
+                sections: [
+                    {
+                        sectionType: "text",
+                        textContent: "You finished the practice!",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent:
+                            "Now, please picture yourself doing the activity for each of the following activities, and rate which activity you would MOST LIKELY spend time doing.",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent: "Click START when you are ready",
+                    },
+                ],
+                buttons: {
+                    isStart: true,
+                    previousDisabled: true,
+                    nextDisabled: false,
+                },
+            },
+        },
+        {
+            component: ComponentName.CHOICE_COMPONENT,
+            config: {
+                isPractice: false,
+                maxResponseTime: 15000,
+                interTrialDelay: 100,
+                delayToShowHelpMessage: 10000,
+                durationHelpMessageShown: 5000,
+                durationOutOftimeMessageShown: 2000,
+                delayToShowRatingSlider: 0,
+                stimuliConfig: {
+                    type: "hardcoded",
+                    stimuli: [
+                        {
+                            firstActivity: "Bring the car to the mechanic",
+                            secondActivity: "Dust your bookshelves",
+                            legend: ["Strongly choose left", "Strongly choose right"],
+                        },
+                        {
+                            firstActivity: "Do a thing",
+                            secondActivity: "do another thing",
+                            legend: ["Strongly choose left", "Strongly choose right"],
+                        },
+                        {
+                            firstActivity: "and do another thing",
+                            secondActivity: "but you wanna do a thing",
+                            legend: ["Strongly choose left", "Strongly choose right"],
+                        },
+                        {
+                            firstActivity: "thing a",
+                            secondActivity: "thing b",
+                            legend: ["Strongly choose left", "Strongly choose right"],
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            component: ComponentName.DISPLAY_COMPONENT,
+            content: {
+                title: "",
+                sections: [
+                    {
+                        sectionType: "text",
+                        textContent: "Hooray! You have finished the Everyday Activities Game.",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent: "We appreciate your time and effort in helping with our research.",
+                    },
+                ],
+                buttons: {
+                    isStart: false,
+                    previousDisabled: true,
+                    nextDisabled: false,
                 },
             },
         },

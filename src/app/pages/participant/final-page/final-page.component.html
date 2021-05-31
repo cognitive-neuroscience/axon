@@ -1,29 +1,56 @@
-<div class="d-flex align-items-center justify-content-center" style="min-height: 100%; background-color: #3f51b5;">
+<div
+    class="d-flex align-items-center justify-content-center w-100"
+    style="background-color: #3f51b5; line-height: normal"
+>
+    <div style="width: 75%; flex-direction: column" class="my-3 d-flex">
+        <div class="title py-3" style="color: white">Thanks for participating in our study!</div>
 
-    <div class="content-container">
-        <h1 class="display-4 text-center">Thanks for participating in our study!</h1>
-        <hr class="my-2">
-        <p>Copy your completion code below and input it into the original site to collect your reward.</p>
-        <p class='font-weight-bold'>Note: You will not be able to see this again once you close the page, so please make sure you copy the completion code</p>
-
-        <div class="completion-code">
-            <span class="d-flex align-items-center" style="color: white">{{ completionCode }}</span>
-            <button class="btn btn-primary" 
-                    (click)="showCopiedMessage()" 
-                    [cdkCopyToClipboard]="completionCode" 
-                    matTooltip="copy to clipboard" 
-                    #tooltip="matTooltip"  
-                    style="margin-left: 20px; width: 100px;">
-                Copy
-            </button>
+        <div class="steps-container text">
+            <div class="number-container">1</div>
+            <div class="content-container">
+                <span>
+                    Copy your completion code below and input it into the original site to collect your reward.
+                </span>
+                <div class="completion-code">
+                    <span class="d-flex align-items-center font-weight-bold" style="color: white"
+                        >{{ completionCode }}29f8b9hb</span
+                    >
+                    <button
+                        class="btn btn-primary d-flex"
+                        (click)="showCopiedMessage()"
+                        [cdkCopyToClipboard]="completionCode"
+                        matTooltip="copy to clipboard"
+                        #tooltip="matTooltip"
+                        style="margin-left: 20px"
+                    >
+                        Copy completion code &nbsp; <mat-icon>file_copy</mat-icon>
+                    </button>
+                </div>
+                <span>
+                    <b>
+                        Note: You will not be able to see this again once you close the page, so please make sure you
+                        copy the completion code
+                    </b>
+                </span>
+            </div>
         </div>
 
-        <div class="my-3">
-            <app-feedback-questionnaire></app-feedback-questionnaire>
+        <div class="steps-container">
+            <div class="number-container text">2</div>
+            <div class="content-container">
+                <span class="my-3 text"> Give us feedback on our study (optional) </span>
+
+                <app-feedback-questionnaire></app-feedback-questionnaire>
+            </div>
         </div>
 
-        <div>
-            <button class="btn btn-danger w-100" (click)="logout()">Exit</button>
+        <div class="steps-container">
+            <div class="number-container text">3</div>
+            <div class="content-container">
+                <span class="my-3 text">
+                    Close this page and return back to the original site with your completion code</span
+                >
+            </div>
         </div>
     </div>
 </div>

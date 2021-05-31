@@ -1,18 +1,18 @@
-import { Component, OnDestroy } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { NzMarks } from "ng-zorro-antd/slider";
+import { wait } from "src/app/common/commonMethods";
+import { ComponentName } from "src/app/services/component-factory.service";
+import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
+import { RatingTaskCounterBalance } from "src/app/services/data-generation/raw-data/rating-task-data-list";
+import { ChoiceTaskStimuli } from "src/app/services/data-generation/stimuli-models";
+import { LoaderService } from "src/app/services/loader.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { TimerService } from "src/app/services/timer.service";
-import { wait } from "src/app/common/commonMethods";
-import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import { RatingTaskStimuli } from "src/app/services/data-generation/stimuli-models";
 import { AbstractBaseTaskComponent } from "../../base-task";
 import { TaskConfig } from "../../task-player/task-player.component";
-import { RatingTaskCounterBalance } from "src/app/services/data-generation/raw-data/rating-task-data-list";
-import { LoaderService } from "src/app/services/loader.service";
-import { NzMarks } from "ng-zorro-antd/slider";
-import { ComponentName } from "src/app/services/component-factory.service";
 import { EverydayChoiceTaskData } from "../rating-new.component";
 
-export interface RaterTaskMetadata {
+export interface ChoiceTaskMetadata {
     component: ComponentName;
     config: {
         isPractice: boolean;
@@ -22,51 +22,44 @@ export interface RaterTaskMetadata {
         durationHelpMessageShown: number;
         delayToShowRatingSlider: number;
         durationOutOftimeMessageShown: number;
-        interActivityDelay: number;
-        numDoSomethingActivities: number;
         stimuliConfig: {
             type: "hardcoded" | "generated";
-            stimuli: RatingTaskStimuli[];
+            stimuli: ChoiceTaskStimuli[];
         };
     };
 }
 
 @Component({
-    selector: "app-rater",
-    templateUrl: "./rater.component.html",
-    styleUrls: ["./rater.component.scss"],
+    selector: "app-choicer",
+    templateUrl: "./choicer.component.html",
+    styleUrls: ["./choicer.component.scss", "../rater/rater.component.scss"],
 })
-export class RaterComponent extends AbstractBaseTaskComponent implements OnDestroy {
+export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDestroy {
     /**
      * Task summary:
-     * You have multiple activities, choosing some from "DoSomething" and some from "DoNothing".
-     * For every activity, we ask the same questions in random order. The participant responds to
-     * these questions using a slider indicating an extreme based on given labels.
+     * You have the same n activities from the rating task. We create n pairs where each activity appears exactly
+     * twice in separate pairs. A slider is shown, and the participant selects a value which indicates whether they
+     * prefer the left option or the right option.
      */
 
     // config variables variables
     isPractice: boolean = false;
     private maxResponseTime: number;
     private interTrialDelay: number; // In milliseconds
-    private interActivityDelay: number; // In milliseconds
     private delayToShowHelpMessage: number; //delay to show help message
     private delayToShowRatingSlider: number;
     private durationHelpMessageShown: number;
     private durationOutOftimeMessageShown: number;
-    private counterbalance: RatingTaskCounterBalance;
-    private numDoSomethingActivities: number;
 
-    // shared state
+    // shared state variables
     userID: string;
     experimentCode: string;
-    config: TaskConfig;
+    ratingTaskActivities: string[];
 
     // high level variables
     taskData: EverydayChoiceTaskData[];
-    stimuli: RatingTaskStimuli[];
+    stimuli: ChoiceTaskStimuli[];
     currentStimuliIndex: number; // index of the stimuli we are on
-    currentQuestionIndex: number; // index of the question we are on within the stimulus
-    shouldReverse: boolean = false; // based on counterbalance - reverses order of endorsement
 
     // local state variables
     showStimulus: boolean = false;
@@ -76,37 +69,14 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
 
     currentSliderMarks: NzMarks = {}; // set slider legend
 
-    activityShown: string = "";
-    questionShown: string = "";
+    activityLeft: string = "";
+    activityRight: string = "";
 
     maxResponseTimer: any;
     showHelpMessageTimer: any;
 
-    get currentStimulus(): RatingTaskStimuli {
+    get currentStimulus(): ChoiceTaskStimuli {
         return this.stimuli[this.currentStimuliIndex];
-    }
-
-    configure(metadata: RaterTaskMetadata, config: TaskConfig) {
-        this.userID = config.userID;
-        this.experimentCode = config.experimentCode;
-        this.config = config;
-
-        this.isPractice = metadata.config.isPractice;
-        this.maxResponseTime = metadata.config.maxResponseTime;
-        this.interTrialDelay = metadata.config.interTrialDelay;
-        this.interActivityDelay = metadata.config.interActivityDelay;
-        this.delayToShowHelpMessage = metadata.config.delayToShowHelpMessage;
-        this.durationHelpMessageShown = metadata.config.durationHelpMessageShown;
-        this.delayToShowRatingSlider = metadata.config.delayToShowRatingSlider;
-        this.durationOutOftimeMessageShown = metadata.config.durationOutOftimeMessageShown;
-        this.numDoSomethingActivities = metadata.config.numDoSomethingActivities;
-
-        this.counterbalance =
-            config.counterbalanceRandomNumber < 50
-                ? RatingTaskCounterBalance.LOWTOHIGHENDORSEMENT
-                : RatingTaskCounterBalance.HIGHTOLOWENDORSEMENT;
-
-        if (metadata.config.stimuliConfig.type === "hardcoded") this.stimuli = metadata.config.stimuliConfig.stimuli;
     }
 
     constructor(
@@ -118,16 +88,29 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         super(loaderService);
     }
 
+    configure(metadata: ChoiceTaskMetadata, config: TaskConfig) {
+        this.userID = config.userID;
+        this.experimentCode = config.experimentCode;
+        this.ratingTaskActivities = config.data;
+
+        this.isPractice = metadata.config.isPractice;
+        this.maxResponseTime = metadata.config.maxResponseTime;
+        this.interTrialDelay = metadata.config.interTrialDelay;
+        this.delayToShowHelpMessage = metadata.config.delayToShowHelpMessage;
+        this.durationHelpMessageShown = metadata.config.durationHelpMessageShown;
+        this.delayToShowRatingSlider = metadata.config.delayToShowRatingSlider;
+        this.durationOutOftimeMessageShown = metadata.config.durationOutOftimeMessageShown;
+
+        if (metadata.config.stimuliConfig.type === "hardcoded") this.stimuli = metadata.config.stimuliConfig.stimuli;
+    }
+
     start() {
         this.taskData = [];
         // either the stimuli has been defined in config or we generate it here
-        if (!this.stimuli) {
-            this.stimuli = this.dataGenService.generateRatingTaskData(this.numDoSomethingActivities);
-            this.config.data = this.stimuli.map((x) => x.activity); // we want to share the activities with the choice task
-        }
+        this.stimuli = !this.stimuli
+            ? this.dataGenService.generateChoiceTaskData(this.ratingTaskActivities)
+            : this.stimuli;
         this.currentStimuliIndex = 0;
-        this.currentQuestionIndex = 0;
-        this.shouldReverse = this.counterbalance === RatingTaskCounterBalance.HIGHTOLOWENDORSEMENT;
         super.start();
     }
 
@@ -137,14 +120,14 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         this.timerService.clearTimer();
 
         this.taskData.push({
-            taskName: "Rating Game",
+            taskName: "Choice Game",
             trial: ++this.trialNum,
             userID: this.userID,
-            counterbalance: this.counterbalance,
+            counterbalance: RatingTaskCounterBalance.NA,
             userAnswer: null,
-            question: this.currentStimulus.questions[this.currentQuestionIndex].question,
-            activity: this.currentStimulus.activity,
-            activityType: this.currentStimulus.type,
+            question: "",
+            activity: `${this.currentStimulus.firstActivity} VS ${this.currentStimulus.secondActivity}`,
+            activityType: "",
             responseTime: null,
             score: null,
             submitted: this.timerService.getCurrentTimestamp(),
@@ -181,18 +164,16 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         );
     }
 
-    private setStimuliUI(stimulus: RatingTaskStimuli) {
-        const stimulusQuestion = stimulus.questions[this.currentQuestionIndex];
-
-        this.activityShown = stimulus.activity;
-        this.questionShown = stimulusQuestion.question;
+    private setStimuliUI(stimulus: ChoiceTaskStimuli) {
+        this.activityLeft = stimulus.firstActivity;
+        this.activityRight = stimulus.secondActivity;
 
         const tempMarks: NzMarks = {};
         let index = 0;
-        const tickIncrement = 100 / (stimulusQuestion.legend.length - 1);
+        const tickIncrement = 100 / (stimulus.legend.length - 1);
 
-        for (let i = 0; i < stimulusQuestion.legend.length; i++) {
-            tempMarks[index] = stimulusQuestion.legend[i];
+        for (let i = 0; i < stimulus.legend.length; i++) {
+            tempMarks[index] = stimulus.legend[i];
             index += tickIncrement;
         }
 
@@ -229,26 +210,15 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
     }
 
     async decideToRepeat() {
-        // we have reached past the final question for the activity
-        const finishedLastQuestion = this.currentQuestionIndex >= this.currentStimulus.questions.length - 1;
-        if (finishedLastQuestion) {
-            this.currentQuestionIndex = 0;
-
-            // we have reached past the final activity
-            const finishedLastStimulus = this.currentStimuliIndex >= this.stimuli.length - 1;
-            if (finishedLastStimulus) {
-                // signal to parent component we are done and send over task data
-                super.decideToRepeat();
-                return;
-            }
-            this.currentStimuliIndex++;
-            this.loaderService.showLoader();
-            await wait(this.interActivityDelay);
-            this.loaderService.hideLoader();
-        } else {
-            this.currentQuestionIndex++;
-            await wait(this.interTrialDelay);
+        // we have reached past the final activity
+        const finishedLastStimulus = this.currentStimuliIndex >= this.stimuli.length - 1;
+        if (finishedLastStimulus) {
+            // signal to parent component we are done and send over task data
+            super.decideToRepeat();
+            return;
         }
+        this.currentStimuliIndex++;
+        await wait(this.interTrialDelay);
         if (this.isDestroyed) return;
         this.beginRound();
         return;

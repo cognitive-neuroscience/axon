@@ -1,6 +1,6 @@
 import { Subject } from "rxjs";
 import { TaskData } from "src/app/models/TaskData";
-import { Navigation } from "./navigation-buttons/navigation-buttons.component";
+import { Navigation } from "./shared/navigation-buttons/navigation-buttons.component";
 
 export interface IOnComplete {
     navigation: Navigation;

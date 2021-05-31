@@ -1,4 +1,4 @@
-@import "../../../sass/mixins";
+@import "../../../../sass/mixins";
 
 .display-container {
     display: flex;
@@ -13,7 +13,7 @@
 }
 
 .display-instructions {
-    padding: 2%;
+    padding: 4% 4% 0 4%;
     color: #3f51b5;
     width: 100%;
     height: 100%;
@@ -33,13 +33,15 @@
     }
     .image-container {
         display: flex;
-        justify-content: center;
+        align-items: flex-start;
     }
 
     @include for-small-device-only {
-        .title,
-        .subtitle {
+        .title {
             font-size: 24px;
+        }
+        .subtitle {
+            font-size: 18px;
         }
         .section {
             font-size: 18px;
@@ -47,6 +49,7 @@
         }
         .image-horizontal {
             width: 450px;
+            margin-bottom: 10px;
         }
         .image-square {
             width: 50px;
@@ -54,9 +57,11 @@
     }
 
     @include for-small-desktop-only {
-        .title,
-        .subtitle {
+        .title {
             font-size: 26px;
+        }
+        .subtitle {
+            font-size: 20px;
         }
         .section {
             font-size: 20px;
@@ -64,6 +69,7 @@
         }
         .image-horizontal {
             width: 550px;
+            margin-bottom: 15px;
         }
         .image-square {
             width: 75px;
@@ -71,9 +77,11 @@
     }
 
     @include for-desktop-up {
-        .title,
-        .subtitle {
+        .title {
             font-size: 32px;
+        }
+        .subtitle {
+            font-size: 26px;
         }
         .section {
             font-size: 26px;
@@ -81,6 +89,7 @@
         }
         .image-horizontal {
             width: 650px;
+            margin-bottom: 20px;
         }
         .image-square {
             width: 100px;
@@ -88,9 +97,11 @@
     }
 
     @include for-large-desktop-up {
-        .title,
-        .subtitle {
+        .title {
             font-size: 40px;
+        }
+        .subtitle {
+            font-size: 28px;
         }
         .section {
             font-size: 28px;
@@ -98,6 +109,7 @@
         }
         .image-horizontal {
             width: 750px;
+            margin-bottom: 30px;
         }
         .image-square {
             width: 125px;

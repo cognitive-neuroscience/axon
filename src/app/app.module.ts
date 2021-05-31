@@ -48,17 +48,19 @@ import { StudyComponentsComponent } from "./pages/dashboard/study-components/stu
 import { ManageQuestionnairesComponent } from "./pages/dashboard/study-components/manage-questionnaires/manage-questionnaires.component";
 import { CreateQuestionnaireDialogComponent } from "./pages/dashboard/study-components/manage-questionnaires/create-questionnaire-dialog/create-questionnaire-dialog.component";
 import { PreviewQuestionnaireDialogComponent } from "./pages/dashboard/study-components/manage-questionnaires/preview-questionnaire-dialog/preview-questionnaire-dialog.component";
-import { NavigationButtonsComponent } from "./pages/tasks/navigation-buttons/navigation-buttons.component";
+import { NavigationButtonsComponent } from "./pages/tasks/shared/navigation-buttons/navigation-buttons.component";
 import { HelpQuestionnaireDialogComponent } from "./pages/dashboard/study-components/manage-questionnaires/help-questionnaire-dialog/help-questionnaire-dialog.component";
 import { ManageCustomTasksComponent } from "./pages/dashboard/study-components/manage-custom-tasks/manage-custom-tasks.component";
 import { CreateCustomTaskDialogComponent } from "./pages/dashboard/study-components/manage-custom-tasks/create-custom-task-dialog/create-custom-task-dialog.component";
 import { CustomTaskHelpDialogComponent } from "./pages/dashboard/study-components/manage-custom-tasks/custom-task-help-dialog/custom-task-help-dialog.component";
 import { CustomTaskPreviewDialogComponent } from "./pages/dashboard/study-components/manage-custom-tasks/custom-task-preview-dialog/custom-task-preview-dialog.component";
 import { RaterComponent } from "./pages/tasks/rating-new/rater/rater.component";
-import { DisplayComponent } from "./pages/tasks/display/display.component";
+import { DisplayComponent } from "./pages/tasks/shared/display/display.component";
 import { NgZorroModule } from "./modules/ngzorro/ngzorro.module";
-import { SliderComponent } from "./pages/tasks/rating-new/slider/slider.component";
+import { SliderComponent } from "./pages/tasks/shared/slider/slider.component";
 import { RatingNewComponent } from "./pages/tasks/rating-new/rating-new.component";
+import { TaskPlayerComponent } from "./pages/tasks/task-player/task-player.component";
+import { ChoicerComponent } from "./pages/tasks/rating-new/choicer/choicer.component";
 
 @NgModule({
     declarations: [
@@ -114,6 +116,8 @@ import { RatingNewComponent } from "./pages/tasks/rating-new/rating-new.componen
         RatingNewComponent,
         DisplayComponent,
         SliderComponent,
+        TaskPlayerComponent,
+        ChoicerComponent,
     ],
     imports: [
         BrowserModule,

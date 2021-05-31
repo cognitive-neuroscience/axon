@@ -120,8 +120,8 @@ export const RouteMap: ExperimentRoutingMap = {
     },
     ratingnew: {
         id: "ratingnew",
-        title: "Rating Game Modified (Part 1 of the every day choice task)",
-        description: "Description of the modified rating game",
+        title: "Rating Game and Choice Game Modified (Part 1 and 2 of the every day choice task)",
+        description: "Description of the modified rating and choice game",
         type: TaskType.Experimental,
         route: "task/ratingnew",
     },

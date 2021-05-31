@@ -33,7 +33,7 @@ import { ManageGuestsComponent } from "../pages/dashboard/manage-guests/manage-g
 import { EmbeddedPageComponent } from "../pages/questionnaires/embedded-page/embedded-page.component";
 import { StudyComponentsComponent } from "../pages/dashboard/study-components/study-components.component";
 import { environment } from "src/environments/environment";
-import { DisplayComponent } from "../pages/tasks/display/display.component";
+import { DisplayComponent } from "../pages/tasks/shared/display/display.component";
 import { RatingNewComponent } from "../pages/tasks/rating-new/rating-new.component";
 
 const routes: Routes = [
@@ -93,7 +93,7 @@ const routes: Routes = [
         component: EmbeddedPageComponent,
         canActivate: [ExperimentRouteGuard],
     },
-    { path: "complete", component: FinalPageComponent, canActivate: [ExperimentRouteGuard] },
+    { path: "complete", component: FinalPageComponent },
     { path: "**", redirectTo: "/login/onlineparticipant", pathMatch: "full" },
 ];
 

@@ -6,3 +6,9 @@ export interface RatingTaskStimuli {
         legend: string[]; // automatically low to high endorsement by default
     }[];
 }
+
+export interface ChoiceTaskStimuli {
+    firstActivity: string;
+    secondActivity: string;
+    legend: string[];
+}

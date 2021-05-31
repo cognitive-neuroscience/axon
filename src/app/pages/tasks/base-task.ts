@@ -3,7 +3,7 @@ import { Subject } from "rxjs";
 import { wait } from "src/app/common/commonMethods";
 import { TaskData } from "src/app/models/TaskData";
 import { LoaderService } from "src/app/services/loader.service";
-import { Navigation } from "./navigation-buttons/navigation-buttons.component";
+import { Navigation } from "./shared/navigation-buttons/navigation-buttons.component";
 import { Playable, IOnComplete } from "./Playable";
 
 @Component({ template: "" })
@@ -11,11 +11,13 @@ export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
     // base task local state variables
     taskData: TaskData[];
     onComplete: Subject<IOnComplete> = new Subject();
+    isDestroyed = false;
 
     // task lifecycle part 0: show loader for 2 seconds (as fixation) and then move onto the task
     constructor(protected loaderService: LoaderService) {
         loaderService.showLoader();
         setTimeout(() => {
+            if (this.isDestroyed) return;
             loaderService.hideLoader();
             this.start();
         }, 2000);
