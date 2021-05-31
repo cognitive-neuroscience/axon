@@ -11,6 +11,7 @@ import { TaskManagerService } from "src/app/services/task-manager.service";
 import { UploadDataService } from "src/app/services/uploadData.service";
 import { Navigation } from "../shared/navigation-buttons/navigation-buttons.component";
 import { IOnComplete } from "../Playable";
+import { LoaderService } from "src/app/services/loader.service";
 
 export interface TaskMetadata {
     config: {
@@ -45,7 +46,8 @@ export class TaskPlayerComponent implements OnDestroy {
         private authService: AuthService,
         private uploadDataService: UploadDataService,
         private router: Router,
-        private snackbarService: SnackbarService
+        private snackbarService: SnackbarService,
+        private loaderService: LoaderService
     ) {}
 
     // task metadata variables
@@ -136,11 +138,14 @@ export class TaskPlayerComponent implements OnDestroy {
             this.router.navigate(["/dashboard/components"]);
             this.snackbarService.openInfoSnackbar("Task completed");
         } else {
+            this.loaderService.showLoader();
             this.handleUploadData().subscribe(
                 (ok) => {
+                    this.loaderService.hideLoader();
                     this.taskManager.next();
                 },
                 (err) => {
+                    this.loaderService.hideLoader();
                     this.taskManager.handleErr();
                 }
             );
