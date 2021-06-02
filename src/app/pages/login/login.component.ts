@@ -95,7 +95,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     const password = this.loginForm.controls.password.value
 
     this.subscriptions.push(
-      this.userService.register(email, password).subscribe((response: HttpResponse<LoginCredentials>) => {
+      this.userService.register(email, password, Role.PARTICIPANT).subscribe((response: HttpResponse<LoginCredentials>) => {
         this.mode = LoginMode.LOGIN
         this.snackbarService.openSuccessSnackbar(this.REGISTER_SUCCESS_STR)
       }, (error: HttpErrorResponse) => {
