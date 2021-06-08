@@ -1,100 +1,84 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
-import { DashboardComponent } from "../pages/dashboard/dashboard.component";
-import { LoginComponent } from "../pages/login/login.component";
-import { ColorGameComponent } from "../pages/tasks/color-game/color-game.component";
-import { ShapeGameComponent } from "../pages/tasks/shape-game/shape-game.component";
-import { OddballComponent } from "../pages/tasks/oddball/oddball.component";
-import { DigitSpanComponent } from "../pages/tasks/digit-span/digit-span.component";
-import { TaskSwitchingComponent } from "../pages/tasks/task-switching/task-switching.component";
-import { DemandSelectionComponent } from "../pages/tasks/demand-selection/demand-selection.component";
-import { SimonTaskPrelimComponent } from "../pages/tasks/simon-task-prelim/simon-task-prelim.component";
-import { SimonTaskFinalComponent } from "../pages/tasks/simon-task-final/simon-task-final.component";
-import { SmileyFaceComponent } from "../pages/tasks/smiley-face/smiley-face.component";
-import { FingerTappingTaskComponent } from "../pages/tasks/finger-tapping/finger-tapping-task.component";
-import { NBackComponent } from "../pages/tasks/n-back/n-back.component";
-import { StroopTaskComponent } from "../pages/tasks/stroop/stroop-task.component";
-import { TrailMakingComponent } from "../pages/tasks/trail-making/trail-making.component";
-import { RatingComponent } from "../pages/tasks/rating/rating.component";
-import { ChoiceComponent } from "../pages/tasks/choice/choice.component";
-import { PostChoiceComponent } from "../pages/tasks/post-choice/post-choice.component";
-import { ViewStudiesComponent } from "../pages/dashboard/view-studies/view-studies.component";
-import { CrowdSourceLoginComponent } from "../pages/participant/crowdsource-login/crowdsource-login.component";
-import { Role } from "../models/InternalDTOs";
-import { RouteMap } from "./routes";
-import { CanActivateRouteGuard } from "../guards/CanActivateRouteGuard";
+import { LoginComponent } from "../pages/landing-page/login/login.component";
+import { ColorGameComponent } from "../pages/tasks/playables/color-game/color-game.component";
+import { ShapeGameComponent } from "../pages/tasks/playables/shape-game/shape-game.component";
+import { OddballComponent } from "../pages/tasks/playables/oddball/oddball.component";
+import { DigitSpanComponent } from "../pages/tasks/playables/digit-span/digit-span.component";
+import { TaskSwitchingComponent } from "../pages/tasks/playables/task-switching/task-switching.component";
+import { DemandSelectionComponent } from "../pages/tasks/playables/demand-selection/demand-selection.component";
+import { SmileyFaceComponent } from "../pages/tasks/playables/smiley-face/smiley-face.component";
+import { FingerTappingTaskComponent } from "../pages/tasks/playables/finger-tapping/finger-tapping-task.component";
+import { NBackComponent } from "../pages/tasks/playables/n-back/n-back.component";
+import { StroopTaskComponent } from "../pages/tasks/playables/stroop/stroop-task.component";
+import { TrailMakingComponent } from "../pages/tasks/playables/trail-making/trail-making.component";
+import { RatingComponent } from "../pages/tasks/playables/rating/rating.component";
+import { ChoiceComponent } from "../pages/tasks/playables/choice/choice.component";
+import { PostChoiceComponent } from "../pages/tasks/playables/post-choice/post-choice.component";
 import { FinalPageComponent } from "../pages/participant/final-page/final-page.component";
-import { ExperimentRouteGuard } from "../guards/ExperimentRouteGuard";
-import { DataComponent } from "../pages/dashboard/data/data.component";
-import { ConsentComponent } from "../pages/questionnaires/consent/consent.component";
-import { DemographicsQuestionnaireComponent } from "../pages/questionnaires/demographics-questionnaire/demographics-questionnaire.component";
-import { FeedbackQuestionnaireComponent } from "../pages/questionnaires/feedback-questionnaire/feedback-questionnaire.component";
-import { ManageGuestsComponent } from "../pages/dashboard/manage-guests/manage-guests.component";
-import { EmbeddedPageComponent } from "../pages/questionnaires/embedded-page/embedded-page.component";
-import { StudyComponentsComponent } from "../pages/dashboard/study-components/study-components.component";
+import { StudyRouteGuard } from "../guards/StudyRouteGuard";
+import { ConsentComponent } from "../pages/tasks/other/consent/consent.component";
+import { DemographicsQuestionnaireComponent } from "../pages/tasks/questionnaires/demographics-questionnaire/demographics-questionnaire.component";
+import { EmbeddedPageComponent } from "../pages/tasks/questionnaires/embedded-page/embedded-page.component";
 import { environment } from "src/environments/environment";
-import { DisplayComponent } from "../pages/tasks/shared/display/display.component";
-import { RatingNewComponent } from "../pages/tasks/rating-new/rating-new.component";
+import { RatingNewComponent } from "../pages/tasks/playables/rating-new/rating-new.component";
+import { LandingPageComponent } from "../pages/landing-page/landing-page.component";
+import { RegisterComponent } from "../pages/landing-page/register/register.component";
+import { ParticipantRouteNames, RouteNames } from "../models/enums";
+import { CrowdSourceLoginComponent } from "../pages/landing-page/crowdsource-login/crowdsource-login.component";
 
 const routes: Routes = [
-    { path: "", redirectTo: "login/onlineparticipant", pathMatch: "full" },
     {
-        path: "dashboard",
-        component: DashboardComponent,
-        data: { roles: [Role.ADMIN, Role.GUEST] },
-        canActivate: [CanActivateRouteGuard],
+        path: "",
+        component: LandingPageComponent,
         children: [
-            { path: "", redirectTo: "experiments", pathMatch: "full" },
-            { path: "experiments", component: ViewStudiesComponent },
-            { path: "components", component: StudyComponentsComponent },
-            { path: "data", component: DataComponent },
-            { path: "guests", component: ManageGuestsComponent },
+            { path: "", redirectTo: RouteNames.LANDINGPAGE_LOGIN_SUBROUTE, pathMatch: "full" },
+            { path: RouteNames.LANDINGPAGE_LOGIN_SUBROUTE, component: LoginComponent },
+            { path: RouteNames.LANDINGPAGE_REGISTER_SUBROUTE, component: RegisterComponent },
         ],
     },
-    { path: "login/onlineparticipant", component: CrowdSourceLoginComponent },
     {
-        path: RouteMap.demographicsquestionnaire.route,
-        component: DemographicsQuestionnaireComponent,
-        canActivate: [ExperimentRouteGuard],
+        path: ParticipantRouteNames.CROWDSOURCEPARTICIPANT_REGISTER_BASEROUTE,
+        component: CrowdSourceLoginComponent,
     },
-    { path: "questionnaire/feedback", component: FeedbackQuestionnaireComponent },
-    { path: "login", component: LoginComponent },
-    { path: RouteMap.consent.route, component: ConsentComponent /*canActivate: [ExperimentRouteGuard]*/ },
-    { path: RouteMap.colorgame.route, component: ColorGameComponent },
-    { path: RouteMap.shapegame.route, component: ShapeGameComponent },
-    { path: RouteMap.oddball.route, component: OddballComponent, canActivate: [ExperimentRouteGuard] },
-    { path: RouteMap.digitspan.route, component: DigitSpanComponent, canActivate: [ExperimentRouteGuard] },
-    { path: RouteMap.taskswitching.route, component: TaskSwitchingComponent, canActivate: [ExperimentRouteGuard] },
-    { path: RouteMap.demandselection.route, component: DemandSelectionComponent, canActivate: [ExperimentRouteGuard] },
-    { path: RouteMap.simon.route, component: SimonTaskPrelimComponent },
-    { path: "experiments/simon-2", component: SimonTaskFinalComponent },
-    { path: RouteMap.smileyface.route, component: SmileyFaceComponent, canActivate: [ExperimentRouteGuard] },
-    { path: RouteMap.fingertapping.route, component: FingerTappingTaskComponent, canActivate: [ExperimentRouteGuard] },
-    { path: RouteMap.nback.route, component: NBackComponent, canActivate: [ExperimentRouteGuard] },
-    {
-        path: RouteMap.stroop.route,
-        component: StroopTaskComponent,
-        canActivate: [ExperimentRouteGuard],
-        data: { trials: environment.production ? 120 : 10 },
-    },
-    {
-        path: RouteMap.stroopshort.route,
-        component: StroopTaskComponent,
-        canActivate: [ExperimentRouteGuard],
-        data: { trials: environment.production ? 60 : 5 },
-    },
-    { path: RouteMap.trailmaking.route, component: TrailMakingComponent, canActivate: [ExperimentRouteGuard] },
-    { path: RouteMap.rating.route, component: RatingComponent, canActivate: [ExperimentRouteGuard] },
-    { path: RouteMap.choice.route, component: ChoiceComponent, canActivate: [ExperimentRouteGuard] },
-    { path: RouteMap.postchoice.route, component: PostChoiceComponent, canActivate: [ExperimentRouteGuard] },
-    { path: RouteMap.ratingnew.route, component: RatingNewComponent, canActivate: [ExperimentRouteGuard] },
-    {
-        path: RouteMap.surveymonkeyquestionnaire.route,
-        component: EmbeddedPageComponent,
-        canActivate: [ExperimentRouteGuard],
-    },
+    // {
+    //     path: RouteMap.demographicsquestionnaire.route,
+    //     component: DemographicsQuestionnaireComponent,
+    //     canActivate: [StudyRouteGuard],
+    // },
+    // { path: RouteMap.consent.route, component: ConsentComponent, canActivate: [StudyRouteGuard] },
+    // { path: RouteMap.colorgame.route, component: ColorGameComponent },
+    // { path: RouteMap.shapegame.route, component: ShapeGameComponent },
+    // { path: RouteMap.oddball.route, component: OddballComponent, canActivate: [StudyRouteGuard] },
+    // { path: RouteMap.digitspan.route, component: DigitSpanComponent, canActivate: [StudyRouteGuard] },
+    // { path: RouteMap.taskswitching.route, component: TaskSwitchingComponent, canActivate: [StudyRouteGuard] },
+    // { path: RouteMap.demandselection.route, component: DemandSelectionComponent, canActivate: [StudyRouteGuard] },
+    // { path: RouteMap.smileyface.route, component: SmileyFaceComponent, canActivate: [StudyRouteGuard] },
+    // { path: RouteMap.fingertapping.route, component: FingerTappingTaskComponent, canActivate: [StudyRouteGuard] },
+    // { path: RouteMap.nback.route, component: NBackComponent, canActivate: [StudyRouteGuard] },
+    // {
+    //     path: RouteMap.stroop.route,
+    //     component: StroopTaskComponent,
+    //     canActivate: [StudyRouteGuard],
+    //     data: { trials: environment.production ? 120 : 10 },
+    // },
+    // {
+    //     path: RouteMap.stroopshort.route,
+    //     component: StroopTaskComponent,
+    //     canActivate: [StudyRouteGuard],
+    //     data: { trials: environment.production ? 60 : 5 },
+    // },
+    // { path: RouteMap.trailmaking.route, component: TrailMakingComponent, canActivate: [StudyRouteGuard] },
+    // { path: RouteMap.rating.route, component: RatingComponent, canActivate: [StudyRouteGuard] },
+    // { path: RouteMap.choice.route, component: ChoiceComponent, canActivate: [StudyRouteGuard] },
+    // { path: RouteMap.postchoice.route, component: PostChoiceComponent, canActivate: [StudyRouteGuard] },
+    // { path: RouteMap.ratingnew.route, component: RatingNewComponent, canActivate: [StudyRouteGuard] },
+    // {
+    //     path: RouteMap.surveymonkeyquestionnaire.route,
+    //     component: EmbeddedPageComponent,
+    //     canActivate: [StudyRouteGuard],
+    // },
     { path: "complete", component: FinalPageComponent },
-    { path: "**", redirectTo: "/login/onlineparticipant", pathMatch: "full" },
 ];
 
 @NgModule({

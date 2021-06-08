@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from "@angular/material/snack-bar";
-import { SnackbarData, SnackbarType } from "../models/InternalDTOs";
+import { SnackbarData } from "../models/InternalDTOs";
+import { SnackbarType } from "../models/enums";
 
 @Injectable({
     providedIn: "root",

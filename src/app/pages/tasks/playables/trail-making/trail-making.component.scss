@@ -1,0 +1,51 @@
+@import "../../../../sass/mixins";
+
+button.fab {
+    background-color: whitesmoke;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @include for-small-device-only {
+        width: 30px;
+        height: 30px;
+        font-size: 15px;
+    }
+
+    @include for-small-desktop-only {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    @include for-desktop-up {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    @include for-large-desktop-up {
+        width: 60px;
+        height: 60px;
+        font-size: 25px;
+    }
+}
+
+td {
+    @include for-small-device-only {
+        padding: 10px;
+    }
+
+    @include for-small-desktop-only {
+        padding: 20px;
+    }
+
+    @include for-desktop-up {
+        padding: 25px;
+    }
+
+    @include for-large-desktop-up {
+        padding: 30px;
+    }
+}

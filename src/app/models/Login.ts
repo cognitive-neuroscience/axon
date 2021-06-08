@@ -1,18 +1,11 @@
-import { Role } from "./InternalDTOs";
-
-export class LoginCredentials {
-    email: string;
-    password: string;
-    confirmPassword: string;
-    id: number;
-    role: string;
-}
+import { Role } from "./enums";
 
 export class User {
-    userID: string;
+    id: string;
     email: string;
+    password?: string;
     role: Role;
-    exp: number;
+    createdAt: string;
 }
 
 export class JWT {

@@ -53,7 +53,7 @@ button {
     }
 }
 
-// handles global breakpoints for experiment instructions. These instructions are in the format
+// handles global breakpoints for study instructions. These instructions are in the format
 // of .pngs. Pass in the png, create a div wrapper and set the class of the div wrapper to "instructions"
 .instructions {
     width: 100%;
@@ -74,11 +74,35 @@ button {
     }
 }
 
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
 .flex-column-center {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.flex-column-space-between {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flex-column-space-around {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
 }
 
 .flex-row-space-between {
@@ -95,18 +119,10 @@ button {
     justify-content: space-around;
 }
 
-.flex-column-space-between {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.flex-column-space-around {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
+.text-ellipses {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .wrapper {
@@ -241,17 +257,6 @@ td.mat-footer-cell {
     white-space: nowrap;
 }
 
-.mat-expansion-panel-header-title {
-    width: 20% !important;
-    align-items: center;
-    flex-grow: 0 !important;
-}
-
-.mat-expansion-panel-header-description {
-    align-items: center;
-    width: 40%;
-}
-
 .mat-expansion-panel {
     padding: 8px 0;
 }
@@ -289,6 +294,10 @@ td.mat-footer-cell {
     z-index: 101;
 }
 
+.mat-standard-chip {
+    min-height: 20px !important;
+}
+
 .center-snackbar {
     margin-bottom: 50vh !important;
 }
@@ -312,4 +321,13 @@ td.mat-footer-cell {
     font-size: 20px;
     width: 20%;
     white-space: normal;
+}
+
+// fix due to issue with drag and drop not working inside of mat dialog
+html.cdk-global-scrollblock {
+    position: initial !important;
+}
+
+html.cdk-global-scrollblock body {
+    position: fixed;
 }

@@ -1,6 +1,6 @@
 export abstract class QuestionnaireResponse {
     userID: string;
-    experimentCode: string;
+    studyCode: string;
 }
 
 export class DemographicsQuestionnaireResponse extends QuestionnaireResponse {

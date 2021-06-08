@@ -1,28 +1,29 @@
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Task } from './Task';
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { SnackbarType, TaskType } from "./enums";
+import { Task } from "./Task";
 export class JsonForm {
     img: string;
     title: string;
     summary: {
-        caption: string,
-        words: string[]
+        caption: string;
+        words: string[];
     }[];
     secondTitle: string;
     body: {
-        caption: string,
-        words: string[]
+        caption: string;
+        words: string[];
     }[];
     endMessage: string;
     buttons: {
         reject: {
-            show: boolean,
-            text: string
-        },
+            show: boolean;
+            text: string;
+        };
         accept: {
-            show: boolean,
-            text: string
-        }
-    }
+            show: boolean;
+            text: string;
+        };
+    };
 }
 
 export class JitteredInterval {
@@ -30,23 +31,11 @@ export class JitteredInterval {
     upperbound: number;
 }
 
-export enum SnackbarType {
-    SUCCESS = "SUCCESS",
-    ERROR = "ERROR",
-    INFO = "INFO"
-}
-
-export enum Role {
-    ADMIN = "ADMIN",
-    PARTICIPANT = "PARTICIPANT",
-    GUEST = "GUEST" // access to admin views but cannot make any calls to backend
-}
-
 export class ConfirmationDialogMessage {
-    message: string
+    message: string;
 
     constructor(msg: string) {
-        this.message = msg
+        this.message = msg;
     }
 }
 
@@ -68,11 +57,6 @@ export class EmbeddedPageData {
     taskType: TaskType;
 }
 
-export enum LoginMode {
-    LOGIN = "LOGIN",
-    REGISTER = "REGISTER",
-}
-
 // enum that represents valid keys for the user to input
 export enum Key {
     ARROWLEFT = "ArrowLeft",
@@ -84,25 +68,25 @@ export enum Key {
     NUMFIVE = "5",
     Q = "q",
     P = "p",
-    Z = 'z',
-    M = 'm'
+    Z = "z",
+    M = "m",
 }
 
 export enum Color {
     BLUE = "blue",
     ORANGE = "orange",
-    TRANSPARENT = "transparent"
-  }
+    TRANSPARENT = "transparent",
+}
 
-export class ExperimentRoutingMap {
-    [key: string]: Task
+export class StudiesRoutingMap {
+    [key: string]: Task;
 }
 
 export enum Feedback {
     CORRECT = "Correct",
     INCORRECT = "Incorrect",
     TOOSLOW = "Too slow",
-    NORESPONSE = "No response"
+    NORESPONSE = "No response",
 }
 
 // an enum representing the semantic answer given by the user that gets uploaded to the database
@@ -122,19 +106,11 @@ export enum UserResponse {
     RIGHT = "RIGHT",
     BOTH = "BOTH",
     SHORT = "SHORT",
-    LONG = "LONG"
-}
-
-
-export enum TaskType {
-    NAB = "NAB",
-    Experimental = "Experimental",
-    Questionnaire = "Questionnaire",
-    CustomTask = "CustomTask"
+    LONG = "LONG",
 }
 
 // special strings that are important to the backend
 export enum BEStrings {
     EXPERIMENTUSERS = "experiment_users",
-    FEEDBACKQUESTIONNAIRE = "feedback_questionnaire_responses"
+    FEEDBACKQUESTIONNAIRE = "feedback_questionnaire_responses",
 }

@@ -3,7 +3,7 @@ import { Subject } from "rxjs";
 import { thisOrDefault } from "src/app/common/commonMethods";
 import { ComponentName } from "src/app/services/component-factory.service";
 import { Navigation } from "../navigation-buttons/navigation-buttons.component";
-import { Playable } from "../../Playable";
+import { Playable } from "../../playables/playable";
 
 export interface DisplaySection {
     sectionType: "text" | "image-horizontal" | "image-square";

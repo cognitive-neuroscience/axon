@@ -1,7 +1,5 @@
 // generates a list of length <size> of non repeating random numbers
 
-import { RouteMap } from "../routing/routes";
-
 // random numbers generated are lowerbound inclusive and upperbound exclusive: [lowerbound, upperbound)
 export function generateRandomNonrepeatingNumberList(size: number, lowerBound: number, upperBound: number): number[] {
     if (size > upperBound - lowerBound) throw new Error("Size cannot be greater than the bounds");
@@ -82,21 +80,23 @@ export function wait(time: number): Promise<void> {
 }
 
 export function isSurveyMonkeyQuestionnaire(task: string): boolean {
-    return task.includes(RouteMap.surveymonkeyquestionnaire.id);
+    return false;
+    // return task.includes(RouteMap.surveymonkeyquestionnaire.id);
 }
 
 export function isCustomTask(task: string): boolean {
-    return task.includes(RouteMap.pavloviatask.id);
+    return false;
+    // return task.includes(RouteMap.pavloviatask.id);
 }
 
 export const ConsentIds = [
-    RouteMap.consent.id,
-    RouteMap.webPhenoClinical.id,
-    RouteMap.webPhenoClinicalFR.id,
-    RouteMap.stressClinical.id,
-    RouteMap.stressClinicalFR.id,
-    RouteMap.stressClinicalDebrief.id,
-    RouteMap.stressPilot.id,
+    // RouteMap.consent.id,
+    // RouteMap.webPhenoClinical.id,
+    // RouteMap.webPhenoClinicalFR.id,
+    // RouteMap.stressClinical.id,
+    // RouteMap.stressClinicalFR.id,
+    // RouteMap.stressClinicalDebrief.id,
+    // RouteMap.stressPilot.id,
 ];
 // remove later, this is a bandaid fix
 export function isConsent(id: string): boolean {

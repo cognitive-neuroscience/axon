@@ -1,4 +1,3 @@
-import { RouteMap } from "../routing/routes";
 import { BEStrings, Key, UserResponse } from "./InternalDTOs";
 
 export enum TaskNames {
@@ -28,7 +27,7 @@ export abstract class TaskData {
     submitted: string; // ISO date string
     isPractice: boolean;
     isCorrect: boolean;
-    experimentCode: string;
+    studyCode: string;
 }
 
 export interface Stimuli {
@@ -160,14 +159,14 @@ export class SmileyFace extends TaskData {
 
 export function mapTaskIdToTitle(task: string) {
     switch (task) {
-        case RouteMap.demographicsquestionnaire.id:
+        case "demographicsquestionnaire":
             return "Demographics Questionnaire";
         case BEStrings.FEEDBACKQUESTIONNAIRE:
             return "Feedback Questionnaire";
         case BEStrings.EXPERIMENTUSERS:
             return "Registered Participants";
         default:
-            return RouteMap[task]?.title;
+            return "";
     }
 }
 

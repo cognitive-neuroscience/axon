@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { ConfirmationComponent } from './confirmation/confirmation.component';
-import { ConfirmationDialogMessage } from '../models/InternalDTOs';
-import { tap, map } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { Observable } from "rxjs";
+import { ConfirmationComponent } from "./confirmation/confirmation.component";
+import { ConfirmationDialogMessage } from "../models/InternalDTOs";
+import { map } from "rxjs/operators";
 @Injectable({
-    providedIn: "root"
+    providedIn: "root",
 })
 export class ConfirmationService {
     constructor(private dialog: MatDialog) {}
@@ -13,11 +13,9 @@ export class ConfirmationService {
     openConfirmationDialog(message: string): Observable<boolean> {
         const confirmationDialog = this.dialog.open(ConfirmationComponent, {
             width: "30%",
-            data: new ConfirmationDialogMessage(message)
-        })
-        
-        return confirmationDialog.afterClosed().pipe(
-            map(ok => !!ok)
-        )
+            data: new ConfirmationDialogMessage(message),
+        });
+
+        return confirmationDialog.afterClosed().pipe(map((ok) => !!ok));
     }
 }

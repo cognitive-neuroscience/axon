@@ -6,39 +6,39 @@ import { environment } from "src/environments/environment";
 import { CustomTask } from "../models/TaskData";
 
 @Injectable({
-    providedIn: "root"
+    providedIn: "root",
 })
 export class CustomTaskService {
-    private readonly RESOURCE_PATH = "/task/"
+    private readonly RESOURCE_PATH = "/task/";
 
-    private _customTaskExperimentSubject: BehaviorSubject<CustomTask[]>;
+    private _customTasksSubject: BehaviorSubject<CustomTask[]>;
     public customTasks: Observable<CustomTask[]>;
 
     constructor(private http: HttpClient) {
-        this._customTaskExperimentSubject = new BehaviorSubject(null);
-        this.customTasks = this._customTaskExperimentSubject.asObservable();
+        this._customTasksSubject = new BehaviorSubject(null);
+        this.customTasks = this._customTasksSubject.asObservable();
     }
 
     update(): void {
-        this._getQuestionnaires().subscribe(questionnaires => {
-            this._customTaskExperimentSubject.next(questionnaires);
-        })
+        this._getQuestionnaires().subscribe((questionnaires) => {
+            this._customTasksSubject.next(questionnaires);
+        });
     }
 
     createQuestionnaire(questionnaire: CustomTask): Observable<boolean> {
-        return this.http.post(`${environment.apiBaseURL}${this.RESOURCE_PATH}`, questionnaire, {observe: "response"}).pipe(
-            map(x => x.ok)
-        )
+        return this.http
+            .post(`${environment.apiBaseURL}${this.RESOURCE_PATH}`, questionnaire, { observe: "response" })
+            .pipe(map((x) => x.ok));
     }
 
     deleteQuestionnaireByID(id: string): Observable<boolean> {
-        return this.http.delete(`${environment.apiBaseURL}${this.RESOURCE_PATH}${id}`, { observe: "response" }).pipe(
-            map(x => x.ok)
-        )
+        return this.http
+            .delete(`${environment.apiBaseURL}${this.RESOURCE_PATH}${id}`, { observe: "response" })
+            .pipe(map((x) => x.ok));
     }
 
     private _getQuestionnaires(): Observable<CustomTask[]> {
-        return this.http.get<CustomTask[]>(`${environment.apiBaseURL}${this.RESOURCE_PATH}`)
+        return this.http.get<CustomTask[]>(`${environment.apiBaseURL}${this.RESOURCE_PATH}`);
     }
 
     getCustomTaskByID(id: string): Observable<CustomTask> {

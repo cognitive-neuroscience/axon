@@ -1,8 +1,8 @@
 import { ComponentFactoryResolver, ComponentRef, Injectable, Injector } from "@angular/core";
 import { DisplayComponent } from "../pages/tasks/shared/display/display.component";
-import { Playable } from "../pages/tasks/Playable";
-import { RaterComponent } from "../pages/tasks/rating-new/rater/rater.component";
-import { ChoicerComponent } from "../pages/tasks/rating-new/choicer/choicer.component";
+import { Playable } from "../pages/tasks/playables/playable";
+import { RaterComponent } from "../pages/tasks/playables/rating-new/rater/rater.component";
+import { ChoicerComponent } from "../pages/tasks/playables/rating-new/choicer/choicer.component";
 
 export enum ComponentName {
     DISPLAY_COMPONENT = "DISPLAYCOMPONENT",

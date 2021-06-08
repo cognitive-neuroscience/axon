@@ -1,0 +1,102 @@
+.overflow-scroll {
+    max-height: 80vh;
+    overflow-y: scroll;
+}
+
+.cdk-drag-preview {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+        0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.droplist {
+    cursor: move;
+    min-height: 62px;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+.droplist-item-title {
+    font-size: 20px;
+    margin-right: 6px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.droplist-item-number {
+    font-size: 24px;
+}
+
+.dropbox-text-container {
+    display: flex;
+    width: 80%;
+    justify-content: space-around;
+    flex-direction: column;
+    height: 100%;
+}
+
+.droplist-title-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.droplist-item-cancel {
+    color: red;
+    font-size: 35px;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+}
+
+.dropbox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+    padding: 10px 10px;
+    color: white;
+    border-bottom: 1px solid lightgray;
+    background: #3f51b5;
+
+    &:first-child {
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+    }
+
+    &:last-child {
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        border-bottom: none;
+    }
+}
+
+.select-task {
+    width: 30%;
+
+    &.pad {
+        margin: 0 5%;
+    }
+}
+
+// Programmatically set
+.Questionnaire {
+    background-color: #b157a6;
+}
+
+.CustomTask {
+    background-color: #3e1e52;
+}
+
+.badge {
+    padding: 5px 8px;
+    border-radius: 10px;
+    background-color: white;
+    color: black;
+    font-size: 12px;
+    margin: 0 6px;
+}

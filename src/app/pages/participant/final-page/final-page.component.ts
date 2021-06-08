@@ -26,10 +26,10 @@ export class FinalPageComponent implements OnInit {
     completionCode: string = "";
 
     ngOnInit(): void {
-        const experimentCode = this._taskManager.getExperimentCode();
+        const studyCode = this._taskManager.getStudyCode();
         const userID = this._authService.getDecodedToken().UserID;
 
-        this.getCompletionCode(userID, experimentCode);
+        this.getCompletionCode(userID, studyCode);
     }
 
     getCompletionCode(userId: string, expCode: string) {
@@ -50,7 +50,7 @@ export class FinalPageComponent implements OnInit {
     handleErr() {
         this._sessionStorage.clearSessionStorage();
         this._snackbar.openErrorSnackbar("Tasks not complete");
-        this._router.navigate(["/login/onlineparticipant"]);
+        this._router.navigate(["crowdsource-participant"]);
     }
 
     showCopiedMessage() {

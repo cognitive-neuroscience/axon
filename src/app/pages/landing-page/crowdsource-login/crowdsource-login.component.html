@@ -1,0 +1,52 @@
+<div class="d-flex flex-row justify-content-center align-items-center h-100 w-100">
+    <div class="left-login-screen">
+        <div class="text-center">
+            <img src="/assets/logo/lablogo.png" alt="Sharplab Logo" />
+            <div class="w-75 mx-auto">
+                <h2 class="welcome-header">Welcome to the Sharplab</h2>
+            </div>
+        </div>
+    </div>
+    <div class="right-login-screen">
+        <div class="w-75">
+            <form #f="ngForm">
+                <mat-form-field class="w-100">
+                    <mat-label>Enter your ID</mat-label>
+                    <!-- capitalize all input -->
+                    <!-- workerId is tied to the string input, workerid is tied to the model -->
+                    <input
+                        (ngModelChange)="workerId = $event.toUpperCase()"
+                        matInput
+                        [ngModel]="workerId"
+                        #workerid="ngModel"
+                        name="workerid"
+                        type="text"
+                        placeholder="ABCDEFG12345"
+                        required
+                    />
+                    <mat-error *ngIf="workerid.invalid">This is required</mat-error>
+                </mat-form-field>
+                <mat-form-field class="w-100" *ngIf="!urlContainsCode">
+                    <mat-label>Enter the study code</mat-label>
+                    <input matInput type="text" [(ngModel)]="studyCode" #code="ngModel" name="studyCode" required />
+                    <mat-error *ngIf="code.invalid">This is required</mat-error>
+                </mat-form-field>
+                <br />
+                <button
+                    (click)="onRegister()"
+                    *ngIf="f.valid"
+                    class="btn btn-primary"
+                    style="font-size: 1.5rem; position: absolute"
+                >
+                    continue
+                </button>
+            </form>
+        </div>
+        <div class="bottom-note">
+            <span style="color: red"
+                >Please <b>do not refresh the page or press the back button</b> at any point as this will cancel the
+                study and you will not be allowed to re-register.</span
+            >
+        </div>
+    </div>
+</div>
