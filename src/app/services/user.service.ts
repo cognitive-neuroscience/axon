@@ -61,7 +61,6 @@ export class UserService {
             password: password
         }
         if(role) obj['role'] = role;
-        console.log(obj);
         
         return this.http.post<HttpResponse<any>>(environment.apiBaseURL + '/users', obj, { observe: "response" });
     }
