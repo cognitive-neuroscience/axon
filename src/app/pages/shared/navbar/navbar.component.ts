@@ -43,7 +43,7 @@ export class NavbarComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.user = this.userService.user;
+        this.user = this.userService.userAsync;
         if (!this.userService.userHasValue) this.userService.updateUser();
     }
 

@@ -47,3 +47,8 @@ export enum Role {
     PARTICIPANT = "PARTICIPANT",
     GUEST = "GUEST", // access to admin views but cannot make any calls to backend
 }
+
+export enum StimuliProvidedType {
+    HARDCODED = "hardcoded",
+    GENERATED = "generated",
+}

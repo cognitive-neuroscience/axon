@@ -1,9 +1,12 @@
-import { TaskNames } from "src/app/models/TaskData";
 import { ComponentName } from "src/app/services/component-factory.service";
+import { RatingTaskCounterBalance } from "./rater/rater.component";
 
 export const EverydayChoiceLayoutMetadata = {
     config: {
-        counterbalanced: true,
+        counterBalanceGroups: {
+            1: RatingTaskCounterBalance.LOWTOHIGHENDORSEMENT,
+            2: RatingTaskCounterBalance.HIGHTOLOWENDORSEMENT,
+        },
     },
     metadata: [
         {

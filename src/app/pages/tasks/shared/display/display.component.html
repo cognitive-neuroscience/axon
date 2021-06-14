@@ -1,4 +1,9 @@
 <div class="display-container">
+    <div *ngIf="timerMode && showTimer">
+        <div class="timer-value">
+            <span>{{ timerDisplayValue }}</span>
+        </div>
+    </div>
     <div class="display-instructions overflow-scrollable">
         <div>
             <ng-container *ngIf="title">
@@ -11,7 +16,7 @@
         <div>
             <ng-container *ngFor="let section of displaySections">
                 <ng-container *ngIf="section.sectionType === 'text'">
-                    <div class="section" [innerHTML]="section.textContent"></div>
+                    <div class="section" [innerHTML]="injectString(section, section.textContent)"></div>
                 </ng-container>
                 <div
                     class="image-container"
@@ -23,6 +28,7 @@
         </div>
     </div>
     <app-navigation-buttons
+        *ngIf="showNavigationButtons"
         (onNext)="onButtonPress($event)"
         (onPrevious)="onButtonPress($event)"
         [isStart]="buttonConfig.isStart"

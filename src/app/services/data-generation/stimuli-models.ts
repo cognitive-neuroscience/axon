@@ -12,3 +12,13 @@ export interface ChoiceTaskStimuli {
     secondActivity: string;
     legend: string[];
 }
+
+export interface OddballStimuli {
+    stimulus: string;
+    blob: Blob;
+    isTarget: boolean;
+}
+
+export class ImageBlob {
+    [imgName: string]: Blob;
+}

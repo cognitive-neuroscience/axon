@@ -1,6 +1,9 @@
 {
     "config": {
-        "counterbalanced": true
+        "counterBalanceGroups": {
+            "1": "LOWTOHIGH",
+            "2": "HIGHTOLOW"
+        }
     },
     "metadata": [
         {

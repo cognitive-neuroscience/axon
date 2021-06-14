@@ -1,6 +1,7 @@
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { SnackbarType, TaskType } from "./enums";
 import { Task } from "./Task";
+
 export class JsonForm {
     img: string;
     title: string;
@@ -24,11 +25,6 @@ export class JsonForm {
             text: string;
         };
     };
-}
-
-export class JitteredInterval {
-    lowerbound: number;
-    upperbound: number;
 }
 
 export class ConfirmationDialogMessage {

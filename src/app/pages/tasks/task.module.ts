@@ -29,7 +29,9 @@ import { ColorGameComponent } from "./playables/color-game/color-game.component"
 import { EmbeddedPageComponent } from "./questionnaires/embedded-page/embedded-page.component";
 import { DemographicsQuestionnaireComponent } from "./questionnaires/demographics-questionnaire/demographics-questionnaire.component";
 import { SafePipe } from "src/app/pipes/safe.pipe";
+import { ReplacePipe } from "src/app/pipes/replace.pipe";
 import { PreviewQuestionnaireDialogComponent } from "../admin/admin-dashboard/study-components/manage-questionnaires/preview-questionnaire-dialog/preview-questionnaire-dialog.component";
+import { TempPlayerComponent } from "./playables/temp-player/temp-player.component";
 
 @NgModule({
     declarations: [
@@ -64,6 +66,8 @@ import { PreviewQuestionnaireDialogComponent } from "../admin/admin-dashboard/st
         RotateDirective,
 
         SafePipe,
+        ReplacePipe,
+        TempPlayerComponent,
     ],
     imports: [CommonModule, MaterialModule, NgZorroModule, FormsModule, ReactiveFormsModule],
     exports: [EmbeddedPageComponent],

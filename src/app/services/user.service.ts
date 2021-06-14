@@ -22,11 +22,14 @@ export class UserService {
     }
 
     private _userBehaviorSubject: BehaviorSubject<User>;
-    get user(): Observable<User> {
+    get userAsync(): Observable<User> {
         return this._userBehaviorSubject.asObservable();
     }
     get userHasValue(): boolean {
         return this._userBehaviorSubject.value !== null;
+    }
+    get user(): User {
+        return this._userBehaviorSubject.value;
     }
 
     get userIsAdmin(): Observable<boolean> {

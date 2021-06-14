@@ -1,16 +1,22 @@
 import { Component, OnDestroy } from "@angular/core";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { TimerService } from "src/app/services/timer.service";
-import { wait } from "src/app/common/commonMethods";
+import { throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
 import { RatingTaskStimuli } from "src/app/services/data-generation/stimuli-models";
 import { AbstractBaseTaskComponent } from "../../base-task";
 import { TaskConfig } from "../../task-player/task-player.component";
-import { RatingTaskCounterBalance } from "src/app/services/data-generation/raw-data/rating-task-data-list";
 import { LoaderService } from "src/app/services/loader.service";
 import { NzMarks } from "ng-zorro-antd/slider";
 import { ComponentName } from "src/app/services/component-factory.service";
 import { EverydayChoiceTaskData } from "../rating-new.component";
+import { StimuliProvidedType } from "src/app/models/enums";
+
+export enum RatingTaskCounterBalance {
+    LOWTOHIGHENDORSEMENT = "LOWTOHIGH",
+    HIGHTOLOWENDORSEMENT = "HIGHTOLOW",
+    NA = "NA",
+}
 
 export interface RaterTaskMetadata {
     component: ComponentName;
@@ -25,10 +31,14 @@ export interface RaterTaskMetadata {
         interActivityDelay: number;
         numDoSomethingActivities: number;
         stimuliConfig: {
-            type: "hardcoded" | "generated";
+            type: StimuliProvidedType;
             stimuli: RatingTaskStimuli[];
         };
     };
+}
+
+export enum RaterCache {
+    NEW_ACTIVITIES = "rater-new-activities",
 }
 
 @Component({
@@ -87,26 +97,28 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
     }
 
     configure(metadata: RaterTaskMetadata, config: TaskConfig) {
-        this.userID = config.userID;
-        this.studyCode = config.studyCode;
-        this.config = config;
+        try {
+            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
+            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
+        } catch (error) {
+            throw new error("values not defined, cannot start study");
+        }
 
-        this.isPractice = metadata.config.isPractice;
-        this.maxResponseTime = metadata.config.maxResponseTime;
-        this.interTrialDelay = metadata.config.interTrialDelay;
-        this.interActivityDelay = metadata.config.interActivityDelay;
-        this.delayToShowHelpMessage = metadata.config.delayToShowHelpMessage;
-        this.durationHelpMessageShown = metadata.config.durationHelpMessageShown;
-        this.delayToShowRatingSlider = metadata.config.delayToShowRatingSlider;
-        this.durationOutOftimeMessageShown = metadata.config.durationOutOftimeMessageShown;
+        this.config = config;
+        this.isPractice = metadata.config.isPractice || false;
+        this.maxResponseTime = metadata.config.maxResponseTime || undefined;
+        this.interTrialDelay = metadata.config.interTrialDelay || 0;
+        this.interActivityDelay = metadata.config.interActivityDelay || 0;
+        this.delayToShowHelpMessage = metadata.config.delayToShowHelpMessage || undefined;
+        this.durationHelpMessageShown = metadata.config.durationHelpMessageShown || undefined;
+        this.delayToShowRatingSlider = metadata.config.delayToShowRatingSlider || 0;
+        this.durationOutOftimeMessageShown = metadata.config.durationOutOftimeMessageShown || undefined;
         this.numDoSomethingActivities = metadata.config.numDoSomethingActivities;
 
-        this.counterbalance =
-            config.counterbalanceRandomNumber < 50
-                ? RatingTaskCounterBalance.LOWTOHIGHENDORSEMENT
-                : RatingTaskCounterBalance.HIGHTOLOWENDORSEMENT;
+        this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as RatingTaskCounterBalance;
 
-        if (metadata.config.stimuliConfig.type === "hardcoded") this.stimuli = metadata.config.stimuliConfig.stimuli;
+        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.config.stimuliConfig.stimuli;
     }
 
     constructor(
@@ -123,7 +135,10 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         // either the stimuli has been defined in config or we generate it here
         if (!this.stimuli) {
             this.stimuli = this.dataGenService.generateRatingTaskData(this.numDoSomethingActivities);
-            this.config.data = this.stimuli.map((x) => x.activity); // we want to share the activities with the choice task
+            this.config.setCacheValue(
+                RaterCache.NEW_ACTIVITIES,
+                this.stimuli.map((x) => x.activity)
+            ); // we want to share the activities with the choice task
         }
         this.currentStimuliIndex = 0;
         this.currentQuestionIndex = 0;
@@ -162,23 +177,27 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         this.timerService.startTimer();
         this.showSlider = true;
 
-        this.setTimer(
-            "maxResponseTimer",
-            "Please do your best to provide your answer in the time allotted for the next trial",
-            this.maxResponseTime,
-            this.durationOutOftimeMessageShown,
-            () => {
-                this.showStimulus = false; // callback function called after timeout completes
-                this.handleRoundInteraction(null);
-            }
-        );
-
-        this.setTimer(
-            "helpMessageTimer",
-            "Please make the rating by adjusting the slider and clicking next",
-            this.delayToShowHelpMessage,
-            this.durationHelpMessageShown
-        );
+        // if these values are not set in the config, then we assume that they are not wanted
+        if (this.maxResponseTime !== undefined) {
+            this.setTimer(
+                "maxResponseTimer",
+                "Please do your best to provide your answer in the time allotted for the next trial",
+                this.maxResponseTime,
+                this.durationOutOftimeMessageShown,
+                () => {
+                    this.showStimulus = false; // callback function called after timeout completes
+                    this.handleRoundInteraction(null);
+                }
+            );
+        }
+        if (this.delayToShowHelpMessage !== undefined) {
+            this.setTimer(
+                "helpMessageTimer",
+                "Please make the rating by adjusting the slider and clicking next",
+                this.delayToShowHelpMessage,
+                this.durationHelpMessageShown
+            );
+        }
     }
 
     private setStimuliUI(stimulus: RatingTaskStimuli) {
@@ -207,9 +226,9 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
     async handleRoundInteraction(sliderValue: number) {
         const thisTrial = this.taskData[this.taskData.length - 1];
         if (sliderValue === null) {
-            await wait(this.durationOutOftimeMessageShown);
-            if (this.isDestroyed) return;
             // no input, ran out of time
+            await wait(this.durationOutOftimeMessageShown); // show help message for the correct amount of time. Otherwise this snackbar will be cleared
+            if (this.isDestroyed) return;
             thisTrial.responseTime = this.maxResponseTime;
             thisTrial.userAnswer = 50; // set anchor to default middle
             super.handleRoundInteraction(sliderValue);

@@ -106,3 +106,11 @@ export function isConsent(id: string): boolean {
 export function thisOrDefault(value: any, defaultValue: any): any {
     return value === null || value === undefined ? defaultValue : value;
 }
+
+export function throwErrIfNotDefined(value: any, errStr: string): any {
+    if (!value && value !== 0 && value !== "0") {
+        throw new Error(errStr);
+    } else {
+        return value;
+    }
+}

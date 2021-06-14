@@ -1,15 +1,16 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { NzMarks } from "ng-zorro-antd/slider";
-import { wait } from "src/app/common/commonMethods";
+import { throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
+import { StimuliProvidedType } from "src/app/models/enums";
 import { ComponentName } from "src/app/services/component-factory.service";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import { RatingTaskCounterBalance } from "src/app/services/data-generation/raw-data/rating-task-data-list";
 import { ChoiceTaskStimuli } from "src/app/services/data-generation/stimuli-models";
 import { LoaderService } from "src/app/services/loader.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { TimerService } from "src/app/services/timer.service";
 import { AbstractBaseTaskComponent } from "../../base-task";
 import { TaskConfig } from "../../task-player/task-player.component";
+import { RaterCache, RatingTaskCounterBalance } from "../rater/rater.component";
 import { EverydayChoiceTaskData } from "../rating-new.component";
 
 export interface ChoiceTaskMetadata {
@@ -23,7 +24,7 @@ export interface ChoiceTaskMetadata {
         delayToShowRatingSlider: number;
         durationOutOftimeMessageShown: number;
         stimuliConfig: {
-            type: "hardcoded" | "generated";
+            type: StimuliProvidedType;
             stimuli: ChoiceTaskStimuli[];
         };
     };
@@ -89,27 +90,32 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     }
 
     configure(metadata: ChoiceTaskMetadata, config: TaskConfig) {
-        this.userID = config.userID;
-        this.studyCode = config.studyCode;
-        this.ratingTaskActivities = config.data;
+        try {
+            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
+            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
+        } catch (error) {
+            throw new error("values not defined, cannot start study");
+        }
 
-        this.isPractice = metadata.config.isPractice;
-        this.maxResponseTime = metadata.config.maxResponseTime;
-        this.interTrialDelay = metadata.config.interTrialDelay;
-        this.delayToShowHelpMessage = metadata.config.delayToShowHelpMessage;
-        this.durationHelpMessageShown = metadata.config.durationHelpMessageShown;
-        this.delayToShowRatingSlider = metadata.config.delayToShowRatingSlider;
-        this.durationOutOftimeMessageShown = metadata.config.durationOutOftimeMessageShown;
+        this.ratingTaskActivities = config.getCacheValue(RaterCache.NEW_ACTIVITIES);
+        this.isPractice = metadata.config.isPractice || false;
+        this.interTrialDelay = metadata.config.interTrialDelay || 0;
+        this.maxResponseTime = metadata.config.maxResponseTime || undefined;
+        this.durationOutOftimeMessageShown = metadata.config.durationOutOftimeMessageShown || undefined;
+        this.delayToShowHelpMessage = metadata.config.delayToShowHelpMessage || undefined;
+        this.durationHelpMessageShown = metadata.config.durationHelpMessageShown || undefined;
+        this.delayToShowRatingSlider = metadata.config.delayToShowRatingSlider || 0;
 
-        if (metadata.config.stimuliConfig.type === "hardcoded") this.stimuli = metadata.config.stimuliConfig.stimuli;
+        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.config.stimuliConfig.stimuli;
     }
 
     start() {
         this.taskData = [];
         // either the stimuli has been defined in config or we generate it here
-        this.stimuli = !this.stimuli
-            ? this.dataGenService.generateChoiceTaskData(this.ratingTaskActivities)
-            : this.stimuli;
+        this.stimuli = this.stimuli
+            ? this.stimuli
+            : this.dataGenService.generateChoiceTaskData(this.ratingTaskActivities);
         this.currentStimuliIndex = 0;
         super.start();
     }
@@ -145,23 +151,29 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         this.timerService.startTimer();
         this.showSlider = true;
 
-        this.setTimer(
-            "maxResponseTimer",
-            "Please do your best to provide your answer in the time allotted for the next trial",
-            this.maxResponseTime,
-            this.durationOutOftimeMessageShown,
-            () => {
-                this.showStimulus = false; // callback function called after timeout completes
-                this.handleRoundInteraction(null);
-            }
-        );
-
-        this.setTimer(
-            "helpMessageTimer",
-            "Please make the rating by adjusting the slider and clicking next",
-            this.delayToShowHelpMessage,
-            this.durationHelpMessageShown
-        );
+        // if these values are not set in the config, then we assume that they are not wanted
+        if (this.maxResponseTime !== undefined) {
+            this.setTimer(
+                "maxResponseTimer",
+                "Please do your best to provide your answer in the time allotted for the next trial",
+                this.maxResponseTime,
+                this.durationOutOftimeMessageShown,
+                async () => {
+                    await wait(this.durationOutOftimeMessageShown);
+                    if (this.isDestroyed) return;
+                    this.showStimulus = false; // callback function called after timeout completes
+                    this.handleRoundInteraction(null);
+                }
+            );
+        }
+        if (this.delayToShowHelpMessage !== undefined) {
+            this.setTimer(
+                "helpMessageTimer",
+                "Please make the rating by adjusting the slider and clicking next",
+                this.delayToShowHelpMessage,
+                this.durationHelpMessageShown
+            );
+        }
     }
 
     private setStimuliUI(stimulus: ChoiceTaskStimuli) {
@@ -188,8 +200,6 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     async handleRoundInteraction(sliderValue: number) {
         const thisTrial = this.taskData[this.taskData.length - 1];
         if (sliderValue === null) {
-            await wait(this.durationOutOftimeMessageShown);
-            if (this.isDestroyed) return;
             // no input, ran out of time
             thisTrial.responseTime = this.maxResponseTime;
             thisTrial.userAnswer = 50; // set anchor to default middle

@@ -3,7 +3,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { LoginComponent } from "../pages/landing-page/login/login.component";
 import { ColorGameComponent } from "../pages/tasks/playables/color-game/color-game.component";
 import { ShapeGameComponent } from "../pages/tasks/playables/shape-game/shape-game.component";
-import { OddballComponent } from "../pages/tasks/playables/oddball/oddball.component";
+// import { OddballComponent } from "../pages/tasks/playables/oddball/oddball.component";
 import { DigitSpanComponent } from "../pages/tasks/playables/digit-span/digit-span.component";
 import { TaskSwitchingComponent } from "../pages/tasks/playables/task-switching/task-switching.component";
 import { DemandSelectionComponent } from "../pages/tasks/playables/demand-selection/demand-selection.component";
@@ -26,6 +26,7 @@ import { LandingPageComponent } from "../pages/landing-page/landing-page.compone
 import { RegisterComponent } from "../pages/landing-page/register/register.component";
 import { ParticipantRouteNames, RouteNames } from "../models/enums";
 import { CrowdSourceLoginComponent } from "../pages/landing-page/crowdsource-login/crowdsource-login.component";
+import { TempPlayerComponent } from "../pages/tasks/playables/temp-player/temp-player.component";
 
 const routes: Routes = [
     {
@@ -49,7 +50,7 @@ const routes: Routes = [
     // { path: RouteMap.consent.route, component: ConsentComponent, canActivate: [StudyRouteGuard] },
     // { path: RouteMap.colorgame.route, component: ColorGameComponent },
     // { path: RouteMap.shapegame.route, component: ShapeGameComponent },
-    // { path: RouteMap.oddball.route, component: OddballComponent, canActivate: [StudyRouteGuard] },
+    { path: "tempplayer", component: TempPlayerComponent },
     // { path: RouteMap.digitspan.route, component: DigitSpanComponent, canActivate: [StudyRouteGuard] },
     // { path: RouteMap.taskswitching.route, component: TaskSwitchingComponent, canActivate: [StudyRouteGuard] },
     // { path: RouteMap.demandselection.route, component: DemandSelectionComponent, canActivate: [StudyRouteGuard] },

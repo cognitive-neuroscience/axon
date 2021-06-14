@@ -1,8 +1,8 @@
 import { Component } from "@angular/core";
 import { TaskData } from "src/app/models/TaskData";
-import { RatingTaskCounterBalance } from "src/app/services/data-generation/raw-data/rating-task-data-list";
 import { TaskPlayerComponent } from "../task-player/task-player.component";
 import { EverydayChoiceLayoutMetadata } from "./everyday-choice-task-layout.metadata";
+import { RatingTaskCounterBalance } from "./rater/rater.component";
 
 export class EverydayChoiceTaskData extends TaskData {
     taskName: string;

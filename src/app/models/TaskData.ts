@@ -135,9 +135,9 @@ export class PostChoiceTask extends TaskData {
     responseTime: number;
 }
 
-export class Oddball extends TaskData {
+export class OddballTaskData extends TaskData {
     stimulus: string;
-    targetResponse: string;
+    targetResponse: Key;
     responseTime: number;
     actualAnswer: Key;
     userAnswer: string;
