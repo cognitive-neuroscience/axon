@@ -10,7 +10,6 @@ import { DemandSelectionComponent } from "../pages/tasks/playables/demand-select
 import { SmileyFaceComponent } from "../pages/tasks/playables/smiley-face/smiley-face.component";
 import { FingerTappingTaskComponent } from "../pages/tasks/playables/finger-tapping/finger-tapping-task.component";
 import { NBackComponent } from "../pages/tasks/playables/n-back/n-back.component";
-import { StroopTaskComponent } from "../pages/tasks/playables/stroop/stroop-task.component";
 import { TrailMakingComponent } from "../pages/tasks/playables/trail-making/trail-making.component";
 import { RatingComponent } from "../pages/tasks/playables/rating/rating.component";
 import { ChoiceComponent } from "../pages/tasks/playables/choice/choice.component";

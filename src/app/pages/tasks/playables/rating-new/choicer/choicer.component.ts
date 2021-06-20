@@ -115,7 +115,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         // either the stimuli has been defined in config or we generate it here
         this.stimuli = this.stimuli
             ? this.stimuli
-            : this.dataGenService.generateChoiceTaskData(this.ratingTaskActivities);
+            : this.dataGenService.generateChoiceStimuli(this.ratingTaskActivities);
         this.currentStimuliIndex = 0;
         super.start();
     }
@@ -159,9 +159,9 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
                 this.maxResponseTime,
                 this.durationOutOftimeMessageShown,
                 async () => {
+                    this.showStimulus = false; // callback function called after timeout completes
                     await wait(this.durationOutOftimeMessageShown);
                     if (this.isDestroyed) return;
-                    this.showStimulus = false; // callback function called after timeout completes
                     this.handleRoundInteraction(null);
                 }
             );
@@ -197,7 +197,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
      * Only when we receive null as an arg (meaning that the timeout has completed)
      * that we move on. Otherwise, we just keep replacing the trial with updated data
      */
-    async handleRoundInteraction(sliderValue: number) {
+    handleRoundInteraction(sliderValue: number) {
         const thisTrial = this.taskData[this.taskData.length - 1];
         if (sliderValue === null) {
             // no input, ran out of time

@@ -103,7 +103,7 @@ export function isConsent(id: string): boolean {
     return ConsentIds.includes(id);
 }
 
-export function thisOrDefault(value: any, defaultValue: any): any {
+export function thisOrDefault<T>(value: T, defaultValue: T): T {
     return value === null || value === undefined ? defaultValue : value;
 }
 

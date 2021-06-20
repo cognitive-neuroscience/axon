@@ -1,13 +1,19 @@
 <div class="w-100 h-100 flex-column-space-between" (click)="refocusIframe()">
-    <iframe #iframe *ngIf="embeddedSurveyLink" id="surveyFrame" class="w-100 h-100" [src]="embeddedSurveyLink | safe"></iframe>
-    <div *ngIf="!embeddedSurveyLink" class="w-100 h-100 flex-column-center" style="color: red;">
+    <iframe
+        #iframe
+        *ngIf="embeddedSurveyLink"
+        id="surveyFrame"
+        class="w-100 h-100"
+        [src]="embeddedSurveyLink | safe_resource"
+    ></iframe>
+    <div *ngIf="!embeddedSurveyLink" class="w-100 h-100 flex-column-center" style="color: red">
         <h1>Could not find survey</h1>
     </div>
 
-    <app-navigation-buttons 
-        class="w-100" 
-        previousDisabled="true" 
-        [nextDisabled]="adminPreviewing()" 
+    <app-navigation-buttons
+        class="w-100"
+        previousDisabled="true"
+        [nextDisabled]="adminPreviewing()"
         (onNext)="proceed()"
     ></app-navigation-buttons>
 </div>

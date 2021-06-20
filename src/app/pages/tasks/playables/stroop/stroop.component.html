@@ -1,308 +1,252 @@
 <!-- redo all this CSS to fit in media queries -->
 <div class="container-fluid wrapper task-text flex-column-center">
-
-    <!-- Show welcome message -->
-    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 1">
-
-        <!-- Introduction -->
-        <div class="uppercase instructions h-100 flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/strooptask/1.png" alt="Stroop task instructions">
+    <div class="full-box flex-column-center">
+        <div *ngIf="showStimulus">
+            <div [style.color]="color">
+                <div style="font-size: 65px; text-transform: uppercase">
+                    {{ text }}
+                </div>
+            </div>
         </div>
 
-        <!-- Navigation buttons -->
+        <div *ngIf="showFixation">
+            <i class="material-icons" style="font-size: 60px">add</i>
+        </div>
+
+        <div class="feedback" *ngIf="showFeedback" align="center">
+            <span>{{ feedback }}</span>
+            <br />
+            <span *ngIf="showScoreAfterEachTrial && scoreForSpecificTrial > 0"> +{{ scoreForSpecificTrial }} </span>
+        </div>
+    </div>
+    <!-- 
+    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 1">
+        <div class="uppercase instructions h-100 flex-column-center" align="center">
+            <img class="w-100" src="/assets/images/instructions/strooptask/1.png" alt="Stroop task instructions" />
+        </div>
+
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
+                        <mat-icon> arrow_backward </mat-icon>
+                        &nbsp; PREVIOUS
                     </button>
                 </div>
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
-                        NEXT
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
+                        NEXT &nbsp;
+                        <mat-icon> arrow_forward </mat-icon>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Show examples page -->
+
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 2">
 
-        <!-- Introduction -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/strooptask/2.png" alt="Stroop task instructions">
+            <img class="w-100" src="/assets/images/instructions/strooptask/2.png" alt="Stroop task instructions" />
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
+                        <mat-icon> arrow_backward </mat-icon>
+                        &nbsp; PREVIOUS
                     </button>
                 </div>
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoNextStep()">
-                        NEXT
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
+                        NEXT &nbsp;
+                        <mat-icon> arrow_forward </mat-icon>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Show practice round message -->
+
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 3">
 
-        <!-- Introduction -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/strooptask/3.png" alt="Stroop task instructions">
+            <img class="w-100" src="/assets/images/instructions/strooptask/3.png" alt="Stroop task instructions" />
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
+                        <mat-icon> arrow_backward </mat-icon>
+                        &nbsp; PREVIOUS
                     </button>
                 </div>
                 <div>
                     <button mat-raised-button color="primary" (click)="startPractice()">
-                        START
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
+                        START &nbsp;
+                        <mat-icon> arrow_forward </mat-icon>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Show loader -->
+
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 4">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Start Practice Round -->
-    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 5">
 
+    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 5">
         <div *ngIf="isStimulus">
             <div [style.color]="color">
-                <div style="font-size: 65px; text-transform: uppercase;">
-                    {{text}}
+                <div style="font-size: 65px; text-transform: uppercase">
+                    {{ text }}
                 </div>
             </div>
         </div>
 
         <div *ngIf="showFixation">
-            <i class="material-icons" style="font-size: 60px;">add</i>
+            <i class="material-icons" style="font-size: 60px">add</i>
         </div>
 
         <div *ngIf="!isStimulus">
             <div class="feedback">
-                {{feedback}}
+                {{ feedback }}
             </div>
         </div>
     </div>
 
-    <!-- Show loader -->
+
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 6">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Show practice round finished message -->
+
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 7">
 
-        <!-- Introduction -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/strooptask/4.png" alt="Stroop task instructions">
+            <img class="w-100" src="/assets/images/instructions/strooptask/4.png" alt="Stroop task instructions" />
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
+                        <mat-icon> arrow_backward </mat-icon>
+                        &nbsp; PREVIOUS
                     </button>
                 </div>
                 <div>
                     <button mat-raised-button color="primary" (click)="startActualGame()">
-                        START
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
+                        START &nbsp;
+                        <mat-icon> arrow_forward </mat-icon>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Show loader -->
+
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 8">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Start Actual Round -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 9">
-
         <div *ngIf="isStimulus">
             <div [style.color]="color">
-                <div style="font-size: 65px; text-transform: uppercase;">
-                    {{text}}
+                <div style="font-size: 65px; text-transform: uppercase">
+                    {{ text }}
                 </div>
             </div>
         </div>
 
         <div *ngIf="showFixation">
-            <i class="material-icons" style="font-size: 60px;">add</i>
+            <i class="material-icons" style="font-size: 60px">add</i>
         </div>
 
         <div *ngIf="!isStimulus" align="center">
             <div class="feedback" *ngIf="showFeedbackAfterEveryTrial && feedback === 'Too slow'">
-                <span>{{feedback}}</span>
-                <br>
-                <span *ngIf="showScoreAfterEveryTrial && (scoreForSpecificTrial > 0)">
-                    +{{scoreForSpecificTrial}}
+                <span>{{ feedback }}</span>
+                <br />
+                <span *ngIf="showScoreAfterEveryTrial && scoreForSpecificTrial > 0">
+                    +{{ scoreForSpecificTrial }}
                 </span>
             </div>
         </div>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 10">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Show practice round finished message -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 11">
-        <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>Game has finished</h2>
         </div>
 
-        <!-- Introduction -->
         <div class="w-100 p-4 uppercase" align="center">
-
             <div>
                 <h4>Congratulations ! You have finished the game successfully</h4>
             </div>
 
-            <div *ngIf="isScored">
-                You scored {{totalScore}} point(s)
-            </div>
+            <div *ngIf="isScored">You scored {{ totalScore }} point(s)</div>
 
-            <br>
+            <br />
 
-            <div>
-                Thank you for your participation
-            </div>
+            <div>Thank you for your participation</div>
 
-            <div>
-                Click 'CONTINUE'
-            </div>
-
+            <div>Click 'CONTINUE'</div>
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
+                        <mat-icon> arrow_backward </mat-icon>
+                        &nbsp; PREVIOUS
                     </button>
                 </div>
                 <div>
                     <button mat-raised-button color="primary" (click)="continueAhead()">
-                        CONTINUE
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
+                        CONTINUE &nbsp;
+                        <mat-icon> arrow_forward </mat-icon>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-
-    <!-- Show break message -->
     <div class="full-box flex-column-space-between" *ngIf="isBreak">
-        <!-- Heading -->
         <div class="w-100 p-4 uppercase" align="center">
             <h2>It's break time</h2>
         </div>
 
-        <!-- Introduction -->
         <div class="w-100 p-4 uppercase" align="center">
+            <div>Take a short break</div>
 
+            <br />
 
-            <div>
-                Take a short break
-            </div>
-
-            <br>
-
-            <div>
-                Click 'RESUME' when you are ready
-            </div>
-
+            <div>Click 'RESUME' when you are ready</div>
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
                     <button mat-raised-button color="primary" disabled>
-                        <mat-icon>
-                            arrow_backward
-                        </mat-icon>
-                        &nbsp;
-                        PREVIOUS
+                        <mat-icon> arrow_backward </mat-icon>
+                        &nbsp; PREVIOUS
                     </button>
                 </div>
                 <div>
                     <button mat-raised-button color="primary" (click)="resume()">
-                        RESUME
-                        &nbsp;
-                        <mat-icon>
-                            arrow_forward
-                        </mat-icon>
+                        RESUME &nbsp;
+                        <mat-icon> arrow_forward </mat-icon>
                     </button>
                 </div>
             </div>
         </div>
-    </div>
-
+    </div> -->
 </div>

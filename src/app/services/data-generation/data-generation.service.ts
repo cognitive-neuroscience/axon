@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { forkJoin, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import {
     deepClone,
@@ -17,7 +17,8 @@ import {
     OddballTargetStimulus,
 } from "./raw-data/oddball-image-list";
 import { RatingTaskActivities, RatingTaskQuestionList } from "./raw-data/rating-task-data-list";
-import { ChoiceTaskStimuli, ImageBlob, OddballStimuli, RatingTaskStimuli } from "./stimuli-models";
+import { ChoiceTaskStimuli, ImageBlob, OddballStimuli, RatingTaskStimuli, StroopStimuli } from "./stimuli-models";
+import { StroopSet } from "./raw-data/stroop-data-list";
 
 @Injectable({
     providedIn: "root",
@@ -25,7 +26,7 @@ import { ChoiceTaskStimuli, ImageBlob, OddballStimuli, RatingTaskStimuli } from 
 export class DataGenerationService {
     constructor(private http: HttpClient, private imageService: ImageService) {}
 
-    generateRatingTaskData(numDoSomethingActivities: number): RatingTaskStimuli[] {
+    generateRatingStimuli(numDoSomethingActivities: number): RatingTaskStimuli[] {
         const doSomethingActivities = selectNRandomElementsNoRepeats(
             RatingTaskActivities.DoSomething,
             numDoSomethingActivities
@@ -45,7 +46,7 @@ export class DataGenerationService {
         return ratingTaskData;
     }
 
-    generateChoiceTaskData(activities: string[]): ChoiceTaskStimuli[] {
+    generateChoiceStimuli(activities: string[]): ChoiceTaskStimuli[] {
         if (!activities.length || activities.length <= 2)
             throw new Error("At least two activities are needed to make a pair list");
         if (new Set<string>(activities).size !== activities.length) throw new Error("Cannot have duplicate activities");
@@ -162,4 +163,22 @@ export class DataGenerationService {
     }
 
     // end of oddball data generation
+
+    generateStroopStimuli(isPractice: boolean, numTrials: number, counterbalance: number): StroopStimuli[] {
+        const stroopSets = Object.keys(StroopSet);
+
+        // subtract 1 because one set is the practice set
+        if (counterbalance < 1 || counterbalance > stroopSets.length - 1)
+            throw new Error("No such stroop group exists");
+        if (isPractice) {
+            if (numTrials > StroopSet.practice.length)
+                throw new Error("number of trials greater than number of practice trials");
+            return StroopSet.practice.slice(0, numTrials);
+        } else {
+            const selectedSet = StroopSet[counterbalance] as StroopStimuli[];
+            if (numTrials > selectedSet.length)
+                throw new Error("number of trials greater than number of stroop trials");
+            return selectedSet.slice(0, numTrials);
+        }
+    }
 }

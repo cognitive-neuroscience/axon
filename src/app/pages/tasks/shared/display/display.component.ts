@@ -10,8 +10,8 @@ export interface DisplaySection {
     sectionType: "text" | "image-horizontal" | "image-square";
     imagePath?: string;
     textContent?: string;
-    injectCounterbalance?: boolean; // if this flag is set to true, replace ??? with counter balance value
-    injectCounterbalanceAlternative?: boolean; // if this flag is set to true, replace ??? with the value that was not set to be the target stimulus
+    injection: "counterbalance" | "counterbalance-alternative" | "cached-string";
+    cacheKeyForInjection: string;
 }
 
 export interface ButtonConfig {
@@ -50,6 +50,7 @@ export class DisplayComponent implements OnDestroy, Playable {
     private timerDurationShow: number;
 
     // config variables
+    config: TaskConfig;
     counterbalanceStr: string;
     counterbalanceAltStr: string;
 
@@ -82,32 +83,42 @@ export class DisplayComponent implements OnDestroy, Playable {
     }
 
     injectString(section: DisplaySection, text: string): string {
-        if (section.injectCounterbalance && this.counterbalanceStr) {
-            return text.replace("???", this.counterbalanceStr);
-        } else if (section.injectCounterbalanceAlternative && this.counterbalanceAltStr) {
-            return text.replace("???", this.counterbalanceAltStr);
-        } else {
-            return text;
+        switch (section.injection) {
+            case "cached-string":
+                const cachedVar = thisOrDefault(this.config.getCacheValue(section.cacheKeyForInjection), "");
+                return text.replace("???", cachedVar);
+            case "counterbalance":
+                return text.replace("???", this.counterbalanceStr);
+            case "counterbalance-alternative":
+                return text.replace("???", this.counterbalanceAltStr);
+            default:
+                return text;
         }
     }
 
     configure(metadata: DisplayComponentMetadata, config: TaskConfig): void {
+        this.config = config;
+
         this.title = thisOrDefault(metadata.content.title, "");
         this.subtitle = thisOrDefault(metadata.content.subtitle, "");
         this.displaySections = thisOrDefault(metadata.content.sections, []);
-        this.timerMode = thisOrDefault(metadata.content.timerConfig, false);
+        this.timerMode = thisOrDefault(!!metadata.content.timerConfig, false);
         this.buttonConfig = thisOrDefault(metadata.content.buttons, {
             isStart: false,
             previousDisabled: true,
             nextDisabled: false,
         });
 
-        const counterBalanceGroups = config.counterBalanceGroups;
-        const groupKeys = Object.keys(counterBalanceGroups);
-        if (counterBalanceGroups && groupKeys.length > 0)
+        // search the display sections to see if counterbalance needs to be injected
+        if (!!metadata.content.sections.find((section) => section.injection === "counterbalance")) {
             this.counterbalanceStr = config.counterBalanceGroups[config.counterbalanceNumber];
-        // 3 - 1 == 2, and 3 - 2 == 1. This gives us the value that is not the counterbalance target value
-        this.counterbalanceAltStr = config.counterBalanceGroups[3 - config.counterbalanceNumber];
+        }
+
+        // search the display sections to see if counterbalance alt needs to be injected
+        if (!!metadata.content.sections.find((section) => section.injection === "counterbalance-alternative")) {
+            // 3 - 1 == 2, and 3 - 2 == 1. This gives us the value that is not the counterbalance target value
+            this.counterbalanceAltStr = config.counterBalanceGroups[3 - config.counterbalanceNumber];
+        }
 
         if (this.timerMode) {
             this.buttonConfig = {

@@ -34,21 +34,12 @@ export interface Stimuli {
     set: any[];
 }
 
-export class StroopTask extends TaskData {
+export class StroopTaskData extends TaskData {
     actualAnswer: UserResponse;
     userAnswer: UserResponse;
     isCongruent: boolean;
     responseTime: number;
     set: number;
-}
-
-export class StroopTaskStimuli implements Stimuli {
-    set: {
-        trial: number;
-        color: string;
-        congruent: number;
-        word: string;
-    }[];
 }
 
 export class NBack extends TaskData {

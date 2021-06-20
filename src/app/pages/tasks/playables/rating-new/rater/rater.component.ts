@@ -134,7 +134,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         this.taskData = [];
         // either the stimuli has been defined in config or we generate it here
         if (!this.stimuli) {
-            this.stimuli = this.dataGenService.generateRatingTaskData(this.numDoSomethingActivities);
+            this.stimuli = this.dataGenService.generateRatingStimuli(this.numDoSomethingActivities);
             this.config.setCacheValue(
                 RaterCache.NEW_ACTIVITIES,
                 this.stimuli.map((x) => x.activity)
@@ -184,8 +184,10 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
                 "Please do your best to provide your answer in the time allotted for the next trial",
                 this.maxResponseTime,
                 this.durationOutOftimeMessageShown,
-                () => {
+                async () => {
                     this.showStimulus = false; // callback function called after timeout completes
+                    await wait(this.durationOutOftimeMessageShown); // show help message for the correct amount of time. Otherwise this snackbar will be cleared
+                    if (this.isDestroyed) return;
                     this.handleRoundInteraction(null);
                 }
             );
@@ -223,12 +225,10 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
      * Only when we receive null as an arg (meaning that the timeout has completed)
      * that we move on. Otherwise, we just keep replacing the trial with updated data
      */
-    async handleRoundInteraction(sliderValue: number) {
+    handleRoundInteraction(sliderValue: number) {
         const thisTrial = this.taskData[this.taskData.length - 1];
         if (sliderValue === null) {
             // no input, ran out of time
-            await wait(this.durationOutOftimeMessageShown); // show help message for the correct amount of time. Otherwise this snackbar will be cleared
-            if (this.isDestroyed) return;
             thisTrial.responseTime = this.maxResponseTime;
             thisTrial.userAnswer = 50; // set anchor to default middle
             super.handleRoundInteraction(sliderValue);

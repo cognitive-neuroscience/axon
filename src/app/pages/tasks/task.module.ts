@@ -15,7 +15,7 @@ import { ShapeGameComponent } from "./playables/shape-game/shape-game.component"
 import { DisplayComponent } from "./shared/display/display.component";
 import { SliderComponent } from "./shared/slider/slider.component";
 import { SmileyFaceComponent } from "./playables/smiley-face/smiley-face.component";
-import { StroopTaskComponent } from "./playables/stroop/stroop-task.component";
+import { StroopComponent } from "./playables/stroop/stroop.component";
 import { TaskPlayerComponent } from "./playables/task-player/task-player.component";
 import { TaskSwitchingComponent } from "./playables/task-switching/task-switching.component";
 import { TrailMakingComponent } from "./playables/trail-making/trail-making.component";
@@ -28,8 +28,7 @@ import { RotateDirective } from "./playables/demand-selection/Rotate.directive";
 import { ColorGameComponent } from "./playables/color-game/color-game.component";
 import { EmbeddedPageComponent } from "./questionnaires/embedded-page/embedded-page.component";
 import { DemographicsQuestionnaireComponent } from "./questionnaires/demographics-questionnaire/demographics-questionnaire.component";
-import { SafePipe } from "src/app/pipes/safe.pipe";
-import { ReplacePipe } from "src/app/pipes/replace.pipe";
+import { SafeResoucePipe } from "src/app/pipes/safe.pipe";
 import { PreviewQuestionnaireDialogComponent } from "../admin/admin-dashboard/study-components/manage-questionnaires/preview-questionnaire-dialog/preview-questionnaire-dialog.component";
 import { TempPlayerComponent } from "./playables/temp-player/temp-player.component";
 
@@ -49,7 +48,7 @@ import { TempPlayerComponent } from "./playables/temp-player/temp-player.compone
         RatingNewComponent,
         ShapeGameComponent,
         SmileyFaceComponent,
-        StroopTaskComponent,
+        StroopComponent,
         TaskPlayerComponent,
         TaskSwitchingComponent,
         TrailMakingComponent,
@@ -65,8 +64,7 @@ import { TempPlayerComponent } from "./playables/temp-player/temp-player.compone
 
         RotateDirective,
 
-        SafePipe,
-        ReplacePipe,
+        SafeResoucePipe,
         TempPlayerComponent,
     ],
     imports: [CommonModule, MaterialModule, NgZorroModule, FormsModule, ReactiveFormsModule],

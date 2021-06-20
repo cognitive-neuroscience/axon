@@ -4,6 +4,7 @@ import { Playable } from "../pages/tasks/playables/playable";
 import { RaterComponent } from "../pages/tasks/playables/rating-new/rater/rater.component";
 import { ChoicerComponent } from "../pages/tasks/playables/rating-new/choicer/choicer.component";
 import { OddballComponent } from "../pages/tasks/playables/oddball/oddball.component";
+import { StroopComponent } from "../pages/tasks/playables/stroop/stroop.component";
 
 export enum ComponentName {
     DISPLAY_COMPONENT = "DISPLAYCOMPONENT",
@@ -13,6 +14,8 @@ export enum ComponentName {
     CHOICE_COMPONENT = "CHOICECOMPONENT",
 
     ODDBALL_COMPONENT = "ODDBALLCOMPONENT",
+
+    STROOP_COMPONENT = "STROOPCOMPONENT",
 }
 
 @Injectable({
@@ -35,6 +38,8 @@ export class ComponentFactoryService {
                 return this.buildComponent(ChoicerComponent);
             case ComponentName.ODDBALL_COMPONENT:
                 return this.buildComponent(OddballComponent);
+            case ComponentName.STROOP_COMPONENT:
+                return this.buildComponent(StroopComponent);
             default:
                 throw new Error("Component doesn't exist: " + componentMapping);
         }

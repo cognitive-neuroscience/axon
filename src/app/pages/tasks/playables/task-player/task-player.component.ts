@@ -89,15 +89,16 @@ export class TaskPlayerComponent implements OnDestroy {
     state = new TaskConfig("", "", {}, null); // this state will be shared with each step in the task
 
     handleTaskVariablesAndPlayTask(taskMetadataConfig: TaskMetadata) {
-        this.state.userID = this.userService.user?.id || "testid";
-        this.state.studyCode = this.taskManager.getStudyCode() || "testcode";
+        this.state.userID = this.userService.user?.id || "testid"; // UNDO: change later
+        this.state.studyCode = this.taskManager.getStudyCode() || "testcode"; // UNDO: change later
 
         const counterBalanceGroups = taskMetadataConfig.config.counterBalanceGroups;
-        const groupKeys = Object.keys(counterBalanceGroups);
-        if (counterBalanceGroups && groupKeys.length > 0) {
-            this.state.counterbalanceNumber = getRandomNumber(1, groupKeys.length + 1); // generate rand num from 1 - groupKeys
-
-            this.state.counterBalanceGroups = { ...counterBalanceGroups };
+        if (counterBalanceGroups) {
+            const groupKeys = Object.keys(counterBalanceGroups);
+            if (groupKeys.length > 0) {
+                this.state.counterbalanceNumber = getRandomNumber(1, groupKeys.length + 1); // generate rand num from 1 - groupKeys
+                this.state.counterBalanceGroups = { ...counterBalanceGroups };
+            }
         }
 
         this.steps = taskMetadataConfig.metadata;
@@ -150,6 +151,7 @@ export class TaskPlayerComponent implements OnDestroy {
         this.viewContainer.clear();
 
         if (onComplete.taskData) this.taskData = this.taskData.concat(onComplete.taskData);
+        if (onComplete.taskData) console.log(this.taskData);
 
         if (onComplete.navigation === Navigation.NEXT) {
             this.renderNextStep();

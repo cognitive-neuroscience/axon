@@ -1,15 +1,12 @@
 import { Component, HostListener } from "@angular/core";
 import { take } from "rxjs/operators";
-import { deepClone, getRandomNumber, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
+import { getRandomNumber, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
 import { StimuliProvidedType } from "src/app/models/enums";
 import { Feedback, Key, UserResponse } from "src/app/models/InternalDTOs";
 import { OddballTaskData } from "src/app/models/TaskData";
 import { ComponentName } from "src/app/services/component-factory.service";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import {
-    OddballNonTargetStimulus,
-    OddballTargetStimulus,
-} from "src/app/services/data-generation/raw-data/oddball-image-list";
+import { OddballTargetStimulus } from "src/app/services/data-generation/raw-data/oddball-image-list";
 import { OddballStimuli } from "src/app/services/data-generation/stimuli-models";
 import { LoaderService } from "src/app/services/loader.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
@@ -26,6 +23,7 @@ export interface OddballTaskMetadata {
         interTrialDelay: number;
         showFeedbackAfterEachTrial: boolean;
         durationOfFeedback: number;
+        durationStimulusPresented: number;
         durationFixationJitteredLowerBound: number;
         durationFixationJitteredUpperBound: number;
         numTrials: number;
@@ -70,6 +68,7 @@ export class OddballComponent extends AbstractBaseTaskComponent {
     private interTrialDelay: number; // In milliseconds
     private showFeedbackAfterEachTrial: boolean;
     private durationOfFeedback: number;
+    private durationStimulusPresented: number;
     private durationFixationJitteredLowerBound: number;
     private durationFixationJitteredUpperBound: number;
     private numTrials: number;
@@ -94,9 +93,7 @@ export class OddballComponent extends AbstractBaseTaskComponent {
     showStimulus: boolean = false;
     showFeedback: boolean = false;
     showFixation: boolean = false;
-    durationStimulusPresented: number = 450;
     trialNum: number = 0;
-    trialScore: number = 0;
     counterbalance: OddballTaskCounterbalance;
     responseAllowed: boolean = false;
 
@@ -138,6 +135,10 @@ export class OddballComponent extends AbstractBaseTaskComponent {
             this.numNovelStimuli = throwErrIfNotDefined(
                 metadata.config.numNovelStimuli,
                 "num novel stimuli not defined"
+            );
+            this.durationStimulusPresented = throwErrIfNotDefined(
+                metadata.config.durationStimulusPresented,
+                "duration stimulus presented not defined"
             );
         } catch (error) {
             throw new error("values not defined, cannot start study");

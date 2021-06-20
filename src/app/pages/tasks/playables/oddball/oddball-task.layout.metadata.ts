@@ -33,12 +33,12 @@ export const OddballLayoutMetadata = {
                     },
                     {
                         sectionType: "text",
-                        injectCounterbalance: true,
+                        injection: "counterbalance",
                         textContent: "Press <b>???</b> on the keyboard when you see the TRIANGLE.",
                     },
                     {
                         sectionType: "text",
-                        injectCounterbalanceAlternative: true,
+                        injection: "counterbalance-alternative",
                         textContent: "Press <b>???</b> on the keyboard for any other shape.",
                     },
                     {
@@ -69,12 +69,12 @@ export const OddballLayoutMetadata = {
                     },
                     {
                         sectionType: "text",
-                        injectCounterbalance: true,
+                        injection: "counterbalance",
                         textContent: "Press <b>???</b> on the keyboard when you see the TRIANGLE",
                     },
                     {
                         sectionType: "text",
-                        injectCounterbalanceAlternative: true,
+                        injection: "counterbalance-alternative",
                         textContent: "Press <b>???</b> on the keyboard for any other shape",
                     },
                     {
@@ -97,6 +97,7 @@ export const OddballLayoutMetadata = {
                 interTrialDelay: 200,
                 showFeedbackAfterEachTrial: true,
                 durationOfFeedback: 500,
+                durationStimulusPresented: 450,
                 durationFixationJitteredLowerBound: 1000,
                 durationFixationJitteredUpperBound: 2000,
                 numTrials: 10,
@@ -124,12 +125,12 @@ export const OddballLayoutMetadata = {
                     },
                     {
                         sectionType: "text",
-                        injectCounterbalance: true,
+                        injection: "counterbalance",
                         textContent: "Press <b>???</b> on the keyboard when you see the TRIANGLE",
                     },
                     {
                         sectionType: "text",
-                        injectCounterbalanceAlternative: true,
+                        injection: "counterbalance-alternative",
                         textContent: "Press <b>???</b> on the keyboard for any other shape",
                     },
                     {
@@ -152,6 +153,7 @@ export const OddballLayoutMetadata = {
                 interTrialDelay: 200,
                 showFeedbackAfterEachTrial: true,
                 durationOfFeedback: 500,
+                durationStimulusPresented: 450,
                 durationFixationJitteredLowerBound: 1000,
                 durationFixationJitteredUpperBound: 2000,
                 numTrials: 10,
@@ -179,12 +181,12 @@ export const OddballLayoutMetadata = {
                     },
                     {
                         sectionType: "text",
-                        injectCounterbalance: true,
+                        injection: "counterbalance",
                         textContent: "Press <b>???</b> on the keyboard when you see the TRIANGLE",
                     },
                     {
                         sectionType: "text",
-                        injectCounterbalanceAlternative: true,
+                        injection: "counterbalance-alternative",
                         textContent: "Press <b>???</b> on the keyboard for any other shape",
                     },
                     {
@@ -202,6 +204,7 @@ export const OddballLayoutMetadata = {
                 interTrialDelay: 200,
                 showFeedbackAfterEachTrial: false,
                 durationOfFeedback: 500,
+                durationStimulusPresented: 450,
                 durationFixationJitteredLowerBound: 1000,
                 durationFixationJitteredUpperBound: 2000,
                 numTrials: 60,
@@ -233,12 +236,12 @@ export const OddballLayoutMetadata = {
                     },
                     {
                         sectionType: "text",
-                        injectCounterbalance: true,
+                        injection: "counterbalance",
                         textContent: "Press ??? on the keyboard when you see a triangle",
                     },
                     {
                         sectionType: "text",
-                        injectCounterbalanceAlternative: true,
+                        injection: "counterbalance-alternative",
                         textContent: "Press ??? on the keyboard for any other shape",
                     },
                     {
@@ -257,6 +260,7 @@ export const OddballLayoutMetadata = {
                 interTrialDelay: 200,
                 showFeedbackAfterEachTrial: false,
                 durationOfFeedback: 500,
+                durationStimulusPresented: 450,
                 durationFixationJitteredLowerBound: 1000,
                 durationFixationJitteredUpperBound: 2000,
                 numTrials: 60,
@@ -288,12 +292,12 @@ export const OddballLayoutMetadata = {
                     },
                     {
                         sectionType: "text",
-                        injectCounterbalance: true,
+                        injection: "counterbalance",
                         textContent: "Press ??? on the keyboard when you see a triangle",
                     },
                     {
                         sectionType: "text",
-                        injectCounterbalanceAlternative: true,
+                        injection: "counterbalance-alternative",
                         textContent: "Press ??? on the keyboard for any other shape",
                     },
                     {
@@ -312,6 +316,7 @@ export const OddballLayoutMetadata = {
                 interTrialDelay: 200,
                 showFeedbackAfterEachTrial: false,
                 durationOfFeedback: 500,
+                durationStimulusPresented: 450,
                 durationFixationJitteredLowerBound: 1000,
                 durationFixationJitteredUpperBound: 2000,
                 numTrials: 60,
@@ -343,12 +348,12 @@ export const OddballLayoutMetadata = {
                     },
                     {
                         sectionType: "text",
-                        injectCounterbalance: true,
+                        injection: "counterbalance",
                         textContent: "Press ??? on the keyboard when you see a triangle",
                     },
                     {
                         sectionType: "text",
-                        injectCounterbalanceAlternative: true,
+                        injection: "counterbalance-alternative",
                         textContent: "Press ??? on the keyboard for any other shape",
                     },
                     {
@@ -367,6 +372,7 @@ export const OddballLayoutMetadata = {
                 interTrialDelay: 200,
                 showFeedbackAfterEachTrial: false,
                 durationOfFeedback: 500,
+                durationStimulusPresented: 450,
                 durationFixationJitteredLowerBound: 1000,
                 durationFixationJitteredUpperBound: 2000,
                 numTrials: 60,
