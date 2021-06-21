@@ -7,13 +7,13 @@ export interface RatingTaskStimuli {
     }[];
 }
 
-export interface ChoiceTaskStimuli {
+export interface ChoiceTaskStimulus {
     firstActivity: string;
     secondActivity: string;
     legend: string[];
 }
 
-export interface OddballStimuli {
+export interface OddballStimulus {
     stimulus: string;
     blob: Blob;
     isTarget: boolean;
@@ -23,7 +23,7 @@ export class ImageBlob {
     [imgName: string]: Blob;
 }
 
-export class StroopStimuli {
+export class StroopStimulus {
     trial: number;
     color: string;
     congruent: boolean;
@@ -31,9 +31,21 @@ export class StroopStimuli {
 }
 
 export class StroopStimuliSet {
-    practice: StroopStimuli[];
-    1: StroopStimuli[];
-    2: StroopStimuli[];
-    3: StroopStimuli[];
-    4: StroopStimuli[];
+    practice: StroopStimulus[];
+    1: StroopStimulus[];
+    2: StroopStimulus[];
+    3: StroopStimulus[];
+    4: StroopStimulus[];
+}
+
+export class SmileyFaceStimulus {
+    faceShown: SmileyFaceType;
+    isRewarded: boolean;
+    isRescheduledReward: boolean;
+}
+
+export enum SmileyFaceType {
+    SHORT = "SHORT",
+    LONG = "LONG",
+    NONE = "NONE",
 }

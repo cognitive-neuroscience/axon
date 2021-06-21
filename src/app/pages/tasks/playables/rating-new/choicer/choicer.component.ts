@@ -4,7 +4,7 @@ import { throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
 import { StimuliProvidedType } from "src/app/models/enums";
 import { ComponentName } from "src/app/services/component-factory.service";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import { ChoiceTaskStimuli } from "src/app/services/data-generation/stimuli-models";
+import { ChoiceTaskStimulus } from "src/app/services/data-generation/stimuli-models";
 import { LoaderService } from "src/app/services/loader.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { TimerService } from "src/app/services/timer.service";
@@ -25,7 +25,7 @@ export interface ChoiceTaskMetadata {
         durationOutOftimeMessageShown: number;
         stimuliConfig: {
             type: StimuliProvidedType;
-            stimuli: ChoiceTaskStimuli[];
+            stimuli: ChoiceTaskStimulus[];
         };
     };
 }
@@ -59,7 +59,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
 
     // high level variables
     taskData: EverydayChoiceTaskData[];
-    stimuli: ChoiceTaskStimuli[];
+    stimuli: ChoiceTaskStimulus[];
     currentStimuliIndex: number; // index of the stimuli we are on
 
     // local state variables
@@ -76,7 +76,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     maxResponseTimer: any;
     showHelpMessageTimer: any;
 
-    get currentStimulus(): ChoiceTaskStimuli {
+    get currentStimulus(): ChoiceTaskStimulus {
         return this.stimuli[this.currentStimuliIndex];
     }
 
@@ -176,7 +176,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         }
     }
 
-    private setStimuliUI(stimulus: ChoiceTaskStimuli) {
+    private setStimuliUI(stimulus: ChoiceTaskStimulus) {
         this.activityLeft = stimulus.firstActivity;
         this.activityRight = stimulus.secondActivity;
 

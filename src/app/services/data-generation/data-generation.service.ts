@@ -1,4 +1,3 @@
-import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -17,14 +16,22 @@ import {
     OddballTargetStimulus,
 } from "./raw-data/oddball-image-list";
 import { RatingTaskActivities, RatingTaskQuestionList } from "./raw-data/rating-task-data-list";
-import { ChoiceTaskStimuli, ImageBlob, OddballStimuli, RatingTaskStimuli, StroopStimuli } from "./stimuli-models";
+import {
+    ChoiceTaskStimulus,
+    ImageBlob,
+    OddballStimulus,
+    RatingTaskStimuli,
+    SmileyFaceStimulus,
+    SmileyFaceType,
+    StroopStimulus,
+} from "./stimuli-models";
 import { StroopSet } from "./raw-data/stroop-data-list";
 
 @Injectable({
     providedIn: "root",
 })
 export class DataGenerationService {
-    constructor(private http: HttpClient, private imageService: ImageService) {}
+    constructor(private imageService: ImageService) {}
 
     generateRatingStimuli(numDoSomethingActivities: number): RatingTaskStimuli[] {
         const doSomethingActivities = selectNRandomElementsNoRepeats(
@@ -46,13 +53,13 @@ export class DataGenerationService {
         return ratingTaskData;
     }
 
-    generateChoiceStimuli(activities: string[]): ChoiceTaskStimuli[] {
+    generateChoiceStimuli(activities: string[]): ChoiceTaskStimulus[] {
         if (!activities.length || activities.length <= 2)
             throw new Error("At least two activities are needed to make a pair list");
         if (new Set<string>(activities).size !== activities.length) throw new Error("Cannot have duplicate activities");
 
         const shuffledActivities = shuffle(activities);
-        const pairs: ChoiceTaskStimuli[] = [];
+        const pairs: ChoiceTaskStimulus[] = [];
 
         for (let i = 0; i < shuffledActivities.length; i++) {
             let firstActivity = shuffledActivities[i];
@@ -78,12 +85,12 @@ export class DataGenerationService {
         numNovelTrials: number,
         numTotalTrials: number,
         scenesToExclude?: string[]
-    ): Observable<OddballStimuli[]> {
+    ): Observable<OddballStimulus[]> {
         const imagePaths = OddballImageNames.map((name) => `${OddballStimulusPath}${name}`);
 
         return this.imageService.loadImagesAsBlobs(imagePaths).pipe(
             map((blobs) => {
-                const stimuli = new Array<OddballStimuli>(numTotalTrials);
+                const stimuli = new Array<OddballStimulus>(numTotalTrials);
                 const novelBlobs: ImageBlob = {};
                 const targetBlob: ImageBlob = {};
                 const nonTargetBlob: ImageBlob = {};
@@ -164,7 +171,7 @@ export class DataGenerationService {
 
     // end of oddball data generation
 
-    generateStroopStimuli(isPractice: boolean, numTrials: number, counterbalance: number): StroopStimuli[] {
+    generateStroopStimuli(isPractice: boolean, numTrials: number, counterbalance: number): StroopStimulus[] {
         const stroopSets = Object.keys(StroopSet);
 
         // subtract 1 because one set is the practice set
@@ -175,10 +182,52 @@ export class DataGenerationService {
                 throw new Error("number of trials greater than number of practice trials");
             return StroopSet.practice.slice(0, numTrials);
         } else {
-            const selectedSet = StroopSet[counterbalance] as StroopStimuli[];
+            const selectedSet = StroopSet[counterbalance] as StroopStimulus[];
             if (numTrials > selectedSet.length)
                 throw new Error("number of trials greater than number of stroop trials");
             return selectedSet.slice(0, numTrials);
         }
+    }
+
+    generateSmileyFaceStimuli(
+        numShortFace: number,
+        numShortFaceRewarded: number,
+        numLongFace: number,
+        numLongFaceRewarded: number
+    ): SmileyFaceStimulus[] {
+        if (numShortFaceRewarded > numShortFace || numLongFaceRewarded > numLongFace)
+            throw new Error("Num rewarded cannot be greater than the number of trials");
+
+        const trialSize = numShortFace + numLongFace;
+        // select the indices that short faces will be shown at. The rest will be long faces
+        const shortFaceIndices = generateRandomNonrepeatingNumberList(numShortFace, 0, trialSize);
+        // from those short faces, select a random subset
+        const shortFaceRewardedTrials = generateRandomNonrepeatingNumberList(numShortFaceRewarded, 0, numShortFace);
+        // out of the number of long faces, select a random subset that are rewarded
+        const numLongFaceRewardedTrials = generateRandomNonrepeatingNumberList(numLongFaceRewarded, 0, numLongFace);
+
+        let numLongFaces = 0;
+        let numShortFaces = 0;
+        const trials: SmileyFaceStimulus[] = [];
+
+        for (let i = 0; i < trialSize; i++) {
+            if (shortFaceIndices.includes(i)) {
+                trials.push({
+                    faceShown: SmileyFaceType.SHORT,
+                    isRewarded: !!shortFaceRewardedTrials.includes(numShortFaces),
+                    isRescheduledReward: false,
+                });
+                numShortFaces++;
+            } else {
+                trials.push({
+                    faceShown: SmileyFaceType.LONG,
+                    isRewarded: !!numLongFaceRewardedTrials.includes(numLongFaces),
+                    isRescheduledReward: false,
+                });
+                numLongFaces++;
+            }
+        }
+
+        return trials;
     }
 }

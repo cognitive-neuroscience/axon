@@ -1,336 +1,359 @@
-import { Component, OnInit, HostListener } from "@angular/core";
-import { Router } from "@angular/router";
-import { Observable } from "rxjs";
-import { map, take } from "rxjs/operators";
-import { idIsEven, wait } from "src/app/common/commonMethods";
+import { Component, HostListener } from "@angular/core";
+import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
 import { Feedback, Key, UserResponse } from "src/app/models/InternalDTOs";
-import { Role } from "src/app/models/enums";
-import { SmileyFace, TaskNames } from "src/app/models/TaskData";
-import { AuthService } from "src/app/services/auth.service";
+import { StimuliProvidedType } from "src/app/models/enums";
+import { SmileyFaceTaskData } from "src/app/models/TaskData";
 import { SnackbarService } from "src/app/services/snackbar.service";
-import { TaskManagerService } from "src/app/services/task-manager.service";
 import { TimerService } from "src/app/services/timer.service";
-import { UploadDataService } from "src/app/services/uploadData.service";
-import { environment } from "src/environments/environment";
-
+import { AbstractBaseTaskComponent } from "../base-task";
+import { TaskConfig } from "../task-player/task-player.component";
+import { SmileyFaceStimulus, SmileyFaceType } from "src/app/services/data-generation/stimuli-models";
+import { ComponentName } from "src/app/services/component-factory.service";
+import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
+import { LoaderService } from "src/app/services/loader.service";
 declare function setFullScreen(): any;
-import { SmileyFaceType, SmileyFaceBlock } from "./BlockGenerator";
+
+interface SmileyFaceMetadata {
+    component: ComponentName;
+    config: {
+        isPractice: boolean;
+        maxResponseTime: number;
+        interTrialDelay: number;
+        durationFeedbackPresented: number;
+        durationFixationPresented: number;
+        durationStimulusPresented: number;
+        durationNoFacePresented: number;
+        numShortFaces: number;
+        numLongFaces: number;
+        numFacesMoreRewarded: number;
+        numFacesLessRewarded: number;
+        stimuliConfig: {
+            type: StimuliProvidedType;
+            stimuli: SmileyFaceStimulus[];
+        };
+    };
+}
+
+export enum SmileyFaceTaskCounterbalance {
+    SHORT_FACE_REWARDED_MORE = "SHORTFACEREWARDEDMORE",
+    LONG_FACE_REWARDED_MORE = "LONGFACEREWARDEDMORE",
+}
+
+enum SmileyFaceCache {
+    BLOCK_NUM = "smiley-face-block-num",
+    TOTAL_SCORE = "smiley-face-total-score",
+}
 
 @Component({
     selector: "app-smiley-face",
     templateUrl: "./smiley-face.component.html",
     styleUrls: ["./smiley-face.component.scss"],
 })
-export class SmileyFaceComponent implements OnInit {
-    countdownDisplayValue: number = 10;
-    // Default study config
-    showFeedbackAfterEveryTrial: boolean | number = true;
-    maxResponseTime: number = 3000; // In milliseconds
-    durationOfFeedback: number = 1000; // In milliseconds
-    durationFixationShown: number = 500;
-    durationStimulusShown: number = 100;
-    practiceTrials: number = environment.production ? 10 : 4;
-    actualTrials: number = environment.production ? 100 : 4;
-    rewardedMoreNum: number = environment.production ? 30 : 2;
-    rewardedLessNum: number = environment.production ? 10 : 1;
+export class SmileyFaceComponent extends AbstractBaseTaskComponent {
+    /**
+     * Task summary:
+     * This task involves the participant seeing one of two possible faces: a face with a short mouth, and a face with a
+     * longer mouth. The participant presses "Z" if they see a short face, and "M" if they see a long face. Participants always
+     * earn points for a correct answer but only sometimes do they see that they have been rewarded.
+     * This task is counterbalanced by which face type is rewarded more.
+     */
 
-    step: number = 1;
-    smileyFaceType: string = SmileyFaceType.NONE;
-    feedback: string = "";
-    scoreForSpecificTrial: number = 0;
-    totalScore: number = 0;
-    isPractice: boolean = true;
-    isStimulus: boolean = false;
-    isBreak: boolean = false;
-    currentTrial: number = 0;
-    isResponseAllowed: boolean = false;
-    data: SmileyFace[] = [];
+    // config variables variables
+    isPractice: boolean = false;
+    private maxResponseTime: number;
+    private interTrialDelay: number; // In milliseconds
+    private durationFeedbackPresented: number; // how long the points show for
+    private durationFixationPresented: number;
+    private durationNoFacePresented: number;
+    private durationStimulusPresented: number;
+    private numShortFaces: number;
+    private numLongFaces: number;
+    private numFacesMoreRewarded: number;
+    private numFacesLessRewarded: number;
+
+    // shared state variables
+    userID: string;
+    studyCode: string;
+    config: TaskConfig;
+
+    // high level variables
+    counterbalance: SmileyFaceTaskCounterbalance;
+    taskData: SmileyFaceTaskData[];
+    stimuli: SmileyFaceStimulus[];
+    currentStimuliIndex: number; // index of the stimuli we are on
+
+    // local state variables
+    blockNum: number = 0;
+    feedback: Feedback;
+    showStimulus: boolean = false;
+    showFeedback: boolean = false;
     showFixation: boolean = false;
+    trialNum: number = 0;
+    trialScore: number = 0;
+    responseAllowed: boolean = false;
+    scoreForSpecificTrial: number = 0;
+    smileyFaceType: SmileyFaceType;
 
-    // global timers
-    countdownTimer: number;
-    sTimeout: number;
+    // timers
+    maxResponseTimer: any;
+    showStimulusTimer: any;
 
-    feedbackShown: boolean = false;
-    currentBlock: SmileyFaceBlock;
-    currentBlockNum: number = 0;
-
-    shortMouthRewardedMore: boolean = false;
-
-    @HostListener("window:keypress", ["$event"])
-    onKeyPress(event: KeyboardEvent) {
-        if (this.isResponseAllowed && this.isValidKey(event.key)) {
-            this.isResponseAllowed = false;
-            clearTimeout(this.sTimeout);
-            const thisTrial = this.data[this.data.length - 1];
-            thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
-            thisTrial.submitted = this.timerService.getCurrentTimestamp();
-            thisTrial.userAnswer = event.key === Key.Z ? UserResponse.SHORT : UserResponse.LONG;
-            thisTrial.keyPressed = event.key === Key.Z ? Key.Z : Key.M;
-
-            this.showFeedback();
-        }
-    }
-
-    private isValidKey(key: string): boolean {
-        if (key === Key.Z || key === Key.M) return true;
-        return false;
+    get currentStimulus(): SmileyFaceStimulus {
+        return this.stimuli[this.currentStimuliIndex];
     }
 
     constructor(
-        private router: Router,
-        private uploadDataService: UploadDataService,
-        private authService: AuthService,
-        private taskManager: TaskManagerService,
-        private snackbarService: SnackbarService,
-        private timerService: TimerService
-    ) {}
-
-    ngOnInit() {
-        this.shortMouthRewardedMore = idIsEven(this.authService.getDecodedToken().UserID);
+        protected snackbarService: SnackbarService,
+        protected timerService: TimerService,
+        protected dataGenService: DataGenerationService,
+        protected loaderService: LoaderService
+    ) {
+        super(loaderService);
     }
 
-    proceedtoPreviousStep() {
-        this.step -= 1;
+    configure(metadata: SmileyFaceMetadata, config: TaskConfig) {
+        try {
+            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
+            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
+
+            this.maxResponseTime = throwErrIfNotDefined(
+                metadata.config.maxResponseTime,
+                "max response time not defined"
+            );
+            this.numShortFaces = throwErrIfNotDefined(metadata.config.numShortFaces, "num short faces not defined");
+            this.numLongFaces = throwErrIfNotDefined(metadata.config.numLongFaces, "num long faces not defined");
+            this.numFacesLessRewarded = throwErrIfNotDefined(
+                metadata.config.numFacesLessRewarded,
+                "num faces less rewarded not defined"
+            );
+            this.numFacesMoreRewarded = throwErrIfNotDefined(
+                metadata.config.numFacesMoreRewarded,
+                "num faces more rewarded not defined"
+            );
+        } catch (error) {
+            throw new error(error);
+        }
+
+        this.config = config;
+
+        this.isPractice = thisOrDefault(metadata.config.isPractice, false);
+        this.interTrialDelay = thisOrDefault(metadata.config.interTrialDelay, 0);
+        this.durationFeedbackPresented = thisOrDefault(metadata.config.durationFeedbackPresented, 1000);
+        this.durationFixationPresented = thisOrDefault(metadata.config.durationFixationPresented, 0);
+        this.durationNoFacePresented = thisOrDefault(metadata.config.durationNoFacePresented, 500);
+        this.durationStimulusPresented = thisOrDefault(metadata.config.durationStimulusPresented, 450);
+
+        this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as SmileyFaceTaskCounterbalance;
+
+        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.config.stimuliConfig.stimuli;
     }
 
-    proceedtoNextStep() {
-        this.step += 1;
-    }
-
-    async startPractice() {
-        this.isPractice = true;
-        const numEachTrial = this.practiceTrials / 2;
-        // reward all correct answers in the practice
-        this.currentBlock = new SmileyFaceBlock(numEachTrial, numEachTrial, numEachTrial, numEachTrial);
-        this.currentBlockNum++;
+    start() {
         this.startGameInFullScreen();
-        this.resetData();
-        this.proceedtoNextStep();
-        await wait(2000);
-        this.proceedtoNextStep();
-        this.showStimulus();
+
+        this.taskData = [];
+        this.currentStimuliIndex = 0;
+        this.blockNum = this.config.getCacheValue(SmileyFaceCache.BLOCK_NUM) || 1; // set to 1 if not defined
+
+        // either the stimuli have been defined in config or we generate it here from service
+        if (!this.stimuli) {
+            this.stimuli =
+                this.counterbalance === SmileyFaceTaskCounterbalance.SHORT_FACE_REWARDED_MORE
+                    ? this.dataGenService.generateSmileyFaceStimuli(
+                          this.numShortFaces,
+                          this.numFacesMoreRewarded,
+                          this.numLongFaces,
+                          this.numFacesLessRewarded
+                      )
+                    : this.dataGenService.generateSmileyFaceStimuli(
+                          this.numShortFaces,
+                          this.numFacesLessRewarded,
+                          this.numLongFaces,
+                          this.numFacesMoreRewarded
+                      );
+        }
+        super.start();
     }
 
-    async startActualGame() {
-        this.isPractice = false;
-        const numEachTrial = this.actualTrials / 2;
-        // counterbalanced
-        this.currentBlock = this.shortMouthRewardedMore
-            ? new SmileyFaceBlock(numEachTrial, this.rewardedMoreNum, numEachTrial, this.rewardedLessNum)
-            : new SmileyFaceBlock(numEachTrial, this.rewardedLessNum, numEachTrial, this.rewardedMoreNum);
-
-        this.currentBlockNum++;
-        this.resetData();
-        this.proceedtoNextStep();
-        await wait(2000);
-        this.startCountDownTimer();
-    }
-
-    startCountDownTimer() {
-        this.startGameInFullScreen();
-        this.proceedtoNextStep();
-        this.countdownDisplayValue = 10;
-        this.countdownTimer = window.setInterval(() => {
-            this.countdownDisplayValue -= 1;
-            if (this.countdownDisplayValue <= 0) {
-                clearInterval(this.countdownTimer);
-                this.proceedtoNextStep();
-                this.showStimulus();
-            }
-        }, 1000);
-    }
-
-    async showStimulus() {
-        this.reset();
-        this.currentTrial += 1;
-        this.showFixation = true;
-        await wait(this.durationFixationShown);
-        this.showFixation = false;
-
-        this.isStimulus = true;
-        await wait(500);
-
-        this.generateStimulus();
-
-        // This is the delay between showing the stimulus and showing the feedback
-        // note: have to set this before isResponseAllowed is true, or else there is
-        // the possibility that there is a response before sTimeout is set
-        this.sTimeout = window.setTimeout(() => {
-            clearTimeout(this.sTimeout);
-
-            this.showFeedback();
-        }, this.maxResponseTime);
-
-        this.timerService.startTimer();
-        this.isResponseAllowed = true;
-        await wait(this.durationStimulusShown);
+    async beginRound() {
+        this.timerService.clearTimer();
         this.smileyFaceType = SmileyFaceType.NONE;
-    }
+        this.showStimulus = false;
+        this.scoreForSpecificTrial = 0;
 
-    generateStimulus() {
-        const nextTrial = this.currentBlock.getAndSetNextTrial();
-        this.smileyFaceType = nextTrial.faceShown;
-
-        this.data.push({
-            actualAnswer: this.smileyFaceType,
+        this.taskData.push({
+            actualAnswer: this.currentStimulus.faceShown,
             userAnswer: UserResponse.NA,
             responseTime: 0,
             isCorrect: false,
             score: 0,
-            block: this.currentBlockNum,
-            stimulus: nextTrial.faceShown,
+            block: this.blockNum,
+            stimulus: this.currentStimulus.faceShown,
             keyPressed: UserResponse.NA,
             rewarded: false,
-            trial: this.currentTrial,
-            userID: this.authService.getDecodedToken().UserID,
+            trial: ++this.trialNum,
+            userID: this.userID,
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
-            studyCode: this.taskManager.getStudyCode(),
-            isRescheduledReward: nextTrial.isRescheduledReward,
-            rewardedMore: this.shortMouthRewardedMore ? UserResponse.SHORT : UserResponse.LONG,
+            studyCode: this.studyCode,
+            isRescheduledReward: this.currentStimulus.isRescheduledReward,
+            rewardedMore: this.counterbalance,
         });
+
+        // show fixation
+        this.showFixation = true;
+        await wait(this.durationFixationPresented);
+        if (this.isDestroyed) return;
+        this.showFixation = false;
+
+        // show no face
+        this.showStimulus = true;
+        await wait(this.durationNoFacePresented);
+        if (this.isDestroyed) return;
+
+        this.setStimuliUI(this.currentStimulus);
+
+        // set back to no face after given time
+        this.setTimer("showStimulusTimer", this.durationStimulusPresented, () => {
+            this.smileyFaceType = SmileyFaceType.NONE;
+        });
+
+        this.setTimer("maxResponseTimer", this.maxResponseTime, () => {
+            this.responseAllowed = false;
+            this.handleRoundInteraction(null);
+        });
+
+        this.timerService.startTimer();
+        this.responseAllowed = true;
     }
 
-    async showFeedback() {
-        clearTimeout(this.sTimeout);
-        this.feedbackShown = true;
-        this.isStimulus = false;
-        this.isResponseAllowed = false;
+    private setStimuliUI(stimulus: SmileyFaceStimulus) {
+        this.smileyFaceType = stimulus.faceShown;
+    }
 
-        let thisTrial = this.data[this.data.length - 1];
+    private isValidKey(key: string): boolean {
+        return key === Key.Z || key === Key.M;
+    }
 
-        const userAnswer = thisTrial.userAnswer;
-        const actualAnswer = thisTrial.actualAnswer;
+    private setTimer(timerType: "showStimulusTimer" | "maxResponseTimer", delay: number, cbFunc?: () => void) {
+        if (timerType === "showStimulusTimer") {
+            this.showStimulusTimer = setTimeout(() => {
+                if (cbFunc) cbFunc();
+            }, delay);
+        } else if (timerType === "maxResponseTimer") {
+            this.maxResponseTimer = setTimeout(() => {
+                if (cbFunc) cbFunc();
+            }, delay);
+        } else {
+            throw new Error("Invalid Timer type, could not set timer");
+        }
+    }
 
-        switch (userAnswer) {
-            case actualAnswer:
+    private cancelAllTimers() {
+        this.snackbarService.clearSnackbar();
+        clearTimeout(this.maxResponseTimer);
+    }
+
+    @HostListener("window:keypress", ["$event"])
+    handleRoundInteraction(event: KeyboardEvent) {
+        this.cancelAllTimers();
+        const thisTrial = this.taskData[this.taskData.length - 1];
+        thisTrial.submitted = this.timerService.getCurrentTimestamp();
+        if (this.responseAllowed && this.isValidKey(event.key)) {
+            this.responseAllowed = false;
+            thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
+            thisTrial.userAnswer = event.key === Key.Z ? UserResponse.SHORT : UserResponse.LONG;
+            thisTrial.keyPressed = event.key === Key.Z ? Key.Z : Key.M;
+
+            super.handleRoundInteraction(event.key);
+        } else if (event === null) {
+            // max time out
+            this.responseAllowed = false;
+            thisTrial.responseTime = this.maxResponseTime;
+            thisTrial.userAnswer = UserResponse.NA;
+            thisTrial.keyPressed = Key.NONE;
+            thisTrial.score = 0;
+            thisTrial.isCorrect = false;
+
+            super.handleRoundInteraction(null);
+        }
+    }
+
+    async completeRound() {
+        this.showStimulus = false;
+        this.showFixation = false;
+        this.responseAllowed = false;
+        this.smileyFaceType = SmileyFaceType.NONE;
+
+        const thisTrial = this.taskData[this.taskData.length - 1];
+
+        switch (thisTrial.userAnswer) {
+            case thisTrial.actualAnswer:
                 thisTrial.isCorrect = true;
-                // only give feedback for the specific trials
-                if (this.currentBlock.getCurrentTrial().isRewarded) {
-                    thisTrial.score = 50;
-                    this.scoreForSpecificTrial = 50;
-                    this.totalScore += 50;
-                    this.feedback = "+50";
-                    thisTrial.rewarded = true;
-                }
+                thisTrial.score = 50;
+                this.scoreForSpecificTrial = 50;
                 break;
             case UserResponse.NA:
                 this.feedback = Feedback.TOOSLOW;
-                this.currentBlock.postponeReward();
-                thisTrial.responseTime = this.maxResponseTime;
+                this.postponeReward();
                 this.scoreForSpecificTrial = 0;
                 break;
             default:
+                thisTrial.isCorrect = false;
+                this.postponeReward();
+                thisTrial.score = 0;
                 this.scoreForSpecificTrial = 0;
-                this.currentBlock.postponeReward();
                 break;
         }
 
-        if (this.feedback !== "") {
-            await wait(this.durationOfFeedback);
+        if (this.feedback === Feedback.TOOSLOW) {
         }
-        this.decideToContinue();
+        if ((this.currentStimulus.isRewarded && thisTrial.isCorrect) || this.feedback === Feedback.TOOSLOW) {
+            this.showFeedback = true;
+            await wait(this.durationFeedbackPresented);
+            if (this.isDestroyed) return;
+            this.showFeedback = false;
+        }
+
+        this.feedback = null;
+        super.completeRound();
     }
 
-    async decideToContinue() {
-        if (this.isPractice) {
-            if (this.currentTrial < this.practiceTrials) {
-                this.continueGame();
-                return;
-            } else {
-                this.currentBlockNum = 0;
-                this.proceedtoNextStep();
-                await wait(2000);
-                this.proceedtoNextStep();
-                return;
-            }
-        } else {
-            if (this.currentTrial < this.actualTrials) {
-                this.continueGame();
-                return;
-            } else {
-                this.proceedtoNextStep();
+    private postponeReward(): void {
+        const trialWhereUserWasIncorrect = this.currentStimulus;
 
-                if (this.currentBlockNum < 3) {
-                    this.takeBreak();
-                    return;
-                } else {
-                    const decodedToken = this.authService.getDecodedToken();
-
-                    if (decodedToken.Role === Role.ADMIN) {
-                        this.proceedtoNextStep();
-                        return;
-                    } else {
-                        this.uploadResults(this.data)
-                            .pipe(take(1))
-                            .subscribe(
-                                (ok) => {
-                                    if (ok) {
-                                        this.proceedtoNextStep();
-                                        return;
-                                    } else {
-                                        console.error("There was an error downloading results");
-                                        this.taskManager.handleErr();
-                                        return;
-                                    }
-                                },
-                                (err) => {
-                                    console.error("There was an error downloading results");
-                                    this.taskManager.handleErr();
-                                    return;
-                                }
-                            );
-                    }
-                }
+        // iterate through list until you find the next stimulus of the same type that is unrewarded and reward that.
+        // if none are found, we complete the iteration without assigning anything as we either have no more trials of that type,
+        // or all are rewarded
+        for (let i = this.currentStimuliIndex + 1; i < this.stimuli.length; i++) {
+            const trial = this.stimuli[i];
+            if (trialWhereUserWasIncorrect.faceShown === trial.faceShown && !trial.isRewarded) {
+                trial.isRewarded = true;
+                trial.isRescheduledReward = true;
+                return;
             }
         }
     }
 
-    async takeBreak() {
-        await wait(2000);
-        this.isBreak = true;
-    }
+    async decideToRepeat() {
+        // we have reached past the final activity
+        const finishedLastStimulus = this.currentStimuliIndex >= this.stimuli.length - 1;
 
-    resume() {
-        this.reset();
-        this.isBreak = false;
-        this.startActualGame();
-    }
+        if (finishedLastStimulus) {
+            const totalScore = this.taskData.reduce((acc, currVal) => {
+                return acc + currVal.score;
+            }, 0);
 
-    async continueGame() {
-        this.reset();
-        this.showStimulus();
-    }
-
-    uploadResults(data: SmileyFace[]): Observable<boolean> {
-        const studyCode = this.taskManager.getStudyCode();
-        return this.uploadDataService.uploadData(studyCode, TaskNames.SMILEYFACE, data).pipe(map((ok) => ok.ok));
-    }
-
-    continueAhead() {
-        const decodedToken = this.authService.getDecodedToken();
-        if (decodedToken.Role === Role.ADMIN) {
-            if (!environment.production) console.log(this.data);
-
-            this.router.navigate(["/dashboard/components"]);
-            this.snackbarService.openInfoSnackbar("Task completed");
+            this.config.setCacheValue(SmileyFaceCache.TOTAL_SCORE, totalScore);
+            super.decideToRepeat();
+            return;
         } else {
-            this.taskManager.next();
-        }
-    }
-
-    reset() {
-        this.smileyFaceType = SmileyFaceType.NONE;
-        this.feedback = "";
-        this.feedbackShown = false;
-        this.scoreForSpecificTrial = 0;
-    }
-
-    resetData() {
-        this.currentTrial = 0;
-        if (!this.isPractice && this.currentBlockNum <= 1) {
-            this.totalScore = 0;
+            this.currentStimuliIndex++;
+            await wait(this.interTrialDelay);
+            if (this.isDestroyed) return;
+            this.beginRound();
+            return;
         }
     }
 

@@ -1,3 +1,4 @@
+import { SmileyFaceTaskCounterbalance } from "../pages/tasks/playables/smiley-face/smiley-face.component";
 import { BEStrings, Key, UserResponse } from "./InternalDTOs";
 
 export enum TaskNames {
@@ -136,7 +137,7 @@ export class OddballTaskData extends TaskData {
     block: number;
 }
 
-export class SmileyFace extends TaskData {
+export class SmileyFaceTaskData extends TaskData {
     actualAnswer: string;
     userAnswer: string;
     responseTime: number;
@@ -145,7 +146,7 @@ export class SmileyFace extends TaskData {
     keyPressed: string;
     rewarded: boolean;
     isRescheduledReward: boolean;
-    rewardedMore: UserResponse.SHORT | UserResponse.LONG;
+    rewardedMore: SmileyFaceTaskCounterbalance;
 }
 
 export function mapTaskIdToTitle(task: string) {

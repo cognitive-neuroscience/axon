@@ -7,14 +7,14 @@ import { TimerService } from "../../../../services/timer.service";
 import { UserResponse, Feedback } from "../../../../models/InternalDTOs";
 import { AbstractBaseTaskComponent } from "../base-task";
 import { ComponentName } from "src/app/services/component-factory.service";
-import { StroopStimuli } from "src/app/services/data-generation/stimuli-models";
+import { StroopStimulus } from "src/app/services/data-generation/stimuli-models";
 import { TaskConfig } from "../task-player/task-player.component";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
 import { LoaderService } from "src/app/services/loader.service";
 import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
 declare function setFullScreen(): any;
 
-export interface StroopTaskMetadata {
+interface StroopTaskMetadata {
     component: ComponentName;
     config: {
         isPractice: boolean;
@@ -24,10 +24,11 @@ export interface StroopTaskMetadata {
         showScoreAfterEachTrial: boolean;
         durationOfFeedback: number;
         durationFixationPresented: number;
+        durationStimulusPresented: number;
         numTrials: number;
         stimuliConfig: {
             type: StimuliProvidedType;
-            stimuli: StroopStimuli[];
+            stimuli: StroopStimulus[];
         };
     };
 }
@@ -59,6 +60,7 @@ export class StroopComponent extends AbstractBaseTaskComponent {
     private durationOfFeedback: number;
     private durationFixationPresented: number;
     private numTrials: number;
+    private durationStimulusPresented: number;
 
     // shared state variables
     userID: string;
@@ -68,7 +70,7 @@ export class StroopComponent extends AbstractBaseTaskComponent {
     // high level variables
     counterbalance: number;
     taskData: StroopTaskData[];
-    stimuli: StroopStimuli[];
+    stimuli: StroopStimulus[];
     currentStimuliIndex: number; // index of the stimuli we are on
 
     // local state variables
@@ -78,7 +80,6 @@ export class StroopComponent extends AbstractBaseTaskComponent {
     color: string;
     showFeedback: boolean = false;
     showFixation: boolean = false;
-    durationStimulusPresented: number = 450;
     trialNum: number = 0;
     trialScore: number = 0;
     responseAllowed: boolean = false;
@@ -87,7 +88,7 @@ export class StroopComponent extends AbstractBaseTaskComponent {
     // timers
     maxResponseTimer: any;
 
-    get currentStimulus(): StroopStimuli {
+    get currentStimulus(): StroopStimulus {
         return this.stimuli[this.currentStimuliIndex];
     }
 
@@ -115,6 +116,7 @@ export class StroopComponent extends AbstractBaseTaskComponent {
         }
 
         this.config = config;
+        this.durationStimulusPresented = thisOrDefault(metadata.config.durationStimulusPresented, 450);
         this.isPractice = thisOrDefault(metadata.config.isPractice, false);
         this.durationFixationPresented = thisOrDefault(metadata.config.durationFixationPresented, 0);
         this.interTrialDelay = thisOrDefault(metadata.config.interTrialDelay, 0);
@@ -129,10 +131,10 @@ export class StroopComponent extends AbstractBaseTaskComponent {
     }
 
     start() {
+        this.startGameInFullScreen();
+
         this.taskData = [];
         this.currentStimuliIndex = 0;
-
-        this.startGameInFullScreen();
 
         // either the stimuli has been defined in config or we generate it here from service
         if (!this.stimuli) {
@@ -175,15 +177,14 @@ export class StroopComponent extends AbstractBaseTaskComponent {
         this.showStimulus = true;
         this.responseAllowed = true;
 
-        this.setTimer(this.maxResponseTime, () => {});
-        this.maxResponseTimer = setTimeout(() => {
+        this.setTimer(this.maxResponseTime, () => {
             this.showStimulus = false;
             this.responseAllowed = false;
             this.handleRoundInteraction(null);
-        }, this.maxResponseTime);
+        });
     }
 
-    private setStimuliUI(stimulus: StroopStimuli) {
+    private setStimuliUI(stimulus: StroopStimulus) {
         this.text = stimulus.word;
         this.color = stimulus.color;
     }

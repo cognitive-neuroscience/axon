@@ -28,6 +28,7 @@ export interface DisplayComponentMetadata {
             timer: number;
             showTimer: boolean;
             canSkipTimer: boolean;
+            countDown: boolean;
         };
         subtitle?: string;
         sections?: DisplaySection[];
@@ -47,7 +48,6 @@ export class DisplayComponent implements OnDestroy, Playable {
     displaySections: DisplaySection[] = [];
     buttonConfig: ButtonConfig = null;
     private canSkipTimer: boolean;
-    private timerDurationShow: number;
 
     // config variables
     config: TaskConfig;
@@ -58,6 +58,7 @@ export class DisplayComponent implements OnDestroy, Playable {
     showTimer: boolean = false;
     timerMode: boolean = false;
     timerDisplayValue: number;
+    timerCountDown: boolean = false;
     showNavigationButtons: boolean = true;
 
     // intervals/timers
@@ -126,19 +127,35 @@ export class DisplayComponent implements OnDestroy, Playable {
                 previousDisabled: true,
                 nextDisabled: false,
             };
+            this.timerCountDown = thisOrDefault(metadata.content.timerConfig.countDown, false);
             this.showTimer = thisOrDefault(metadata.content.timerConfig.showTimer, false);
             this.canSkipTimer = thisOrDefault(metadata.content.timerConfig.canSkipTimer, false);
             this.showNavigationButtons = this.canSkipTimer;
-            this.startTimer(metadata.content.timerConfig.timer / 1000);
+
+            this.timerCountDown
+                ? this.startTimerReverse(metadata.content.timerConfig.timer / 1000)
+                : this.startTimer(metadata.content.timerConfig.timer / 1000);
         }
     }
 
     startTimer(duration: number) {
-        this.timerDurationShow = duration;
         this.timerDisplayValue = 1;
         this.interval = window.setInterval(() => {
             this.timerDisplayValue++;
-            if (this.timerDisplayValue > this.timerDurationShow) {
+            if (this.timerDisplayValue > duration) {
+                clearInterval(this.interval);
+                this.handleComplete(Navigation.NEXT);
+                return;
+            }
+            return;
+        }, 1000);
+    }
+
+    startTimerReverse(duration: number) {
+        this.timerDisplayValue = duration;
+        this.interval = window.setInterval(() => {
+            this.timerDisplayValue--;
+            if (this.timerDisplayValue < 0) {
                 clearInterval(this.interval);
                 this.handleComplete(Navigation.NEXT);
                 return;

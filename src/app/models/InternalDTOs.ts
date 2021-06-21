@@ -66,6 +66,7 @@ export enum Key {
     P = "p",
     Z = "z",
     M = "m",
+    NONE = "none",
 }
 
 export enum Color {

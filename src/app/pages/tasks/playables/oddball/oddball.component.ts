@@ -7,7 +7,7 @@ import { OddballTaskData } from "src/app/models/TaskData";
 import { ComponentName } from "src/app/services/component-factory.service";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
 import { OddballTargetStimulus } from "src/app/services/data-generation/raw-data/oddball-image-list";
-import { OddballStimuli } from "src/app/services/data-generation/stimuli-models";
+import { OddballStimulus } from "src/app/services/data-generation/stimuli-models";
 import { LoaderService } from "src/app/services/loader.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { TimerService } from "src/app/services/timer.service";
@@ -31,7 +31,7 @@ export interface OddballTaskMetadata {
         numNovelStimuli: number;
         stimuliConfig: {
             type: StimuliProvidedType;
-            stimuli: OddballStimuli[];
+            stimuli: OddballStimulus[];
         };
     };
 }
@@ -82,7 +82,7 @@ export class OddballComponent extends AbstractBaseTaskComponent {
 
     // high level variables
     taskData: OddballTaskData[];
-    stimuli: OddballStimuli[];
+    stimuli: OddballStimulus[];
     currentStimuliIndex: number; // index of the stimuli we are on
 
     // local state variables
@@ -101,7 +101,7 @@ export class OddballComponent extends AbstractBaseTaskComponent {
     maxResponseTimer: any;
     showStimulusTimer: any;
 
-    get currentStimulus(): OddballStimuli {
+    get currentStimulus(): OddballStimulus {
         return this.stimuli[this.currentStimuliIndex];
     }
 
@@ -233,7 +233,7 @@ export class OddballComponent extends AbstractBaseTaskComponent {
         });
     }
 
-    private setStimuliUI(stimulus: OddballStimuli) {
+    private setStimuliUI(stimulus: OddballStimulus) {
         this.showImage(stimulus.blob);
     }
 
