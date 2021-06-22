@@ -9,6 +9,7 @@ import { TaskConfig } from "../../playables/task-player/task-player.component";
 export interface DisplaySection {
     sectionType: "text" | "image-horizontal" | "image-square";
     imagePath?: string;
+    imageAlignment?: "left" | "center" | "right";
     textContent?: string;
     injection: "counterbalance" | "counterbalance-alternative" | "cached-string";
     cacheKeyForInjection: string;

@@ -19,6 +19,7 @@ import { RatingTaskActivities, RatingTaskQuestionList } from "./raw-data/rating-
 import {
     ChoiceTaskStimulus,
     ImageBlob,
+    NBackStimulus,
     OddballStimulus,
     RatingTaskStimuli,
     SmileyFaceStimulus,
@@ -26,6 +27,7 @@ import {
     StroopStimulus,
 } from "./stimuli-models";
 import { StroopSet } from "./raw-data/stroop-data-list";
+import { NBackSet } from "./raw-data/nback-data-list";
 
 @Injectable({
     providedIn: "root",
@@ -227,7 +229,23 @@ export class DataGenerationService {
                 numLongFaces++;
             }
         }
-
         return trials;
+    }
+
+    generateNBackStimuli(isPractice: boolean, numTrials: number, counterbalance: number): NBackStimulus[] {
+        const nbackSets = Object.keys(NBackSet);
+
+        // subtract 1 because one set is the practice set
+        if (counterbalance < 1 || counterbalance > nbackSets.length - 1) throw new Error("No such nback group exists");
+        if (isPractice) {
+            if (numTrials > NBackSet.practice.length)
+                throw new Error("number of trials greater than number of practice trials");
+            return NBackSet.practice.slice(0, numTrials);
+        } else {
+            const selectedSet = NBackSet[counterbalance] as NBackStimulus[];
+            if (numTrials > selectedSet.length)
+                throw new Error("number of trials greater than number of stroop trials");
+            return selectedSet.slice(0, numTrials);
+        }
     }
 }

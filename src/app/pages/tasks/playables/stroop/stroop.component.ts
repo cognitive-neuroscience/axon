@@ -24,7 +24,6 @@ interface StroopTaskMetadata {
         showScoreAfterEachTrial: boolean;
         durationOfFeedback: number;
         durationFixationPresented: number;
-        durationStimulusPresented: number;
         numTrials: number;
         stimuliConfig: {
             type: StimuliProvidedType;
@@ -34,7 +33,7 @@ interface StroopTaskMetadata {
 }
 
 export enum StroopCache {
-    TOTAL_SCORE = "total-score",
+    TOTAL_SCORE = "stroop-total-score",
 }
 
 @Component({
@@ -60,7 +59,6 @@ export class StroopComponent extends AbstractBaseTaskComponent {
     private durationOfFeedback: number;
     private durationFixationPresented: number;
     private numTrials: number;
-    private durationStimulusPresented: number;
 
     // shared state variables
     userID: string;
@@ -116,7 +114,6 @@ export class StroopComponent extends AbstractBaseTaskComponent {
         }
 
         this.config = config;
-        this.durationStimulusPresented = thisOrDefault(metadata.config.durationStimulusPresented, 450);
         this.isPractice = thisOrDefault(metadata.config.isPractice, false);
         this.durationFixationPresented = thisOrDefault(metadata.config.durationFixationPresented, 0);
         this.interTrialDelay = thisOrDefault(metadata.config.interTrialDelay, 0);
@@ -173,15 +170,15 @@ export class StroopComponent extends AbstractBaseTaskComponent {
 
         this.setStimuliUI(this.currentStimulus);
 
-        this.timerService.startTimer();
-        this.showStimulus = true;
-        this.responseAllowed = true;
-
         this.setTimer(this.maxResponseTime, () => {
             this.showStimulus = false;
             this.responseAllowed = false;
             this.handleRoundInteraction(null);
         });
+
+        this.timerService.startTimer();
+        this.showStimulus = true;
+        this.responseAllowed = true;
     }
 
     private setStimuliUI(stimulus: StroopStimulus) {

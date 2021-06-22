@@ -6,6 +6,7 @@ import { ChoicerComponent } from "../pages/tasks/playables/rating-new/choicer/ch
 import { OddballComponent } from "../pages/tasks/playables/oddball/oddball.component";
 import { StroopComponent } from "../pages/tasks/playables/stroop/stroop.component";
 import { SmileyFaceComponent } from "../pages/tasks/playables/smiley-face/smiley-face.component";
+import { NBackComponent } from "../pages/tasks/playables/n-back/n-back.component";
 
 export enum ComponentName {
     DISPLAY_COMPONENT = "DISPLAYCOMPONENT",
@@ -19,6 +20,8 @@ export enum ComponentName {
     STROOP_COMPONENT = "STROOPCOMPONENT",
 
     SMILEY_FACE_COMPONENT = "SMILEYFACECOMPONENT",
+
+    NBACK_COMPONENT = "NBACKCOMPONENT",
 }
 
 @Injectable({
@@ -45,6 +48,8 @@ export class ComponentFactoryService {
                 return this.buildComponent(StroopComponent);
             case ComponentName.SMILEY_FACE_COMPONENT:
                 return this.buildComponent(SmileyFaceComponent);
+            case ComponentName.NBACK_COMPONENT:
+                return this.buildComponent(NBackComponent);
             default:
                 throw new Error("Component doesn't exist: " + componentMapping);
         }

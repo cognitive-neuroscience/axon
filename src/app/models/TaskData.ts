@@ -43,7 +43,7 @@ export class StroopTaskData extends TaskData {
     set: number;
 }
 
-export class NBack extends TaskData {
+export class NBackTaskData extends TaskData {
     actualAnswer: UserResponse;
     userAnswer: UserResponse;
     responseTime: number;

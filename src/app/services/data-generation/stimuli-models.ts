@@ -49,3 +49,17 @@ export enum SmileyFaceType {
     LONG = "LONG",
     NONE = "NONE",
 }
+
+export class NBackStimulus {
+    trial: number;
+    currentLetter: string;
+    nback: string;
+}
+
+export class NBackStimuliSet {
+    practice: NBackStimulus[];
+    1: NBackStimulus[];
+    2: NBackStimulus[];
+    3: NBackStimulus[];
+    4: NBackStimulus[];
+}

@@ -19,7 +19,7 @@
                     <div class="section" [innerHTML]="injectString(section, section.textContent)"></div>
                 </ng-container>
                 <div
-                    class="image-container"
+                    class="image-container {{ section.imageAlignment }}"
                     *ngIf="section.sectionType === 'image-horizontal' || section.sectionType === 'image-square'"
                 >
                     <img class="{{ section.sectionType }}" [src]="section.imagePath" alt="Instruction Image" />

@@ -133,7 +133,6 @@ export const StroopLayoutMetadata = {
                 showScoreAfterEachTrial: false,
                 durationOfFeedback: 500,
                 durationFixationPresented: 1000,
-                durationStimulusPresented: 450,
                 numTrials: 15,
                 stimuliConfig: {
                     type: "generated",
@@ -184,7 +183,6 @@ export const StroopLayoutMetadata = {
                 showScoreAfterEachTrial: false,
                 durationOfFeedback: 500,
                 durationFixationPresented: 1000,
-                durationStimulusPresented: 450,
                 numTrials: 120,
                 stimuliConfig: {
                     type: "generated",

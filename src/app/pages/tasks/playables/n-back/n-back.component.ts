@@ -1,329 +1,284 @@
-import { Component, OnInit, HostListener } from "@angular/core";
-import { Router } from "@angular/router";
-import { Observable } from "rxjs";
-import { NBack } from "src/app/models/TaskData";
-import { UploadDataService } from "src/app/services/uploadData.service";
-declare function setFullScreen(): any;
-import * as Set1 from "./stimuli_1_1";
-import * as Set2 from "./stimuli_2_1";
-import * as Set3 from "./stimuli_3_1";
-import * as Set4 from "./stimuli_4_1";
-import * as PracticeSet from "./stimuli_practice";
-import { TaskManagerService } from "../../../../services/task-manager.service";
-import { map, take } from "rxjs/operators";
-import { AuthService } from "../../../../services/auth.service";
+import { Component, HostListener } from "@angular/core";
+import { NBackTaskData } from "src/app/models/TaskData";
+import { take } from "rxjs/operators";
 import { SnackbarService } from "../../../../services/snackbar.service";
 import { Key } from "src/app/models/InternalDTOs";
-import { NBackStimuli, TaskNames } from "../../../../models/TaskData";
 import { TimerService } from "../../../../services/timer.service";
 import { UserResponse, Feedback } from "../../../../models/InternalDTOs";
 import { environment } from "../../../../../environments/environment";
-import { Role } from "src/app/models/enums";
+import { Role, StimuliProvidedType } from "src/app/models/enums";
+import { AbstractBaseTaskComponent } from "../base-task";
+import { TaskConfig } from "../task-player/task-player.component";
+import { NBackStimulus } from "src/app/services/data-generation/stimuli-models";
+import { LoaderService } from "src/app/services/loader.service";
+import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
+import { ComponentName } from "src/app/services/component-factory.service";
+import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
+declare function setFullScreen(): any;
+
+interface NBackMetadata {
+    component: ComponentName;
+    config: {
+        isPractice: boolean;
+        maxResponseTime: number;
+        interTrialDelay: number;
+        showFeedbackAfterEachTrial: boolean;
+        showScoreAfterEachTrial: boolean;
+        durationOfFeedback: number;
+        durationFixationPresented: number;
+        numTrials: number;
+        stimuliConfig: {
+            type: StimuliProvidedType;
+            stimuli: NBackStimulus[];
+        };
+    };
+}
+
+export enum NBackCache {
+    TOTAL_SCORE = "nback-total-score",
+}
 
 @Component({
     selector: "app-n-back",
     templateUrl: "./n-back.component.html",
     styleUrls: ["./n-back.component.scss"],
 })
-export class NBackComponent implements OnInit {
-    // Default study config
-    isScored: boolean | number = true;
-    showFeedbackAfterEveryTrial: boolean | number = true;
-    showScoreAfterEveryTrial: boolean | number = false;
-    numberOfBreaks: number = 0;
-    maxResponseTime: number = 2000; // In milliseconds
-    durationOfFeedback: number = 500; // In milliseconds
-    interTrialDelay: number = 1000; // In milliseconds
-    practiceTrials: number = environment.production ? 15 : 5;
-    actualTrials: number = environment.production ? 70 : 10;
+export class NBackComponent extends AbstractBaseTaskComponent {
+    /**
+     * Task summary:
+     * This task involves the participant seeing a stream of letters presented on the screen, one at a time. This is a memory task,
+     * so the participant is required to press the left arrow key on the keyboard if the letter they currently see is
+     * not the same as the one two letters ago. They are required to press the right arrow key on the keyboard if the
+     * letter they currently see is the one presented two letters ago
+     */
 
-    step: number = 1;
-    feedback: string = "";
-    scoreForSpecificTrial: number = 0;
-    totalScore: number = 0;
+    // config variables variables
     isPractice: boolean = false;
-    isStimulus: boolean = false;
-    isBreak: boolean = false;
-    currentTrial: number = 0;
-    isResponseAllowed: boolean = false;
-    data: NBack[] = [];
-    set: number;
+    private maxResponseTime: number;
+    private interTrialDelay: number; // In milliseconds
+    showFeedbackAfterEachTrial: boolean;
+    showScoreAfterEachTrial: boolean;
+    private durationOfFeedback: number;
+    private durationFixationPresented: number;
+    private numTrials: number;
+
+    // shared state variables
+    userID: string;
+    studyCode: string;
+    config: TaskConfig;
+
+    // high level variables
+    counterbalance: number;
+    taskData: NBackTaskData[];
+    stimuli: NBackStimulus[];
+    currentStimuliIndex: number; // index of the stimuli we are on
+
+    // local state variables
+    feedback: Feedback;
+    showStimulus: boolean = false;
+    text: string;
+    color: string;
+    showFeedback: boolean = false;
     showFixation: boolean = false;
-    sTimeout: any;
-    feedbackShown: boolean = false;
+    trialNum: number = 0;
+    trialScore: number = 0;
+    responseAllowed: boolean = false;
     currentLetter: string;
     nback: string;
 
-    @HostListener("window:keydown", ["$event"])
-    onKeyPress(event: KeyboardEvent) {
-        if (this.isValidKey(event.key) && this.isResponseAllowed) {
-            clearTimeout(this.sTimeout);
-            this.isResponseAllowed = false;
-            const lastElement = this.data[this.data.length - 1];
-            lastElement.responseTime = this.timerService.stopTimerAndGetTime();
-            lastElement.submitted = this.timerService.getCurrentTimestamp();
-            switch (event.key) {
-                case Key.ARROWLEFT:
-                    lastElement.userAnswer = UserResponse.NO;
-                    break;
-                case Key.ARROWRIGHT:
-                    lastElement.userAnswer = UserResponse.YES;
-                    break;
-            }
-            this.showFeedback();
-        }
+    // timers
+    maxResponseTimer: any;
+
+    get currentStimulus(): NBackStimulus {
+        return this.stimuli[this.currentStimuliIndex];
     }
 
-    private isValidKey(key: string): boolean {
-        if (!key) return false;
-        if (key === Key.ARROWLEFT || key === Key.ARROWRIGHT) {
-            return true;
-        }
+    get currentTrial(): NBackTaskData {
+        return this.taskData[this.taskData.length - 1];
     }
 
     constructor(
-        private router: Router,
-        private uploadDataService: UploadDataService,
-        private taskManager: TaskManagerService,
-        private authService: AuthService,
-        private snackbarService: SnackbarService,
-        private timerService: TimerService
-    ) {}
-
-    ngOnInit() {
-        this.set = Math.floor(Math.random() * 4) + 1;
+        protected snackbarService: SnackbarService,
+        protected timerService: TimerService,
+        protected dataGenService: DataGenerationService,
+        protected loaderService: LoaderService
+    ) {
+        super(loaderService);
     }
 
-    proceedtoPreviousStep() {
-        this.step -= 1;
-    }
+    configure(metadata: NBackMetadata, config: TaskConfig) {
+        try {
+            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
+            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
 
-    proceedtoNextStep() {
-        this.step += 1;
-    }
-
-    async startPractice() {
-        this.startGameInFullScreen();
-        this.resetData();
-        this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
-        this.isPractice = true;
-        this.currentTrial = 0;
-        this.showStimulus();
-    }
-
-    async startActualGame() {
-        this.resetData();
-        this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
-        this.isPractice = false;
-        this.currentTrial = 0;
-        this.showStimulus();
-    }
-
-    async showStimulus() {
-        this.reset();
-        this.timerService.clearTimer();
-        this.showFixation = true;
-        await this.wait(500);
-        this.showFixation = false;
-        await this.wait(200);
-
-        this.currentTrial += 1;
-        this.generateStimulus();
-        this.isStimulus = true;
-        this.isResponseAllowed = true;
-
-        this.timerService.startTimer();
-
-        // This is the delay between showing the stimulus and showing the feedback
-        this.sTimeout = setTimeout(() => {
-            if (!this.feedbackShown) {
-                this.showFeedback();
-            }
-        }, this.maxResponseTime);
-    }
-
-    generateStimulus() {
-        const setNum = this.isPractice ? 0 : this.set;
-        let selectedSet: NBackStimuli;
-        switch (setNum) {
-            case 1:
-                selectedSet = Set1;
-                break;
-            case 2:
-                selectedSet = Set2;
-                break;
-            case 3:
-                selectedSet = Set3;
-                break;
-            case 4:
-                selectedSet = Set4;
-                break;
-            default:
-                selectedSet = PracticeSet;
-                break;
+            this.numTrials = throwErrIfNotDefined(metadata.config.numTrials, "num trials not defined");
+            this.maxResponseTime = throwErrIfNotDefined(
+                metadata.config.maxResponseTime,
+                "max response time not defined"
+            );
+        } catch (error) {
+            throw new error("values not defined, cannot start study");
         }
 
-        this.currentLetter = selectedSet.set[this.currentTrial - 1].currentLetter;
-        this.nback = selectedSet.set[this.currentTrial - 1].nback;
+        this.config = config;
+        this.isPractice = thisOrDefault(metadata.config.isPractice, false);
+        this.durationFixationPresented = thisOrDefault(metadata.config.durationFixationPresented, 0);
+        this.interTrialDelay = thisOrDefault(metadata.config.interTrialDelay, 0);
+        this.showFeedbackAfterEachTrial = thisOrDefault(metadata.config.showFeedbackAfterEachTrial, false);
+        this.durationOfFeedback = thisOrDefault(metadata.config.durationOfFeedback, 0);
+        this.showScoreAfterEachTrial = thisOrDefault(metadata.config.showScoreAfterEachTrial, false);
 
-        this.data.push({
-            trial: this.currentTrial,
-            userID: this.authService.getDecodedToken().UserID,
+        this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as number;
+
+        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.config.stimuliConfig.stimuli;
+    }
+
+    start() {
+        this.startGameInFullScreen();
+
+        this.taskData = [];
+        this.currentStimuliIndex = 0;
+
+        // either the stimuli has been defined in config or we generate it here from service
+        if (!this.stimuli) {
+            this.stimuli = this.dataGenService.generateNBackStimuli(
+                this.isPractice,
+                this.numTrials,
+                this.counterbalance
+            );
+        }
+        super.start();
+    }
+
+    async beginRound() {
+        this.timerService.clearTimer();
+        this.showStimulus = false;
+        this.showFixation = true;
+        await wait(this.durationFixationPresented);
+        if (this.isDestroyed) return;
+        this.showFixation = false;
+
+        this.setStimuliUI(this.currentStimulus);
+
+        this.taskData.push({
+            trial: ++this.trialNum,
+            userID: this.userID,
             actualAnswer: this.currentLetter === this.nback ? UserResponse.YES : UserResponse.NO,
             userAnswer: UserResponse.NA,
             responseTime: 0,
             isCorrect: false,
             score: 0,
-            set: this.set,
+            set: this.counterbalance,
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
-            studyCode: this.taskManager.getStudyCode(),
+            studyCode: this.studyCode,
         });
+
+        this.setTimer(this.maxResponseTime, () => {
+            this.responseAllowed = false;
+            this.showStimulus = false;
+
+            this.handleRoundInteraction(null);
+        });
+
+        this.timerService.startTimer();
+        this.showStimulus = true;
+        this.responseAllowed = true;
     }
 
-    async showFeedback() {
-        this.feedbackShown = true;
-        this.isStimulus = false;
-        this.isResponseAllowed = false;
+    private setStimuliUI(stimulus: NBackStimulus) {
+        this.nback = stimulus.nback;
+        this.currentLetter = stimulus.currentLetter;
+    }
 
-        const actualAnswer = this.data[this.data.length - 1].actualAnswer;
-        const userAnswer = this.data[this.data.length - 1].userAnswer;
+    private setTimer(delay: number, cbFunc?: () => void) {
+        this.maxResponseTimer = window.setTimeout(() => {
+            if (cbFunc) cbFunc();
+        }, delay);
+    }
 
-        switch (userAnswer) {
-            case actualAnswer:
+    private isValidKey(key: string): boolean {
+        return key === Key.ARROWLEFT || key === Key.ARROWRIGHT;
+    }
+
+    private cancelAllTimers() {
+        this.snackbarService.clearSnackbar();
+        clearTimeout(this.maxResponseTimer);
+    }
+
+    @HostListener("window:keydown", ["$event"])
+    handleRoundInteraction(event: KeyboardEvent) {
+        this.cancelAllTimers();
+        this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
+
+        if (event === null) {
+            // max time out
+            this.currentTrial.userAnswer = UserResponse.NA;
+            this.currentTrial.score = 0;
+            this.currentTrial.responseTime = this.maxResponseTime;
+            this.currentTrial.isCorrect = false;
+            super.handleRoundInteraction(null);
+        } else if (this.responseAllowed && this.isValidKey(event.key)) {
+            this.responseAllowed = false;
+            this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
+            this.currentTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.NO : UserResponse.YES;
+            super.handleRoundInteraction(event.key);
+        }
+    }
+
+    async completeRound() {
+        this.showStimulus = false;
+        this.showFixation = false;
+        this.responseAllowed = false;
+
+        switch (this.currentTrial.userAnswer) {
+            case this.currentTrial.actualAnswer:
                 this.feedback = Feedback.CORRECT;
-                this.data[this.data.length - 1].isCorrect = true;
-                this.data[this.data.length - 1].score = 10;
-                this.scoreForSpecificTrial = 10;
-                this.totalScore += 10;
+                this.currentTrial.isCorrect = true;
+                this.currentTrial.score = 10;
                 break;
             case UserResponse.NA:
                 this.feedback = Feedback.TOOSLOW;
-                this.data[this.data.length - 1].responseTime = this.maxResponseTime;
-                this.scoreForSpecificTrial = 0;
                 break;
             default:
                 this.feedback = Feedback.INCORRECT;
-                this.scoreForSpecificTrial = 0;
+                this.currentTrial.isCorrect = false;
+                this.currentTrial.score = 0;
                 break;
         }
-        // show feedback either if it is a practice trial, or if the feedback is telling the user
-        // they are too slow. Don't show for other feedback during actual game
-        if (this.isPractice || (this.showFeedbackAfterEveryTrial && this.feedback === Feedback.TOOSLOW)) {
-            await this.wait(this.durationOfFeedback);
+
+        if (this.showFeedbackAfterEachTrial || this.feedback === Feedback.TOOSLOW) {
+            this.showFeedback = true;
+            await wait(this.durationOfFeedback);
+            if (this.isDestroyed) return;
+            this.showFeedback = false;
         }
-        this.decideToContinue();
+        super.completeRound();
     }
 
-    async decideToContinue() {
-        if (this.isPractice) {
-            if (this.currentTrial < this.practiceTrials) {
-                this.continueGame();
-            } else {
-                this.proceedtoNextStep();
-                await this.wait(2000);
-                this.proceedtoNextStep();
-            }
+    async decideToRepeat() {
+        // we have reached past the final activity
+        const finishedLastStimulus = this.currentStimuliIndex >= this.stimuli.length - 1;
+
+        if (finishedLastStimulus) {
+            const totalScore = this.taskData.reduce((acc, currVal) => {
+                return acc + currVal.score;
+            }, 0);
+
+            this.config.setCacheValue(NBackCache.TOTAL_SCORE, totalScore);
+            super.decideToRepeat();
+            return;
         } else {
-            if (this.currentTrial < this.actualTrials) {
-                if (this.numberOfBreaks === 0) {
-                    this.continueGame();
-                } else {
-                    const breakAtTrailIndices = [];
-                    const setSize = this.actualTrials / (this.numberOfBreaks + 1);
-                    for (let i = 1; i < this.numberOfBreaks + 1; i++) {
-                        breakAtTrailIndices.push(setSize * i);
-                    }
-                    if (breakAtTrailIndices.includes(this.currentTrial)) {
-                        this.isBreak = true;
-                    } else {
-                        this.isBreak = false;
-                        this.continueGame();
-                    }
-                }
-            } else {
-                this.proceedtoNextStep();
-
-                const decodedToken = this.authService.getDecodedToken();
-
-                // if admin, then this task is in debug mode and we do not want to upload tasks
-                if (decodedToken.Role === Role.ADMIN) {
-                    this.proceedtoNextStep();
-                } else {
-                    this.uploadResults(this.data)
-                        .pipe(take(1))
-                        .subscribe(
-                            (ok) => {
-                                if (ok) {
-                                    this.proceedtoNextStep();
-                                } else {
-                                    console.error("There was an error downloading results");
-                                    this.taskManager.handleErr();
-                                }
-                            },
-                            (err) => {
-                                console.error("There was an error downloading results");
-                                this.taskManager.handleErr();
-                            }
-                        );
-                }
-            }
+            this.currentStimuliIndex++;
+            await wait(this.interTrialDelay);
+            if (this.isDestroyed) return;
+            this.beginRound();
+            return;
         }
-    }
-
-    resume() {
-        this.reset();
-        this.isBreak = false;
-        this.continueGame();
-    }
-
-    async continueGame() {
-        await this.wait(this.interTrialDelay);
-        this.showStimulus();
-    }
-
-    uploadResults(data: NBack[]): Observable<boolean> {
-        const studyCode = this.taskManager.getStudyCode();
-        return this.uploadDataService.uploadData(studyCode, TaskNames.NBACK, data).pipe(map((ok) => ok.ok));
-    }
-
-    continueAhead() {
-        const decodedToken = this.authService.getDecodedToken();
-        if (decodedToken.Role === Role.ADMIN) {
-            if (!environment.production) console.log(this.data);
-
-            this.router.navigate(["/dashboard/components"]);
-            this.snackbarService.openInfoSnackbar("Task completed");
-        } else {
-            this.taskManager.next();
-        }
-    }
-
-    reset() {
-        this.currentLetter = "";
-        this.nback = "";
-        this.feedback = "";
-        this.feedbackShown = false;
-        this.scoreForSpecificTrial = 0;
-    }
-
-    resetData() {
-        this.totalScore = 0;
     }
 
     startGameInFullScreen() {
         setFullScreen();
-    }
-
-    wait(time: number): Promise<void> {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve();
-            }, time);
-        });
     }
 }
