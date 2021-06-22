@@ -18,6 +18,7 @@ import {
 import { RatingTaskActivities, RatingTaskQuestionList } from "./raw-data/rating-task-data-list";
 import {
     ChoiceTaskStimulus,
+    DemandSelectionStimulus,
     ImageBlob,
     NBackStimulus,
     OddballStimulus,
@@ -28,6 +29,8 @@ import {
 } from "./stimuli-models";
 import { StroopSet } from "./raw-data/stroop-data-list";
 import { NBackSet } from "./raw-data/nback-data-list";
+import { Color } from "src/app/models/InternalDTOs";
+import { DemandSelectionImageNames } from "./raw-data/demand-selection-image-list";
 
 @Injectable({
     providedIn: "root",
@@ -248,4 +251,39 @@ export class DataGenerationService {
             return selectedSet.slice(0, numTrials);
         }
     }
+
+    // start of demand selection data generation
+
+    generateDemandSelectionStimuli(
+        numTrials: number,
+        probOfShiftFirstPatch: number,
+        probOfShiftSecondPatch: number,
+        oddEvenColor: Color,
+        ltGtColor: Color,
+        usedColorStims: string[]
+    ): DemandSelectionStimulus[] {}
+
+    private getColorStim(usedColorStims: string[]): string {
+        if (usedColorStims.length >= DemandSelectionImageNames.length)
+            throw new Error("no more color stims to retrieve for demand selection");
+
+        let randIndex = getRandomNumber(0, DemandSelectionImageNames.length);
+        let randColorStim = DemandSelectionImageNames[randIndex];
+        while (usedColorStims.includes(randColorStim)) {
+            randIndex = getRandomNumber(0, DemandSelectionImageNames.length);
+            randColorStim = DemandSelectionImageNames[randIndex];
+        }
+        return randColorStim;
+    }
+
+    // probability represents a number that is a percentage (i.e. 25 is 25%)
+    private shouldShift(probability: number): boolean {
+        if (probability < 0 || probability > 100)
+            throw new Error("could not calculate shouldShift in demandselection. Invalid probability");
+        const prob = 100 - probability;
+        const randNum = getRandomNumber(0, 100);
+        return randNum >= prob;
+    }
+
+    // end of demand selection data generation
 }

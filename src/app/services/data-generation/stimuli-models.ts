@@ -63,3 +63,11 @@ export class NBackStimuliSet {
     3: NBackStimulus[];
     4: NBackStimulus[];
 }
+
+export enum DemandSelectionCounterbalance {
+    SELECTEASYPATCH = "SELECTEASYPATCH",
+    SELECTHARDPATCH = "SELECTHARDPATCH",
+    NONE = "NONE",
+}
+
+export class DemandSelectionStimulus {}

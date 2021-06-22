@@ -24,7 +24,7 @@ import { NgZorroModule } from "src/app/modules/ngzorro/ngzorro.module";
 import { NavigationButtonsComponent } from "./shared/navigation-buttons/navigation-buttons.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
-import { RotateDirective } from "./playables/demand-selection/Rotate.directive";
+import { RotateDirective } from "./shared/Rotate.directive";
 import { ColorGameComponent } from "./playables/color-game/color-game.component";
 import { EmbeddedPageComponent } from "./questionnaires/embedded-page/embedded-page.component";
 import { DemographicsQuestionnaireComponent } from "./questionnaires/demographics-questionnaire/demographics-questionnaire.component";
