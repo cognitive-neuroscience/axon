@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { NzMarks } from "ng-zorro-antd/slider";
 import { wait } from "src/app/common/commonMethods";
+import { UserResponse } from "src/app/models/InternalDTOs";
 import { ComponentName } from "src/app/services/component-factory.service";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
 import { RatingTaskCounterBalance } from "src/app/services/data-generation/raw-data/rating-task-data-list";
@@ -124,9 +125,10 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
             trial: ++this.trialNum,
             userID: this.userID,
             counterbalance: RatingTaskCounterBalance.NA,
-            userAnswer: null,
+            userAnswer: UserResponse.NA,
             question: "",
-            activity: `${this.currentStimulus.firstActivity} VS ${this.currentStimulus.secondActivity}`,
+            activityLeft: this.currentStimulus.firstActivity,
+            activityRight: this.currentStimulus.secondActivity,
             activityType: "",
             responseTime: null,
             score: null,
@@ -192,14 +194,14 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
             if (this.isDestroyed) return;
             // no input, ran out of time
             thisTrial.responseTime = this.maxResponseTime;
-            thisTrial.userAnswer = 50; // set anchor to default middle
+            thisTrial.userAnswer = UserResponse.NA; // set anchor to default middle
             super.handleRoundInteraction(sliderValue);
             return;
         }
 
         thisTrial.responseTime = this.timerService.getTime();
         thisTrial.submitted = this.timerService.getCurrentTimestamp();
-        thisTrial.userAnswer = sliderValue;
+        thisTrial.userAnswer = sliderValue.toString();
         this.showNextButton = true;
         return;
     }

@@ -11,6 +11,7 @@ import { LoaderService } from "src/app/services/loader.service";
 import { NzMarks } from "ng-zorro-antd/slider";
 import { ComponentName } from "src/app/services/component-factory.service";
 import { EverydayChoiceTaskData } from "../rating-new.component";
+import { UserResponse } from "src/app/models/InternalDTOs";
 
 export interface RaterTaskMetadata {
     component: ComponentName;
@@ -141,9 +142,10 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
             trial: ++this.trialNum,
             userID: this.userID,
             counterbalance: this.counterbalance,
-            userAnswer: null,
+            userAnswer: UserResponse.NA,
             question: this.currentStimulus.questions[this.currentQuestionIndex].question,
-            activity: this.currentStimulus.activity,
+            activityLeft: this.currentStimulus.activity,
+            activityRight: this.currentStimulus.activity,
             activityType: this.currentStimulus.type,
             responseTime: null,
             score: null,
@@ -211,14 +213,14 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
             if (this.isDestroyed) return;
             // no input, ran out of time
             thisTrial.responseTime = this.maxResponseTime;
-            thisTrial.userAnswer = 50; // set anchor to default middle
+            thisTrial.userAnswer = UserResponse.NA; // set anchor to default middle
             super.handleRoundInteraction(sliderValue);
             return;
         }
 
         thisTrial.responseTime = this.timerService.getTime();
         thisTrial.submitted = this.timerService.getCurrentTimestamp();
-        thisTrial.userAnswer = sliderValue;
+        thisTrial.userAnswer = sliderValue.toString();
         this.showNextButton = true;
         return;
     }

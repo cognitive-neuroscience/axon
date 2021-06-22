@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { UserResponse } from "src/app/models/InternalDTOs";
 import { TaskData } from "src/app/models/TaskData";
 import { RatingTaskCounterBalance } from "src/app/services/data-generation/raw-data/rating-task-data-list";
 import { TaskPlayerComponent } from "../task-player/task-player.component";
@@ -7,9 +8,10 @@ import { EverydayChoiceLayoutMetadata } from "./everyday-choice-task-layout.meta
 export class EverydayChoiceTaskData extends TaskData {
     taskName: string;
     counterbalance: RatingTaskCounterBalance;
-    activity: string;
+    activityLeft: string;
+    activityRight: string;
     question: string;
-    userAnswer: number;
+    userAnswer: string;
     activityType: "DoNothing" | "DoSomething" | "";
     responseTime: number;
 }
