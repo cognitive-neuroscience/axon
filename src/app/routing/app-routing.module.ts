@@ -55,7 +55,6 @@ const routes: Routes = [
     {
         path: RouteMap.demographicsquestionnaire.route,
         component: DemographicsQuestionnaireComponent,
-        canActivate: [ExperimentRouteGuard],
     },
     { path: "questionnaire/feedback", component: FeedbackQuestionnaireComponent },
     { path: "login", component: LoginComponent },

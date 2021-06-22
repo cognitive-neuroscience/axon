@@ -10,6 +10,9 @@ export class DemographicsQuestionnaireResponse extends QuestionnaireResponse {
     yearsOfEducation: number;
     hasNeuroConditions: boolean;
     hasPsychConditions: boolean;
+    currentEmploymentStatus: string;
+    householdIncome: string;
+    socialClass: string;
 }
 
 export class FeedbackQuestionnaireResponse extends QuestionnaireResponse {

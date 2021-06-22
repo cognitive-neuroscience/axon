@@ -1,95 +1,166 @@
 <div class="questionnaire-container">
-
     <h2 class="mat-h2 my-3" align="center">
         <b>Questionnaire</b>
-        <hr>
+        <hr />
     </h2>
 
     <div [formGroup]="demographicsQuestionnaire" class="form">
         <div class="py-2">
             <label class="font-weight-bold w-100">What is your age (in years)?</label>
             <mat-form-field>
-                <input required formControlName="age" matInput type="number" min="18" max="122">
-                <mat-error *ngIf="demographicsQuestionnaire.get('age')?.hasError('required')">This is required</mat-error>
-                <mat-error *ngIf="demographicsQuestionnaire.get('age')?.hasError('min')">You must be 18 or over</mat-error>
-                <mat-error *ngIf="demographicsQuestionnaire.get('age')?.hasError('max')">Please enter a valid age</mat-error>
+                <input required formControlName="age" matInput type="number" min="18" max="122" />
+                <mat-error *ngIf="demographicsQuestionnaire.get('age')?.hasError('required')"
+                    >This is required</mat-error
+                >
+                <mat-error *ngIf="demographicsQuestionnaire.get('age')?.hasError('min')"
+                    >You must be 18 or over</mat-error
+                >
+                <mat-error *ngIf="demographicsQuestionnaire.get('age')?.hasError('max')"
+                    >Please enter a valid age</mat-error
+                >
             </mat-form-field>
         </div>
-        <br>
+        <br />
         <div class="py-2 d-flex flex-column">
             <label class="font-weight-bold">What sex were you assigned at birth?</label>
-            <br>
+            <br />
             <mat-radio-group formControlName="sex" required>
                 <mat-radio-button class="w-100" [value]="'female'">Female</mat-radio-button>
                 <mat-radio-button class="w-100" [value]="'male'">Male</mat-radio-button>
             </mat-radio-group>
             <mat-error *ngIf="demographicsQuestionnaire.get('sex')?.hasError('required')">This is required</mat-error>
         </div>
-        <br>
+        <br />
         <div class="py-2 d-flex flex-column">
             <label class="font-weight-bold">How do you describe yourself?</label>
-            <br>
+            <br />
             <mat-radio-group formControlName="selfIdentification" required>
                 <mat-radio-button class="w-100" [value]="'female'">Female</mat-radio-button>
                 <mat-radio-button class="w-100" [value]="'male'">Male</mat-radio-button>
                 <mat-radio-button class="w-100" [value]="'transgender'">Transgender</mat-radio-button>
-                <mat-radio-button class="w-100" [value]="'none'">Do not identify as female, male, or transgender</mat-radio-button>
+                <mat-radio-button class="w-100" [value]="'none'"
+                    >Do not identify as female, male, or transgender</mat-radio-button
+                >
             </mat-radio-group>
-            <mat-error *ngIf="demographicsQuestionnaire.get('selfIdentification')?.hasError('required')">At least one task is required</mat-error>
+            <mat-error *ngIf="demographicsQuestionnaire.get('selfIdentification')?.hasError('required')"
+                >At least one task is required</mat-error
+            >
         </div>
-        <br>
+        <br />
         <div class="py-2">
-            <label class="font-weight-bold w-100">How many years of education do you have (completing high school equals 12 years)?</label>
+            <label class="font-weight-bold w-100"
+                >How many years of education do you have (completing high school equals 12 years)?</label
+            >
             <mat-form-field>
-                <input required formControlName="yearsOfEducation" matInput type="number" min="0" max="30">
-                <mat-error *ngIf="demographicsQuestionnaire.get('yearsOfEducation')?.hasError('required')">This is required</mat-error>
-                <mat-error *ngIf="demographicsQuestionnaire.get('yearsOfEducation')?.hasError('min')">Please enter a valid number</mat-error>
-                <mat-error *ngIf="demographicsQuestionnaire.get('yearsOfEducation')?.hasError('max')">Please enter a valid number</mat-error>
+                <input required formControlName="yearsOfEducation" matInput type="number" min="0" max="30" />
+                <mat-error *ngIf="demographicsQuestionnaire.get('yearsOfEducation')?.hasError('required')"
+                    >This is required</mat-error
+                >
+                <mat-error *ngIf="demographicsQuestionnaire.get('yearsOfEducation')?.hasError('min')"
+                    >Please enter a valid number</mat-error
+                >
+                <mat-error *ngIf="demographicsQuestionnaire.get('yearsOfEducation')?.hasError('max')"
+                    >Please enter a valid number</mat-error
+                >
             </mat-form-field>
         </div>
-        <br>
+        <br />
         <div class="py-2">
-            <label class="font-weight-bold">Do you have any of the following neurological conditions: neurodegenerative disorder (e.g. Parkinson's or Alzheimer's), seizures/epilepsy, brain tumor, stroke?</label>
+            <label class="font-weight-bold"
+                >Do you have any of the following neurological conditions: neurodegenerative disorder (e.g. Parkinson's
+                or Alzheimer's), seizures/epilepsy, brain tumor, stroke?</label
+            >
             <mat-radio-group formControlName="hasNeuroConditions" required>
                 <mat-radio-button class="w-100" [value]="true">Yes</mat-radio-button>
                 <mat-radio-button class="w-100" [value]="false">No</mat-radio-button>
             </mat-radio-group>
-            <mat-error *ngIf="demographicsQuestionnaire.get('hasNeuroConditions')?.hasError('required')">This is required</mat-error>
+            <mat-error *ngIf="demographicsQuestionnaire.get('hasNeuroConditions')?.hasError('required')"
+                >This is required</mat-error
+            >
         </div>
-        <br>
+        <br />
         <div class="py-2">
-            <label class="font-weight-bold">Do you have any of the following psychiatric conditions: currently active major depression, bipolar disorder, schizophrenia?</label>
+            <label class="font-weight-bold"
+                >Do you have any of the following psychiatric conditions: currently active major depression, bipolar
+                disorder, schizophrenia?</label
+            >
             <mat-radio-group formControlName="hasPsychConditions" required>
                 <mat-radio-button class="w-100" [value]="true">Yes</mat-radio-button>
                 <mat-radio-button class="w-100" [value]="false">No</mat-radio-button>
             </mat-radio-group>
-            <mat-error *ngIf="demographicsQuestionnaire.get('hasPsychConditions')?.hasError('required')">This is required</mat-error>
+            <mat-error *ngIf="demographicsQuestionnaire.get('hasPsychConditions')?.hasError('required')"
+                >This is required</mat-error
+            >
         </div>
-        <br>
-
+        <br />
+        <div class="py-2">
+            <label class="font-weight-bold">What is your current employment status?</label>
+            <mat-radio-group formControlName="currentEmploymentStatus" required>
+                <mat-radio-button class="w-100" value="employed full-time">Employed Full-Time</mat-radio-button>
+                <mat-radio-button class="w-100" value="employed part-time">Employed Part-Time</mat-radio-button>
+                <mat-radio-button class="w-100" value="self-employed">Self-Employed</mat-radio-button>
+                <mat-radio-button class="w-100" value="housemaker">Housemaker</mat-radio-button>
+                <mat-radio-button class="w-100" value="retired">Retired</mat-radio-button>
+                <mat-radio-button class="w-100" value="student">Student</mat-radio-button>
+                <mat-radio-button class="w-100" value="unemployed">Unemployed</mat-radio-button>
+            </mat-radio-group>
+            <mat-error *ngIf="demographicsQuestionnaire.get('currentEmploymentStatus')?.hasError('required')"
+                >This is required</mat-error
+            >
+        </div>
+        <br />
+        <div class="py-2">
+            <label class="font-weight-bold">What is your household income?</label>
+            <mat-radio-group formControlName="householdIncome" required>
+                <mat-radio-button class="w-100" value="less than $20,000">Less than $20,000</mat-radio-button>
+                <mat-radio-button class="w-100" value="$20,000-$34,999">$20,000 - $34,999</mat-radio-button>
+                <mat-radio-button class="w-100" value="$35,000-$49,999">$35,000 - $49,999</mat-radio-button>
+                <mat-radio-button class="w-100" value="$50,000-$74,999">$50,000 - $74,999</mat-radio-button>
+                <mat-radio-button class="w-100" value="$75,000-$99,999">$75,000 - $99,999</mat-radio-button>
+                <mat-radio-button class="w-100" value="over $100,000">Over $100,000</mat-radio-button>
+            </mat-radio-group>
+            <mat-error *ngIf="demographicsQuestionnaire.get('householdIncome')?.hasError('required')"
+                >This is required</mat-error
+            >
+        </div>
+        <br />
+        <div class="py-2">
+            <label class="font-weight-bold">To which social class would you say you belong?</label>
+            <mat-radio-group formControlName="socialClass" required>
+                <mat-radio-button class="w-100" value="below the poverty level"
+                    >Below the poverty level</mat-radio-button
+                >
+                <mat-radio-button class="w-100" value="lower middle class">Lower Middle Class</mat-radio-button>
+                <mat-radio-button class="w-100" value="middle class">Middle Class</mat-radio-button>
+                <mat-radio-button class="w-100" value="upper middle class">Upper Middle Class</mat-radio-button>
+                <mat-radio-button class="W-100" value="upper class">Upper Class</mat-radio-button>
+            </mat-radio-group>
+            <mat-error *ngIf="demographicsQuestionnaire.get('socialClass')?.hasError('required')"
+                >This is required</mat-error
+            >
+        </div>
+        <br />
 
         <div align="center" class="bottom-button-bar">
             <div class="d-flex flex-row align-items-center justify-content-around">
                 <div class="m-2">
                     <button mat-raised-button (click)="cancel()" color="warn">
-                        CANCEL
-                        &nbsp;
-                        <mat-icon>
-                            clear
-                        </mat-icon>
+                        CANCEL &nbsp;
+                        <mat-icon> clear </mat-icon>
                     </button>
                 </div>
                 <div class="m-2">
-                    <button mat-raised-button color="primary" (click)="submit()" [disabled]="!demographicsQuestionnaire.valid">
-                        SUBMIT
-                        &nbsp;
-                        <mat-icon>
-                            check
-                        </mat-icon>
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        (click)="submit()"
+                        [disabled]="!demographicsQuestionnaire.valid"
+                    >
+                        SUBMIT &nbsp;
+                        <mat-icon> check </mat-icon>
                     </button>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
