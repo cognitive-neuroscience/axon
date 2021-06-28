@@ -23,7 +23,12 @@ export const EverydayChoiceLayoutMetadata = {
                     {
                         sectionType: "text",
                         textContent:
-                            "There are two parts to the task: <br> 1) Answering questions about different activities <br> 2) Indicating your preference between different activities",
+                            "There are two parts to the task: <br> 1) Answering questions about different activities <br> 2) Indicating your preference between different activities <br> You will also complete some questionnaires at the end.",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent:
+                            "Please note that Part 1 is the longest and takes around 40 minutes. The rest is much shorter, and the entire experiment will last from 1 hour to 1 hour and 20 minutess.",
                     },
                     {
                         sectionType: "text",
