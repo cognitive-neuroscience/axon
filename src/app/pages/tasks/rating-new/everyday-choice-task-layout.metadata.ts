@@ -23,7 +23,7 @@ export const EverydayChoiceLayoutMetadata = {
                     {
                         sectionType: "text",
                         textContent:
-                            "There are two parts to the task: <br> 1) Answering questions about different activities <br> 2) Indicating your preference between different activities <br> You will also complete some questionnaires at the end.",
+                            "There are two parts to the task: <br> 1) Answering questions about different activities <br> 2) Indicating your preference between different activities. <br> You will also complete some questionnaires at the end.",
                     },
                     {
                         sectionType: "text",
@@ -370,11 +370,15 @@ export const EverydayChoiceLayoutMetadata = {
                 sections: [
                     {
                         sectionType: "text",
-                        textContent: "Hooray! You have finished the Everyday Activities Game.",
+                        textContent: "Hooray! You have finished the Everyday Activities Game. We appreciate your time and effort in helping with our research.",
                     },
                     {
                         sectionType: "text",
-                        textContent: "We appreciate your time and effort in helping with our research.",
+                        textContent: "Before you go, you will complete some short questionnaires.",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent: "You will <br> 1) answer the questions on the questionnaire, and click CONTINUE to the next questionnaire <br> 2) repeat until you finish the last questionnaire, and click SUBMIT YOUR ANSWERS <br> 3) clicking NEXT to obtain your completion code.",
                     },
                 ],
                 buttons: {
