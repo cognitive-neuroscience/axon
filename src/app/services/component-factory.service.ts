@@ -7,21 +7,19 @@ import { OddballComponent } from "../pages/tasks/playables/oddball/oddball.compo
 import { StroopComponent } from "../pages/tasks/playables/stroop/stroop.component";
 import { SmileyFaceComponent } from "../pages/tasks/playables/smiley-face/smiley-face.component";
 import { NBackComponent } from "../pages/tasks/playables/n-back/n-back.component";
+import { DemandSelectionComponent } from "../pages/tasks/playables/demand-selection/demand-selection.component";
+import { TaskSwitchingComponent } from "../pages/tasks/playables/task-switching/task-switching.component";
 
 export enum ComponentName {
     DISPLAY_COMPONENT = "DISPLAYCOMPONENT",
-
     RATING_COMPONMENT = "RATINGCOMPONENT",
-
     CHOICE_COMPONENT = "CHOICECOMPONENT",
-
     ODDBALL_COMPONENT = "ODDBALLCOMPONENT",
-
     STROOP_COMPONENT = "STROOPCOMPONENT",
-
     SMILEY_FACE_COMPONENT = "SMILEYFACECOMPONENT",
-
     NBACK_COMPONENT = "NBACKCOMPONENT",
+    DEMAND_SELECTION_COMPONENT = "DEMANDSELECTIONCOMPONENT",
+    TASK_SWITCHING_COMPONENT = "TASKSWITCHINGCOMPONENT",
 }
 
 @Injectable({
@@ -50,6 +48,10 @@ export class ComponentFactoryService {
                 return this.buildComponent(SmileyFaceComponent);
             case ComponentName.NBACK_COMPONENT:
                 return this.buildComponent(NBackComponent);
+            case ComponentName.DEMAND_SELECTION_COMPONENT:
+                return this.buildComponent(DemandSelectionComponent)
+            case ComponentName.TASK_SWITCHING_COMPONENT:
+                return this.buildComponent(TaskSwitchingComponent);
             default:
                 throw new Error("Component doesn't exist: " + componentMapping);
         }

@@ -283,7 +283,7 @@ export const NBackLayoutMetadata = {
                     {
                         sectionType: "text",
                         injection: "cached-string",
-                        cacheKeyForInjection: "nback-total-score",
+                        cacheKey: "nback-total-score",
                         textContent: "You scored ??? points",
                     },
                     {

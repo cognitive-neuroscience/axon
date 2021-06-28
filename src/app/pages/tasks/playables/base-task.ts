@@ -5,6 +5,7 @@ import { TaskData } from "src/app/models/TaskData";
 import { LoaderService } from "src/app/services/loader.service";
 import { Navigation } from "../shared/navigation-buttons/navigation-buttons.component";
 import { Playable, IOnComplete } from "./playable";
+declare function setFullScreen(): any;
 
 @Component({ template: "" })
 export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
@@ -60,8 +61,17 @@ export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
         return;
     }
 
+    afterInit() {}
+
     ngOnDestroy() {
+        this.isDestroyed = true;
         this.onComplete.complete();
         return;
+    }
+
+    async startGameInFullScreen() {
+        setFullScreen();
+        await wait(1000); // delay to allow screen to expand
+        if (this.isDestroyed) return;
     }
 }

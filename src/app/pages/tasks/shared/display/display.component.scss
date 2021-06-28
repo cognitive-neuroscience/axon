@@ -57,6 +57,11 @@
     .image-container {
         display: flex;
         align-items: flex-start;
+
+        .image-small {
+            width: 50px;
+            margin-bottom: 20px;
+        }
     }
 
     @include for-small-device-only {

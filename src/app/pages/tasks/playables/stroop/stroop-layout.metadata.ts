@@ -198,7 +198,7 @@ export const StroopLayoutMetadata = {
                     {
                         sectionType: "text",
                         injection: "cached-string",
-                        cacheKeyForInjection: "total-score",
+                        cacheKey: "total-score",
                         textContent: "You scored: ??? points",
                     },
                 ],

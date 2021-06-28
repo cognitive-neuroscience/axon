@@ -140,6 +140,9 @@ export class TaskPlayerComponent implements OnDestroy {
             );
             // attach component to view container
             this.viewContainer.insert(component.hostView);
+
+            // run the afterInit function for cleanup
+            component.instance.afterInit();
         } catch (error) {
             // handle more gracefully in the future
             throw new Error(error);
@@ -151,7 +154,6 @@ export class TaskPlayerComponent implements OnDestroy {
         this.viewContainer.clear();
 
         if (onComplete.taskData) this.taskData = this.taskData.concat(onComplete.taskData);
-        if (onComplete.taskData) console.log(this.taskData);
 
         if (onComplete.navigation === Navigation.NEXT) {
             this.renderNextStep();
@@ -168,8 +170,6 @@ export class TaskPlayerComponent implements OnDestroy {
     }
 
     continueAhead() {
-        console.log(this.taskData);
-
         if (this.userService.user.role === Role.ADMIN) {
             this.reset();
             this.router.navigate(["/dashboard/components"]);

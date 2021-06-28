@@ -13,4 +13,6 @@ export interface Playable {
     handleComplete(nav: Navigation, data?: any[]): void;
 
     configure(metadata: any, config?: any): void;
+
+    afterInit(): void;
 }

@@ -12,7 +12,6 @@ import { TaskConfig } from "../task-player/task-player.component";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
 import { LoaderService } from "src/app/services/loader.service";
 import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
-declare function setFullScreen(): any;
 
 interface StroopTaskMetadata {
     component: ComponentName;
@@ -127,8 +126,8 @@ export class StroopComponent extends AbstractBaseTaskComponent {
             this.stimuli = metadata.config.stimuliConfig.stimuli;
     }
 
-    start() {
-        this.startGameInFullScreen();
+    async start() {
+        await this.startGameInFullScreen();
 
         this.taskData = [];
         this.currentStimuliIndex = 0;
@@ -291,9 +290,5 @@ export class StroopComponent extends AbstractBaseTaskComponent {
             this.beginRound();
             return;
         }
-    }
-
-    startGameInFullScreen() {
-        setFullScreen();
     }
 }

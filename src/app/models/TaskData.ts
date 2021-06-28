@@ -58,7 +58,7 @@ export class NBackStimuli implements Stimuli {
     }[];
 }
 
-export class TaskSwitching extends TaskData {
+export class TaskSwitchingTaskData extends TaskData {
     color: string;
     digit: number;
     actualAnswer: UserResponse;
@@ -66,7 +66,7 @@ export class TaskSwitching extends TaskData {
     responseTime: number;
 }
 
-export class DemandSelection extends TaskData {
+export class DemandSelectionTaskData extends TaskData {
     firstPatch: string;
     secondPatch: string;
     selectedPatch: string;

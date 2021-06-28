@@ -1,14 +1,34 @@
 <div class="container-fluid wrapper task-text flex-column-center">
+    <div class="full-box flex-column-center">
 
-    <!-- Slide 1 -->
-    <div class="full-box flex-column-space-between" *ngIf="step === 1">
+        <div *ngIf="showStimulus">
+            <div style="font-size: 100px;" [style.color]="color">
+                {{digit}}
+            </div>
+        </div>
 
-        <!-- Introduction -->
+        <div *ngIf="showFixation">
+            <i class="material-icons" style="font-size: 80px;">add</i>
+        </div>
+
+        <div *ngIf="showFeedback">
+            <div class="feedback">
+                {{feedback}}
+            </div>
+        </div>
+
+        <div *ngIf="showHint" class="instructions-reminder">
+            <img style="width: 80%; max-width: 1100px;" src="/assets/images/instructions/taskswitching/reminder.png" alt="Instructions Reminder">
+        </div>
+
+    </div>
+
+    <!-- <div class="full-box flex-column-space-between" *ngIf="step === 1">
+
         <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/taskswitching/1.png" alt="Task Switching instructions">
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -33,15 +53,12 @@
         </div>
     </div>
 
-    <!-- Slide 2 -->
     <div class="full-box flex-column-space-between" *ngIf="step === 2">
 
-        <!-- Instructions -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/taskswitching/2.png" alt="Task Switching instructions">
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -66,15 +83,12 @@
         </div>
     </div>
 
-    <!-- Slide 3 -->
     <div class="full-box flex-column-space-between" *ngIf="step === 3">
         
-        <!-- Instructions -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/taskswitching/3.png" alt="Task Switching instructions">
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -99,15 +113,12 @@
         </div>
     </div>
 
-    <!-- Slide 4 -->
     <div class="full-box flex-column-space-between" *ngIf="step === 4">
         
-        <!-- Instructions -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/taskswitching/4.png" alt="Task Switching instructions">
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -132,15 +143,12 @@
         </div>
     </div>
 
-    <!-- Slide 5 -->
     <div class="full-box flex-column-space-between" *ngIf="step === 5">
         
-        <!-- Instructions -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/taskswitching/5.png" alt="Task Switching instructions">
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -165,15 +173,12 @@
         </div>
     </div>
 
-    <!-- Slide 6-->
     <div class="full-box flex-column-space-between" *ngIf="step === 6">
 
-        <!-- Instructions -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/taskswitching/6.png" alt="Task Switching instructions">
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -194,12 +199,10 @@
         </div>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="step === 7">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Start Practice Round -->
     <div class="full-box flex-column-center" *ngIf="step === 8">
 
         <div *ngIf="isStimulus">
@@ -223,15 +226,12 @@
         </div>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="step === 9">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- 1st Practice round complete message -->
     <div class="full-box flex-column-space-between" *ngIf="step === 10">
         
-        <!-- Practice score -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
 
             <div class="uppercase underline" align="center">
@@ -248,7 +248,6 @@
 
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -273,15 +272,12 @@
         </div>
     </div>
 
-    <!-- Instructions slide for practice #2 -->
     <div class="full-box flex-column-space-between" *ngIf="step === 11">
         
-        <!-- Instructions -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/taskswitching/7.png" alt="Task Switching instructions">
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -306,12 +302,10 @@
         </div>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="step === 12">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Start 2nd Practice Round -->
     <div class="full-box flex-column-center" *ngIf="step === 13">
 
         <div *ngIf="isStimulus">
@@ -332,15 +326,12 @@
 
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="step === 14">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- 2nd Practice round complete message -->
     <div class="full-box flex-column-space-between" *ngIf="step === 15">
         
-        <!-- Practice score -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
 
             <div>
@@ -357,7 +348,6 @@
 
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -382,15 +372,12 @@
         </div>
     </div>
 
-    <!-- Instructions slide for practice #2 -->
     <div class="full-box flex-column-space-between" *ngIf="step === 16">
         
-        <!-- Instructions -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/taskswitching/7.png" alt="Task Switching instructions">
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -415,12 +402,10 @@
         </div>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="step === 17">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Start 2nd Practice Round repeated -->
     <div class="full-box flex-column-center" *ngIf="step === 18">
 
         <div *ngIf="isStimulus">
@@ -441,15 +426,12 @@
 
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="step === 19">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- 2nd Practice round complete message repeated -->
     <div class="full-box flex-column-space-between" *ngIf="step === 20">
         
-        <!-- Practice score -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
 
             <div>
@@ -462,7 +444,6 @@
 
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -487,15 +468,12 @@
         </div>
     </div>
 
-    <!-- Introduction slide for practice #3 -->
     <div class="full-box flex-column-space-between" *ngIf="step === 21">
         
-        <!-- Instructions -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/taskswitching/8.png" alt="Task Switching instructions">
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -520,15 +498,12 @@
         </div>
     </div>
 
-    <!-- Instructions recap slide for practice #3 -->
     <div class="full-box flex-column-space-between" *ngIf="step === 22">
         
-        <!-- Instructions -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/taskswitching/9.png" alt="Task Switching instructions">
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -553,12 +528,10 @@
         </div>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="step === 23">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Start 3rd Practice Round -->
     <div class="full-box flex-column-center" *ngIf="step === 24">
 
         <div *ngIf="isStimulus">
@@ -579,20 +552,16 @@
 
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="step === 25">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Introduction slide for actual round -->
     <div class="full-box flex-column-space-between" *ngIf="step === 26">
         
-        <!-- Instructions -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/taskswitching/10.png" alt="Task Switching instructions">
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -617,15 +586,12 @@
         </div>
     </div>
 
-    <!-- Recap instructions for actual round -->
     <div class="full-box flex-column-space-between" *ngIf="step === 27">
         
-        <!-- Instructions -->
         <div class="uppercase instructions h-100 flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/taskswitching/11.png" alt="Task Switching instructions">
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -650,12 +616,10 @@
         </div>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="step === 28">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Start Actual Round -->
     <div class="full-box flex-column-center" *ngIf="step === 29">
 
         <div *ngIf="isStimulus">
@@ -675,12 +639,10 @@
         </div>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="step === 30">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Slide 9 -->
     <div class="full-box flex-column-space-between" *ngIf="step === 31">
 
         <div class="uppercase instructions h-100 flex-column-center">
@@ -691,7 +653,6 @@
             </div>
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -714,6 +675,6 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
 </div>

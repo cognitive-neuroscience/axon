@@ -18,6 +18,7 @@ import {
 import { RatingTaskActivities, RatingTaskQuestionList } from "./raw-data/rating-task-data-list";
 import {
     ChoiceTaskStimulus,
+    DemandSelectionCounterbalance,
     DemandSelectionStimulus,
     ImageBlob,
     NBackStimulus,
@@ -26,6 +27,7 @@ import {
     SmileyFaceStimulus,
     SmileyFaceType,
     StroopStimulus,
+    TaskSwitchingStimulus,
 } from "./stimuli-models";
 import { StroopSet } from "./raw-data/stroop-data-list";
 import { NBackSet } from "./raw-data/nback-data-list";
@@ -170,6 +172,7 @@ export class DataGenerationService {
         while (scenesToExclude.includes(scene)) {
             scene = novelBlobKeys[getRandomNumber(0, novelBlobKeys.length)];
         }
+        // reference type - this reference will be cached, shared and modified with other oddball components
         scenesToExclude.push(scene);
         return scene;
     }
@@ -260,23 +263,69 @@ export class DataGenerationService {
         probOfShiftSecondPatch: number,
         oddEvenColor: Color,
         ltGtColor: Color,
-        usedColorStims: string[]
-    ): DemandSelectionStimulus[] {}
+        usedColorStims: string[],
+        counterbalance: DemandSelectionCounterbalance
+    ): DemandSelectionStimulus[] {
+
+        const firstPatchImg = this.getColorStim(usedColorStims);
+        const secondPatchImg = this.getColorStim(usedColorStims);
+        const rotation = getRandomNumber(0, 360);
+
+        let demandSelectionStimuli: DemandSelectionStimulus[] = new Array(numTrials);
+        for(let index = 0; index < demandSelectionStimuli.length; index++) {
+            if (index === 0) {
+                demandSelectionStimuli[index] = {
+                    firstPatchImgName: firstPatchImg,
+                    secondPatchImgName: secondPatchImg,
+                    firstPatch: getRandomNumber(0, 10) < 5 ? oddEvenColor : ltGtColor,
+                    secondPatch: getRandomNumber(0, 10) < 5 ? oddEvenColor : ltGtColor,
+                    digit: this.getDigit(null),
+                    counterbalance: counterbalance,
+                    rotation: rotation // choose a degree of rotation between 0 and 359 (because 0 and 360 are the same)
+                }
+            } else {
+                // selecting what was NOT the color for the previous patches
+                const prevTrial = demandSelectionStimuli[index - 1];
+                const prevTrialNoneFirstPatchColor = prevTrial.firstPatch === oddEvenColor ? ltGtColor : oddEvenColor;
+                const prevTrialNoneSecondPatchColor = prevTrial.secondPatch === oddEvenColor ? ltGtColor : oddEvenColor;
+                demandSelectionStimuli[index] = {
+                    firstPatchImgName: firstPatchImg,
+                    secondPatchImgName: secondPatchImg,
+                    firstPatch: this.shouldShift(probOfShiftFirstPatch) ? prevTrialNoneFirstPatchColor : prevTrial.firstPatch,
+                    secondPatch: this.shouldShift(probOfShiftSecondPatch) ? prevTrialNoneSecondPatchColor : prevTrial.secondPatch,
+                    digit: this.getDigit(prevTrial.digit),
+                    counterbalance: counterbalance,
+                    rotation: rotation
+                }
+            }
+        }
+        return demandSelectionStimuli;
+    }
 
     private getColorStim(usedColorStims: string[]): string {
         if (usedColorStims.length >= DemandSelectionImageNames.length)
             throw new Error("no more color stims to retrieve for demand selection");
 
-        let randIndex = getRandomNumber(0, DemandSelectionImageNames.length);
-        let randColorStim = DemandSelectionImageNames[randIndex];
+        let randColorStim = DemandSelectionImageNames[getRandomNumber(0, DemandSelectionImageNames.length)];
         while (usedColorStims.includes(randColorStim)) {
-            randIndex = getRandomNumber(0, DemandSelectionImageNames.length);
-            randColorStim = DemandSelectionImageNames[randIndex];
+            randColorStim = DemandSelectionImageNames[getRandomNumber(0, DemandSelectionImageNames.length)];
         }
+        // reference type - this reference will be cached, shared and modified with other demand selection components
+        usedColorStims.push(randColorStim)
         return randColorStim;
     }
 
-    // probability represents a number that is a percentage (i.e. 25 is 25%)
+    private getDigit(prevDigit: number): number {
+        let digit = getRandomNumber(0, 10);
+        //  digits are 1,2,3,4,6,7,8,9 - don't repeat same digit twice
+        while(digit === 0 || digit === 5 || digit === prevDigit) {
+            digit = getRandomNumber(0, 10)
+        }
+        return digit;
+    }
+
+    // probability represents a number that is a percentage (i.e. 25 is 25%).
+    // calculates whether or not the patch should change
     private shouldShift(probability: number): boolean {
         if (probability < 0 || probability > 100)
             throw new Error("could not calculate shouldShift in demandselection. Invalid probability");
@@ -286,4 +335,30 @@ export class DataGenerationService {
     }
 
     // end of demand selection data generation
+
+    generateTaskSwitchingStimuli(
+        numTrials: number,
+        probOfShift: number,
+        oddEvenColor: Color,
+        ltGtColor: Color
+    ): TaskSwitchingStimulus[] {
+
+        let color = getRandomNumber(0, 2) === 1 ? oddEvenColor : ltGtColor;
+
+        //  digits are 1,2,3,4,6,7,8,9 - don't repeat same digit twice
+        const stimuli: TaskSwitchingStimulus[] = new Array(numTrials);
+        for(let i = 0; i < stimuli.length; i++) {
+            // the first time needs to be null
+            const digit = this.getDigit( i === 0 ? null : stimuli[i - 1].digit);
+
+            if (this.shouldShift(probOfShift)) color = (color === oddEvenColor ? ltGtColor : oddEvenColor);
+
+            stimuli[i] = {
+                digit: digit,
+                color: color
+            }
+        }
+        return stimuli;
+    }
 }
+

@@ -1,506 +1,392 @@
-import { Component, OnInit, HostListener } from "@angular/core";
-import { Router } from "@angular/router";
-declare function setFullScreen(): any;
-import { BlockSet, Block, DScounterbalance } from "./BlockSet";
-import { UploadDataService } from "src/app/services/uploadData.service";
+import { Component, HostListener } from "@angular/core";
 import { Color, Key, UserResponse } from "src/app/models/InternalDTOs";
-import { AuthService } from "../../../../services/auth.service";
 import { SnackbarService } from "../../../../services/snackbar.service";
-import { TaskManagerService } from "../../../../services/task-manager.service";
 import { TimerService } from "../../../../services/timer.service";
 import { Feedback } from "../../../../models/InternalDTOs";
-import { DemandSelection, TaskNames } from "../../../../models/TaskData";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { environment } from "../../../../../environments/environment";
-import { Role } from "src/app/models/enums";
+import { DemandSelectionTaskData } from "../../../../models/TaskData";
+import { StimuliProvidedType } from "src/app/models/enums";
+import { ComponentName } from "src/app/services/component-factory.service";
+import { DemandSelectionCounterbalance, DemandSelectionStimulus } from "src/app/services/data-generation/stimuli-models";
+import { TaskConfig } from "../task-player/task-player.component";
+import { AbstractBaseTaskComponent } from "../base-task";
+import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
+import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
+import { LoaderService } from "src/app/services/loader.service";
+
+interface DemandSelectionMetadata {
+    component: ComponentName;
+    config: {
+        isPractice: boolean;
+        maxResponseTime: number;
+        interTrialDelay: number;
+        showFeedbackAfterEachTrial: boolean;
+        durationOfFeedback: number;
+        numTrials: number;
+        delayToShowHelpMessage: number;
+        probOfShiftFirstPatch: number;
+        durationHelpMessageShown: number;
+        probOfShiftSecondPatch: number;
+        oddEvenColor: Color;
+        ltGtColor: Color;
+        counterbalanceMode: "none" | "counterbalance" | "counterbalance-alternative",
+        stimuliConfig: {
+            type: StimuliProvidedType;
+            stimuli: DemandSelectionStimulus[];
+        };
+    };
+}
+
+export enum DemandSelectionCache {
+    BLOCK_NUM = "demandselection-block-num",
+    USED_STIMS_ARRAY = "demandselection-used-stims-array",
+    NUM_CORRECT = "demandselection-num-correct",
+    HARDER_STRING = "demandselection-harder-string",
+    EASIER_STRING = "demandselection-easier-string"
+}
 
 @Component({
     selector: "app-demand-selection",
     templateUrl: "./demand-selection.component.html",
     styleUrls: ["./demand-selection.component.scss"],
 })
-export class DemandSelectionComponent implements OnInit {
-    // Default Study config
-    isScored: boolean | number = true;
-    showFeedbackAfterEveryTrial: boolean | number = true;
-    showScoreAfterEveryTrial: boolean | number = false;
-    // numberOfBreaks: number = 0;
-    maxResponseTime: number = 5000;
-    durationOfFeedback: number = 1000; // In milliseconds
-    interTrialDelay: number = 200; // In milliseconds
-    practiceTrials: number = 5;
-    actualTrials: number = 50;
-    blockTrials: number[] = environment.production ? [50, 50, 50, 50, 35, 35] : [5, 5, 5, 5, 3, 3];
+export class DemandSelectionComponent extends AbstractBaseTaskComponent {
+    /**
+     * This task is designed to be an addition to the task switching game.
+     * The participant is shown 2 patches. For every block, new patches are
+     * selected and the rotation changes.
+     * The participant has to hover their mouse over the middle fixation. Once they
+     * do that, then the two patches appear. One patch requires more frequent task switching
+     * compared to the other patch, which has a lower probability of switching between
+     * colors.
+     */
 
-    // all variables relating to showing different component in the game
-    showPatches: boolean = false;
-    showNumber: boolean = false;
-    number: number = 0;
-    feedback: string = "";
-    showFixation: boolean = false;
-    feedbackShown: boolean = false;
-
-    delayToShowHelpMessage: number = 4000;
-    durationHelpMessageShown: number = 6000;
-    scoreForSpecificTrial: number = 0;
-    step: number = 1;
-    totalScore: number = 0;
+    // config variables variables
     isPractice: boolean = false;
-    isStimulus: boolean = false;
-    isBreak: boolean = false;
-    currentTrial: number = 0; // keeps track of what trial num we're currently at for the specific block
-    isResponseAllowed: boolean = false;
-    data: DemandSelection[] = [];
-    sTimeout: any;
-    snackbarTimeout: any;
+    private maxResponseTime: number;
+    private interTrialDelay: number; // In milliseconds
+    showFeedbackAfterEachTrial: boolean;
+    private durationOfFeedback: number;
+    private delayToShowHelpMessage: number;
+    private durationHelpMessageShown: number;
+    private probOfShiftFirstPatch: number;
+    private probOfShiftSecondPatch: number;
+    private numTrials: number;
+    private oddEvenColor: Color;
+    private ltGtColor: Color;
+    private counterbalanceMode: "none" | "counterbalance" | "counterbalance-alternative";
 
-    // what practice phase we are currently at
-    currentPracticeRound: {
-        phase: number;
-        round: number; // multiple rounds for each phase (each repeat is +1 round)
-    } = {
-        phase: 0,
-        round: 0,
-    };
+    // shared state variables
+    userID: string;
+    studyCode: string;
+    config: TaskConfig;
+
+    // high level variables
+    counterbalance: DemandSelectionCounterbalance;
+    taskData: DemandSelectionTaskData[];
+    stimuli: DemandSelectionStimulus[];
+    currentStimuliIndex: number; // index of the stimuli we are on
+
+    // local state variables
+    blockNum: number = 0;
+    showPatches: boolean = false;
+    showDigit: boolean = false;
+    digit: number = 0;
+    feedback: string = "";
+    color: string = "";
+    trialNum: number = 0;
+    showFixation: boolean = false;
+    showFeedback: boolean = false;
+    responseAllowed: boolean = false;
+    showStimulus: boolean = false;
+    selectedPatch: "firstPatch" | "secondPatch";
+
+    // timers
+    maxResponseTimer: any;
+    showHelpMessageTimer: any;
 
     public readonly imagePath = "/assets/images/stimuli/demandselection/";
 
-    // config for setting up practice rounds
-    practiceRoundConfig: {
-        [key: number]: {
-            numTrials: number;
-            showFeedback: boolean;
-            responseTime: number; // in milliseconds
-            repeat: {
-                canRepeat: boolean;
-                numRepeatsAllowed: number;
-                thresholdForRepeat?: number;
-            };
-        };
-    } = {
-        1: {
-            numTrials: environment.production ? 5 : 5,
-            showFeedback: true,
-            responseTime: 5000,
-            repeat: {
-                canRepeat: false,
-                numRepeatsAllowed: 0,
-            },
-        },
-        2: {
-            numTrials: environment.production ? 5 : 5,
-            showFeedback: true,
-            responseTime: 5000,
-            repeat: {
-                canRepeat: false,
-                numRepeatsAllowed: 0,
-            },
-        },
-    };
 
-    selectedPatch: "firstPatch" | "secondPatch" = "firstPatch";
-    color: string;
-    blockset: BlockSet;
-    currentBlock: Block;
-    blockNum = 1;
-    counterBalance: DScounterbalance = DScounterbalance.NONE; // for blocks 5 & 6
-
-    oddEvenColor = Color.BLUE;
-    ltGtColor = Color.ORANGE;
-
-    @HostListener("window:keydown", ["$event"])
-    onKeyPress(event: KeyboardEvent) {
-        if (this.isResponseAllowed && this.isValidKey(event.key)) {
-            // if we have a response before timeout, we need to make sure this is cleared
-            clearTimeout(this.sTimeout);
-            this.isStimulus = false;
-            this.showPatches = false;
-            this.showFixation = false;
-            this.showNumber = false;
-            this.isResponseAllowed = false;
-            let userAnswer: UserResponse;
-
-            const lastItem = this.data[this.data.length - 1];
-
-            lastItem.respondToNumberResponseTime = this.timerService.stopTimerAndGetTime();
-            lastItem.submitted = this.timerService.getCurrentTimestamp();
-
-            // mark down user response
-            const selectedColor = this.currentBlock.trialConfigs[this.currentTrial - 1][this.selectedPatch];
-            if (selectedColor === this.oddEvenColor) {
-                userAnswer = event.key === Key.ARROWLEFT ? UserResponse.ODD : UserResponse.EVEN;
-            } else {
-                userAnswer = event.key === Key.ARROWLEFT ? UserResponse.LESSER : UserResponse.GREATER;
-            }
-
-            lastItem.userAnswer = userAnswer;
-
-            this.showFeedback();
-        }
-    }
-
-    private isValidKey(key: string): boolean {
-        if (key === Key.ARROWLEFT || key === Key.ARROWRIGHT) return true;
-        return false;
+    get currentStimulus(): DemandSelectionStimulus {
+        return this.stimuli[this.currentStimuliIndex];
     }
 
     constructor(
-        private router: Router,
-        private uploadDataService: UploadDataService,
-        private authService: AuthService,
-        private snackbarService: SnackbarService,
-        private taskManager: TaskManagerService,
-        private timerService: TimerService
-    ) {}
-
-    ngOnInit() {
-        // generate the blockset for the 6 blocks to be run
-        // we are creating a blockset where the harder patch is the second one (higher prob of switching)
-        this.blockset = new BlockSet(this.blockTrials, 10, 90, Color.BLUE, Color.ORANGE, false);
+        protected snackbarService: SnackbarService,
+        protected timerService: TimerService,
+        protected dataGenService: DataGenerationService,
+        protected loaderService: LoaderService
+    ) {
+        super(loaderService);
     }
 
-    proceedtoPreviousStep(step = 1) {
-        this.step -= step;
-    }
+    configure(metadata: DemandSelectionMetadata, config: TaskConfig) {
+        try {
+            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
+            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
 
-    proceedtoNextStep() {
-        this.step += 1;
-    }
-
-    async startPractice() {
-        this.applyPracticeTrialConfigs();
-
-        let practiceBlockset = new BlockSet([this.practiceTrials], 10, 90, Color.BLUE, Color.ORANGE, true);
-        this.currentBlock = practiceBlockset.blocks[0];
-
-        this.startGameInFullScreen();
-        this.resetData();
-        this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
-        this.isPractice = true;
-        this.currentTrial = 0;
-        this.showStimulus();
-    }
-
-    // looks at the practice trial config and applies the number of practice trials, feedback shown, as well as
-    // whether the phase needs to be repeated or not
-    private applyPracticeTrialConfigs() {
-        if (this.currentPracticeRound.round == 0 || !this.shouldRepeatPracticePhase()) {
-            // if we are at the first round of the phase, we don't worry about repeating
-            // we should not go to the next phase if we need to repeat
-            this.currentPracticeRound.phase++;
-            this.currentPracticeRound.round = 0;
+            this.numTrials = throwErrIfNotDefined(metadata.config.numTrials, "num trials not defined");
+            this.maxResponseTime = throwErrIfNotDefined(
+                metadata.config.maxResponseTime,
+                "max response time not defined"
+            );
+            this.probOfShiftFirstPatch = throwErrIfNotDefined(metadata.config.probOfShiftFirstPatch, "first patch shift probability not defined");
+            this.probOfShiftSecondPatch = throwErrIfNotDefined(metadata.config.probOfShiftSecondPatch, "second patch shift probability not defined");
+            this.counterbalanceMode = throwErrIfNotDefined(metadata.config.counterbalanceMode, "counterbalanceMode not defined")
+        } catch (error) {
+            throw new error("values not defined, cannot start study: " + error);
         }
 
-        const phase = this.currentPracticeRound.phase;
-        this.practiceTrials = this.practiceRoundConfig[phase].numTrials;
-        this.maxResponseTime = this.practiceRoundConfig[phase].responseTime;
-        this.showFeedbackAfterEveryTrial = this.practiceRoundConfig[phase].showFeedback;
-        this.currentPracticeRound.round++;
+        this.config = config;
+        this.isPractice = thisOrDefault(metadata.config.isPractice, false);
+        this.interTrialDelay = thisOrDefault(metadata.config.interTrialDelay, 0);
+        this.showFeedbackAfterEachTrial = thisOrDefault(metadata.config.showFeedbackAfterEachTrial, false);
+        this.durationHelpMessageShown = thisOrDefault(metadata.config.durationHelpMessageShown, 6000);
+        this.durationOfFeedback = thisOrDefault(metadata.config.durationOfFeedback, 0);
+        this.delayToShowHelpMessage = thisOrDefault(metadata.config.delayToShowHelpMessage, 4000);
+        this.oddEvenColor = thisOrDefault(metadata.config.oddEvenColor, Color.BLUE);
+        this.ltGtColor = thisOrDefault(metadata.config.ltGtColor, Color.ORANGE);
+
+        this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as DemandSelectionCounterbalance
+
+        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.config.stimuliConfig.stimuli;
     }
 
-    private shouldRepeatPracticePhase(): boolean {
-        const phase = this.currentPracticeRound.phase;
-        const round = this.currentPracticeRound.round;
-        const repeatConfig = this.practiceRoundConfig[phase].repeat;
-        const threshold = repeatConfig.thresholdForRepeat ? repeatConfig.thresholdForRepeat : 1.01;
+    async start() {
+        await this.startGameInFullScreen();
 
-        // if canRepeat = true, we haven't reached our max repeat limit,
-        // and the participant did worse than the given threshold then we repeat
-        if (
-            repeatConfig.canRepeat &&
-            round <= repeatConfig.numRepeatsAllowed &&
-            this.getPercentageCorrect() < threshold
-        ) {
-            return true;
+        // even though this is done at each block, we are caching these values to be
+        // used by the display component when counterbalance is required
+        this.config.setCacheValue(DemandSelectionCache.EASIER_STRING, "easier patch");
+        this.config.setCacheValue(DemandSelectionCache.HARDER_STRING, "harder patch");
+
+        this.taskData = [];
+        this.currentStimuliIndex = 0;
+        this.blockNum = this.config.getCacheValue(DemandSelectionCache.BLOCK_NUM) || 1; // set to 1 if not defined
+
+        if (!this.stimuli) {
+            const cachedUsedImgStims = (this.config.getCacheValue(DemandSelectionCache.USED_STIMS_ARRAY) || []) as string[];
+            switch (this.counterbalanceMode) {
+                case "none":
+                    this.counterbalance = DemandSelectionCounterbalance.NONE;
+                    break;
+                case "counterbalance":
+                    break;
+                case "counterbalance-alternative":
+                    this.counterbalance === DemandSelectionCounterbalance.SELECTEASYPATCH ? DemandSelectionCounterbalance.SELECTHARDPATCH : DemandSelectionCounterbalance.SELECTEASYPATCH;
+                    break;
+            }
+            this.stimuli = this.dataGenService.generateDemandSelectionStimuli(
+                this.numTrials,
+                this.probOfShiftFirstPatch,
+                this.probOfShiftSecondPatch,
+                this.oddEvenColor,
+                this.ltGtColor,
+                cachedUsedImgStims,
+                this.counterbalance
+            )
+            this.config.setCacheValue(DemandSelectionCache.USED_STIMS_ARRAY, cachedUsedImgStims);
         }
-        return false;
+        super.start();
     }
 
-    private getPercentageCorrect(): number {
-        // divide by 0 guard
-        if (this.practiceTrials == 0) return 0;
-        return this.totalScore / 10 / this.practiceTrials;
-    }
-
-    async prepareActualGame() {
-        this.resetData();
-
-        // this method is called the first time (and only once) when the actual game is about to start so we init
-        // the currentblock with the first block in the blockset
-        this.currentBlock = this.blockset.blocks[0];
-
-        this.isPractice = false;
-        this.showFeedbackAfterEveryTrial = false;
-        this.maxResponseTime = 5000;
-        this.showScoreAfterEveryTrial = false;
-    }
-
-    async startBlock() {
-        if (this.blockNum == 1) {
-            this.prepareActualGame();
-        }
-        this.startGameInFullScreen();
-        this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
-        this.actualTrials = this.currentBlock.trialConfigs.length;
-        this.currentTrial = 0;
-        this.showStimulus();
-    }
-
-    // 1) show the bullseye
-    showStimulus() {
-        this.reset();
+    // 1. present bullseye to participant
+    beginRound() {
         this.timerService.clearTimer();
-        this.showFixation = true;
-        this.showNumber = false;
+        this.showDigit = false;
         this.showPatches = false;
-        this.currentTrial += 1;
-        this.isStimulus = true;
+        this.showFeedback = false;
+        this.showStimulus = true;
+        this.showFixation = true;
 
-        this.showHelpMessage(
-            "Please move your cursor to the bullseye for the patches to appear",
+        this.setHelpMessageTimer(
             this.delayToShowHelpMessage,
-            this.durationHelpMessageShown
-        );
+            this.durationHelpMessageShown,
+            "Please move your cursor to the bullseye for the patches to appear",
+        )
     }
 
-    // 2) mouse hovers over the bullseye so we hide it and show the patches
+    // 2. mouse hovers over the bullseye so we hide it and show the patches
     onHoverFixation(event) {
-        this.cancelHelpMessage();
+        this.clearHelpMessage();
         this.timerService.startTimer();
         this.showFixation = false;
         this.showPatches = true;
-        this.showNumber = false;
-        this.isResponseAllowed = false;
-        this.snackbarTimeout;
-        this.showHelpMessage(
-            "Please choose a patch by moving your cursor to its location",
+        this.showDigit = false;
+        this.responseAllowed = false;
+        this.setHelpMessageTimer(
             this.delayToShowHelpMessage,
-            this.durationHelpMessageShown
-        );
+            this.durationHelpMessageShown,
+            "Please choose a patch by moving your cursor to its location",
+        )
     }
 
-    // 3) mouse hovers over a patch so we show the numbers and accept responses
+    // 3. mouse hovers over a patch so we show the numbers and accept responses
     onHoverPatch(event, patch: "firstPatch" | "secondPatch") {
-        this.cancelHelpMessage();
-        let answer: UserResponse;
-        const currentTrial = this.currentBlock.trialConfigs[this.currentTrial - 1];
-        const blockConfig = this.currentBlock.blockConfig;
-        const color = patch === "firstPatch" ? currentTrial.firstPatch : currentTrial.secondPatch;
-        const digit = currentTrial.digit;
+        this.clearHelpMessage();
+        this.showDigit = true;
+        let actualAnswer: UserResponse;
 
-        if (color === this.oddEvenColor) {
-            if (digit % 2 === 0) {
-                answer = UserResponse.EVEN;
-            } else {
-                answer = UserResponse.ODD;
-            }
+        this.color = this.currentStimulus[patch];
+        this.selectedPatch = patch;
+        this.digit = this.currentStimulus.digit;
+
+        if (this.color === this.oddEvenColor) {
+            actualAnswer = this.digit % 2 === 0 ? UserResponse.EVEN : UserResponse.ODD
         } else {
-            if (digit > 5) {
-                answer = UserResponse.GREATER;
-            } else {
-                answer = UserResponse.LESSER;
-            }
+            actualAnswer = this.digit > 5 ? UserResponse.GREATER : UserResponse.LESSER;
         }
 
-        this.selectedPatch = patch;
-        this.number = digit;
-        this.color = color;
-
-        this.data.push({
-            trial: this.currentTrial,
-            userID: this.authService.getDecodedToken().UserID,
-            harderPatch: blockConfig.secondPatchImg,
-            firstPatch: blockConfig.firstPatchImg,
-            secondPatch: blockConfig.secondPatchImg,
-            selectedPatch: patch === "firstPatch" ? blockConfig.firstPatchImg : blockConfig.secondPatchImg,
+        this.taskData.push({
+            trial: ++this.trialNum,
+            userID: this.userID,
+            harderPatch: this.currentStimulus.secondPatchImgName,
+            firstPatch: this.currentStimulus.firstPatchImgName,
+            secondPatch: this.currentStimulus.secondPatchImgName,
+            selectedPatch: patch === "firstPatch" ? this.currentStimulus.firstPatchImgName : this.currentStimulus.secondPatchImgName,
             color: this.color,
-            digit: digit,
-            actualAnswer: answer,
+            digit: this.digit,
+            actualAnswer: actualAnswer,
             userAnswer: UserResponse.NA,
             selectPatchResponseTime: this.timerService.stopTimerAndGetTime(),
             respondToNumberResponseTime: 0,
             block: this.blockNum,
             isCorrect: false,
-            taskGoal: this.counterBalance,
+            taskGoal: this.counterbalance,
             score: 0,
-            rotation: blockConfig.rotation,
+            rotation: this.currentStimulus.rotation,
             isPractice: this.isPractice,
             submitted: this.timerService.getCurrentTimestamp(),
-            studyCode: this.taskManager.getStudyCode(),
+            studyCode: this.studyCode,
         });
-        this.showPatches = false;
+
         this.showFixation = false;
-        this.showNumber = true;
-        this.isResponseAllowed = true;
+        this.showDigit = true;
+        this.responseAllowed = true;
 
         this.timerService.clearTimer();
         this.timerService.startTimer();
 
         // Give participant max time to respond to stimuli
-        this.sTimeout = setTimeout(() => {
-            if (!this.feedbackShown) {
-                this.showFeedback();
+        this.setMaxResponseTimer(
+            this.maxResponseTime,
+            () => {
+                this.responseAllowed = false;
+                this.handleRoundInteraction(null);
             }
-        }, this.maxResponseTime);
+        );
     }
 
-    async showFeedback() {
-        this.feedbackShown = true;
-        this.isStimulus = false;
-        this.showPatches = false;
-        this.showFixation = false;
-        this.showNumber = false;
-        this.isResponseAllowed = false;
-
-        const currentDataObj = this.data[this.data.length - 1];
-
-        switch (currentDataObj.userAnswer) {
-            case currentDataObj.actualAnswer: // correct
-                this.feedback = Feedback.CORRECT;
-                currentDataObj.isCorrect = true;
-                currentDataObj.score = 10;
-                this.scoreForSpecificTrial = 10;
-                this.totalScore += 10;
-                break;
-            case UserResponse.NA: // too slow
-                this.feedback = Feedback.TOOSLOW;
-                currentDataObj.respondToNumberResponseTime = this.maxResponseTime;
-                break;
-            default:
-                // incorrect
-                this.feedback = Feedback.INCORRECT;
-                this.scoreForSpecificTrial = 0;
-                break;
-        }
-
-        // we want to show 'Too slow' every time
-        if (this.feedback === Feedback.TOOSLOW || this.showFeedbackAfterEveryTrial) {
-            await this.wait(this.durationOfFeedback);
-        }
-
-        this.decideToContinue();
+    private clearHelpMessage() {
+        this.snackbarService.clearSnackbar();
+        clearTimeout(this.showHelpMessageTimer);
     }
 
-    async decideToContinue() {
-        if (this.isPractice) {
-            if (this.currentTrial < this.practiceTrials) {
-                this.continueGame();
-            } else {
-                this.proceedtoNextStep();
-                await this.wait(2000);
-                this.proceedtoNextStep();
-            }
-        } else {
-            if (this.currentTrial < this.actualTrials) {
-                this.continueGame();
-            } else {
-                // go to loader
-                this.proceedtoNextStep();
-
-                // we have reached the last block so we are done
-                if (this.blockNum == 6) {
-                    const decodedToken = this.authService.getDecodedToken();
-                    if (decodedToken.Role === Role.ADMIN) {
-                        this.proceedtoNextStep();
-                    } else {
-                        this.uploadResults(this.data).subscribe(
-                            (ok) => {
-                                if (ok) {
-                                    this.proceedtoNextStep();
-                                } else {
-                                    console.error("There was an error downloading results");
-                                    this.taskManager.handleErr();
-                                }
-                            },
-                            (err) => {
-                                console.error("There was an error downloading results");
-                                this.taskManager.handleErr();
-                            }
-                        );
-                    }
-                } else {
-                    await this.wait(2000);
-                    this.proceedtoNextStep();
-                }
-            }
-        }
+    private clearMaxResponseTimer() {
+        clearTimeout(this.maxResponseTimer)
     }
 
-    handleNextRound() {
-        this.blockNum++;
-        // set the curent block to be the next one
-        this.currentBlock = this.blockset.blocks[this.blockNum - 1];
-        this.counterBalance = this.currentBlock.blockConfig.counterbalance;
-        this.blockNum >= 5 || this.blockNum == 2 ? this.proceedtoNextStep() : this.proceedtoPreviousStep(5);
-    }
-
-    resume() {
-        this.reset();
-        this.isBreak = false;
-        this.continueGame();
-    }
-
-    private showHelpMessage(helpMessage: string, delay: number, duration: number) {
-        this.snackbarTimeout = setTimeout(() => {
-            this.snackbarService.openInfoSnackbar(helpMessage, "", duration);
+    private setHelpMessageTimer(delay: number, duration: number, message: string, cbFunc?: () => void) {
+        this.showHelpMessageTimer = setTimeout(() => {
+            this.snackbarService.openInfoSnackbar(message, "", duration);
+            if (cbFunc) cbFunc();
         }, delay);
     }
 
-    private cancelHelpMessage() {
-        this.snackbarService.clearSnackbar();
-        clearTimeout(this.snackbarTimeout);
+    private setMaxResponseTimer(
+        delay: number,
+        cbFunc?: () => void,
+    ) {
+        this.maxResponseTimer = window.setTimeout(() => {
+            if (cbFunc) cbFunc();
+        }, delay)
     }
 
-    async continueGame() {
-        await this.wait(this.interTrialDelay);
-        this.showStimulus();
+    private isValidKey(key: string): boolean {
+        return (key === Key.ARROWLEFT || key === Key.ARROWRIGHT);
     }
 
-    uploadResults(data: DemandSelection[]): Observable<boolean> {
-        const studyCode = this.taskManager.getStudyCode();
-        return this.uploadDataService.uploadData(studyCode, TaskNames.DEMANDSELECTION, data).pipe(map((ok) => ok.ok));
-    }
+    @HostListener("window:keydown", ["$event"])
+    handleRoundInteraction(event: KeyboardEvent) {
 
-    continueAhead() {
-        const decodedToken = this.authService.getDecodedToken();
-        if (decodedToken.Role === Role.ADMIN) {
-            if (!environment.production) console.log(this.data);
+        const thisTrial = this.taskData[this.taskData.length - 1];
+        this.clearHelpMessage();
+        this.clearMaxResponseTimer();
+        thisTrial.submitted = this.timerService.getCurrentTimestamp();
 
-            this.router.navigate(["/dashboard/components"]);
-            this.snackbarService.openInfoSnackbar("Task completed");
-        } else {
-            this.taskManager.next();
+        if (event === null) {
+            thisTrial.userAnswer = UserResponse.NA;
+            thisTrial.score = 0;
+            thisTrial.isCorrect = false;
+            thisTrial.respondToNumberResponseTime = this.maxResponseTime;
+            super.handleRoundInteraction(null);
+        } else if (this.responseAllowed && this.isValidKey(event.key)) {
+
+            thisTrial.respondToNumberResponseTime = this.timerService.stopTimerAndGetTime();
+            const selectedColor = this.currentStimulus[this.selectedPatch];
+            if (selectedColor === this.oddEvenColor) {
+                thisTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.ODD : UserResponse.EVEN;
+            } else {
+                thisTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.LESSER : UserResponse.GREATER;
+            }
+            super.handleRoundInteraction(event.key);
         }
     }
 
-    reset() {
-        this.number = 0;
-        this.feedback = "";
-        this.feedbackShown = false;
-        this.scoreForSpecificTrial = 0;
+    async completeRound() {
+        this.showStimulus = false;
         this.showPatches = false;
         this.showFixation = false;
-        this.showNumber = false;
+        this.showDigit = false;
+        this.responseAllowed = false;
+
+        const thisTrial = this.taskData[this.taskData.length - 1];
+
+        switch (thisTrial.userAnswer) {
+            case thisTrial.actualAnswer:
+                this.feedback = Feedback.CORRECT;
+                thisTrial.isCorrect = true;
+                thisTrial.score = 10;
+                break;
+            case UserResponse.NA:
+                this.feedback = Feedback.TOOSLOW;
+                break;
+            default:
+                this.feedback = Feedback.INCORRECT;
+                thisTrial.isCorrect = false;
+                thisTrial.score = 0;
+                break;
+        }
+
+        if (this.showFeedbackAfterEachTrial || this.feedback === Feedback.TOOSLOW) {
+            this.showFeedback = true;
+            await wait(this.durationOfFeedback);
+            if (this.isDestroyed) return;
+            this.showFeedback = false;
+        }
+        super.completeRound();
     }
 
-    resetData() {
-        this.totalScore = 0;
-    }
+    async decideToRepeat() {
+        // we have reached past the final activity
+        const finishedLastStimulus = this.currentStimuliIndex >= this.stimuli.length - 1;
 
-    startGameInFullScreen() {
-        setFullScreen();
-    }
+        if (finishedLastStimulus) {
+            const numCorrect = this.taskData.reduce((acc, currVal) => {
+                return acc + (currVal.isCorrect ? 1 : 0);
+            }, 0);
 
-    wait(time: number): Promise<void> {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve();
-            }, time);
-        });
+            this.config.setCacheValue(DemandSelectionCache.BLOCK_NUM, this.isPractice ? this.blockNum : ++this.blockNum);
+            this.config.setCacheValue(DemandSelectionCache.NUM_CORRECT, numCorrect);
+            super.decideToRepeat();
+            return;
+        } else {
+            this.currentStimuliIndex++;
+            await wait(this.interTrialDelay);
+            if (this.isDestroyed) return;
+            this.beginRound();
+            return;
+        }
     }
 }

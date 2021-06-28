@@ -7,12 +7,12 @@ import { Playable } from "../../playables/playable";
 import { TaskConfig } from "../../playables/task-player/task-player.component";
 
 export interface DisplaySection {
-    sectionType: "text" | "image-horizontal" | "image-square";
+    sectionType: "text" | "image-horizontal" | "image-square" | "image-small";
     imagePath?: string;
     imageAlignment?: "left" | "center" | "right";
     textContent?: string;
     injection: "counterbalance" | "counterbalance-alternative" | "cached-string";
-    cacheKeyForInjection: string;
+    cacheKey: string;
 }
 
 export interface ButtonConfig {
@@ -23,6 +23,8 @@ export interface ButtonConfig {
 
 export interface DisplayComponentMetadata {
     component: ComponentName;
+    skippable?: boolean;
+    skippableCacheKey: string;
     content: {
         title?: string;
         timerConfig?: {
@@ -49,6 +51,8 @@ export class DisplayComponent implements OnDestroy, Playable {
     displaySections: DisplaySection[] = [];
     buttonConfig: ButtonConfig = null;
     private canSkipTimer: boolean;
+    skippable: boolean = false;
+    cacheKey: string = "";
 
     // config variables
     config: TaskConfig;
@@ -87,7 +91,7 @@ export class DisplayComponent implements OnDestroy, Playable {
     injectString(section: DisplaySection, text: string): string {
         switch (section.injection) {
             case "cached-string":
-                const cachedVar = thisOrDefault(this.config.getCacheValue(section.cacheKeyForInjection), "");
+                const cachedVar = thisOrDefault(this.config.getCacheValue(section.cacheKey), "");
                 return text.replace("???", cachedVar);
             case "counterbalance":
                 return text.replace("???", this.counterbalanceStr);
@@ -100,6 +104,9 @@ export class DisplayComponent implements OnDestroy, Playable {
 
     configure(metadata: DisplayComponentMetadata, config: TaskConfig): void {
         this.config = config;
+
+        this.skippable = thisOrDefault(metadata.skippable, false);
+        this.cacheKey = thisOrDefault(metadata.skippableCacheKey, "");
 
         this.title = thisOrDefault(metadata.content.title, "");
         this.subtitle = thisOrDefault(metadata.content.subtitle, "");
@@ -136,6 +143,14 @@ export class DisplayComponent implements OnDestroy, Playable {
             this.timerCountDown
                 ? this.startTimerReverse(metadata.content.timerConfig.timer / 1000)
                 : this.startTimer(metadata.content.timerConfig.timer / 1000);
+        }
+    }
+
+    afterInit() {
+        if (this.skippable && this.cacheKey) {
+            const shouldSkip = this.config.getCacheValue(this.cacheKey);
+            if (shouldSkip === undefined) return; // no cached value, do not skip
+            else if(shouldSkip) this.handleComplete(Navigation.NEXT);
         }
     }
 

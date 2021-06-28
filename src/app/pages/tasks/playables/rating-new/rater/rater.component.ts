@@ -303,7 +303,6 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
     }
 
     ngOnDestroy() {
-        this.isDestroyed = true;
         this.cancelAllTimers();
         this.loaderService.hideLoader();
     }

@@ -11,7 +11,6 @@ import { SmileyFaceStimulus, SmileyFaceType } from "src/app/services/data-genera
 import { ComponentName } from "src/app/services/component-factory.service";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
 import { LoaderService } from "src/app/services/loader.service";
-declare function setFullScreen(): any;
 
 interface SmileyFaceMetadata {
     component: ComponentName;
@@ -149,8 +148,8 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
             this.stimuli = metadata.config.stimuliConfig.stimuli;
     }
 
-    start() {
-        this.startGameInFullScreen();
+    async start() {
+        await this.startGameInFullScreen();
 
         this.taskData = [];
         this.currentStimuliIndex = 0;
@@ -355,9 +354,5 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
             this.beginRound();
             return;
         }
-    }
-
-    startGameInFullScreen() {
-        setFullScreen();
     }
 }

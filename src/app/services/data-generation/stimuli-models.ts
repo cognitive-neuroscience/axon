@@ -1,3 +1,5 @@
+import { Color } from "src/app/models/InternalDTOs";
+
 export interface RatingTaskStimuli {
     activity: string;
     type: "DoNothing" | "DoSomething";
@@ -65,9 +67,22 @@ export class NBackStimuliSet {
 }
 
 export enum DemandSelectionCounterbalance {
-    SELECTEASYPATCH = "SELECTEASYPATCH",
-    SELECTHARDPATCH = "SELECTHARDPATCH",
+    SELECTEASYPATCH = "EASIER PATCH",
+    SELECTHARDPATCH = "HARDER PATCH",
     NONE = "NONE",
 }
 
-export class DemandSelectionStimulus {}
+export class DemandSelectionStimulus {
+    firstPatchImgName: string;
+    secondPatchImgName: string;
+    rotation: number;
+    counterbalance: DemandSelectionCounterbalance;
+    firstPatch: Color;
+    secondPatch: Color;
+    digit: number;
+}
+
+export class TaskSwitchingStimulus {
+    color: Color;
+    digit: number;
+}

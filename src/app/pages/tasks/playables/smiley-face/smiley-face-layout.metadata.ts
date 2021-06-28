@@ -286,7 +286,7 @@ export const SmileyFaceLayoutMetadata = {
                     {
                         sectionType: "text",
                         injection: "cached-string",
-                        cacheKeyForInjection: "smiley-face-total-score",
+                        cacheKey: "smiley-face-total-score",
                         textContent: "You won ??? points",
                     },
                     {

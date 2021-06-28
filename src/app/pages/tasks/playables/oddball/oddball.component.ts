@@ -13,7 +13,6 @@ import { SnackbarService } from "src/app/services/snackbar.service";
 import { TimerService } from "src/app/services/timer.service";
 import { AbstractBaseTaskComponent } from "../base-task";
 import { TaskConfig } from "../task-player/task-player.component";
-declare function setFullScreen(): any;
 
 export interface OddballTaskMetadata {
     component: ComponentName;
@@ -159,13 +158,13 @@ export class OddballComponent extends AbstractBaseTaskComponent {
             this.stimuli = metadata.config.stimuliConfig.stimuli;
     }
 
-    start() {
+    async start() {
         this.studyLoaded = false;
         this.taskData = [];
         this.currentStimuliIndex = 0;
         this.blockNum = this.config.getCacheValue(OddballCache.BLOCK_NUM) || 1; // set to 1 if not defined
 
-        this.startGameInFullScreen();
+        await this.startGameInFullScreen();
 
         // either the stimuli has been defined in config or we generate it here in an observable
         if (!this.stimuli) {
@@ -346,13 +345,5 @@ export class OddballComponent extends AbstractBaseTaskComponent {
             this.stimulusShown = fr.result;
         });
         fr.readAsDataURL(blob);
-    }
-
-    startGameInFullScreen() {
-        try {
-            setFullScreen();
-        } catch (error) {
-            console.error("Couldn't set full screen");
-        }
     }
 }

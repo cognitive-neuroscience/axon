@@ -1,12 +1,10 @@
 import { Component, HostListener } from "@angular/core";
 import { NBackTaskData } from "src/app/models/TaskData";
-import { take } from "rxjs/operators";
 import { SnackbarService } from "../../../../services/snackbar.service";
 import { Key } from "src/app/models/InternalDTOs";
 import { TimerService } from "../../../../services/timer.service";
 import { UserResponse, Feedback } from "../../../../models/InternalDTOs";
-import { environment } from "../../../../../environments/environment";
-import { Role, StimuliProvidedType } from "src/app/models/enums";
+import { StimuliProvidedType } from "src/app/models/enums";
 import { AbstractBaseTaskComponent } from "../base-task";
 import { TaskConfig } from "../task-player/task-player.component";
 import { NBackStimulus } from "src/app/services/data-generation/stimuli-models";
@@ -14,7 +12,6 @@ import { LoaderService } from "src/app/services/loader.service";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
 import { ComponentName } from "src/app/services/component-factory.service";
 import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
-declare function setFullScreen(): any;
 
 interface NBackMetadata {
     component: ComponentName;
@@ -134,8 +131,8 @@ export class NBackComponent extends AbstractBaseTaskComponent {
             this.stimuli = metadata.config.stimuliConfig.stimuli;
     }
 
-    start() {
-        this.startGameInFullScreen();
+    async start() {
+        await this.startGameInFullScreen();
 
         this.taskData = [];
         this.currentStimuliIndex = 0;
@@ -276,9 +273,5 @@ export class NBackComponent extends AbstractBaseTaskComponent {
             this.beginRound();
             return;
         }
-    }
-
-    startGameInFullScreen() {
-        setFullScreen();
     }
 }
