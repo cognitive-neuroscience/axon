@@ -184,8 +184,6 @@ export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
     }
 
     async decideToRepeat() {
-        console.log(this.taskData);
-
         this.config.setCacheValue(FingerTappingCache.BLOCK_NUM, this.isPractice ? this.blockNum : ++this.blockNum);
         super.decideToRepeat();
         return;

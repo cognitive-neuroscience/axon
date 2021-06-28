@@ -1,32 +1,30 @@
-import { Component, OnInit, Renderer2, ElementRef } from "@angular/core";
-import { Router } from "@angular/router";
-import { UploadDataService } from "src/app/services/uploadData.service";
-import * as practiceGrid1 from "./grid.1.practice";
-import * as grid1 from "./grid.1";
-import * as practiceGrid2 from "./grid.2.practice";
-import * as grid2 from "./grid.2";
+import { Component, ElementRef, Renderer2 } from "@angular/core";
 import { MatButton } from "@angular/material/button";
-import { TrailMaking } from "src/app/models/TaskData";
+import { TrailMakingTaskData } from "src/app/models/TaskData";
 import { TimerService } from "../../../../services/timer.service";
-import { AuthService } from "../../../../services/auth.service";
-import { TaskManagerService } from "../../../../services/task-manager.service";
-import { Role } from "src/app/models/enums";
+import { StimuliProvidedType } from "src/app/models/enums";
 import { SnackbarService } from "../../../../services/snackbar.service";
-import { Observable } from "rxjs";
-import { TaskNames } from "../../../../models/TaskData";
-import { map, take } from "rxjs/operators";
-import { environment } from "src/environments/environment";
+import { AbstractBaseTaskComponent } from "../base-task";
+import { TaskConfig } from "../task-player/task-player.component";
+import { TrailMakingStimulus, TrailMakingTrialType } from "src/app/services/data-generation/stimuli-models";
+import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
+import { LoaderService } from "src/app/services/loader.service";
+import { ComponentName } from "src/app/services/component-factory.service";
+import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
 
-declare function setFullScreen(): any;
-
-export enum TrialType {
-    ALPHANUMERIC = "ALPHANUMERIC",
-    NUMERIC = "NUMERIC",
-}
-
-export class GridConfig {
-    correct: any[];
-    grid: { value: any }[][];
+interface TrailMakingMetadata {
+    component: ComponentName;
+    config: {
+        isPractice: boolean;
+        maxResponseTime: number;
+        flashIncorrectDuration: number;
+        durationOutOfTimeMessageShown: number;
+        trialType: TrailMakingTrialType;
+        stimuliConfig: {
+            type: StimuliProvidedType;
+            stimuli: TrailMakingStimulus;
+        };
+    };
 }
 
 @Component({
@@ -34,100 +32,113 @@ export class GridConfig {
     templateUrl: "./trail-making.component.html",
     styleUrls: ["./trail-making.component.scss"],
 })
-export class TrailMakingComponent implements OnInit {
-    step: number = 1;
-    isScored: number | boolean;
-    showFeedbackAfterEveryTrial: number | boolean;
-    showScoreAfterEveryTrial: number | boolean;
-    flashIncorrectDuration: number = 500;
-    numberOfBreaks: number;
-    // 4 minute timer
-    timeToComplete: number = 240000;
-    maxResponseTime: number;
-    durationOfFeedback: number;
-    interTrialDelay: number;
-    practiceTrials: number;
-    actualTrials: number;
-    data: TrailMaking[] = [];
-    clickNum: number = 0;
-    sTimeout;
-    isPractice: boolean = true;
-    // can be numbers or letters
-    correctItems: (number | string)[] = [];
-    answerKey: (number | string)[] = [];
-    gridConfig: GridConfig;
+export class TrailMakingComponent extends AbstractBaseTaskComponent {
+    /**
+     * Task summary:
+     * This task involves the participant being presented with a grid of buttons. There is some
+     * order to these buttons (1,2,3,4,5, ..., etc) or (A, 1, B, 2, C, 3, ..., etc). The participant
+     * must click through each of these buttons in order to complete the task.
+     */
+
+    // config variables variables
+    isPractice: boolean = false;
+    private maxResponseTime: number;
+    private flashIncorrectDuration: number;
+    private trialType: TrailMakingTrialType;
+    private durationOutOfTimeMessageShown: number;
+
+    // shared state variables
+    userID: string;
+    studyCode: string;
+    config: TaskConfig;
+
+    // high level variables
+    counterbalance: number;
+    taskData: TrailMakingTaskData[];
+    stimuli: TrailMakingStimulus;
+
+    // local state variables
+    showStimulus: boolean = false;
+    text: string;
+    color: string;
+    showFeedback: boolean = false;
+    showFixation: boolean = false;
+    trialNum: number = 0;
+    trialScore: number = 0;
+    responseAllowed: boolean = false;
+    correctItems: (string | number)[];
+
+    // timers
+    maxResponseTimer: any;
+
+    get currentStimulus(): TrailMakingStimulus {
+        return this.stimuli;
+    }
 
     constructor(
-        private router: Router,
-        private uploadDataService: UploadDataService,
-        private renderer: Renderer2,
-        private timerService: TimerService,
-        private authService: AuthService,
-        private taskManager: TaskManagerService,
-        private snackbarService: SnackbarService
-    ) {}
-
-    ngOnInit() {}
-
-    proceedtoPreviousStep() {
-        this.step -= 1;
+        protected snackbarService: SnackbarService,
+        protected timerService: TimerService,
+        protected dataGenService: DataGenerationService,
+        protected loaderService: LoaderService,
+        private renderer: Renderer2
+    ) {
+        super(loaderService);
     }
 
-    proceedtoNextStep() {
-        this.step += 1;
-    }
+    configure(metadata: TrailMakingMetadata, config: TaskConfig) {
+        try {
+            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
+            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
 
-    // sets the button color to green if it is correct and white otherwise
-    getColor(val: number | string) {
-        return this.correctItems.includes(val) ? "green" : "whitesmoke";
-    }
-
-    registerClick(button: MatButton, value: number | string) {
-        // if answer has already been recorded as correct, we do nothing
-        if (this.correctItems.includes(value)) return;
-
-        this.correctItems.push(value);
-        const currIndex = this.correctItems.length - 1;
-        const isCorrect = this.correctItems[currIndex] === this.answerKey[currIndex];
-
-        // record the click if actual game
-        this.data.push({
-            userID: this.authService.getDecodedToken().UserID,
-            score: null,
-            trial: ++this.clickNum,
-            timeFromLastClick: this.timerService.stopTimerAndGetTime(),
-            trialType: this.step >= 9 ? TrialType.ALPHANUMERIC : TrialType.NUMERIC,
-            userAnswer: value.toString(),
-            actualAnswer: this.answerKey[currIndex].toString(),
-            isCorrect: isCorrect,
-            submitted: this.timerService.getCurrentTimestamp(),
-            isPractice: this.isPractice,
-            studyCode: this.taskManager.getStudyCode(),
-        });
-
-        this.timerService.clearTimer();
-        this.timerService.startTimer();
-
-        // selected answer is incorrect
-        if (!isCorrect) {
-            this.correctItems.pop();
-            this.flashIncorrectColor(button._elementRef, value);
+            this.maxResponseTime = throwErrIfNotDefined(
+                metadata.config.maxResponseTime,
+                "max response time not defined"
+            );
+            this.trialType = throwErrIfNotDefined(metadata.config.trialType, "no trial type defined");
+        } catch (error) {
+            throw new error("values not defined, cannot start study");
         }
 
-        // if we have filled up all the correct Items, complete the round and move on
-        if (this.correctItems.length === this.answerKey.length) this.roundComplete();
+        this.config = config;
+        this.isPractice = thisOrDefault(metadata.config.isPractice, false);
+        this.flashIncorrectDuration = thisOrDefault(metadata.config.flashIncorrectDuration, 500);
+        this.durationOutOfTimeMessageShown = thisOrDefault(metadata.config.durationOutOfTimeMessageShown, 3000);
+
+        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.config.stimuliConfig.stimuli;
+    }
+
+    async start() {
+        await this.startGameInFullScreen();
+        if (this.isDestroyed) return;
+
+        this.taskData = [];
+        this.correctItems = [];
+
+        // either the stimuli has been defined in config or we generate it here from service
+        if (!this.stimuli) {
+            this.stimuli = this.dataGenService.generateTrailMakingStimuli(this.isPractice, this.trialType);
+        }
+        super.start();
+    }
+
+    async beginRound() {
+        this.timerService.startTimer();
+        this.showStimulus = true;
+        this.responseAllowed = true;
+
+        this.maxResponseTimer = this.setMaxResponseTimer(
+            this.maxResponseTime,
+            this.durationOutOfTimeMessageShown,
+            "Out of time!",
+            () => {
+                this.handleRoundInteraction(null);
+            }
+        );
     }
 
     private flashIncorrectColor(elRef: ElementRef, val: number | string) {
         this.changeColor(elRef, "red");
-
-        // case: elRef = button 2, val = 2
-        // 1. user selects 2 (incorrect)
-        // 2. user selects 1 immediately (correct)
-        // 3. user selects 2 immediately (now correct)
-        // in this case, we don't want the color to change back to white, we want to
-        // keep it green so we need to check if the user happened to selected the correct
-        // answer before the timeout ended
         setTimeout(() => {
             if (!this.correctItems.includes(val)) {
                 this.changeColor(elRef, "whitesmoke");
@@ -139,100 +150,81 @@ export class TrailMakingComponent implements OnInit {
         this.renderer.setStyle(elRef.nativeElement, "background-color", color);
     }
 
-    private async roundComplete() {
-        clearTimeout(this.sTimeout);
-        this.proceedtoNextStep();
+    private setMaxResponseTimer(delay: number, duration: number, message: string, cbFunc?: () => void) {
+        this.maxResponseTimer = setTimeout(async () => {
+            this.showStimulus = false;
+            this.responseAllowed = false;
+            this.snackbarService.openInfoSnackbar(message, "", duration);
+            await wait(this.durationOutOfTimeMessageShown);
+            if (this.isDestroyed) return;
+            if (cbFunc) cbFunc();
+        }, delay);
+    }
 
-        const decodedToken = this.authService.getDecodedToken();
-        if (decodedToken.Role === Role.ADMIN) {
-            this.proceedtoNextStep();
-            return;
-        }
+    // sets the button color to green if it is correct and white otherwise
+    getColor(val: number | string) {
+        return this.correctItems.includes(val) ? "green" : "whitesmoke";
+    }
 
-        // if the role is admin, do not try and upload results
-        if (this.step >= 17) {
-            this.uploadResults(this.data)
-                .pipe(take(1))
-                .subscribe(
-                    (ok) => {
-                        if (ok) {
-                            this.proceedtoNextStep();
-                        } else {
-                            console.error("There was an error downloading results");
-                            this.taskManager.handleErr();
-                        }
-                    },
-                    (err) => {
-                        console.error("There was an error downloading results");
-                        this.taskManager.handleErr();
-                    }
-                );
+    private cancelAllTimers() {
+        clearTimeout(this.maxResponseTimer);
+    }
+
+    handleRoundInteraction(event: { button: MatButton; value: number | string }) {
+        if (event === null) {
+            super.handleRoundInteraction(null);
         } else {
-            await this.wait(2000);
+            // if answer has already been recorded as correct, we do nothing
+            if (this.correctItems.includes(event.value)) return;
+
+            this.correctItems.push(event.value);
+            const currIndex = this.correctItems.length - 1;
+            const isCorrect = this.correctItems[currIndex] === this.currentStimulus.correctSequence[currIndex];
+
+            // record the click if actual game
+            this.taskData.push({
+                userID: this.userID,
+                score: 0,
+                trial: ++this.trialNum,
+                timeFromLastClick: this.timerService.stopTimerAndGetTime(),
+                trialType: this.trialType,
+                userAnswer: event.value.toString(),
+                actualAnswer: this.currentStimulus.correctSequence[currIndex].toString(),
+                isCorrect: isCorrect,
+                submitted: this.timerService.getCurrentTimestamp(),
+                isPractice: this.isPractice,
+                studyCode: this.studyCode,
+            });
+
             this.timerService.clearTimer();
-            this.correctItems = [];
-            this.proceedtoNextStep();
+            this.timerService.startTimer();
+
+            // selected answer is incorrect
+            if (!isCorrect) {
+                this.correctItems.pop();
+                this.flashIncorrectColor(event.button._elementRef, event.value);
+            }
+
+            // if we have filled up all the correct Items, complete the round and move on
+            if (this.correctItems.length === this.currentStimulus.correctSequence.length)
+                super.handleRoundInteraction(event.value);
         }
     }
 
-    async startPractice() {
-        this.isPractice = true;
-        this.gridConfig = this.step >= 9 ? practiceGrid2.config : practiceGrid1.config;
-        this.answerKey = this.gridConfig.correct;
-        this.correctItems = [];
-        this.clickNum = 0;
-        this.startGameInFullScreen();
-        this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
-        this.timerService.startTimer();
+    async completeRound() {
+        this.cancelAllTimers();
+        this.showStimulus = false;
+        this.responseAllowed = false;
+
+        super.completeRound();
     }
 
-    async startActual() {
-        this.isPractice = false;
-        this.gridConfig = this.step >= 9 ? grid2.config : grid1.config;
-        this.answerKey = this.gridConfig.correct;
-        this.correctItems = [];
-        this.clickNum = 0;
-        this.startGameInFullScreen();
-        this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
-        this.timerService.startTimer();
-
-        this.sTimeout = setTimeout(() => {
-            this.snackbarService.openInfoSnackbar("Time is up!");
-            this.roundComplete();
-        }, this.timeToComplete);
+    async decideToRepeat() {
+        super.decideToRepeat();
+        return;
     }
 
-    uploadResults(data: TrailMaking[]): Observable<boolean> {
-        const studyCode = this.taskManager.getStudyCode();
-        return this.uploadDataService.uploadData(studyCode, TaskNames.TRAILMAKING, data).pipe(map((ok) => ok.ok));
-    }
-
-    continueAhead() {
-        const decodedToken = this.authService.getDecodedToken();
-
-        if (decodedToken.Role === Role.ADMIN) {
-            if (!environment.production) console.log(this.data);
-
-            this.router.navigate(["/dashboard/components"]);
-            this.snackbarService.openInfoSnackbar("Task completed");
-        } else {
-            this.taskManager.next();
-        }
-    }
-
-    startGameInFullScreen() {
-        setFullScreen();
-    }
-
-    wait(time: number): Promise<void> {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve();
-            }, time);
-        });
-    }
+    // 4 minute timer
+    timeToComplete: number = 240000;
+    // can be numbers or letters
 }

@@ -102,3 +102,24 @@ export class DigitSpanStimulus {
     first: number[];
     second: number[];
 }
+
+export class TrailMakingStimuliSet {
+    numeric: {
+        practice: TrailMakingStimulus;
+        actual: TrailMakingStimulus;
+    };
+    alphanumeric: {
+        practice: TrailMakingStimulus;
+        actual: TrailMakingStimulus;
+    };
+}
+
+export class TrailMakingStimulus {
+    correctSequence: (string | number)[];
+    grid: { value: string | number }[][];
+}
+
+export enum TrailMakingTrialType {
+    ALPHANUMERIC = "ALPHANUMERIC",
+    NUMERIC = "NUMERIC",
+}

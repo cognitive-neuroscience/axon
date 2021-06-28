@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { MaterialModule } from "src/app/modules/material/material.module";
-import { ChoiceComponent } from "./playables/choice/choice.component";
+import { ChoiceComponent } from "./unused/choice/choice.component";
 import { DemandSelectionComponent } from "./playables/demand-selection/demand-selection.component";
 import { DigitSpanComponent } from "./playables/digit-span/digit-span.component";
 import { NumpadComponent } from "./shared/numpad/numpad.component";
@@ -10,8 +10,8 @@ import { OddballComponent } from "./playables/oddball/oddball.component";
 import { PostChoiceComponent } from "./playables/post-choice/post-choice.component";
 import { ChoicerComponent } from "./playables/rating-new/choicer/choicer.component";
 import { RatingNewComponent } from "./playables/rating-new/rating-new.component";
-import { RatingComponent } from "./playables/rating/rating.component";
-import { ShapeGameComponent } from "./playables/shape-game/shape-game.component";
+import { RatingComponent } from "./unused/rating/rating.component";
+import { ShapeGameComponent } from "./unused/shape-game/shape-game.component";
 import { DisplayComponent } from "./shared/display/display.component";
 import { SliderComponent } from "./shared/slider/slider.component";
 import { SmileyFaceComponent } from "./playables/smiley-face/smiley-face.component";
@@ -25,7 +25,7 @@ import { NavigationButtonsComponent } from "./shared/navigation-buttons/navigati
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { RotateDirective } from "./shared/Rotate.directive";
-import { ColorGameComponent } from "./playables/color-game/color-game.component";
+import { ColorGameComponent } from "./unused/color-game/color-game.component";
 import { EmbeddedPageComponent } from "./questionnaires/embedded-page/embedded-page.component";
 import { DemographicsQuestionnaireComponent } from "./questionnaires/demographics-questionnaire/demographics-questionnaire.component";
 import { SafeResoucePipe } from "src/app/pipes/safe.pipe";
@@ -36,6 +36,10 @@ import { SelectOptionComponent } from "./shared/select-option/select-option.comp
 @NgModule({
     declarations: [
         ChoiceComponent,
+        ColorGameComponent,
+        RatingComponent,
+        ShapeGameComponent,
+
         ChoicerComponent,
         DemandSelectionComponent,
         DigitSpanComponent,
@@ -43,11 +47,8 @@ import { SelectOptionComponent } from "./shared/select-option/select-option.comp
         NBackComponent,
         OddballComponent,
         PostChoiceComponent,
-        ColorGameComponent,
         RaterComponent,
-        RatingComponent,
         RatingNewComponent,
-        ShapeGameComponent,
         SmileyFaceComponent,
         StroopComponent,
         TaskPlayerComponent,

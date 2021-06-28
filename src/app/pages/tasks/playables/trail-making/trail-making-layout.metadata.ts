@@ -14,30 +14,16 @@ export const TrailMakingLayoutMetadata = {
                     },
                     {
                         sectionType: "text",
-                        textContent: 'In this game, you will see "+" in the middle of the screen.',
+                        textContent: "In this task, you will be shown numbered circles on the screen",
                     },
                     {
                         sectionType: "text",
                         textContent:
-                            'The "+" will be replaced by different shapes, which will be presented only briefly.',
+                            "You must start by clicking the number 1, then 2, and then continue in ascending order as fast as possible",
                     },
                     {
                         sectionType: "text",
-                        textContent: "Your goal is to identify when the triangle appears.",
-                    },
-                    {
-                        sectionType: "text",
-                        injection: "counterbalance",
-                        textContent: "Press <b>???</b> on the keyboard when you see the TRIANGLE.",
-                    },
-                    {
-                        sectionType: "text",
-                        injection: "counterbalance-alternative",
-                        textContent: "Press <b>???</b> on the keyboard for any other shape.",
-                    },
-                    {
-                        sectionType: "text",
-                        textContent: "Click NEXT to continue",
+                        textContent: "Click NEXT to proceed",
                     },
                 ],
                 buttons: {
@@ -50,30 +36,19 @@ export const TrailMakingLayoutMetadata = {
         {
             component: ComponentName.DISPLAY_COMPONENT,
             content: {
-                title: "",
+                title: "Practice round",
                 sections: [
                     {
                         sectionType: "text",
-                        textContent:
-                            "You will start with a warm-up block and then a practice block where feedback will be provided after each trial.",
+                        textContent: "Let's practice",
                     },
                     {
                         sectionType: "text",
-                        textContent: "<b>Remember:</b>",
+                        textContent: "The game will launch in full-screen",
                     },
                     {
                         sectionType: "text",
-                        injection: "counterbalance",
-                        textContent: "Press <b>???</b> on the keyboard when you see the TRIANGLE",
-                    },
-                    {
-                        sectionType: "text",
-                        injection: "counterbalance-alternative",
-                        textContent: "Press <b>???</b> on the keyboard for any other shape",
-                    },
-                    {
-                        sectionType: "text",
-                        textContent: 'Click "START" to begin the warm-up block',
+                        textContent: 'Click "START" when you are ready for the practice round',
                     },
                 ],
                 buttons: {
@@ -84,19 +59,13 @@ export const TrailMakingLayoutMetadata = {
             },
         },
         {
-            component: ComponentName.ODDBALL_COMPONENT,
+            component: ComponentName.TRAIL_MAKING_COMPONENT,
             config: {
                 isPractice: true,
-                maxResponseTime: 2000,
-                interTrialDelay: 200,
-                showFeedbackAfterEachTrial: true,
-                durationOfFeedback: 500,
-                durationStimulusPresented: 450,
-                durationFixationJitteredLowerBound: 1000,
-                durationFixationJitteredUpperBound: 2000,
-                numTrials: 10,
-                numTargetTrials: 2,
-                numNovelStimuli: 0,
+                maxResponseTime: 240000,
+                flashIncorrectDuration: 500,
+                trialType: "NUMERIC",
+                durationOutOfTimeMessageShown: 3000,
                 stimuliConfig: {
                     type: "generated",
                     stimuli: null,
@@ -106,30 +75,20 @@ export const TrailMakingLayoutMetadata = {
         {
             component: ComponentName.DISPLAY_COMPONENT,
             content: {
-                title: "",
+                title: "Practice round is now complete!",
                 sections: [
                     {
                         sectionType: "text",
+                        textContent: "You will now play the actual game",
+                    },
+                    {
+                        sectionType: "text",
                         textContent:
-                            "You have completed the warm-up block! Next is a practice block where feedback will be provided.",
+                            "You must start by clicking the number 1, then 2, and then continue in ascending order as fast as possible",
                     },
                     {
                         sectionType: "text",
-                        textContent: "<b>Remember:</b>",
-                    },
-                    {
-                        sectionType: "text",
-                        injection: "counterbalance",
-                        textContent: "Press <b>???</b> on the keyboard when you see the TRIANGLE",
-                    },
-                    {
-                        sectionType: "text",
-                        injection: "counterbalance-alternative",
-                        textContent: "Press <b>???</b> on the keyboard for any other shape",
-                    },
-                    {
-                        sectionType: "text",
-                        textContent: 'Click "START" when you are ready to begin the practice',
+                        textContent: 'Click "START" when you are ready for the actual game',
                     },
                 ],
                 buttons: {
@@ -140,19 +99,94 @@ export const TrailMakingLayoutMetadata = {
             },
         },
         {
-            component: ComponentName.ODDBALL_COMPONENT,
+            component: ComponentName.TRAIL_MAKING_COMPONENT,
+            config: {
+                isPractice: false,
+                maxResponseTime: 240000,
+                flashIncorrectDuration: 500,
+                trialType: "NUMERIC",
+                durationOutOfTimeMessageShown: 3000,
+                stimuliConfig: {
+                    type: "generated",
+                    stimuli: null,
+                },
+            },
+        },
+        {
+            component: ComponentName.DISPLAY_COMPONENT,
+            content: {
+                title: "Welcome to the Connect the dots game - part 2",
+                sections: [
+                    {
+                        sectionType: "text",
+                        textContent: "Read the instructions carefully",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent: "In this task, you will be shown circles with numbers and letters on the screen",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent:
+                            "Starting with number 1, you must click the circles ALTERNATING between numbers and letters in ascending order as fast as possible.",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent: "See this example:",
+                    },
+                    {
+                        sectionType: "image-horizontal",
+                        imagePath: "/assets/images/instructions/trailmaking/connect-the-dots-2-example.png",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent: 'Click "NEXT" to proceed',
+                    },
+                ],
+                buttons: {
+                    isStart: false,
+                    previousDisabled: true,
+                    nextDisabled: false,
+                },
+            },
+        },
+        {
+            component: ComponentName.DISPLAY_COMPONENT,
+            content: {
+                title: "Practice round",
+                sections: [
+                    {
+                        sectionType: "text",
+                        textContent: "Let's practice",
+                    },
+                    {
+                        sectionType: "image-horizontal",
+                        imagePath: "/assets/images/instructions/trailmaking/connect-the-dots-2-example.png",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent: "The game will launch in full-screen",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent: 'Click "START" when you are ready for the practice round',
+                    },
+                ],
+                buttons: {
+                    isStart: true,
+                    previousDisabled: false,
+                    nextDisabled: false,
+                },
+            },
+        },
+        {
+            component: ComponentName.TRAIL_MAKING_COMPONENT,
             config: {
                 isPractice: true,
-                maxResponseTime: 2000,
-                interTrialDelay: 200,
-                showFeedbackAfterEachTrial: true,
-                durationOfFeedback: 500,
-                durationStimulusPresented: 450,
-                durationFixationJitteredLowerBound: 1000,
-                durationFixationJitteredUpperBound: 2000,
-                numTrials: 10,
-                numTargetTrials: 2,
-                numNovelStimuli: 0,
+                maxResponseTime: 240000,
+                flashIncorrectDuration: 500,
+                trialType: "ALPHANUMERIC",
+                durationOutOfTimeMessageShown: 3000,
                 stimuliConfig: {
                     type: "generated",
                     stimuli: null,
@@ -162,105 +196,41 @@ export const TrailMakingLayoutMetadata = {
         {
             component: ComponentName.DISPLAY_COMPONENT,
             content: {
-                title: "",
+                title: "Practice round is now complete!",
                 sections: [
                     {
                         sectionType: "text",
-                        textContent:
-                            "You have reached the end of the practice block! Feedback will no longer be provided. There will be a total of 4 blocks with breaks between each block.",
-                    },
-                    {
-                        sectionType: "text",
-                        textContent: "<b>Remember:</b>",
-                    },
-                    {
-                        sectionType: "text",
-                        injection: "counterbalance",
-                        textContent: "Press <b>???</b> on the keyboard when you see the TRIANGLE",
-                    },
-                    {
-                        sectionType: "text",
-                        injection: "counterbalance-alternative",
-                        textContent: "Press <b>???</b> on the keyboard for any other shape",
-                    },
-                    {
-                        sectionType: "text",
-                        textContent: 'Click "START" when you are ready to begin',
-                    },
-                ],
-            },
-        },
-        {
-            component: ComponentName.ODDBALL_COMPONENT,
-            config: {
-                isPractice: false,
-                maxResponseTime: 2000,
-                interTrialDelay: 200,
-                showFeedbackAfterEachTrial: false,
-                durationOfFeedback: 500,
-                durationStimulusPresented: 450,
-                durationFixationJitteredLowerBound: 1000,
-                durationFixationJitteredUpperBound: 2000,
-                numTrials: 60,
-                numTargetTrials: 12,
-                numNovelStimuli: 0,
-                stimuliConfig: {
-                    type: "generated",
-                    stimuli: null,
-                },
-            },
-        },
-        {
-            component: ComponentName.DISPLAY_COMPONENT,
-            content: {
-                title: "You've reached the end of the block!",
-                timerConfig: {
-                    timer: 30000,
-                    showTimer: true,
-                    canSkipTimer: true,
-                    skipAvailableAfterXSeconds: 0,
-                },
-                sections: [
-                    {
-                        sectionType: "text",
-                        textContent: "You may take a 30 second break",
-                    },
-                    {
-                        sectionType: "text",
-                        textContent: "Remember:",
-                    },
-                    {
-                        sectionType: "text",
-                        injection: "counterbalance",
-                        textContent: "Press ??? on the keyboard when you see a triangle",
-                    },
-                    {
-                        sectionType: "text",
-                        injection: "counterbalance-alternative",
-                        textContent: "Press ??? on the keyboard for any other shape",
+                        textContent: "You will now play the actual game",
                     },
                     {
                         sectionType: "text",
                         textContent:
-                            'You will be automatically directed to the next block after the break. A "Get Ready!" slide will appear before you begin. You can also click "NEXT" to move on to the next round',
+                            "Starting with number 1, you must click the circles ALTERNATING between numbers and letters in ascending order as fast as possible",
+                    },
+                    {
+                        sectionType: "image-horizontal",
+                        imagePath: "/assets/images/instructions/trailmaking/connect-the-dots-2-example.png",
+                    },
+                    {
+                        sectionType: "text",
+                        textContent: 'Click "START" when you are ready for the actual game',
                     },
                 ],
+                buttons: {
+                    isStart: true,
+                    previousDisabled: true,
+                    nextDisabled: false,
+                },
             },
         },
         {
-            component: ComponentName.ODDBALL_COMPONENT,
+            component: ComponentName.TRAIL_MAKING_COMPONENT,
             config: {
                 isPractice: false,
-                maxResponseTime: 2000,
-                interTrialDelay: 200,
-                showFeedbackAfterEachTrial: false,
-                durationOfFeedback: 500,
-                durationStimulusPresented: 450,
-                durationFixationJitteredLowerBound: 1000,
-                durationFixationJitteredUpperBound: 2000,
-                numTrials: 60,
-                numTargetTrials: 12,
-                numNovelStimuli: 0,
+                maxResponseTime: 240000,
+                flashIncorrectDuration: 500,
+                trialType: "ALPHANUMERIC",
+                durationOutOfTimeMessageShown: 3000,
                 stimuliConfig: {
                     type: "generated",
                     stimuli: null,
@@ -270,127 +240,30 @@ export const TrailMakingLayoutMetadata = {
         {
             component: ComponentName.DISPLAY_COMPONENT,
             content: {
-                title: "You've reached the end of the block!",
-                timerConfig: {
-                    timer: 30000,
-                    showTimer: true,
-                    canSkipTimer: true,
-                    skipAvailableAfterXSeconds: 0,
-                },
+                title: "The game has finished",
                 sections: [
                     {
                         sectionType: "text",
-                        textContent: "You may take a 30 second break",
+                        textContent: "Congratulations!",
                     },
                     {
                         sectionType: "text",
-                        textContent: "Remember:",
+                        textContent: "You finished the game successfully",
                     },
                     {
                         sectionType: "text",
-                        injection: "counterbalance",
-                        textContent: "Press ??? on the keyboard when you see a triangle",
+                        textContent: "Thank you for your participation",
                     },
                     {
                         sectionType: "text",
-                        injection: "counterbalance-alternative",
-                        textContent: "Press ??? on the keyboard for any other shape",
-                    },
-                    {
-                        sectionType: "text",
-                        textContent:
-                            'You will be automatically directed to the next block after the break. A "Get Ready!" slide will appear before you begin. You can also click "NEXT" to move on to the next round',
+                        textContent: 'Click "NEXT"',
                     },
                 ],
-            },
-        },
-        {
-            component: ComponentName.ODDBALL_COMPONENT,
-            config: {
-                isPractice: false,
-                maxResponseTime: 2000,
-                interTrialDelay: 200,
-                showFeedbackAfterEachTrial: false,
-                durationOfFeedback: 500,
-                durationStimulusPresented: 450,
-                durationFixationJitteredLowerBound: 1000,
-                durationFixationJitteredUpperBound: 2000,
-                numTrials: 60,
-                numTargetTrials: 6,
-                numNovelStimuli: 6,
-                stimuliConfig: {
-                    type: "generated",
-                    stimuli: null,
+                buttons: {
+                    isStart: false,
+                    previousDisabled: true,
+                    nextDisabled: false,
                 },
-            },
-        },
-        {
-            component: ComponentName.DISPLAY_COMPONENT,
-            content: {
-                title: "You've reached the end of the block!",
-                timerConfig: {
-                    timer: 30000,
-                    showTimer: true,
-                    canSkipTimer: true,
-                    skipAvailableAfterXSeconds: 0,
-                },
-                sections: [
-                    {
-                        sectionType: "text",
-                        textContent: "You may take a 30 second break",
-                    },
-                    {
-                        sectionType: "text",
-                        textContent: "Remember:",
-                    },
-                    {
-                        sectionType: "text",
-                        injection: "counterbalance",
-                        textContent: "Press ??? on the keyboard when you see a triangle",
-                    },
-                    {
-                        sectionType: "text",
-                        injection: "counterbalance-alternative",
-                        textContent: "Press ??? on the keyboard for any other shape",
-                    },
-                    {
-                        sectionType: "text",
-                        textContent:
-                            'You will be automatically directed to the next block after the break. A "Get Ready!" slide will appear before you begin. You can also click "NEXT" to move on to the next round',
-                    },
-                ],
-            },
-        },
-        {
-            component: ComponentName.ODDBALL_COMPONENT,
-            config: {
-                isPractice: false,
-                maxResponseTime: 2000,
-                interTrialDelay: 200,
-                showFeedbackAfterEachTrial: false,
-                durationOfFeedback: 500,
-                durationStimulusPresented: 450,
-                durationFixationJitteredLowerBound: 1000,
-                durationFixationJitteredUpperBound: 2000,
-                numTrials: 60,
-                numTargetTrials: 6,
-                numNovelStimuli: 6,
-                stimuliConfig: {
-                    type: "generated",
-                    stimuli: null,
-                },
-            },
-        },
-        {
-            component: ComponentName.DISPLAY_COMPONENT,
-            content: {
-                title: "Game has finished",
-                sections: [
-                    {
-                        sectionType: "text",
-                        textContent: "Thank you for your participation!",
-                    },
-                ],
             },
         },
     ],

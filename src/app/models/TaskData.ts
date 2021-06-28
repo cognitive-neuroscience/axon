@@ -83,7 +83,7 @@ export class DemandSelectionTaskData extends TaskData {
     rotation: number;
 }
 
-export class TrailMaking extends TaskData {
+export class TrailMakingTaskData extends TaskData {
     trialType: string;
     actualAnswer: string;
     userAnswer: string;

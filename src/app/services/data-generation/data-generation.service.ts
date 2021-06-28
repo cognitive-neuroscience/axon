@@ -29,12 +29,16 @@ import {
     SmileyFaceType,
     StroopStimulus,
     TaskSwitchingStimulus,
+    TrailMakingStimuliSet,
+    TrailMakingStimulus,
+    TrailMakingTrialType,
 } from "./stimuli-models";
 import { StroopSet } from "./raw-data/stroop-data-list";
 import { NBackSet } from "./raw-data/nback-data-list";
 import { Color } from "src/app/models/InternalDTOs";
 import { DemandSelectionImageNames } from "./raw-data/demand-selection-image-list";
 import { DigitSpanStimuli } from "./raw-data/digit-span-list";
+import { TrailMakingSet } from "./raw-data/trail-making-list";
 
 @Injectable({
     providedIn: "root",
@@ -374,6 +378,18 @@ export class DataGenerationService {
             return useForwardSequence
                 ? DigitSpanStimuli.actual.forwardSequence
                 : DigitSpanStimuli.actual.backwardSequence;
+        }
+    }
+
+    generateTrailMakingStimuli(isPractice: boolean, trialType: TrailMakingTrialType): TrailMakingStimulus {
+        if (isPractice) {
+            return trialType === TrailMakingTrialType.ALPHANUMERIC
+                ? TrailMakingSet.alphanumeric.practice
+                : TrailMakingSet.numeric.practice;
+        } else {
+            return trialType === TrailMakingTrialType.ALPHANUMERIC
+                ? TrailMakingSet.alphanumeric.actual
+                : TrailMakingSet.numeric.actual;
         }
     }
 }
