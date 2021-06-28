@@ -1,18 +1,19 @@
-.keypadButton{
+.keypadButton {
     border-radius: 5px;
     background: black;
     color: white;
     font-size: 30px;
     margin: 5px;
     width: 100px;
+    height: 100px;
     padding-top: 30px;
     padding-bottom: 30px;
     text-align: center;
     border: solid thin black;
     cursor: pointer;
-    &:hover{
+    &:hover {
         background: white;
-        color: black; 
+        color: black;
     }
 }
 

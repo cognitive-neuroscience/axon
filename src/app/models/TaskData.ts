@@ -97,7 +97,7 @@ export class FingerTapping extends TaskData {
     keyPressed: Key;
 }
 
-export class DigitSpan extends TaskData {
+export class DigitSpanTaskData extends TaskData {
     actualAnswer: string; // the actual sequence given
     userAnswer: string; // the sequence the user inputs
     responseTime: number; // time from when keypad entered screen to participant submitting their response

@@ -9,6 +9,7 @@ import { SmileyFaceComponent } from "../pages/tasks/playables/smiley-face/smiley
 import { NBackComponent } from "../pages/tasks/playables/n-back/n-back.component";
 import { DemandSelectionComponent } from "../pages/tasks/playables/demand-selection/demand-selection.component";
 import { TaskSwitchingComponent } from "../pages/tasks/playables/task-switching/task-switching.component";
+import { DigitSpanComponent } from "../pages/tasks/playables/digit-span/digit-span.component";
 
 export enum ComponentName {
     DISPLAY_COMPONENT = "DISPLAYCOMPONENT",
@@ -20,6 +21,7 @@ export enum ComponentName {
     NBACK_COMPONENT = "NBACKCOMPONENT",
     DEMAND_SELECTION_COMPONENT = "DEMANDSELECTIONCOMPONENT",
     TASK_SWITCHING_COMPONENT = "TASKSWITCHINGCOMPONENT",
+    DIGIT_SPAN_COMPONENT = "DIGITSPANCOMPONENT",
 }
 
 @Injectable({
@@ -49,9 +51,11 @@ export class ComponentFactoryService {
             case ComponentName.NBACK_COMPONENT:
                 return this.buildComponent(NBackComponent);
             case ComponentName.DEMAND_SELECTION_COMPONENT:
-                return this.buildComponent(DemandSelectionComponent)
+                return this.buildComponent(DemandSelectionComponent);
             case ComponentName.TASK_SWITCHING_COMPONENT:
                 return this.buildComponent(TaskSwitchingComponent);
+            case ComponentName.DIGIT_SPAN_COMPONENT:
+                return this.buildComponent(DigitSpanComponent);
             default:
                 throw new Error("Component doesn't exist: " + componentMapping);
         }

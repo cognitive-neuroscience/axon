@@ -3,7 +3,7 @@ import { MaterialModule } from "src/app/modules/material/material.module";
 import { ChoiceComponent } from "./playables/choice/choice.component";
 import { DemandSelectionComponent } from "./playables/demand-selection/demand-selection.component";
 import { DigitSpanComponent } from "./playables/digit-span/digit-span.component";
-import { NumpadComponent } from "./playables/digit-span/numpad/numpad.component";
+import { NumpadComponent } from "./shared/numpad/numpad.component";
 import { FingerTappingTaskComponent } from "./playables/finger-tapping/finger-tapping-task.component";
 import { NBackComponent } from "./playables/n-back/n-back.component";
 import { OddballComponent } from "./playables/oddball/oddball.component";

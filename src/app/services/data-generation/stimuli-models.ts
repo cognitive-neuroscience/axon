@@ -86,3 +86,19 @@ export class TaskSwitchingStimulus {
     color: Color;
     digit: number;
 }
+
+export class DigitSpanStimuliSet {
+    practice: {
+        forwardSequence: DigitSpanStimulus[];
+        backwardSequence: DigitSpanStimulus[];
+    };
+    actual: {
+        forwardSequence: DigitSpanStimulus[];
+        backwardSequence: DigitSpanStimulus[];
+    };
+}
+
+export class DigitSpanStimulus {
+    first: number[];
+    second: number[];
+}

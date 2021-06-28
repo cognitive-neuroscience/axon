@@ -108,7 +108,7 @@ export function thisOrDefault<T>(value: T, defaultValue: T): T {
 }
 
 export function throwErrIfNotDefined(value: any, errStr: string): any {
-    if (!value && value !== 0 && value !== "0") {
+    if (value === undefined || value === null) {
         throw new Error(errStr);
     } else {
         return value;

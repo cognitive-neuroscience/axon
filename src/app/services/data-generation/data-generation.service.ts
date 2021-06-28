@@ -20,6 +20,7 @@ import {
     ChoiceTaskStimulus,
     DemandSelectionCounterbalance,
     DemandSelectionStimulus,
+    DigitSpanStimulus,
     ImageBlob,
     NBackStimulus,
     OddballStimulus,
@@ -33,6 +34,7 @@ import { StroopSet } from "./raw-data/stroop-data-list";
 import { NBackSet } from "./raw-data/nback-data-list";
 import { Color } from "src/app/models/InternalDTOs";
 import { DemandSelectionImageNames } from "./raw-data/demand-selection-image-list";
+import { DigitSpanStimuli } from "./raw-data/digit-span-list";
 
 @Injectable({
     providedIn: "root",
@@ -266,13 +268,12 @@ export class DataGenerationService {
         usedColorStims: string[],
         counterbalance: DemandSelectionCounterbalance
     ): DemandSelectionStimulus[] {
-
         const firstPatchImg = this.getColorStim(usedColorStims);
         const secondPatchImg = this.getColorStim(usedColorStims);
         const rotation = getRandomNumber(0, 360);
 
         let demandSelectionStimuli: DemandSelectionStimulus[] = new Array(numTrials);
-        for(let index = 0; index < demandSelectionStimuli.length; index++) {
+        for (let index = 0; index < demandSelectionStimuli.length; index++) {
             if (index === 0) {
                 demandSelectionStimuli[index] = {
                     firstPatchImgName: firstPatchImg,
@@ -281,8 +282,8 @@ export class DataGenerationService {
                     secondPatch: getRandomNumber(0, 10) < 5 ? oddEvenColor : ltGtColor,
                     digit: this.getDigit(null),
                     counterbalance: counterbalance,
-                    rotation: rotation // choose a degree of rotation between 0 and 359 (because 0 and 360 are the same)
-                }
+                    rotation: rotation, // choose a degree of rotation between 0 and 359 (because 0 and 360 are the same)
+                };
             } else {
                 // selecting what was NOT the color for the previous patches
                 const prevTrial = demandSelectionStimuli[index - 1];
@@ -291,12 +292,16 @@ export class DataGenerationService {
                 demandSelectionStimuli[index] = {
                     firstPatchImgName: firstPatchImg,
                     secondPatchImgName: secondPatchImg,
-                    firstPatch: this.shouldShift(probOfShiftFirstPatch) ? prevTrialNoneFirstPatchColor : prevTrial.firstPatch,
-                    secondPatch: this.shouldShift(probOfShiftSecondPatch) ? prevTrialNoneSecondPatchColor : prevTrial.secondPatch,
+                    firstPatch: this.shouldShift(probOfShiftFirstPatch)
+                        ? prevTrialNoneFirstPatchColor
+                        : prevTrial.firstPatch,
+                    secondPatch: this.shouldShift(probOfShiftSecondPatch)
+                        ? prevTrialNoneSecondPatchColor
+                        : prevTrial.secondPatch,
                     digit: this.getDigit(prevTrial.digit),
                     counterbalance: counterbalance,
-                    rotation: rotation
-                }
+                    rotation: rotation,
+                };
             }
         }
         return demandSelectionStimuli;
@@ -311,15 +316,15 @@ export class DataGenerationService {
             randColorStim = DemandSelectionImageNames[getRandomNumber(0, DemandSelectionImageNames.length)];
         }
         // reference type - this reference will be cached, shared and modified with other demand selection components
-        usedColorStims.push(randColorStim)
+        usedColorStims.push(randColorStim);
         return randColorStim;
     }
 
     private getDigit(prevDigit: number): number {
         let digit = getRandomNumber(0, 10);
         //  digits are 1,2,3,4,6,7,8,9 - don't repeat same digit twice
-        while(digit === 0 || digit === 5 || digit === prevDigit) {
-            digit = getRandomNumber(0, 10)
+        while (digit === 0 || digit === 5 || digit === prevDigit) {
+            digit = getRandomNumber(0, 10);
         }
         return digit;
     }
@@ -342,23 +347,33 @@ export class DataGenerationService {
         oddEvenColor: Color,
         ltGtColor: Color
     ): TaskSwitchingStimulus[] {
-
         let color = getRandomNumber(0, 2) === 1 ? oddEvenColor : ltGtColor;
 
         //  digits are 1,2,3,4,6,7,8,9 - don't repeat same digit twice
         const stimuli: TaskSwitchingStimulus[] = new Array(numTrials);
-        for(let i = 0; i < stimuli.length; i++) {
+        for (let i = 0; i < stimuli.length; i++) {
             // the first time needs to be null
-            const digit = this.getDigit( i === 0 ? null : stimuli[i - 1].digit);
+            const digit = this.getDigit(i === 0 ? null : stimuli[i - 1].digit);
 
-            if (this.shouldShift(probOfShift)) color = (color === oddEvenColor ? ltGtColor : oddEvenColor);
+            if (this.shouldShift(probOfShift)) color = color === oddEvenColor ? ltGtColor : oddEvenColor;
 
             stimuli[i] = {
                 digit: digit,
-                color: color
-            }
+                color: color,
+            };
         }
         return stimuli;
     }
-}
 
+    generateDigitSpanStimuli(isPractice: boolean, useForwardSequence: boolean): DigitSpanStimulus[] {
+        if (isPractice) {
+            return useForwardSequence
+                ? DigitSpanStimuli.practice.forwardSequence
+                : DigitSpanStimuli.practice.backwardSequence;
+        } else {
+            return useForwardSequence
+                ? DigitSpanStimuli.actual.forwardSequence
+                : DigitSpanStimuli.actual.backwardSequence;
+        }
+    }
+}

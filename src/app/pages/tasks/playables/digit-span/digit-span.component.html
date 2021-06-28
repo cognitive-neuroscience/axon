@@ -1,14 +1,30 @@
 <div class="container-fluid wrapper task-text flex-column-center">
+    <div class="full-box flex-column-center">
+        <div *ngIf="showStimulus">
+            <div style="font-size: 100px">
+                {{ digitShown }}
+            </div>
+        </div>
 
-    <!-- Show welcome message -->
-    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 1">
+        <div *ngIf="showFixation">
+            <i class="material-icons" style="font-size: 60px">add</i>
+        </div>
 
-        <!-- Introduction -->
+        <div *ngIf="showFeedback">
+            <div class="feedback">
+                {{ feedback }}
+            </div>
+        </div>
+
+        <app-numpad *ngIf="showKeypad" (submit)="handleRoundInteraction($event)"></app-numpad>
+    </div>
+
+    <!-- <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 1">
+
         <div class="h-100 uppercase instructions flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/digitspan/1.png" alt="Digit Span instructions">
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -33,15 +49,12 @@
         </div>
     </div>
 
-    <!-- Show practice round message for forward memory -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 2">
 
-        <!-- practice round instructions -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/digitspan/2.png" alt="Digit Span instructions">
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -66,12 +79,10 @@
         </div>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 3">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Start Practice Round for forward memory -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 4">
 
         <div *ngIf="isStimulus">
@@ -93,19 +104,15 @@
         <app-numpad *ngIf="isKeypad" (submit)="onNumpadSubmit($event)"></app-numpad>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 5">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Show practice round finished message -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 6">
-        <!-- end of practice round, start real game -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/digitspan/3.png" alt="Digit Span instructions">
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -130,12 +137,10 @@
         </div>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 7">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Start Actual Round -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 8">
         <div *ngIf="isStimulus">
             <div style="font-size: 100px;">
@@ -156,20 +161,16 @@
         <app-numpad *ngIf="isKeypad" (submit)="onNumpadSubmit($event)"></app-numpad>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 9">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Show instructions for backwards memory game -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 10">
-        <!-- show instructions for backwards memory game -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/digitspan/4.png" alt="Digit Span instructions">
         </div>
 
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -194,15 +195,11 @@
         </div>
     </div>
 
-    <!-- practice message for backwards memory game -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 11">
-        <!-- show practice message for backwards memory game -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/digitspan/5.png" alt="Digit Span instructions">
         </div>
 
-
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -227,12 +224,10 @@
         </div>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 12">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Start Practice Round for backward memory -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 13">
 
         <div *ngIf="isStimulus">
@@ -254,20 +249,16 @@
         <app-numpad *ngIf="isKeypad" (submit)="onNumpadSubmit($event)"></app-numpad>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 14">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Show backwards memory actual game message -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 15">
-        <!-- show backwards memory game message -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/digitspan/6.png" alt="Digit Span instructions">
         </div>
 
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -292,12 +283,10 @@
         </div>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 16">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Start Actual Round -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 17">
         <div *ngIf="isStimulus">
             <div style="font-size: 100px;">
@@ -318,20 +307,15 @@
         <app-numpad *ngIf="isKeypad" (submit)="onNumpadSubmit($event)"></app-numpad>
     </div>
 
-    <!-- Show loader -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 18">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- Show finished game -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 19">
-        <!-- game complete -->
         <div class="h-100 uppercase instructions flex-column-center" align="center">
             <img class="w-100" src="/assets/images/instructions/digitspan/7.png" alt="Digit Span instructions">
         </div>
 
-
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -354,6 +338,5 @@
                 </div>
             </div>
         </div>
-    </div>
-
+    </div> -->
 </div>

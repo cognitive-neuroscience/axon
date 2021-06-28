@@ -1,172 +1,227 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
-import { UploadDataService } from "src/app/services/uploadData.service";
-declare function setFullScreen(): any;
-import * as practiceSequence from "./sequence.practice";
-import * as actualSequence from "./sequence";
-import { DigitSpan, TaskNames } from "src/app/models/TaskData";
-import { AuthService } from "src/app/services/auth.service";
-import { TaskManagerService } from "src/app/services/task-manager.service";
+import { Component } from "@angular/core";
+import { DigitSpanTaskData } from "src/app/models/TaskData";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { Feedback, UserResponse } from "src/app/models/InternalDTOs";
 import { TimerService } from "src/app/services/timer.service";
-import { environment } from "src/environments/environment";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { Role } from "src/app/models/enums";
+import { StimuliProvidedType } from "src/app/models/enums";
+import { AbstractBaseTaskComponent } from "../base-task";
+import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
+import { LoaderService } from "src/app/services/loader.service";
+import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
+import { TaskConfig } from "../task-player/task-player.component";
+import { ComponentName } from "src/app/services/component-factory.service";
+import { DigitSpanStimulus } from "src/app/services/data-generation/stimuli-models";
+
+interface DigitSpanMetadata {
+    component: ComponentName;
+    config: {
+        isPractice: boolean;
+        maxResponseTime: number;
+        interTrialDelay: number;
+        showFeedbackAfterEachTrial: boolean;
+        durationDigitPresented: number;
+        durationPauseBetweenDigits: number;
+        durationOfFeedback: number;
+        delayToShowHelpMessage: number;
+        durationHelpMessageShown: number;
+        durationFixationPresented: number;
+        useForwardSequence: boolean;
+        stimuliConfig: {
+            type: StimuliProvidedType;
+            stimuli: DigitSpanStimulus[];
+        };
+    };
+}
 
 @Component({
     selector: "app-digit-span",
     templateUrl: "./digit-span.component.html",
     styleUrls: ["./digit-span.component.scss"],
 })
-export class DigitSpanComponent implements OnInit, OnDestroy {
-    // Default study config
-    isScored: boolean | number = true;
-    showFeedbackAfterEveryTrial: boolean | number = true;
-    showScoreAfterEveryTrial: boolean | number = false;
-    numberOfBreaks: number = 0;
-    maxResponseTime: number = 30000; // 30 seconds
-    durationOfFeedback: number = 1000; // In milliseconds
-    interTrialDelay: number = 1000; // In milliseconds
-    practiceTrials: number = 1;
-    actualTrials: number = 1;
-    delayToShowHelpMessage: number = 20000;
-    durationHelpMessageShown: number = 4000;
-    backwardMemoryMode: boolean = false;
+export class DigitSpanComponent extends AbstractBaseTaskComponent {
+    /**
+     * Task summary:
+     * This task involves the participant seeing a stream of letters presented on the screen, one at a time. This is a memory task,
+     * so the participant is required to read the letters and then use a number pad to enter the letters again.
+     * The same is done afterwards but the participant is required to enter the numbers in reverse order.
+     */
 
-    snackbarTimeout: number;
-    responseTimeout: number;
-
-    step: number = 1;
-    digitShown: string = "";
-    feedback: string = "";
-    scoreForSpecificTrial: number = 0;
-    totalScore: number = 0;
+    // config variables variables
     isPractice: boolean = false;
-    isStimulus: boolean = false;
-    isKeypad: boolean = false;
-    isFeedback: boolean = false;
-    isBreak: boolean = false;
-    currentTrial: number = 0;
-    isResponseAllowed: boolean = false;
+    private maxResponseTime: number;
+    private interTrialDelay: number; // In milliseconds
+    showFeedbackAfterEachTrial: boolean;
+    durationDigitPresented: number;
+    private durationOfFeedback: number;
+    private durationFixationPresented: number;
+    private durationPauseBetweenDigits: number;
+    private useForwardSequence: boolean;
+    private delayToShowHelpMessage: number;
+    private durationHelpMessageShown: number;
 
-    sequence: number[][][];
+    // shared state variables
+    userID: string;
+    studyCode: string;
+    config: TaskConfig;
 
-    currentSequence: {
-        level: number; // represents the difficulty (ranging from 0 to 7)
-        set: number; // represents whether we're using the first or second set of that level
-    } = {
-        level: 0,
-        set: 0,
-    };
+    // high level variables
+    taskData: DigitSpanTaskData[];
+    stimuli: DigitSpanStimulus[];
+    currentStimuliIndex: number; // index of the stimuli we are on
 
-    data: DigitSpan[] = [];
+    // local state variables
+    feedback: Feedback;
+    showStimulus: boolean = false;
+    digitShown: string = "";
+    showFeedback: boolean = false;
     showFixation: boolean = false;
+    trialNum: number = 0;
+    trialScore: number = 0;
+    responseAllowed: boolean = false;
+    showKeypad: boolean = false;
+    currentLevel: "first" | "second" = "first";
+
+    // timers
+    maxResponseTimer: any;
+    snackbarTimeout: any;
+
+    get currentStimulus(): DigitSpanStimulus {
+        return this.stimuli[this.currentStimuliIndex];
+    }
+
+    get currentTrial(): DigitSpanTaskData {
+        return this.taskData[this.taskData.length - 1];
+    }
 
     constructor(
-        private router: Router,
-        private uploadDataService: UploadDataService,
-        private authService: AuthService,
-        private taskManager: TaskManagerService,
-        private snackbarService: SnackbarService,
-        private timerService: TimerService
-    ) {}
-
-    ngOnInit() {}
-
-    proceedtoPreviousStep() {
-        this.step -= 1;
+        protected snackbarService: SnackbarService,
+        protected timerService: TimerService,
+        protected dataGenService: DataGenerationService,
+        protected loaderService: LoaderService
+    ) {
+        super(loaderService);
     }
 
-    proceedtoNextStep() {
-        this.step += 1;
+    configure(metadata: DigitSpanMetadata, config: TaskConfig) {
+        try {
+            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
+            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
+
+            this.maxResponseTime = throwErrIfNotDefined(
+                metadata.config.maxResponseTime,
+                "max response time not defined"
+            );
+
+            this.useForwardSequence = throwErrIfNotDefined(
+                metadata.config.useForwardSequence,
+                "sequence direction not defined"
+            );
+        } catch (error) {
+            throw new error("Cannot start study, values not defined:" + error);
+        }
+
+        this.config = config;
+        this.isPractice = thisOrDefault(metadata.config.isPractice, false);
+        this.durationFixationPresented = thisOrDefault(metadata.config.durationFixationPresented, 500);
+        this.interTrialDelay = thisOrDefault(metadata.config.interTrialDelay, 0);
+        this.durationDigitPresented = thisOrDefault(metadata.config.durationDigitPresented, 1000);
+        this.durationPauseBetweenDigits = thisOrDefault(metadata.config.durationPauseBetweenDigits, 300);
+        this.showFeedbackAfterEachTrial = thisOrDefault(metadata.config.showFeedbackAfterEachTrial, false);
+        this.durationOfFeedback = thisOrDefault(metadata.config.durationOfFeedback, 0);
+        this.delayToShowHelpMessage = thisOrDefault(metadata.config.delayToShowHelpMessage, 20000);
+        this.durationHelpMessageShown = thisOrDefault(metadata.config.durationHelpMessageShown, 3000);
+
+        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.config.stimuliConfig.stimuli;
     }
 
-    async startForwardMemoryPractice() {
-        this.sequence = practiceSequence.config.forwardSequence;
-        this.backwardMemoryMode = false;
-        this.startPractice();
+    async start() {
+        await this.startGameInFullScreen();
+
+        this.taskData = [];
+        this.currentStimuliIndex = 0;
+        this.currentLevel = "first";
+
+        // either the stimuli has been defined in config or we generate it here from service
+        if (!this.stimuli) {
+            this.stimuli = this.dataGenService.generateDigitSpanStimuli(this.isPractice, this.useForwardSequence);
+        }
+        super.start();
     }
 
-    async startBackwardMemoryPractice() {
-        this.sequence = practiceSequence.config.backwardSequence;
-        this.backwardMemoryMode = true;
-        this.startPractice();
-    }
-
-    private async startPractice() {
-        this.startGameInFullScreen();
-        this.resetData();
-        this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
-        this.isPractice = true;
-        this.currentTrial = 0;
-        this.showStimulus();
-    }
-
-    async startForwardMemoryActual() {
-        this.sequence = actualSequence.config.forwardSequence;
-        this.backwardMemoryMode = false;
-        this.startActualGame();
-    }
-
-    async startBackwardMemoryActual() {
-        this.sequence = actualSequence.config.backwardSequence;
-        this.backwardMemoryMode = true;
-        this.startActualGame();
-    }
-
-    async startActualGame() {
-        this.resetData();
-        this.proceedtoNextStep();
-        await this.wait(2000);
-        this.proceedtoNextStep();
-        this.isPractice = false;
-        this.currentTrial = 0;
-        this.showStimulus();
-    }
-
-    async showStimulus() {
-        this.reset();
-        this.currentTrial++;
-
+    async beginRound() {
         await this.flashFixation();
+        if (this.isDestroyed) return;
 
-        this.isStimulus = true;
-        this.isKeypad = false;
-        this.isFeedback = false;
+        this.showStimulus = true;
+        this.showKeypad = false;
+        this.showFeedback = false;
 
         await this.generateStimulus();
+        if (this.isDestroyed) return;
 
-        this.data.push({
-            userID: this.authService.getDecodedToken().UserID,
-            trial: this.currentTrial,
+        this.taskData.push({
+            userID: this.userID,
+            trial: ++this.trialNum,
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
-            studyCode: this.taskManager.getStudyCode(),
+            studyCode: this.studyCode,
             userAnswer: UserResponse.NA,
             actualAnswer: this.getActualAnswer(),
             responseTime: 0,
-            numberOfDigits: this.sequence[this.currentSequence.level][this.currentSequence.set].length,
+            numberOfDigits: this.currentStimulus[this.currentLevel].length,
             isCorrect: false,
             score: 0,
-            isForwardMemoryMode: this.backwardMemoryMode ? false : true,
+            isForwardMemoryMode: this.useForwardSequence,
         });
 
         this.timerService.startTimer();
-        this.isStimulus = false;
-        this.isKeypad = true;
-        this.isResponseAllowed = true;
+        this.showStimulus = false;
+        this.showKeypad = true;
+        this.responseAllowed = true;
 
         this.showHelpMessage("Please enter your response", this.delayToShowHelpMessage, this.durationHelpMessageShown);
 
-        this.responseTimeout = window.setTimeout(() => {
+        this.setTimer(this.maxResponseTime, async () => {
+            this.responseAllowed = false;
+            this.showStimulus = false;
+            this.showKeypad = false;
             const message = "Please do your best to provide your answer in the time allotted for the next trial.";
             this.snackbarService.openInfoSnackbar(message, undefined, this.durationHelpMessageShown);
-            this.showFeedback();
-        }, this.maxResponseTime);
+            await wait(this.durationHelpMessageShown);
+            if (this.isDestroyed) return;
+
+            this.handleRoundInteraction(null);
+        });
+    }
+
+    private async flashFixation() {
+        this.showFixation = true;
+        await wait(this.durationFixationPresented);
+        this.showFixation = false;
+    }
+
+    async generateStimulus() {
+        const sequenceToShow = this.currentStimulus[this.currentLevel];
+        for (const num of sequenceToShow) {
+            this.digitShown = num.toString();
+            await wait(this.durationDigitPresented);
+            this.digitShown = "";
+            await wait(this.durationPauseBetweenDigits);
+        }
+    }
+
+    private getActualAnswer(): string {
+        const thisSequence = this.currentStimulus[this.currentLevel];
+        let answer = this.arrayToPaddedString(thisSequence);
+        if (!this.useForwardSequence) answer = answer.split("").reverse().join("");
+        return answer;
+    }
+
+    private arrayToPaddedString(arr: number[]): string {
+        let str = "";
+        arr.forEach((x) => (str = `${str}${x} `));
+        return str.slice(0, str.length - 1);
     }
 
     private showHelpMessage(helpMessage: string, delay: number, duration: number) {
@@ -175,49 +230,16 @@ export class DigitSpanComponent implements OnInit, OnDestroy {
         }, delay);
     }
 
-    private getActualAnswer(): string {
-        const thisSequence = this.sequence[this.currentSequence.level][this.currentSequence.set];
-        let answer = this.arrayToPaddedString(thisSequence);
-        if (this.backwardMemoryMode) answer = answer.split("").reverse().join("");
-        return answer;
+    private setTimer(delay: number, cbFunc?: () => void) {
+        this.maxResponseTimer = window.setTimeout(() => {
+            if (cbFunc) cbFunc();
+        }, delay);
     }
 
-    private async flashFixation() {
-        this.showFixation = true;
-        await this.wait(500);
-        this.showFixation = false;
-        await this.wait(200);
-    }
-
-    async generateStimulus() {
-        const sequenceToShow: number[] = this.sequence[this.currentSequence.level][this.currentSequence.set];
-        for (const num of sequenceToShow) {
-            this.digitShown = num.toString();
-            await this.wait(1000);
-            this.digitShown = "";
-            await this.wait(300);
-        }
-    }
-
-    onNumpadSubmit($event: string) {
+    private cancelAllTimers() {
         clearTimeout(this.snackbarTimeout);
-        clearTimeout(this.responseTimeout);
+        clearTimeout(this.maxResponseTimer);
         this.snackbarService.clearSnackbar();
-        const thisTrial = this.data[this.data.length - 1];
-
-        if ($event !== UserResponse.NA) {
-            thisTrial.userAnswer = this.padString($event);
-        }
-
-        thisTrial.submitted = this.timerService.getCurrentTimestamp();
-        thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
-        this.showFeedback();
-    }
-
-    private arrayToPaddedString(arr: number[]): string {
-        let str = "";
-        arr.forEach((x) => (str = `${str}${x} `));
-        return str.slice(0, str.length - 1);
     }
 
     // adds spaces in between the letters of a string
@@ -229,165 +251,97 @@ export class DigitSpanComponent implements OnInit, OnDestroy {
         return x.slice(0, x.length - 1);
     }
 
-    async showFeedback() {
-        this.isStimulus = false;
-        this.isKeypad = false;
-        this.isFeedback = true;
-        this.isResponseAllowed = false;
+    handleRoundInteraction($event: string) {
+        this.cancelAllTimers();
+        this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
 
-        const thisTrial = this.data[this.data.length - 1];
+        if ($event === null) {
+            this.currentTrial.isCorrect = false;
+            this.currentTrial.score = 0;
+            this.currentTrial.responseTime = this.maxResponseTime;
+            this.currentTrial.userAnswer = UserResponse.NA;
+        } else if ($event === UserResponse.NA) {
+            this.responseAllowed = false;
+            this.currentTrial.isCorrect = false;
+            this.currentTrial.score = 0;
+            this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
+            this.currentTrial.userAnswer = UserResponse.NA;
+        } else {
+            this.responseAllowed = false;
+            this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
+            this.currentTrial.userAnswer = this.padString($event);
+        }
 
-        const actualAnswer = thisTrial.actualAnswer;
-        const userAnswer = thisTrial.userAnswer;
+        super.handleRoundInteraction(null);
+    }
 
-        switch (userAnswer) {
-            case actualAnswer:
+    async completeRound() {
+        this.showStimulus = false;
+        this.showKeypad = false;
+        this.responseAllowed = false;
+
+        switch (this.currentTrial.userAnswer) {
+            case this.currentTrial.actualAnswer:
                 this.feedback = Feedback.CORRECT;
-                thisTrial.isCorrect = true;
-                thisTrial.score = 10;
-                this.scoreForSpecificTrial = 10;
-                this.totalScore += 10;
-                this.updateCurrentSequence(true);
+                this.currentTrial.isCorrect = true;
+                this.currentTrial.score = 10;
                 break;
             case UserResponse.NA:
-                this.feedback = Feedback.NORESPONSE;
-                thisTrial.responseTime = thisTrial.responseTime == 0 ? this.maxResponseTime : thisTrial.responseTime;
-                this.scoreForSpecificTrial = 0;
-                this.updateCurrentSequence(false);
+                this.feedback =
+                    this.currentTrial.responseTime === this.maxResponseTime ? Feedback.TOOSLOW : Feedback.NORESPONSE;
                 break;
             default:
                 this.feedback = Feedback.INCORRECT;
-                this.scoreForSpecificTrial = 0;
-                this.updateCurrentSequence(false);
+                this.currentTrial.isCorrect = false;
+                this.currentTrial.score = 0;
                 break;
         }
 
-        // show feedback either if it is a practice trial, or if the feedback is telling the user
-        // they are too slow. Don't show for other feedback during actual game
-        if (this.isPractice || (this.showFeedbackAfterEveryTrial && this.feedback === Feedback.NORESPONSE)) {
-            await this.wait(this.durationOfFeedback);
+        // show feedback either if they are too slow, or if they don't have any response
+        if (
+            this.showFeedbackAfterEachTrial ||
+            this.feedback === Feedback.TOOSLOW ||
+            this.feedback === Feedback.NORESPONSE
+        ) {
+            this.showFeedback = true;
+            await wait(this.durationOfFeedback);
+            this.showFeedback = false;
         }
 
-        this.decideToContinue();
+        super.completeRound();
     }
 
-    private updateCurrentSequence(isCorrect: boolean) {
-        if (isCorrect) {
-            this.currentSequence.level++;
-            this.currentSequence.set = 0;
+    async decideToRepeat() {
+        // already made second attempt and got it wrong - end the game
+        const finishedSecondChance = this.currentLevel === "second" && !this.currentTrial.isCorrect;
+        // we have reached past the final level and the participant was correct
+        const finishedLastStimulus = this.currentStimuliIndex >= this.stimuli.length - 1 && this.currentTrial.isCorrect;
+
+        if (finishedSecondChance || finishedLastStimulus) {
+            super.decideToRepeat();
+            return;
         } else {
-            this.currentSequence.set++;
-        }
-    }
-
-    private canContinueGame(): boolean {
-        if (this.currentSequence.level >= 7) {
-            // 6 possible levels, meaning the participant has successfully completed all the trials
-            return false;
-        } else if (this.currentSequence.set >= 2) {
-            // the participant has gotten 2 wrong in the same level, meaning they have to move on
-            return false;
-        }
-        return true;
-    }
-
-    async decideToContinue() {
-        // only 1 practice trial
-        if (this.isPractice) {
-            this.proceedtoNextStep();
-            await this.wait(2000);
-            this.proceedtoNextStep();
-        } else {
-            if (this.canContinueGame()) {
-                this.continueGame();
+            if (this.currentTrial.isCorrect) {
+                this.currentStimuliIndex++;
+                this.currentLevel = "first";
             } else {
-                this.proceedtoNextStep();
-
-                if (this.step >= 17) {
-                    const decodedToken = this.authService.getDecodedToken();
-
-                    if (decodedToken.Role === Role.ADMIN) {
-                        this.proceedtoNextStep();
-                    } else {
-                        this.uploadResults(this.data)
-                            .pipe()
-                            .subscribe(
-                                (ok) => {
-                                    if (ok) {
-                                        this.proceedtoNextStep();
-                                    } else {
-                                        this.taskManager.handleErr();
-                                    }
-                                },
-                                (err) => {
-                                    this.taskManager.handleErr();
-                                }
-                            );
-                    }
-                } else {
-                    await this.wait(2000);
-                    this.proceedtoNextStep();
-                }
+                this.currentLevel = "second";
             }
+
+            await wait(this.interTrialDelay);
+            if (this.isDestroyed) return;
+            this.beginRound();
+            return;
         }
     }
 
-    resume() {
-        this.reset();
-        this.isBreak = false;
-        this.continueGame();
-    }
-
-    async continueGame() {
-        await this.wait(this.interTrialDelay);
-        this.showStimulus();
-    }
-
-    uploadResults(data: DigitSpan[]): Observable<boolean> {
-        const studyCode = this.taskManager.getStudyCode();
-        return this.uploadDataService.uploadData(studyCode, TaskNames.DIGITSPAN, data).pipe(map((ok) => ok.ok));
-    }
-
-    continueAhead() {
-        const decodedToken = this.authService.getDecodedToken();
-        if (decodedToken.Role === Role.ADMIN) {
-            if (!environment.production) console.log(this.data);
-
-            this.router.navigate(["/dashboard/components"]);
-            this.snackbarService.openInfoSnackbar("Task completed");
-        } else {
-            this.taskManager.next();
-        }
-    }
-
-    reset() {
-        this.feedback = "";
-        this.timerService.clearTimer();
-        this.digitShown = "";
-        this.scoreForSpecificTrial = 0;
-    }
-
-    resetData() {
-        this.totalScore = 0;
-        this.currentTrial = 0;
-        this.currentSequence.level = 0;
-        this.currentSequence.set = 0;
-    }
-
-    startGameInFullScreen() {
-        setFullScreen();
-    }
-
-    wait(time: number): Promise<void> {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve();
-            }, time);
-        });
-    }
+    // maxResponseTime: number = 30000; // 30 seconds
+    // durationOfFeedback: number = 1000; // In milliseconds
+    // interTrialDelay: number = 1000; // In milliseconds
+    // delayToShowHelpMessage: number = 20000;
+    // durationHelpMessageShown: number = 4000;
 
     ngOnDestroy() {
-        clearTimeout(this.responseTimeout);
-        clearTimeout(this.snackbarTimeout);
+        this.cancelAllTimers();
     }
 }
