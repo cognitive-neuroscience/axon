@@ -31,6 +31,7 @@ import { DemographicsQuestionnaireComponent } from "./questionnaires/demographic
 import { SafeResoucePipe } from "src/app/pipes/safe.pipe";
 import { PreviewQuestionnaireDialogComponent } from "../admin/admin-dashboard/study-components/manage-questionnaires/preview-questionnaire-dialog/preview-questionnaire-dialog.component";
 import { TempPlayerComponent } from "./playables/temp-player/temp-player.component";
+import { SelectOptionComponent } from "./shared/select-option/select-option.component";
 
 @NgModule({
     declarations: [
@@ -61,6 +62,7 @@ import { TempPlayerComponent } from "./playables/temp-player/temp-player.compone
         SliderComponent,
         DisplayComponent,
         NavigationButtonsComponent,
+        SelectOptionComponent,
 
         RotateDirective,
 

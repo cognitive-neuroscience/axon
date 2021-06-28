@@ -1,3 +1,4 @@
+import { UseHand } from "../pages/tasks/playables/finger-tapping/finger-tapping-task.component";
 import { SmileyFaceTaskCounterbalance } from "../pages/tasks/playables/smiley-face/smiley-face.component";
 import { BEStrings, Key, UserResponse } from "./InternalDTOs";
 
@@ -89,9 +90,9 @@ export class TrailMaking extends TaskData {
     timeFromLastClick: number;
 }
 
-export class FingerTapping extends TaskData {
+export class FingerTappingTaskData extends TaskData {
     block: number;
-    dominantHand: UserResponse;
+    dominantHand: UseHand;
     handUsed: string;
     timeFromLastKeyPress: number;
     keyPressed: Key;

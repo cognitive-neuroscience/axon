@@ -1,9 +1,22 @@
 <div class="container-fluid task-text wrapper flex-column-center">
+    <div class="full-box flex-column-space-between">
+        <div *ngIf="showStimulus" class="w-100 p-4 uppercase" align="center">
+            <h1 style="font-size: 4rem; line-height: normal">
+                {{ lastKeyPressed ? "Continue Tapping" : "Begin Tapping" }}
+            </h1>
+        </div>
 
-    <!-- Show welcome message -->
-    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 1">
+        <div class="w-100 p-4 uppercase" align="center">
+            <div *ngIf="showFixation">
+                <i class="material-icons" style="font-size: 60px">add</i>
+            </div>
+        </div>
 
-        <!-- Introduction -->
+        <div class="w-100 p-4 uppercase" align="center"></div>
+    </div>
+
+    <!-- <div class="full-box flex-column-center" *ngIf="!isBreak && step === 1">
+
         <div class="instructions h-100 flex-column-center">
             <div class="uppercase bold mb-5">Welcome to finger tapping task</div>
             <div class="underline uppercase mb-5">read the instructions carefully</div>
@@ -11,7 +24,6 @@
             <div class="bold uppercase mt-5">Click 'next' to proceed</div>
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -36,7 +48,6 @@
         </div>
     </div>
 
-    <!-- Left or right question -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 2">
 
         <div class="h-100 p-5 uppercase instructions text-center">
@@ -49,7 +60,6 @@
             </div>
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -65,7 +75,6 @@
         </div>
     </div>
 
-    <!-- instructions -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 3">
 
         <div class="instructions h-100 flex-column-center">
@@ -76,7 +85,6 @@
             <div class="mt-5 uppercase bold">Click 'next' to proceed</div>
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -101,7 +109,6 @@
         </div>
     </div>
 
-    <!-- instructions -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 4">
 
         <div class="instructions uppercase h-100 flex-column-center">
@@ -111,7 +118,6 @@
             <div class="mt-5 bold">Click 'NEXT' to proceed</div>
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -136,7 +142,6 @@
         </div>
     </div>
 
-    <!-- practice round message -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 5">
 
         <div class="instructions h-100 flex-column-center">
@@ -147,7 +152,6 @@
             <div class="mt-5 uppercase bold">Click 'start' when you are reaqdy for the practice round</div>
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -172,7 +176,6 @@
         </div>
     </div>
 
-    <!-- countdown timer display, automatically goes to next step -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && (step === 6 || step === 11 || step === 15 || step === 19)">
 
         <div>
@@ -182,14 +185,12 @@
                     <span *ngIf="block + 1 >= 3" style="color: red;" class="bold">You must use BOTH your index fingers: one on the 'Q' and one on the 'P'</span>
                 </div>
                 <br>
-                <!-- renders weird in safari, need to set innerText property instead of string interpolation -->
                 <span style="font-size: 60px;" class="bold" [innerText]="countDownDisplayValue"></span>
             </div>
         </div>
 
     </div>
 
-    <!-- practice round and main rounds -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && (step === 7 || step === 12 || step === 16 || step === 20)">
 
         <div class="w-100 p-4 uppercase" align="center">
@@ -207,12 +208,10 @@
 
     </div>
 
-    <!-- Show loader -->
     <div class="full-box d-flex flex-column-center" *ngIf="!isBreak && (step === 8 || step === 13 || step === 17 || step === 21)">
         <mat-spinner [diameter]="75"></mat-spinner>
     </div>
 
-    <!-- main round message -->
     <div class="full-box flex-column-center" *ngIf="!isBreak && step === 9">
 
         <div class="instructions h-100 flex-column-center">
@@ -225,7 +224,6 @@
             <div class="bold uppercase">Click 'next' to continue</div>
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -250,7 +248,6 @@
         </div>
     </div>
 
-    <!-- round 1 message -->
     <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 10">
 
         <div class="instructions h-100 flex-column-center">
@@ -264,7 +261,6 @@
             <div class="uppercase bold">Click 'start' when you are ready</div>
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -289,7 +285,6 @@
         </div>
     </div>
 
-    <!-- break view -->
     <div class="full-box flex-column-space-between" *ngIf="isBreak && (step === 14 || step === 18)">
 
         <div class="h-100 instructions flex-column-center">
@@ -317,7 +312,6 @@
             <div *ngIf="!resumeDisabled" class="bold uppercase">Click 'start' when you are ready</div>
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -352,7 +346,6 @@
             <div class="mb-5 bold">click 'continue'</div>
         </div>
 
-        <!-- Navigation buttons -->
         <div class="w-100 p-4 uppercase">
             <div class="flex-row-space-between">
                 <div>
@@ -375,11 +368,10 @@
                 </div>
             </div>
         </div>
-    </div>
-
+    </div> -->
 </div>
 
-<ng-template #nonDominantHand>
+<!-- <ng-template #nonDominantHand>
     <div class="mb-3">
         <span style="text-decoration: underline;">ROUND 2</span>: Please use your <span style="color: red;">NON DOMINANT</span> hand for this round.
     </div>
@@ -393,4 +385,4 @@
     </div>
     <div class="mb-3">This means you must use your LEFT finger to tap 'Q' and your RIGHT finger to tap 'P'</div>
     <div class="mb-5">And remember, as before, your goal is to alternate between tapping the 'P' and the 'Q' keys as fast as you can!</div>
-</ng-template>
+</ng-template> -->

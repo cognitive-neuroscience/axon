@@ -31,6 +31,7 @@ export interface DisplayComponentMetadata {
             timer: number;
             showTimer: boolean;
             canSkipTimer: boolean;
+            skipAvailableAfterXSeconds: number;
             countDown: boolean;
         };
         subtitle?: string;
@@ -51,7 +52,8 @@ export class DisplayComponent implements OnDestroy, Playable {
     displaySections: DisplaySection[] = [];
     buttonConfig: ButtonConfig = null;
     private canSkipTimer: boolean;
-    skippable: boolean = false;
+    private skipAvailableAfterXSeconds: number; // option to skip timer available after x seconds. canSkipTimer must be set to true
+    skippable: boolean = false; // whether or not we can skip this entire component (not related to timer config)
     cacheKey: string = "";
 
     // config variables
@@ -138,7 +140,11 @@ export class DisplayComponent implements OnDestroy, Playable {
             this.timerCountDown = thisOrDefault(metadata.content.timerConfig.countDown, false);
             this.showTimer = thisOrDefault(metadata.content.timerConfig.showTimer, false);
             this.canSkipTimer = thisOrDefault(metadata.content.timerConfig.canSkipTimer, false);
-            this.showNavigationButtons = this.canSkipTimer;
+            this.skipAvailableAfterXSeconds = thisOrDefault(metadata.content.timerConfig.skipAvailableAfterXSeconds, 0);
+
+            if (!this.canSkipTimer || this.skipAvailableAfterXSeconds > 0) {
+                this.showNavigationButtons = false;
+            }
 
             this.timerCountDown
                 ? this.startTimerReverse(metadata.content.timerConfig.timer / 1000)
@@ -149,15 +155,22 @@ export class DisplayComponent implements OnDestroy, Playable {
     afterInit() {
         if (this.skippable && this.cacheKey) {
             const shouldSkip = this.config.getCacheValue(this.cacheKey);
-            if (shouldSkip === undefined) return; // no cached value, do not skip
-            else if(shouldSkip) this.handleComplete(Navigation.NEXT);
+            if (shouldSkip === undefined) return;
+            // no cached value, do not skip
+            else if (shouldSkip) this.handleComplete(Navigation.NEXT);
         }
     }
 
     startTimer(duration: number) {
         this.timerDisplayValue = 1;
+
         this.interval = window.setInterval(() => {
             this.timerDisplayValue++;
+
+            if (this.canSkipTimer && this.timerDisplayValue >= this.skipAvailableAfterXSeconds) {
+                this.showNavigationButtons = true;
+            }
+
             if (this.timerDisplayValue > duration) {
                 clearInterval(this.interval);
                 this.handleComplete(Navigation.NEXT);
@@ -171,6 +184,11 @@ export class DisplayComponent implements OnDestroy, Playable {
         this.timerDisplayValue = duration;
         this.interval = window.setInterval(() => {
             this.timerDisplayValue--;
+
+            if (this.canSkipTimer && this.timerDisplayValue <= duration - this.skipAvailableAfterXSeconds) {
+                this.showNavigationButtons = true;
+            }
+
             if (this.timerDisplayValue < 0) {
                 clearInterval(this.interval);
                 this.handleComplete(Navigation.NEXT);

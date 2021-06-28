@@ -10,6 +10,8 @@ import { NBackComponent } from "../pages/tasks/playables/n-back/n-back.component
 import { DemandSelectionComponent } from "../pages/tasks/playables/demand-selection/demand-selection.component";
 import { TaskSwitchingComponent } from "../pages/tasks/playables/task-switching/task-switching.component";
 import { DigitSpanComponent } from "../pages/tasks/playables/digit-span/digit-span.component";
+import { SelectOptionComponent } from "../pages/tasks/shared/select-option/select-option.component";
+import { FingerTappingTaskComponent } from "../pages/tasks/playables/finger-tapping/finger-tapping-task.component";
 
 export enum ComponentName {
     DISPLAY_COMPONENT = "DISPLAYCOMPONENT",
@@ -22,6 +24,8 @@ export enum ComponentName {
     DEMAND_SELECTION_COMPONENT = "DEMANDSELECTIONCOMPONENT",
     TASK_SWITCHING_COMPONENT = "TASKSWITCHINGCOMPONENT",
     DIGIT_SPAN_COMPONENT = "DIGITSPANCOMPONENT",
+    SELECT_OPTION_COMPONENT = "SELECTOPTIONCOMPONENT",
+    FINGER_TAPPING_COMPONENT = "FINGERTAPPINGCOMPONENT",
 }
 
 @Injectable({
@@ -56,6 +60,10 @@ export class ComponentFactoryService {
                 return this.buildComponent(TaskSwitchingComponent);
             case ComponentName.DIGIT_SPAN_COMPONENT:
                 return this.buildComponent(DigitSpanComponent);
+            case ComponentName.SELECT_OPTION_COMPONENT:
+                return this.buildComponent(SelectOptionComponent);
+            case ComponentName.FINGER_TAPPING_COMPONENT:
+                return this.buildComponent(FingerTappingTaskComponent);
             default:
                 throw new Error("Component doesn't exist: " + componentMapping);
         }

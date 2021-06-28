@@ -1,97 +1,121 @@
-import { Component, OnInit, HostListener } from "@angular/core";
-import { Router } from "@angular/router";
-import { Observable } from "rxjs";
-import { map, take } from "rxjs/operators";
-import { Role } from "src/app/models/enums";
-import { Key, UserResponse } from "src/app/models/InternalDTOs";
-import { FingerTapping, TaskNames } from "src/app/models/TaskData";
-import { AuthService } from "src/app/services/auth.service";
-import { SnackbarService } from "src/app/services/snackbar.service";
-import { TaskManagerService } from "src/app/services/task-manager.service";
+import { Component, HostListener } from "@angular/core";
+import { thisOrDefault, throwErrIfNotDefined } from "src/app/common/commonMethods";
+import { StimuliProvidedType } from "src/app/models/enums";
+import { Key } from "src/app/models/InternalDTOs";
+import { FingerTappingTaskData } from "src/app/models/TaskData";
+import { ComponentName } from "src/app/services/component-factory.service";
+import { LoaderService } from "src/app/services/loader.service";
 import { TimerService } from "src/app/services/timer.service";
-import { UploadDataService } from "src/app/services/uploadData.service";
-import { environment } from "src/environments/environment";
+import { AbstractBaseTaskComponent } from "../base-task";
+import { TaskConfig } from "../task-player/task-player.component";
 
-declare function setFullScreen(): any;
+interface FingerTappingMetadata {
+    component: ComponentName;
+    config: {
+        isPractice: boolean;
+        maxResponseTime: number;
+        durationFixationPresented: number;
+        useHand: UseHand;
+    };
+}
+
+export enum UseHand {
+    DOMINANT = "DOMINANT",
+    NON_DOMINANT = "NONDOMINANT",
+    LEFT = "LEFT",
+    RIGHT = "RIGHT",
+    BOTH = "BOTH",
+}
+
+export enum FingerTappingCache {
+    HANDEDNESS = "finger-tapping-handedness",
+    BLOCK_NUM = "finger-tapping-block-num",
+}
 
 @Component({
     selector: "app-finger-tapping-task",
     templateUrl: "./finger-tapping-task.component.html",
     styleUrls: ["./finger-tapping-task.component.scss"],
 })
-export class FingerTappingTaskComponent implements OnInit {
-    isPractice: boolean = true;
-    isBreak: boolean = false;
-    step: number = 1;
-    practiceTrialDuration: number = environment.production ? 10000 : 5000;
-    actualTrialDuration: number[] = environment.production ? [60000, 60000, 20000] : [10000, 10000, 5000];
-    block: number = 0;
-    isResponseAllowed: boolean;
-    hand: string;
+export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
+    /**
+     * Task summary:
+     * This task involves the participant using the "P" and "Q" keys. They use one hand to
+     * alternatively tap the two keys.
+     * This task is counterbalanced by hand.
+     */
+
+    // config variables variables
+    isPractice: boolean = false;
+    private maxResponseTime: number;
+    private durationFixationPresented: number;
+    private useHand: UseHand;
+
+    // shared state variables
+    userID: string;
+    studyCode: string;
+    config: TaskConfig;
+
+    // high level variables
+    taskData: FingerTappingTaskData[];
+    stimuli = null; // not used
+    currentStimuliIndex: number; // index of the stimuli we are on
+
+    // local state variables
+    blockNum: number;
+    handedness: UseHand;
+    showStimulus: boolean = false;
+    text: string;
+    color: string;
+    showFeedback: boolean = false;
     showFixation: boolean = false;
-    lastKey: Key = null;
+    trialScore: number = 0;
+    responseAllowed: boolean = false;
+    scoreForSpecificTrial: number = 0;
+    trialNum: number = 0;
+    lastKeyPressed: Key;
 
-    durationUntilCanContinue: number = environment.production ? 30 : 10;
-    durationUntilContinueRequired: number = environment.production ? 120 : 20;
+    // timers
+    maxResponseTimer: any;
+    fixationTimeout: any;
 
-    // global timers
-    blockTimer: number; // timer to count the duration of the block
-    fixationTimeout: number; // timer to count how long the fixation shows
-    breakTimer: number; // timer to count how long the break is
-    countdownTimer: number; // timer to count down until the game starts
-
-    // keeps track of number of times user has pressed a key
-    pressNum: number = 0;
-    data: FingerTapping[] = [];
-    // fixation time out function
-    time: number;
-    resumeDisabled: boolean = false;
-    countDownDisplayValue: number;
-    dominantHand: UserResponse = UserResponse.NA;
-
-    @HostListener("window:keypress", ["$event"])
-    onKeyPress(event: KeyboardEvent) {
-        if (this.isResponseAllowed && this.isValidKey(event.key)) {
-            const responseTime = this.timerService.stopTimerAndGetTime();
-            const keyPressed: Key = event.key === Key.Q ? Key.Q : Key.P;
-
-            this.data.push({
-                trial: ++this.pressNum,
-                userID: this.authService.getDecodedToken().UserID,
-                score: null,
-                submitted: this.timerService.getCurrentTimestamp(),
-                isPractice: this.isPractice,
-                isCorrect: event.key !== this.lastKey,
-                studyCode: this.taskManager.getStudyCode(),
-                block: this.block,
-                dominantHand: this.dominantHand,
-                handUsed: this.getHandUsed(),
-                timeFromLastKeyPress: responseTime,
-                keyPressed: keyPressed,
-            });
-
-            // for first press of the game lastKey will be null
-            if (this.lastKey !== keyPressed) {
-                this.flashFixation();
-                this.lastKey = keyPressed;
-            }
-
-            this.timerService.startTimer();
-        }
+    constructor(protected timerService: TimerService, protected loaderService: LoaderService) {
+        super(loaderService);
     }
 
-    getHandUsed(): UserResponse {
-        if (this.isPractice) {
-            return UserResponse.RIGHT;
+    configure(metadata: FingerTappingMetadata, config: TaskConfig) {
+        try {
+            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
+            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
+
+            this.maxResponseTime = throwErrIfNotDefined(
+                metadata.config.maxResponseTime,
+                "max response time not defined"
+            );
+            this.useHand = throwErrIfNotDefined(metadata.config.useHand, "use hand not defined");
+        } catch (error) {
+            throw new error("values not defined, cannot start study");
         }
-        switch (this.block) {
-            case 1:
-                return this.dominantHand;
-            case 2:
-                return this.dominantHand === UserResponse.RIGHT ? UserResponse.LEFT : UserResponse.RIGHT;
-            case 3:
-                return UserResponse.BOTH;
-        }
+
+        this.config = config;
+        this.isPractice = thisOrDefault(metadata.config.isPractice, false);
+        this.durationFixationPresented = thisOrDefault(metadata.config.durationFixationPresented, 50);
+
+        // no stimuli required for this task
+    }
+
+    async start() {
+        await this.startGameInFullScreen();
+        if (this.isDestroyed) return;
+
+        this.taskData = [];
+        this.currentStimuliIndex = 0;
+
+        this.handedness = this.config.getCacheValue(FingerTappingCache.HANDEDNESS) || UseHand.RIGHT;
+        this.blockNum = this.config.getCacheValue(FingerTappingCache.BLOCK_NUM) || 1; // set to 1 if not defined
+        // no stimuli
+
+        super.start();
     }
 
     private flashFixation() {
@@ -99,178 +123,71 @@ export class FingerTappingTaskComponent implements OnInit {
         this.fixationTimeout = window.setTimeout(() => {
             this.showFixation = false;
             clearTimeout(this.fixationTimeout);
-        }, 50);
+        }, this.durationFixationPresented);
     }
 
     private isValidKey(key: string): boolean {
-        if (key === Key.Q || key === Key.P) return true;
-        return false;
+        return key === Key.Q || key === Key.P;
     }
 
-    constructor(
-        private router: Router,
-        private uploadDataService: UploadDataService,
-        private timerService: TimerService,
-        private authService: AuthService,
-        private taskManager: TaskManagerService,
-        private snackbarService: SnackbarService
-    ) {}
-
-    ngOnInit() {}
-
-    proceedtoPreviousStep() {
-        this.step -= 1;
-    }
-
-    proceedtoNextStep() {
-        this.step += 1;
-    }
-
-    handleLeftOrRightHanded(handedness: string) {
-        this.dominantHand = handedness as UserResponse;
-        this.proceedtoNextStep();
-    }
-
-    startPractice() {
-        this.isPractice = true;
-        this.startCountDownTimer();
-    }
-
-    // called once to set things up
-    startActual() {
-        this.block = 0;
-        this.isPractice = false;
-        this.startCountDownTimer();
-    }
-
-    startCountDownTimer() {
-        this.startGameInFullScreen();
-        this.proceedtoNextStep();
-        this.countDownDisplayValue = 5;
-        this.countdownTimer = window.setInterval(() => {
-            this.countDownDisplayValue -= 1;
-            if (this.countDownDisplayValue === 0) {
-                clearInterval(this.countdownTimer);
-                this.startBlock();
-            }
-        }, 1000);
-    }
-
-    startBlock() {
-        this.reset();
-        this.proceedtoNextStep();
-        this.block += 1;
-        this.startBlockTimer();
-    }
-
-    startBlockTimer() {
-        const duration: number = this.isPractice
-            ? this.practiceTrialDuration
-            : this.actualTrialDuration[this.block - 1];
-        this.isBreak = false;
+    async beginRound() {
         this.timerService.clearTimer();
         this.timerService.startTimer();
-        this.isResponseAllowed = true;
+        this.showStimulus = true;
+        this.responseAllowed = true;
 
-        this.blockTimer = window.setTimeout(() => {
-            this.stopBlockTimer();
-        }, duration);
+        this.maxResponseTimer = window.setTimeout(() => {
+            this.handleRoundInteraction(null);
+        }, this.maxResponseTime);
     }
 
-    async stopBlockTimer() {
-        this.isResponseAllowed = false;
-        this.timerService.clearTimer();
-        clearTimeout(this.blockTimer);
-        this.proceedtoNextStep();
+    @HostListener("window:keypress", ["$event"])
+    handleRoundInteraction(event: KeyboardEvent) {
+        if (event === null) {
+            super.handleRoundInteraction(null);
+        } else if (this.responseAllowed && this.isValidKey(event.key)) {
+            const responseTime = this.timerService.stopTimerAndGetTime();
 
-        // no break if practice
-        if (!this.isPractice) {
-            if (this.block < 3) {
-                await this.wait(2000);
-                this.proceedtoNextStep();
-                this.isBreak = true;
-                this.startBreakTimer();
-            } else {
-                const decodedToken = this.authService.getDecodedToken();
-                if (decodedToken.Role === Role.ADMIN) {
-                    this.proceedtoNextStep();
-                } else {
-                    this.uploadResults(this.data)
-                        .pipe(take(1))
-                        .subscribe(
-                            (ok) => {
-                                if (ok) {
-                                    this.proceedtoNextStep();
-                                } else {
-                                    console.error("There was an error downloading results");
-                                    this.taskManager.handleErr();
-                                }
-                            },
-                            (err) => {
-                                console.error("There was an error downloading results");
-                                this.taskManager.handleErr();
-                            }
-                        );
-                }
+            this.taskData.push({
+                trial: ++this.trialNum,
+                userID: this.userID,
+                score: 0,
+                submitted: this.timerService.getCurrentTimestamp(),
+                isPractice: this.isPractice,
+                isCorrect: event.key !== this.lastKeyPressed,
+                studyCode: this.studyCode,
+                block: this.blockNum,
+                dominantHand: this.handedness,
+                handUsed: this.useHand,
+                timeFromLastKeyPress: responseTime,
+                keyPressed: event.key as Key,
+            });
+            // for first press of the game lastKey will be null
+            if (this.lastKeyPressed !== event.key) {
+                this.flashFixation();
+                this.lastKeyPressed = event.key as Key;
             }
-        } else {
-            await this.wait(2000);
-            this.proceedtoNextStep();
+            this.timerService.startTimer();
         }
     }
 
-    startBreakTimer() {
-        this.time = 0;
-        this.resumeDisabled = true;
-        this.breakTimer = window.setInterval(() => {
-            this.time += 1;
-            if (this.time === this.durationUntilCanContinue) {
-                this.resumeDisabled = false;
-            }
-            if (this.time === this.durationUntilContinueRequired) {
-                this.stopBreakTimer();
-                return;
-            }
-        }, 1000);
+    private cancelAllTimers() {
+        clearTimeout(this.maxResponseTimer);
     }
 
-    reset() {
-        this.pressNum = 0;
-        this.lastKey = null;
+    async completeRound() {
+        this.cancelAllTimers();
+        this.showStimulus = false;
+        this.responseAllowed = false;
+
+        super.completeRound();
     }
 
-    stopBreakTimer() {
-        clearInterval(this.breakTimer);
-        this.isBreak = false;
-        this.startCountDownTimer();
-    }
+    async decideToRepeat() {
+        console.log(this.taskData);
 
-    uploadResults(data: FingerTapping[]): Observable<boolean> {
-        const studyCode = this.taskManager.getStudyCode();
-        return this.uploadDataService.uploadData(studyCode, TaskNames.FINGERTAPPING, data).pipe(map((ok) => ok.ok));
-    }
-
-    continueAhead() {
-        const decodedToken = this.authService.getDecodedToken();
-        if (decodedToken.Role === Role.ADMIN) {
-            if (!environment.production) console.log(this.data);
-
-            this.router.navigate(["/dashboard/components"]);
-            this.snackbarService.openInfoSnackbar("Task completed");
-        } else {
-            this.taskManager.next();
-        }
-    }
-
-    startGameInFullScreen() {
-        setFullScreen();
-    }
-
-    wait(time: number): Promise<void> {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve();
-            }, time);
-        });
+        this.config.setCacheValue(FingerTappingCache.BLOCK_NUM, this.isPractice ? this.blockNum : ++this.blockNum);
+        super.decideToRepeat();
+        return;
     }
 }

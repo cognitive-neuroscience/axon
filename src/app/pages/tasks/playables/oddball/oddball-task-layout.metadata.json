@@ -216,7 +216,8 @@
                 "timerConfig": {
                     "timer": 30000,
                     "showTimer": true,
-                    "canSkipTimer": true
+                    "canSkipTimer": true,
+                    "skipAvailableAfterXSeconds": 0
                 },
                 "sections": [
                     {
@@ -271,7 +272,8 @@
                 "timerConfig": {
                     "timer": 30000,
                     "showTimer": true,
-                    "canSkipTimer": true
+                    "canSkipTimer": true,
+                    "skipAvailableAfterXSeconds": 0
                 },
                 "sections": [
                     {
@@ -326,7 +328,8 @@
                 "timerConfig": {
                     "timer": 30000,
                     "showTimer": true,
-                    "canSkipTimer": true
+                    "canSkipTimer": true,
+                    "skipAvailableAfterXSeconds": 0
                 },
                 "sections": [
                     {

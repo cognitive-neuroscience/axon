@@ -1,0 +1,20 @@
+<div class="container-fluid task-text wrapper flex-column-center">
+    <!-- Left or right question -->
+    <div class="full-box flex-column-center">
+        <div class="h-100 p-5 uppercase instructions text-center">
+            <div class="bold uppercase">{{ question }}</div>
+
+            <div class="button-container">
+                <button
+                    *ngFor="let option of options"
+                    class="option-button"
+                    (click)="handleSelectOption(option.value)"
+                    mat-raised-button
+                    color="primary"
+                >
+                    {{ option.label }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

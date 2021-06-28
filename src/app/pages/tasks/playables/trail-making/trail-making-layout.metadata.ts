@@ -1,18 +1,12 @@
 import { ComponentName } from "src/app/services/component-factory.service";
-import { OddballTaskCounterbalance } from "./oddball.component";
 
-export const OddballLayoutMetadata = {
-    config: {
-        counterBalanceGroups: {
-            1: OddballTaskCounterbalance.M,
-            2: OddballTaskCounterbalance.Z,
-        },
-    },
+export const TrailMakingLayoutMetadata = {
+    config: {},
     metadata: [
         {
             component: ComponentName.DISPLAY_COMPONENT,
             content: {
-                title: "Welcome to the Oddball Task",
+                title: "Welcome to the Connect the dots game - Part 1",
                 sections: [
                     {
                         sectionType: "text",
