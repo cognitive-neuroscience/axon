@@ -1,6 +1,8 @@
 export enum RouteNames {
     LANDINGPAGE_LOGIN_SUBROUTE = "login",
     LANDINGPAGE_REGISTER_SUBROUTE = "register",
+
+    TASKPLAYER = "playtask",
 }
 
 export enum AdminRouteNames {

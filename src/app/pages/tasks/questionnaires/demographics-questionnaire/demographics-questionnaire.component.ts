@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { ConfirmationService } from "../../../../services/confirmation.service";
+import { ConfirmationService } from "../../../../services/confirmation/confirmation.service";
 import { Router } from "@angular/router";
 import { SessionStorageService } from "../../../../services/sessionStorage.service";
 import { QuestionnaireService } from "../../../../services/questionnaire.service";
@@ -60,7 +60,7 @@ export class DemographicsQuestionnaireComponent implements OnInit {
 
     submit() {
         const userID = this.authService.getDecodedToken().UserID;
-        const studyCode = this.taskManager.getStudyCode();
+        const studyCode = this.taskManager.study.studyCode;
 
         const response: DemographicsQuestionnaireResponse = {
             userID: userID,

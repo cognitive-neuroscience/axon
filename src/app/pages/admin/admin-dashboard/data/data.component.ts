@@ -1,15 +1,19 @@
 import { Component, OnInit } from "@angular/core";
-import { DownloadDataService } from "../../../../services/downloadData.service";
 import { Observable } from "rxjs";
 import { SnackbarService } from "../../../../services/snackbar.service";
 import { DateTime } from "luxon";
 import { StudyService } from "../../../../services/study.service";
 import { Study } from "../../../../models/Study";
-import { filter, map, mergeAll } from "rxjs/operators";
-import { mapTaskIdToTitle } from "../../../../models/TaskData";
-import { LoaderService } from "../../../../services/loader.service";
+import { filter, map, mergeAll, take } from "rxjs/operators";
+import { mapTaskIdToTitle, ParticipantData } from "../../../../models/TaskData";
+import { LoaderService } from "../../../../services/loader/loader.service";
 import { AuthService } from "src/app/services/auth.service";
 import { isConsent, isCustomTask, isSurveyMonkeyQuestionnaire } from "src/app/common/commonMethods";
+import { StudyTask } from "src/app/models/Task";
+import { ActivatedRoute } from "@angular/router";
+import { UserService } from "src/app/services/user.service";
+import { ParticipantDataService } from "src/app/services/participant-data.service";
+import { DataTableFormat } from "./data-table/data-table.component";
 
 @Component({
     selector: "app-data",
@@ -20,22 +24,37 @@ export class DataComponent implements OnInit {
     // Gorm sets this as its default value for null dates.
     private readonly NULL_DATE = "0001-01-01T00:00:00Z";
 
+    private idFromURL: string;
     selectedTableName: string = "";
     studies: Observable<Study[]>;
-    tableData: any = null; // json table to populate table component
+    tableData: DataTableFormat[]; // json table to populate table component
     fileName: string = null;
 
     constructor(
-        private _downloadDataService: DownloadDataService,
         private snackbarService: SnackbarService,
         private studyService: StudyService,
         private loaderService: LoaderService,
-        private authService: AuthService
+        private authService: AuthService,
+        private route: ActivatedRoute,
+        private userService: UserService,
+        private studyDataService: ParticipantDataService
     ) {}
 
     ngOnInit(): void {
-        this.studies = this.studyService.studies;
-        this.studyService.update();
+        this.idFromURL = this.route.snapshot.paramMap.get("id");
+        if (!this.studyService.hasStudies) this.studyService.update();
+    }
+
+    get studyExists(): boolean {
+        return (
+            !!this.idFromURL &&
+            !!this.studyService.studies &&
+            !!this.studyService.studies.find((study) => study.id.toString() === this.idFromURL)
+        );
+    }
+
+    get study(): Study {
+        return this.studyService.studies.find((study) => study.id.toString() === this.idFromURL);
     }
 
     // optionsList(code: string): Observable<string[]> {
@@ -54,32 +73,48 @@ export class DataComponent implements OnInit {
     // );
     // }
 
-    isAdmin(): boolean {
-        return this.authService.isAdmin();
+    get isAdmin(): Observable<boolean> {
+        return this.userService.userIsAdmin;
     }
 
-    getAndDisplayData(code: string, option: string) {
-        if (!this.isAdmin()) {
-            this.snackbarService.openErrorSnackbar("You are not authorized to view the given data");
-            return;
-        }
-
-        this.loaderService.showLoader();
-        this._downloadDataService
-            .getTableData(code, option)
-            .pipe(map((jsonData) => this.formatDates(jsonData)))
-            .subscribe(
-                (data) => {
-                    this.tableData = data;
-                    this.fileName = `CODE-${code}-DATASET-${option}`;
-                    this.loaderService.hideLoader();
-                },
-                (err) => {
-                    this.loaderService.hideLoader();
-                    console.error(err);
-                    this.snackbarService.openErrorSnackbar("Could not get data");
-                }
-            );
+    getAndDisplayData(studyName: string, taskName: string, studyId: number, taskOrder: number) {
+        this.studyDataService
+            .getParticipantData(studyId, taskOrder)
+            .pipe(take(1))
+            .subscribe((participantData) => {
+                this.tableData = participantData.map((data) => {
+                    return {
+                        fields: {
+                            userId: data.userId,
+                            studyId: data.studyId,
+                            taskOrder: data.taskOrder,
+                            submitted: data.submittedAt,
+                        },
+                        expandable: data.data,
+                    };
+                });
+                this.fileName = `TASKDATA_${studyName}_${taskName}`;
+            });
+        // if (!this.isAdmin()) {
+        //     this.snackbarService.openErrorSnackbar("You are not authorized to view the given data");
+        //     return;
+        // }
+        // this.loaderService.showLoader();
+        // this._downloadDataService
+        //     .getTableData(code, option)
+        //     .pipe(map((jsonData) => this.formatDates(jsonData)))
+        //     .subscribe(
+        //         (data) => {
+        //             this.tableData = data;
+        //             this.fileName = `CODE-${code}-DATASET-${option}`;
+        //             this.loaderService.hideLoader();
+        //         },
+        //         (err) => {
+        //             this.loaderService.hideLoader();
+        //             console.error(err);
+        //             this.snackbarService.openErrorSnackbar("Could not get data");
+        //         }
+        //     );
     }
 
     // takes json and checks if it is a valid date. If so, it will replace the given UTC date

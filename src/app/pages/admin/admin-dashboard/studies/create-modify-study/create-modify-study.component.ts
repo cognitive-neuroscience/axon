@@ -114,7 +114,7 @@ export class CreateModifyStudyComponent implements OnInit {
 
     ngOnInit(): void {
         this.tasks = this.taskService.tasks;
-        if (!this.taskService.taskHasValue) this.taskService.update();
+        if (!this.taskService.hasTasks) this.taskService.update();
     }
 
     handleSelection(task: Task) {
@@ -149,6 +149,7 @@ export class CreateModifyStudyComponent implements OnInit {
             started: this.study.started,
             studyCode: this.study.studyCode,
             description: this.studyForm.controls["description"].value,
+            canEdit: true,
             tasks: this.selectedTasks.map((task, index) => {
                 return {
                     studyId: this.study.id,
@@ -185,6 +186,7 @@ export class CreateModifyStudyComponent implements OnInit {
             started: false,
             studyCode: "",
             description: this.studyForm.controls["description"].value,
+            canEdit: true,
             tasks: this.selectedTasks.map((task, index) => {
                 return {
                     studyId: null,
@@ -204,7 +206,7 @@ export class CreateModifyStudyComponent implements OnInit {
                     this.studyService.update();
                     this.snackbarService.openSuccessSnackbar("Successfully created " + study.internalName);
                     this.router.navigate([
-                        `${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.STUDIES_SUBROUTE}/${AdminRouteNames.STUDIES_VIEW_SUBROUTE}`,
+                        `${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.STUDIES_SUBROUTE}`,
                     ]);
                 },
                 (err: HttpErrorResponse) => {

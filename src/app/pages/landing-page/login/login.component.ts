@@ -6,7 +6,7 @@ import { Router } from "@angular/router";
 import { User } from "src/app/models/Login";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { FormBuilder, Validators } from "@angular/forms";
-import { LoaderService } from "src/app/services/loader.service";
+import { LoaderService } from "src/app/services/loader/loader.service";
 import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames } from "src/app/models/enums";
 
 @Component({

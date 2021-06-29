@@ -6,7 +6,7 @@ import { Observable, of, Subscription } from "rxjs";
 import { map, mergeMap } from "rxjs/operators";
 import { ConsentIds } from "src/app/common/commonMethods";
 import { Questionnaire } from "src/app/models/Questionnaire";
-import { ConfirmationService } from "src/app/services/confirmation.service";
+import { ConfirmationService } from "src/app/services/confirmation/confirmation.service";
 import { QuestionnaireService } from "src/app/services/questionnaire.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { CreateQuestionnaireDialogComponent } from "./create-questionnaire-dialog/create-questionnaire-dialog.component";

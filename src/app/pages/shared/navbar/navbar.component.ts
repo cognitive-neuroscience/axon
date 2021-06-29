@@ -5,7 +5,7 @@ import { map } from "rxjs/operators";
 import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames } from "src/app/models/enums";
 import { User } from "src/app/models/Login";
 import { AuthService } from "src/app/services/auth.service";
-import { LoaderService } from "src/app/services/loader.service";
+import { LoaderService } from "src/app/services/loader/loader.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { UserService } from "src/app/services/user.service";
 

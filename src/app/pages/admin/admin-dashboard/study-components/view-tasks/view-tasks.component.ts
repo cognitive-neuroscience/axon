@@ -2,8 +2,11 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { TaskService } from "../../../../../services/task.service";
 import { Task } from "../../../../../models/Task";
-import { Subscription } from "rxjs";
-import { TaskType } from "../../../../../models/enums";
+import { Observable, Subscription } from "rxjs";
+import { Platform, RouteNames, TaskType } from "../../../../../models/enums";
+import { map } from "rxjs/operators";
+import { HttpClient } from "@angular/common/http";
+import { TaskPlayerNavigationConfig } from "src/app/pages/tasks/playables/task-player/task-player.component";
 
 @Component({
     selector: "app-view-tasks",
@@ -12,44 +15,50 @@ import { TaskType } from "../../../../../models/enums";
 })
 export class ViewTasksComponent implements OnInit, OnDestroy {
     // contains Ids of completed tasks
-    completedTasks: string[] = [];
+    completedTasks: number[] = [];
 
     subscribers: Subscription[] = [];
 
-    displayedColumnsForStudies = ["title", "description", "route"];
+    displayedColumnsForStudies = ["name", "description", "route"];
 
-    tasklist: Task[] = [];
+    tasklist: Observable<Task[]>;
 
-    constructor(private router: Router, private tasklistService: TaskService) {}
+    constructor(private router: Router, private taskService: TaskService, private http: HttpClient) {}
 
     ngOnInit() {
-        this.tasklistService.update();
-        // this.getTasklist();
+        this.tasklist = this.taskService.tasks;
+        if (!this.taskService.hasTasks) this.taskService.update();
     }
-
-    // private getTasklist(): void {
-    //     this.subscribers.push(
-    //         this.tasklistService.taskList.subscribe((tasks) => {
-    //             this.tasklist = tasks;
-    //         })
-    //     );
-    // }
 
     run(task: Task) {
-        // const taskRoute = RouteMap[task.id].route;
-        // if (taskRoute) {
-        //     this.router.navigate([taskRoute]);
-        // }
+        const navigationConfig: TaskPlayerNavigationConfig = {
+            metadata: task.config,
+            mode: "test",
+        };
+
+        this.router.navigate([`${RouteNames.TASKPLAYER}`], { state: navigationConfig });
     }
 
-    get NABTask() {
-        return [];
-        // return this.tasklist ? this.tasklist.filter((t) => t.type === TaskType.NAB) : [];
+    get NABTask(): Observable<Task[]> {
+        return this.tasklist.pipe(
+            map((tasks) =>
+                tasks
+                    ? tasks.filter((task) => task.taskType === TaskType.NAB && task.fromPlatform === Platform.PSHARPLAB)
+                    : []
+            )
+        );
     }
 
-    get experimentalTasks() {
-        return [];
-        // return this.tasklist ? this.tasklist.filter((t) => t.type === TaskType.Experimental) : [];
+    get experimentalTasks(): Observable<Task[]> {
+        return this.tasklist.pipe(
+            map((tasks) =>
+                tasks
+                    ? tasks.filter(
+                          (task) => task.taskType === TaskType.EXPERIMENTAL && task.fromPlatform === Platform.PSHARPLAB
+                      )
+                    : []
+            )
+        );
     }
 
     // returns true if the given task is complete, and false otherwise

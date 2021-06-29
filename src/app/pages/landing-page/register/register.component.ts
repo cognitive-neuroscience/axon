@@ -4,7 +4,7 @@ import { AbstractControl, FormBuilder, ValidationErrors, Validators } from "@ang
 import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ParticipantRouteNames, Role, RouteNames } from "src/app/models/enums";
-import { LoaderService } from "src/app/services/loader.service";
+import { LoaderService } from "src/app/services/loader/loader.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { UserService } from "src/app/services/user.service";
 

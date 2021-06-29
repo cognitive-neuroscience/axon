@@ -1,14 +1,14 @@
 <div class="container-fluid p-4">
-    <h2 class="mb-5">Your Tasks</h2>
+    <h2 class="mb-5">Psharplab Tasks</h2>
 
     <h3 class="mat-h3">Neuropsych Battery (NAB)</h3>
     <hr />
 
     <div>
         <table mat-table [dataSource]="NABTask" class="mat-elevation-z3">
-            <ng-container matColumnDef="title">
-                <th mat-header-cell *matHeaderCellDef>Title</th>
-                <td class="first-col-width" mat-cell *matCellDef="let NABTask">{{ NABTask.title }}</td>
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td class="first-col-width" mat-cell *matCellDef="let NABTask">{{ NABTask.name }}</td>
             </ng-container>
 
             <ng-container matColumnDef="description">
@@ -37,9 +37,9 @@
 
     <div>
         <table mat-table [dataSource]="experimentalTasks" class="mat-elevation-z3">
-            <ng-container matColumnDef="title">
-                <th mat-header-cell *matHeaderCellDef>Title</th>
-                <td class="first-col-width" mat-cell *matCellDef="let experimentTask">{{ experimentTask.title }}</td>
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td class="first-col-width" mat-cell *matCellDef="let experimentTask">{{ experimentTask.name }}</td>
             </ng-container>
 
             <ng-container matColumnDef="description">
@@ -57,11 +57,7 @@
             >
 
             <tr mat-header-row *matHeaderRowDef="displayedColumnsForStudies"></tr>
-            <tr
-                mat-row
-                *matRowDef="let row; columns: displayedColumnsForStudies"
-                [ngClass]="{ incomplete: !taskIsComplete(row) }"
-            ></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsForStudies"></tr>
         </table>
     </div>
 </div>

@@ -1,7 +1,7 @@
 import { Platform, TaskType } from "./enums";
 
 export class Task {
-    id: string;
+    id: number;
     fromPlatform: Platform;
     taskType: TaskType;
     name: string;
@@ -11,8 +11,8 @@ export class Task {
 }
 
 export class StudyTask {
-    studyId: string;
-    taskId: string;
+    studyId: number;
+    taskId: number;
     taskOrder: number;
     config: any; // json task metadata or questionnaire metadata
     task: Task;

@@ -1,61 +1,82 @@
-import { Component, Input, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
-import { ExcelService } from '../../../../../services/excel.service';
-import { LoaderService } from '../../../../../services/loader.service';
+import { animate, state, style, transition, trigger } from "@angular/animations";
+import { Component, Input, OnInit, AfterViewInit, ViewChild } from "@angular/core";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatTableDataSource } from "@angular/material/table";
+import { ExcelService } from "../../../../../services/excel.service";
+import { LoaderService } from "../../../../../services/loader/loader.service";
+
+export class DataTableFormat {
+    fields: {
+        [key: string]: any;
+    };
+    expandable: {
+        [key: string]: any;
+    }[];
+}
 
 @Component({
-  selector: 'app-data-table',
-  templateUrl: './data-table.component.html',
-  styleUrls: ['./data-table.component.scss']
+    selector: "app-data-table",
+    templateUrl: "./data-table.component.html",
+    styleUrls: ["./data-table.component.scss"],
+    animations: [
+        trigger("detailExpand", [
+            state("collapsed", style({ height: "0px", minHeight: "0" })),
+            state("expanded", style({ height: "*" })),
+            transition("expanded <=> collapsed", animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")),
+        ]),
+    ],
 })
 export class DataTableComponent implements OnInit, AfterViewInit {
+    @ViewChild("paginator") paginator: MatPaginator;
 
-  @ViewChild("paginator") paginator: MatPaginator;
+    expandedElement: DataTableComponent | null;
 
-  private _json: any = [];
-  dataSource: MatTableDataSource<any[]>;
-  touched: boolean = false;
-  @Input() set json(jsonInput: any) {    
-    if(jsonInput) {
-      this.dataSource.data = jsonInput
-      // this.dataSource = new MatTableDataSource(jsonInput)
-      this.touched = true;
-      this._json = jsonInput    
+    private _tableData: DataTableFormat[];
+    dataSource: MatTableDataSource<DataTableFormat>;
+    @Input() set tableData(jsonInput: DataTableFormat[]) {
+        if (jsonInput) {
+            this.dataSource.data = jsonInput;
+            this._tableData = jsonInput;
+        }
     }
-  }
 
-  @Input() fileName: string = "";
+    @Input() fileName: string = "";
 
-  get json(): any {
-    return this._json
-  }
-
-  get columnTitles(): string[] {
-    if(this.isValid()) {
-      const obj = this.json[0];
-      
-      return Object.keys(obj);
+    get tableData(): DataTableFormat[] {
+        return this._tableData;
     }
-    return [];
-  }
 
-  download() {
-    this.excelService.exportAsExcel(this.json, this.fileName)
-  }
+    get columnsToDisplay(): string[] {
+        if (this.isValid()) {
+            return this._tableData[0] ? Object.keys(this._tableData[0].fields) : [];
+        } else {
+            return [];
+        }
+    }
 
-  isValid(): boolean {    
-    return this.json && Array.isArray(this.json) && this.json.length > 0
-  }
-  
-  constructor(private excelService: ExcelService, private loaderService: LoaderService) { }
+    expandableColumnsToDisplay(expandable: { [key: string]: any }[]): string[] {
+        if (expandable) {
+            return expandable[0] ? Object.keys(expandable[0]) : [];
+        } else {
+            return [];
+        }
+    }
 
-  ngOnInit(): void {   
-    this.dataSource = new MatTableDataSource();
-  }
+    download() {
+        this.excelService.exportAsExcel(this.tableData, this.fileName);
+    }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator; 
-  }
+    isValid(): boolean {
+        return !!this._tableData && this._tableData.length > 0;
+    }
 
+    constructor(private excelService: ExcelService, private loaderService: LoaderService) {}
+
+    ngOnInit(): void {
+        this.dataSource = new MatTableDataSource();
+    }
+
+    ngAfterViewInit() {
+        this.dataSource.paginator = this.paginator;
+    }
 }

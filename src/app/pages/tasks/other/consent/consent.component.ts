@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable, of, Subscription } from "rxjs";
 import { take } from "rxjs/operators";
-import { ConfirmationService } from "src/app/services/confirmation.service";
+import { ConfirmationService } from "src/app/services/confirmation/confirmation.service";
 import { EmbeddedPageData, JsonForm } from "../../../../models/InternalDTOs";
 import { ConsentService } from "../../../../services/consentService";
 import { SessionStorageService } from "../../../../services/sessionStorage.service";

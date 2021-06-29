@@ -7,7 +7,7 @@ import { TaskType } from "src/app/models/enums";
 import { Questionnaire } from "src/app/models/Questionnaire";
 import { CustomTask } from "src/app/models/TaskData";
 import { AuthService } from "src/app/services/auth.service";
-import { ConfirmationService } from "src/app/services/confirmation.service";
+import { ConfirmationService } from "src/app/services/confirmation/confirmation.service";
 import { CustomTaskService } from "src/app/services/custom-task.service";
 import { QuestionnaireService } from "src/app/services/questionnaire.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
@@ -51,7 +51,7 @@ export class EmbeddedPageComponent implements OnInit, OnDestroy {
                             return;
                         }
                         const subjectID = this.authService.getDecodedToken().UserID;
-                        const code = this.taskManager.getStudyCode();
+                        const code = this.taskManager.study.studyCode;
                         this.embeddedSurveyLink = this.parseURL(data.url, subjectID, code);
                     })
             );

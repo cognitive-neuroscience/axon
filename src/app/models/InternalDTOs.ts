@@ -30,8 +30,11 @@ export class JsonForm {
 export class ConfirmationDialogMessage {
     message: string;
 
-    constructor(msg: string) {
+    warning: string;
+
+    constructor(msg: string, warning?: string) {
         this.message = msg;
+        this.warning = warning;
     }
 }
 

@@ -1,7 +1,7 @@
 import { StudyTask } from "./Task";
 
 export class Study {
-    id: string;
+    id: number;
     createdAt: string;
     deletedAt: string;
     internalName: string;
@@ -10,4 +10,5 @@ export class Study {
     studyCode: string;
     description: string;
     tasks: StudyTask[];
+    canEdit: boolean;
 }

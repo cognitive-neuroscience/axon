@@ -1,8 +1,8 @@
 import { ComponentFactoryResolver, ComponentRef, Injectable, Injector } from "@angular/core";
 import { DisplayComponent } from "../pages/tasks/shared/display/display.component";
 import { Playable } from "../pages/tasks/playables/playable";
-import { RaterComponent } from "../pages/tasks/playables/rating-new/rater/rater.component";
-import { ChoicerComponent } from "../pages/tasks/playables/rating-new/choicer/choicer.component";
+import { RaterComponent } from "../pages/tasks/playables/everyday-choice/rater/rater.component";
+import { ChoicerComponent } from "../pages/tasks/playables/everyday-choice/choicer/choicer.component";
 import { OddballComponent } from "../pages/tasks/playables/oddball/oddball.component";
 import { StroopComponent } from "../pages/tasks/playables/stroop/stroop.component";
 import { SmileyFaceComponent } from "../pages/tasks/playables/smiley-face/smiley-face.component";

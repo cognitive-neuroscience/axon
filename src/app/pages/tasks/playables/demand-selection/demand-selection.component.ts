@@ -6,12 +6,15 @@ import { Feedback } from "../../../../models/InternalDTOs";
 import { DemandSelectionTaskData } from "../../../../models/TaskData";
 import { StimuliProvidedType } from "src/app/models/enums";
 import { ComponentName } from "src/app/services/component-factory.service";
-import { DemandSelectionCounterbalance, DemandSelectionStimulus } from "src/app/services/data-generation/stimuli-models";
+import {
+    DemandSelectionCounterbalance,
+    DemandSelectionStimulus,
+} from "src/app/services/data-generation/stimuli-models";
 import { TaskConfig } from "../task-player/task-player.component";
 import { AbstractBaseTaskComponent } from "../base-task";
 import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import { LoaderService } from "src/app/services/loader.service";
+import { LoaderService } from "src/app/services/loader/loader.service";
 
 interface DemandSelectionMetadata {
     component: ComponentName;
@@ -28,7 +31,7 @@ interface DemandSelectionMetadata {
         probOfShiftSecondPatch: number;
         oddEvenColor: Color;
         ltGtColor: Color;
-        counterbalanceMode: "none" | "counterbalance" | "counterbalance-alternative",
+        counterbalanceMode: "none" | "counterbalance" | "counterbalance-alternative";
         stimuliConfig: {
             type: StimuliProvidedType;
             stimuli: DemandSelectionStimulus[];
@@ -41,7 +44,7 @@ export enum DemandSelectionCache {
     USED_STIMS_ARRAY = "demandselection-used-stims-array",
     NUM_CORRECT = "demandselection-num-correct",
     HARDER_STRING = "demandselection-harder-string",
-    EASIER_STRING = "demandselection-easier-string"
+    EASIER_STRING = "demandselection-easier-string",
 }
 
 @Component({
@@ -106,7 +109,6 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
 
     public readonly imagePath = "/assets/images/stimuli/demandselection/";
 
-
     get currentStimulus(): DemandSelectionStimulus {
         return this.stimuli[this.currentStimuliIndex];
     }
@@ -130,9 +132,18 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
                 metadata.config.maxResponseTime,
                 "max response time not defined"
             );
-            this.probOfShiftFirstPatch = throwErrIfNotDefined(metadata.config.probOfShiftFirstPatch, "first patch shift probability not defined");
-            this.probOfShiftSecondPatch = throwErrIfNotDefined(metadata.config.probOfShiftSecondPatch, "second patch shift probability not defined");
-            this.counterbalanceMode = throwErrIfNotDefined(metadata.config.counterbalanceMode, "counterbalanceMode not defined")
+            this.probOfShiftFirstPatch = throwErrIfNotDefined(
+                metadata.config.probOfShiftFirstPatch,
+                "first patch shift probability not defined"
+            );
+            this.probOfShiftSecondPatch = throwErrIfNotDefined(
+                metadata.config.probOfShiftSecondPatch,
+                "second patch shift probability not defined"
+            );
+            this.counterbalanceMode = throwErrIfNotDefined(
+                metadata.config.counterbalanceMode,
+                "counterbalanceMode not defined"
+            );
         } catch (error) {
             throw new error("values not defined, cannot start study: " + error);
         }
@@ -147,7 +158,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         this.oddEvenColor = thisOrDefault(metadata.config.oddEvenColor, Color.BLUE);
         this.ltGtColor = thisOrDefault(metadata.config.ltGtColor, Color.ORANGE);
 
-        this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as DemandSelectionCounterbalance
+        this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as DemandSelectionCounterbalance;
 
         if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
             this.stimuli = metadata.config.stimuliConfig.stimuli;
@@ -166,7 +177,8 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         this.blockNum = this.config.getCacheValue(DemandSelectionCache.BLOCK_NUM) || 1; // set to 1 if not defined
 
         if (!this.stimuli) {
-            const cachedUsedImgStims = (this.config.getCacheValue(DemandSelectionCache.USED_STIMS_ARRAY) || []) as string[];
+            const cachedUsedImgStims = (this.config.getCacheValue(DemandSelectionCache.USED_STIMS_ARRAY) ||
+                []) as string[];
             switch (this.counterbalanceMode) {
                 case "none":
                     this.counterbalance = DemandSelectionCounterbalance.NONE;
@@ -174,7 +186,9 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
                 case "counterbalance":
                     break;
                 case "counterbalance-alternative":
-                    this.counterbalance === DemandSelectionCounterbalance.SELECTEASYPATCH ? DemandSelectionCounterbalance.SELECTHARDPATCH : DemandSelectionCounterbalance.SELECTEASYPATCH;
+                    this.counterbalance === DemandSelectionCounterbalance.SELECTEASYPATCH
+                        ? DemandSelectionCounterbalance.SELECTHARDPATCH
+                        : DemandSelectionCounterbalance.SELECTEASYPATCH;
                     break;
             }
             this.stimuli = this.dataGenService.generateDemandSelectionStimuli(
@@ -185,7 +199,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
                 this.ltGtColor,
                 cachedUsedImgStims,
                 this.counterbalance
-            )
+            );
             this.config.setCacheValue(DemandSelectionCache.USED_STIMS_ARRAY, cachedUsedImgStims);
         }
         super.start();
@@ -203,8 +217,8 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         this.setHelpMessageTimer(
             this.delayToShowHelpMessage,
             this.durationHelpMessageShown,
-            "Please move your cursor to the bullseye for the patches to appear",
-        )
+            "Please move your cursor to the bullseye for the patches to appear"
+        );
     }
 
     // 2. mouse hovers over the bullseye so we hide it and show the patches
@@ -218,8 +232,8 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         this.setHelpMessageTimer(
             this.delayToShowHelpMessage,
             this.durationHelpMessageShown,
-            "Please choose a patch by moving your cursor to its location",
-        )
+            "Please choose a patch by moving your cursor to its location"
+        );
     }
 
     // 3. mouse hovers over a patch so we show the numbers and accept responses
@@ -233,7 +247,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         this.digit = this.currentStimulus.digit;
 
         if (this.color === this.oddEvenColor) {
-            actualAnswer = this.digit % 2 === 0 ? UserResponse.EVEN : UserResponse.ODD
+            actualAnswer = this.digit % 2 === 0 ? UserResponse.EVEN : UserResponse.ODD;
         } else {
             actualAnswer = this.digit > 5 ? UserResponse.GREATER : UserResponse.LESSER;
         }
@@ -244,7 +258,10 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
             harderPatch: this.currentStimulus.secondPatchImgName,
             firstPatch: this.currentStimulus.firstPatchImgName,
             secondPatch: this.currentStimulus.secondPatchImgName,
-            selectedPatch: patch === "firstPatch" ? this.currentStimulus.firstPatchImgName : this.currentStimulus.secondPatchImgName,
+            selectedPatch:
+                patch === "firstPatch"
+                    ? this.currentStimulus.firstPatchImgName
+                    : this.currentStimulus.secondPatchImgName,
             color: this.color,
             digit: this.digit,
             actualAnswer: actualAnswer,
@@ -269,13 +286,10 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         this.timerService.startTimer();
 
         // Give participant max time to respond to stimuli
-        this.setMaxResponseTimer(
-            this.maxResponseTime,
-            () => {
-                this.responseAllowed = false;
-                this.handleRoundInteraction(null);
-            }
-        );
+        this.setMaxResponseTimer(this.maxResponseTime, () => {
+            this.responseAllowed = false;
+            this.handleRoundInteraction(null);
+        });
     }
 
     private clearHelpMessage() {
@@ -284,7 +298,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
     }
 
     private clearMaxResponseTimer() {
-        clearTimeout(this.maxResponseTimer)
+        clearTimeout(this.maxResponseTimer);
     }
 
     private setHelpMessageTimer(delay: number, duration: number, message: string, cbFunc?: () => void) {
@@ -294,22 +308,18 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         }, delay);
     }
 
-    private setMaxResponseTimer(
-        delay: number,
-        cbFunc?: () => void,
-    ) {
+    private setMaxResponseTimer(delay: number, cbFunc?: () => void) {
         this.maxResponseTimer = window.setTimeout(() => {
             if (cbFunc) cbFunc();
-        }, delay)
+        }, delay);
     }
 
     private isValidKey(key: string): boolean {
-        return (key === Key.ARROWLEFT || key === Key.ARROWRIGHT);
+        return key === Key.ARROWLEFT || key === Key.ARROWRIGHT;
     }
 
     @HostListener("window:keydown", ["$event"])
     handleRoundInteraction(event: KeyboardEvent) {
-
         const thisTrial = this.taskData[this.taskData.length - 1];
         this.clearHelpMessage();
         this.clearMaxResponseTimer();
@@ -322,7 +332,6 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
             thisTrial.respondToNumberResponseTime = this.maxResponseTime;
             super.handleRoundInteraction(null);
         } else if (this.responseAllowed && this.isValidKey(event.key)) {
-
             thisTrial.respondToNumberResponseTime = this.timerService.stopTimerAndGetTime();
             const selectedColor = this.currentStimulus[this.selectedPatch];
             if (selectedColor === this.oddEvenColor) {
@@ -377,7 +386,10 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
                 return acc + (currVal.isCorrect ? 1 : 0);
             }, 0);
 
-            this.config.setCacheValue(DemandSelectionCache.BLOCK_NUM, this.isPractice ? this.blockNum : ++this.blockNum);
+            this.config.setCacheValue(
+                DemandSelectionCache.BLOCK_NUM,
+                this.isPractice ? this.blockNum : ++this.blockNum
+            );
             this.config.setCacheValue(DemandSelectionCache.NUM_CORRECT, numCorrect);
             super.decideToRepeat();
             return;

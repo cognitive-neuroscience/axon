@@ -10,7 +10,7 @@ import { ComponentName } from "src/app/services/component-factory.service";
 import { StroopStimulus } from "src/app/services/data-generation/stimuli-models";
 import { TaskConfig } from "../task-player/task-player.component";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import { LoaderService } from "src/app/services/loader.service";
+import { LoaderService } from "src/app/services/loader/loader.service";
 import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
 
 interface StroopTaskMetadata {

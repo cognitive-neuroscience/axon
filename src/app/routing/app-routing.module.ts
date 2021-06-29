@@ -6,7 +6,7 @@ import { LandingPageComponent } from "../pages/landing-page/landing-page.compone
 import { RegisterComponent } from "../pages/landing-page/register/register.component";
 import { ParticipantRouteNames, RouteNames } from "../models/enums";
 import { CrowdSourceLoginComponent } from "../pages/landing-page/crowdsource-login/crowdsource-login.component";
-import { TempPlayerComponent } from "../pages/tasks/playables/temp-player/temp-player.component";
+import { TaskPlayerComponent } from "../pages/tasks/playables/task-player/task-player.component";
 
 const routes: Routes = [
     {
@@ -22,7 +22,10 @@ const routes: Routes = [
         path: ParticipantRouteNames.CROWDSOURCEPARTICIPANT_REGISTER_BASEROUTE,
         component: CrowdSourceLoginComponent,
     },
-    { path: "tempplayer", component: TempPlayerComponent },
+    {
+        path: RouteNames.TASKPLAYER,
+        component: TaskPlayerComponent,
+    },
     { path: "complete", component: FinalPageComponent },
 ];
 

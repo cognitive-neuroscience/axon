@@ -8,7 +8,7 @@ import { AbstractBaseTaskComponent } from "../base-task";
 import { TaskConfig } from "../task-player/task-player.component";
 import { TrailMakingStimulus, TrailMakingTrialType } from "src/app/services/data-generation/stimuli-models";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import { LoaderService } from "src/app/services/loader.service";
+import { LoaderService } from "src/app/services/loader/loader.service";
 import { ComponentName } from "src/app/services/component-factory.service";
 import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
 
@@ -64,7 +64,6 @@ export class TrailMakingComponent extends AbstractBaseTaskComponent {
     showFeedback: boolean = false;
     showFixation: boolean = false;
     trialNum: number = 0;
-    trialScore: number = 0;
     responseAllowed: boolean = false;
     correctItems: (string | number)[];
 
@@ -184,7 +183,6 @@ export class TrailMakingComponent extends AbstractBaseTaskComponent {
             // record the click if actual game
             this.taskData.push({
                 userID: this.userID,
-                score: 0,
                 trial: ++this.trialNum,
                 timeFromLastClick: this.timerService.stopTimerAndGetTime(),
                 trialType: this.trialType,

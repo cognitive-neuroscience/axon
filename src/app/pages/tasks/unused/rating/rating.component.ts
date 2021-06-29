@@ -1,13 +1,13 @@
 import { Component, OnInit, HostListener } from "@angular/core";
 import { Router } from "@angular/router";
-import { UploadDataService } from "src/app/services/uploadData.service";
+import { ParticipantDataService } from "src/app/services/participant-data.service";
 import { TaskManagerService } from "../../../../services/task-manager.service";
 import { AuthService } from "../../../../services/auth.service";
 import { SnackbarService } from "../../../../services/snackbar.service";
-import { RatingTask, TaskNames } from "../../../../models/TaskData";
+import { TaskData, TaskNames } from "../../../../models/TaskData";
 import { pracSet } from "./stimuli_practice";
 import { taskSet } from "./stimuli_task";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { Key, UserResponse } from "src/app/models/InternalDTOs";
 import { TimerService } from "src/app/services/timer.service";
@@ -15,6 +15,14 @@ import { getRandomNumber, wait } from "src/app/common/commonMethods";
 import { environment } from "src/environments/environment";
 
 declare function setFullScreen(): any;
+
+class RatingTask extends TaskData {
+    counterbalance: number;
+    ratingType: string;
+    activity: string;
+    userAnswer: string;
+    responseTime: number;
+}
 
 @Component({
     selector: "app-rating-task",
@@ -69,7 +77,7 @@ export class RatingComponent implements OnInit {
 
     constructor(
         private router: Router,
-        private uploadDataService: UploadDataService,
+        private uploadDataService: ParticipantDataService,
         private taskManager: TaskManagerService,
         private snackbarService: SnackbarService,
         private authService: AuthService,
@@ -203,11 +211,9 @@ export class RatingComponent implements OnInit {
             userAnswer: UserResponse.NA,
             activity: this.currentActivity,
             responseTime: 0,
-            score: 0,
             submitted: this.timerService.getCurrentTimestamp(),
-            isCorrect: null,
             isPractice: this.isPractice,
-            studyCode: this.taskManager.getStudyCode(),
+            studyCode: null,
         });
     }
 
@@ -283,8 +289,9 @@ export class RatingComponent implements OnInit {
     }
 
     uploadResults(data: RatingTask[]): Observable<boolean> {
-        const studyCode = this.taskManager.getStudyCode();
-        return this.uploadDataService.uploadData(studyCode, TaskNames.RATING, data).pipe(map((ok) => ok.ok));
+        return of(false);
+        // const studyCode = this.taskManager.getStudyCode();
+        // return this.uploadDataService.uploadTaskData(studyCode, TaskNames.RATING, data).pipe(map((ok) => ok.ok));
     }
 
     continueAhead() {

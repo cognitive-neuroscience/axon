@@ -1,18 +1,17 @@
-import { Component, OnDestroy, ViewContainerRef } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewContainerRef } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
-import { getRandomNumber } from "src/app/common/commonMethods";
-import { TaskNames } from "src/app/models/TaskData";
+import { getRandomNumber, thisOrDefault } from "src/app/common/commonMethods";
 import { ComponentFactoryService, ComponentName } from "src/app/services/component-factory.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { TaskManagerService } from "src/app/services/task-manager.service";
-import { UploadDataService } from "src/app/services/uploadData.service";
+import { ParticipantDataService } from "src/app/services/participant-data.service";
 import { Navigation } from "../../shared/navigation-buttons/navigation-buttons.component";
 import { IOnComplete } from "../playable";
-import { LoaderService } from "src/app/services/loader.service";
+import { LoaderService } from "src/app/services/loader/loader.service";
 import { UserService } from "src/app/services/user.service";
-import { Role } from "src/app/models/enums";
+import { AdminRouteNames, Role, RouteNames } from "src/app/models/enums";
 
 export interface CounterBalanceGroup {
     [key: number]: any;
@@ -32,7 +31,7 @@ export interface ComponentMetadata {
 }
 
 export class TaskConfig {
-    userID: string;
+    userID: number;
     studyCode: string;
     private data: {
         [key: string]: any;
@@ -49,7 +48,7 @@ export class TaskConfig {
     }
 
     constructor(
-        userId: string,
+        userId: number,
         studyCode: string,
         counterBalanceGroups?: CounterBalanceGroup,
         counterBalanceNumber?: number
@@ -60,6 +59,11 @@ export class TaskConfig {
         this.counterbalanceNumber = counterBalanceNumber || null;
         this.data = {};
     }
+}
+
+export class TaskPlayerNavigationConfig {
+    metadata: TaskMetadata;
+    mode: "test" | "actual";
 }
 
 @Component({
@@ -73,11 +77,18 @@ export class TaskPlayerComponent implements OnDestroy {
         private viewContainer: ViewContainerRef,
         private taskManager: TaskManagerService,
         private userService: UserService,
-        private uploadDataService: UploadDataService,
+        private uploadDataService: ParticipantDataService,
         private router: Router,
         private snackbarService: SnackbarService,
         private loaderService: LoaderService
-    ) {}
+    ) {
+        const navigationConfig = this.router.getCurrentNavigation().extras.state as TaskPlayerNavigationConfig;
+        if (navigationConfig) {
+            this.handleTaskVariablesAndPlayTask(navigationConfig.metadata, navigationConfig.mode);
+        } else {
+            this.taskManager.handleErr();
+        }
+    }
 
     // task metadata variables
     index = 0;
@@ -86,11 +97,16 @@ export class TaskPlayerComponent implements OnDestroy {
     subscription: Subscription;
 
     // metadata config
-    state = new TaskConfig("", "", {}, null); // this state will be shared with each step in the task
+    state = new TaskConfig(null, "", {}, null); // this state will be shared with each step in the task
 
-    handleTaskVariablesAndPlayTask(taskMetadataConfig: TaskMetadata) {
-        this.state.userID = this.userService.user?.id || "testid"; // UNDO: change later
-        this.state.studyCode = this.taskManager.getStudyCode() || "testcode"; // UNDO: change later
+    handleTaskVariablesAndPlayTask(taskMetadataConfig: TaskMetadata, mode: "test" | "actual") {
+        if (mode === "test") {
+            this.state.userID = 0;
+            this.state.studyCode = "TEST_CODE";
+        } else {
+            this.state.userID = this.userService.user.id;
+            this.state.studyCode = this.taskManager.study.studyCode;
+        }
 
         const counterBalanceGroups = taskMetadataConfig.config.counterBalanceGroups;
         if (counterBalanceGroups) {
@@ -163,16 +179,20 @@ export class TaskPlayerComponent implements OnDestroy {
     }
 
     handleUploadData(): Observable<boolean> {
-        const studyCode = this.taskManager.getStudyCode();
         return this.uploadDataService
-            .uploadData(studyCode, TaskNames.RATINGNEW, this.taskData)
+            .uploadTaskData(
+                this.userService.user?.id,
+                this.taskManager.study?.id,
+                this.taskManager.currentStudyTask.taskOrder,
+                this.taskData
+            )
             .pipe(map((ok) => ok.ok));
     }
 
     continueAhead() {
         if (this.userService.user.role === Role.ADMIN) {
             this.reset();
-            this.router.navigate(["/dashboard/components"]);
+            this.router.navigate([`${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.COMPONENTS_SUBROUTE}`]);
             this.snackbarService.openInfoSnackbar("Task completed");
         } else {
             this.loaderService.showLoader();
@@ -195,7 +215,7 @@ export class TaskPlayerComponent implements OnDestroy {
         this.index = 0;
         this.taskData = [];
         this.steps = [];
-        this.state = new TaskConfig("", "", {}, null);
+        this.state = new TaskConfig(null, "", {}, null);
     }
 
     ngOnDestroy() {

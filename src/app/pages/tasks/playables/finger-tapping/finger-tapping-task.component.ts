@@ -4,7 +4,7 @@ import { StimuliProvidedType } from "src/app/models/enums";
 import { Key } from "src/app/models/InternalDTOs";
 import { FingerTappingTaskData } from "src/app/models/TaskData";
 import { ComponentName } from "src/app/services/component-factory.service";
-import { LoaderService } from "src/app/services/loader.service";
+import { LoaderService } from "src/app/services/loader/loader.service";
 import { TimerService } from "src/app/services/timer.service";
 import { AbstractBaseTaskComponent } from "../base-task";
 import { TaskConfig } from "../task-player/task-player.component";
@@ -69,9 +69,7 @@ export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
     color: string;
     showFeedback: boolean = false;
     showFixation: boolean = false;
-    trialScore: number = 0;
     responseAllowed: boolean = false;
-    scoreForSpecificTrial: number = 0;
     trialNum: number = 0;
     lastKeyPressed: Key;
 
@@ -151,7 +149,6 @@ export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
             this.taskData.push({
                 trial: ++this.trialNum,
                 userID: this.userID,
-                score: 0,
                 submitted: this.timerService.getCurrentTimestamp(),
                 isPractice: this.isPractice,
                 isCorrect: event.key !== this.lastKeyPressed,

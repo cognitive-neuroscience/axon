@@ -16,6 +16,7 @@
                         <span style="font-size: 1.5rem">
                             <b>{{ study.internalName ? study.internalName : study.externalName }}</b>
                         </span>
+                        <span>{{ study.studyCode }}</span>
                         <span class="panel-item-header-description text-ellipses">
                             {{ study.description }}
                         </span>
@@ -35,7 +36,7 @@
             </mat-expansion-panel-header>
 
             <div>
-                <mat-divider class="pb-3"></mat-divider>
+                <mat-divider class="my-3"></mat-divider>
                 <div class="summary-container">
                     <div class="flex-row-space-between">
                         <div class="flex-column">
@@ -124,7 +125,7 @@
                             class="w-25"
                             color="primary"
                             mat-raised-button
-                            [disabled]="!(isAdmin | async)"
+                            [disabled]="!(isAdmin | async) || !study.canEdit"
                         >
                             Edit Study
                         </button>

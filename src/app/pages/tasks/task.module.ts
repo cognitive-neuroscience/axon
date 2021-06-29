@@ -7,9 +7,8 @@ import { NumpadComponent } from "./shared/numpad/numpad.component";
 import { FingerTappingTaskComponent } from "./playables/finger-tapping/finger-tapping-task.component";
 import { NBackComponent } from "./playables/n-back/n-back.component";
 import { OddballComponent } from "./playables/oddball/oddball.component";
-import { PostChoiceComponent } from "./playables/post-choice/post-choice.component";
-import { ChoicerComponent } from "./playables/rating-new/choicer/choicer.component";
-import { RatingNewComponent } from "./playables/rating-new/rating-new.component";
+import { PostChoiceComponent } from "./unused/post-choice/post-choice.component";
+import { ChoicerComponent } from "./playables/everyday-choice/choicer/choicer.component";
 import { RatingComponent } from "./unused/rating/rating.component";
 import { ShapeGameComponent } from "./unused/shape-game/shape-game.component";
 import { DisplayComponent } from "./shared/display/display.component";
@@ -19,7 +18,7 @@ import { StroopComponent } from "./playables/stroop/stroop.component";
 import { TaskPlayerComponent } from "./playables/task-player/task-player.component";
 import { TaskSwitchingComponent } from "./playables/task-switching/task-switching.component";
 import { TrailMakingComponent } from "./playables/trail-making/trail-making.component";
-import { RaterComponent } from "./playables/rating-new/rater/rater.component";
+import { RaterComponent } from "./playables/everyday-choice/rater/rater.component";
 import { NgZorroModule } from "src/app/modules/ngzorro/ngzorro.module";
 import { NavigationButtonsComponent } from "./shared/navigation-buttons/navigation-buttons.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -30,7 +29,6 @@ import { EmbeddedPageComponent } from "./questionnaires/embedded-page/embedded-p
 import { DemographicsQuestionnaireComponent } from "./questionnaires/demographics-questionnaire/demographics-questionnaire.component";
 import { SafeResoucePipe } from "src/app/pipes/safe.pipe";
 import { PreviewQuestionnaireDialogComponent } from "../admin/admin-dashboard/study-components/manage-questionnaires/preview-questionnaire-dialog/preview-questionnaire-dialog.component";
-import { TempPlayerComponent } from "./playables/temp-player/temp-player.component";
 import { SelectOptionComponent } from "./shared/select-option/select-option.component";
 
 @NgModule({
@@ -48,7 +46,6 @@ import { SelectOptionComponent } from "./shared/select-option/select-option.comp
         OddballComponent,
         PostChoiceComponent,
         RaterComponent,
-        RatingNewComponent,
         SmileyFaceComponent,
         StroopComponent,
         TaskPlayerComponent,
@@ -68,7 +65,6 @@ import { SelectOptionComponent } from "./shared/select-option/select-option.comp
         RotateDirective,
 
         SafeResoucePipe,
-        TempPlayerComponent,
     ],
     imports: [CommonModule, MaterialModule, NgZorroModule, FormsModule, ReactiveFormsModule],
     exports: [EmbeddedPageComponent],

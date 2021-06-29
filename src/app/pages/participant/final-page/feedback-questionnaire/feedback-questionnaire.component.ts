@@ -77,7 +77,7 @@ export class FeedbackQuestionnaireComponent implements OnInit {
 
     saveResponse() {
         const userID = this.authService.getDecodedToken().UserID;
-        const studyCode = this.taskManager.getStudyCode();
+        const studyCode = this.taskManager.study.studyCode;
 
         const obj: FeedbackQuestionnaireResponse = {
             userID: userID,

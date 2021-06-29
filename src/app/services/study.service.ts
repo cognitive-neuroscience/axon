@@ -18,20 +18,23 @@ export class StudyService {
     private readonly RESOURCE_PATH = "/studies";
 
     private _studiesBehaviorSubject: BehaviorSubject<Study[]>;
-    get studies(): Observable<Study[]> {
+    get studiesAsync(): Observable<Study[]> {
         return this._studiesBehaviorSubject.asObservable();
+    }
+
+    get studies(): Study[] {
+        return this._studiesBehaviorSubject.value;
     }
 
     get hasStudies() {
         return this._studiesBehaviorSubject.value !== null;
     }
 
-    constructor(private _http: HttpClient, private authService: AuthService) {
+    constructor(private _http: HttpClient) {
         this._studiesBehaviorSubject = new BehaviorSubject(null);
     }
 
     update(): void {
-        // do not get all studies if role is not auth as it will result in HTTP forbidden
         this._getAllStudies()
             .pipe(take(1))
             .subscribe((studies) => {
@@ -39,7 +42,7 @@ export class StudyService {
             });
     }
 
-    getStudy(code: string): Observable<Study> {
+    getStudyByStudyCode(code: string): Observable<Study> {
         return this._http
             .get<Study>(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${code}`, { observe: "response" })
             .pipe(map((res) => res.body as Study));
@@ -57,7 +60,7 @@ export class StudyService {
         });
     }
 
-    deleteStudy(studyId: string): Observable<HttpResponse<any>> {
+    deleteStudy(studyId: number): Observable<HttpResponse<any>> {
         return this._http.delete(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${studyId}`, { observe: "response" });
     }
 

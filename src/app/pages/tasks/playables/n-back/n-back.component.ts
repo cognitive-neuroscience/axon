@@ -8,7 +8,7 @@ import { StimuliProvidedType } from "src/app/models/enums";
 import { AbstractBaseTaskComponent } from "../base-task";
 import { TaskConfig } from "../task-player/task-player.component";
 import { NBackStimulus } from "src/app/services/data-generation/stimuli-models";
-import { LoaderService } from "src/app/services/loader.service";
+import { LoaderService } from "src/app/services/loader/loader.service";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
 import { ComponentName } from "src/app/services/component-factory.service";
 import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";

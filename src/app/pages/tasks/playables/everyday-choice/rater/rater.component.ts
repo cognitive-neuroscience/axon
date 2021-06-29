@@ -6,11 +6,11 @@ import { DataGenerationService } from "src/app/services/data-generation/data-gen
 import { RatingTaskStimuli } from "src/app/services/data-generation/stimuli-models";
 import { AbstractBaseTaskComponent } from "../../base-task";
 import { TaskConfig } from "../../task-player/task-player.component";
-import { LoaderService } from "src/app/services/loader.service";
+import { LoaderService } from "src/app/services/loader/loader.service";
 import { NzMarks } from "ng-zorro-antd/slider";
 import { ComponentName } from "src/app/services/component-factory.service";
-import { EverydayChoiceTaskData } from "../rating-new.component";
 import { StimuliProvidedType } from "src/app/models/enums";
+import { EverydayChoiceTaskData } from "src/app/models/TaskData";
 
 export enum RatingTaskCounterBalance {
     LOWTOHIGHENDORSEMENT = "LOWTOHIGH",
@@ -161,9 +161,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
             activity: this.currentStimulus.activity,
             activityType: this.currentStimulus.type,
             responseTime: null,
-            score: null,
             submitted: this.timerService.getCurrentTimestamp(),
-            isCorrect: null,
             isPractice: this.isPractice,
             studyCode: this.studyCode,
         });

@@ -2,16 +2,16 @@ import { Component, OnDestroy } from "@angular/core";
 import { NzMarks } from "ng-zorro-antd/slider";
 import { throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
 import { StimuliProvidedType } from "src/app/models/enums";
+import { EverydayChoiceTaskData } from "src/app/models/TaskData";
 import { ComponentName } from "src/app/services/component-factory.service";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
 import { ChoiceTaskStimulus } from "src/app/services/data-generation/stimuli-models";
-import { LoaderService } from "src/app/services/loader.service";
+import { LoaderService } from "src/app/services/loader/loader.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { TimerService } from "src/app/services/timer.service";
 import { AbstractBaseTaskComponent } from "../../base-task";
 import { TaskConfig } from "../../task-player/task-player.component";
 import { RaterCache, RatingTaskCounterBalance } from "../rater/rater.component";
-import { EverydayChoiceTaskData } from "../rating-new.component";
 
 export interface ChoiceTaskMetadata {
     component: ComponentName;
@@ -135,9 +135,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
             activity: `${this.currentStimulus.firstActivity} VS ${this.currentStimulus.secondActivity}`,
             activityType: "",
             responseTime: null,
-            score: null,
             submitted: this.timerService.getCurrentTimestamp(),
-            isCorrect: null,
             isPractice: this.isPractice,
             studyCode: this.studyCode,
         });

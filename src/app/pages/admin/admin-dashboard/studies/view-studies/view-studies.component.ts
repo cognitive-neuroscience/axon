@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Study } from "../../../../../models/Study";
 import { StudyService } from "../../../../../services/study.service";
 import { MatDialog } from "@angular/material/dialog";
-import { ConfirmationService } from "../../../../../services/confirmation.service";
+import { ConfirmationService } from "../../../../../services/confirmation/confirmation.service";
 import { SnackbarService } from "../../../../../services/snackbar.service";
 import { Observable, of, Subscription } from "rxjs";
 import { environment } from "../../../../../../environments/environment";
@@ -41,7 +41,7 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.studies = this.studyService.studies;
+        this.studies = this.studyService.studiesAsync;
         if (!this.studyService.hasStudies) this.studyService.update();
     }
 
@@ -56,7 +56,9 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
     }
 
     handleViewData(study: Study) {
-        this.router.navigate([`${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.DATA_SUBROUTE}/${study.id}`]);
+        this.router.navigate([
+            `${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.STUDIES_SUBROUTE}/${study.id}`,
+        ]);
     }
 
     handleDelete(study: Study) {
@@ -83,13 +85,26 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
 
     toggleStudyActiveStatus(study: Study, event: MatSlideToggleChange) {
         const active = event.checked;
+        const originalValue = !study.started;
+
         this.subscriptions.push(
             this.confirmationService
-                .openConfirmationDialog(`Are you sure you want to ${active ? "activate" : "deactivate"} the study?`)
+                .openConfirmationDialog(
+                    `Are you sure you want to ${active ? "activate" : "deactivate"} the study?`,
+                    `${
+                        active
+                            ? "This will allow participants to start your study. Once you activate the study, you will not be able to edit it in the future"
+                            : ""
+                    }`
+                )
                 .pipe(
                     mergeMap((ok) => {
-                        study.started = active;
-                        return ok ? this.studyService.editStudy(study) : of(false);
+                        if (ok) {
+                            study.canEdit = false;
+                            return this.studyService.editStudy(study);
+                        } else {
+                            return of(false);
+                        }
                     })
                 )
                 .subscribe((ok) => {
@@ -97,7 +112,7 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
                     if (ok) {
                         this.snackbarService.openSuccessSnackbar("Successfully updated task");
                     } else {
-                        study.started = false;
+                        study.started = originalValue;
                     }
                 })
         );

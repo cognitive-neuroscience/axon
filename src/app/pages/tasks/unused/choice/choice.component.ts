@@ -1,18 +1,25 @@
 import { Component, OnInit, HostListener, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
-import { UploadDataService } from "src/app/services/uploadData.service";
+import { ParticipantDataService } from "src/app/services/participant-data.service";
 import { TaskManagerService } from "../../../../services/task-manager.service";
 import { AuthService } from "../../../../services/auth.service";
 import { SnackbarService } from "../../../../services/snackbar.service";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { Key, UserResponse } from "src/app/models/InternalDTOs";
-import { ChoiceTask, TaskNames } from "../../../../models/TaskData";
+import { TaskData, TaskNames } from "../../../../models/TaskData";
 import { pracSet } from "./stimuli_task";
 import { activityList } from "./activityList";
 import { TimerService } from "src/app/services/timer.service";
 import { getRandomNumber, wait } from "src/app/common/commonMethods";
 import { environment } from "src/environments/environment";
+
+class ChoiceTask extends TaskData {
+    activityLeft: string;
+    activityRight: string;
+    userAnswer: string;
+    responseTime: number;
+}
 
 export class ActivityPair {
     constructor(readonly activityA: string, readonly activityB: string) {}
@@ -69,7 +76,7 @@ export class ChoiceComponent implements OnInit, OnDestroy {
 
     constructor(
         private router: Router,
-        private uploadDataService: UploadDataService,
+        private uploadDataService: ParticipantDataService,
         private taskManager: TaskManagerService,
         private snackbarService: SnackbarService,
         private authService: AuthService,
@@ -217,11 +224,9 @@ export class ChoiceComponent implements OnInit, OnDestroy {
             activityLeft: this.currentActivityLeft,
             activityRight: this.currentActivityRight,
             responseTime: 0,
-            score: null,
             submitted: this.timerService.getCurrentTimestamp(),
-            isCorrect: null,
             isPractice: this.isPractice,
-            studyCode: this.taskManager.getStudyCode(),
+            studyCode: null,
         });
     }
 
@@ -282,8 +287,9 @@ export class ChoiceComponent implements OnInit, OnDestroy {
     }
 
     uploadResults(data: ChoiceTask[]): Observable<boolean> {
-        const studyCode = this.taskManager.getStudyCode();
-        return this.uploadDataService.uploadData(studyCode, TaskNames.CHOICE, data).pipe(map((ok) => ok.ok));
+        return of(false);
+        // const studyCode = this.taskManager.getStudyCode();
+        // return this.uploadDataService.uploadTaskData(studyCode, TaskNames.CHOICE, data).pipe(map((ok) => ok.ok));
     }
 
     continueAhead() {

@@ -9,7 +9,7 @@ import { ComponentName } from "src/app/services/component-factory.service";
 import { TaskSwitchingStimulus } from "src/app/services/data-generation/stimuli-models";
 import { TaskConfig } from "../task-player/task-player.component";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import { LoaderService } from "src/app/services/loader.service";
+import { LoaderService } from "src/app/services/loader/loader.service";
 
 interface TaskSwitchingMetadata {
     component: ComponentName;
@@ -146,7 +146,7 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
                 this.probOfShift,
                 this.oddEvenColor,
                 this.ltGtColor
-            )
+            );
         }
         super.start();
     }
@@ -189,14 +189,14 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
             this.responseAllowed = false;
             this.handleRoundInteraction(null);
             return;
-        })
+        });
         this.showStimulus = true;
         this.responseAllowed = true;
         this.timerService.startTimer();
     }
 
     private isValidKey(key: string): boolean {
-        return (key === Key.ARROWLEFT || key === Key.ARROWRIGHT);
+        return key === Key.ARROWLEFT || key === Key.ARROWRIGHT;
     }
 
     private setStimuliUI(stimulus: TaskSwitchingStimulus) {
@@ -238,7 +238,7 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
                 userAnswer = event.key === Key.ARROWLEFT ? UserResponse.LESSER : UserResponse.GREATER;
             }
             thisTrial.userAnswer = userAnswer;
-            super.handleRoundInteraction(event.key)
+            super.handleRoundInteraction(event.key);
             return;
         }
     }
@@ -286,11 +286,11 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
 
             const numCorrect = this.taskData.reduce((acc, currVal) => {
                 return acc + (currVal.isCorrect ? 1 : 0);
-            }, 0)
+            }, 0);
 
-            const shouldSkip = (numCorrect / this.numTrials) >= this.thresholdForRepeat;
+            const shouldSkip = numCorrect / this.numTrials >= this.thresholdForRepeat;
 
-            this.config.setCacheValue(TaskSwitchingCache.SHOULD_SKIP, shouldSkip)
+            this.config.setCacheValue(TaskSwitchingCache.SHOULD_SKIP, shouldSkip);
             this.config.setCacheValue(TaskSwitchingCache.TOTAL_SCORE, totalScore);
             this.config.setCacheValue(TaskSwitchingCache.NUM_CORRECT, numCorrect);
             this.config.setCacheValue(TaskSwitchingCache.NUM_TRIALS, this.numTrials);
@@ -308,7 +308,8 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
     afterInit() {
         if (this.skippable) {
             const shouldSkip = this.config.getCacheValue(TaskSwitchingCache.SHOULD_SKIP) as boolean;
-            if (shouldSkip === undefined) return; // no cached value, do not skip
+            if (shouldSkip === undefined) return;
+            // no cached value, do not skip
             else if (shouldSkip) {
                 // loader is shown on component init (from the base task constructor)
                 // and is supposed to show for 2 seconds. We need to manually cancel that

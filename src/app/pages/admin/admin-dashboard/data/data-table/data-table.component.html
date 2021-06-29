@@ -4,18 +4,99 @@
         <mat-icon>vertical_align_bottom</mat-icon>
     </button>
     <div *ngIf="!isValid()">
-        <span style="color: red;">No table data</span>
+        <span style="color: red">No table data</span>
     </div>
-    <div class="table-container" [hidden]="!isValid()">
-        <table mat-table [dataSource]="dataSource" class="w-100 mat-elevation-z3">
-            <ng-container [matColumnDef]="colTitle" *ngFor="let colTitle of columnTitles">
-                <th mat-header-cell *matHeaderCellDef>{{ colTitle }}</th>
-                <td mat-cell *matCellDef="let obj">{{ obj[colTitle] }}</td>
-            </ng-container>
-            
-            <tr mat-header-row *matHeaderRowDef="columnTitles"></tr>
-            <tr mat-row *matRowDef="let row; columns: columnTitles;"></tr>
-        </table>
+    <div class="table-paginator-container" [hidden]="!isValid()">
+        <div class="table-container">
+            <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="w-100 mat-elevation-z3">
+                <ng-container [matColumnDef]="colTitle" *ngFor="let colTitle of columnsToDisplay">
+                    <th mat-header-cell *matHeaderCellDef>{{ colTitle }}</th>
+                    <td mat-cell *matCellDef="let element">{{ element["fields"][colTitle] }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+                        <div
+                            class="element-detail"
+                            [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'"
+                        >
+                            <!-- Created embedded table with the trial data -->
+                            <div class="w-100 my-5">
+                                <span class="badge">Trials</span>
+                                <div>
+                                    <table class="w-100" mat-table [dataSource]="element.expandable">
+                                        <ng-container
+                                            [matColumnDef]="col"
+                                            *ngFor="let col of expandableColumnsToDisplay(element.expandable)"
+                                        >
+                                            <th mat-header-cell *matHeaderCellDef>{{ col }}</th>
+                                            <td mat-cell *matCellDef="let element">{{ element[col] }}</td>
+                                        </ng-container>
+
+                                        <tr
+                                            mat-header-row
+                                            *matHeaderRowDef="expandableColumnsToDisplay(element.expandable)"
+                                        ></tr>
+                                        <tr
+                                            class="colored-row"
+                                            mat-row
+                                            *matRowDef="
+                                                let row;
+                                                columns: expandableColumnsToDisplay(element.expandable)
+                                            "
+                                        ></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                <tr
+                    class="element-row"
+                    mat-row
+                    [class.expanded-row]="expandedElement === element"
+                    *matRowDef="let element; columns: columnsToDisplay"
+                    (click)="expandedElement = expandedElement === element ? null : element"
+                ></tr>
+                <tr class="detail-row" mat-row *matRowDef="let row; columns: ['expandedDetail']"></tr>
+            </table>
+        </div>
         <mat-paginator #paginator [pageSizeOptions]="[25, 50, 100]" showFirstLastButtons></mat-paginator>
     </div>
 </div>
+
+<!-- 
+    <div>
+        <mat-list role="list">
+            <ng-container *ngFor="let studyTask of study.tasks; let i = index">
+                <mat-list-imtem class="colored-row h-100" role="listitem">
+                    <div class="task-list my-2">
+                        <span class="d-flex flex-row" style="justify-content: space-between">
+                            <span>
+                                <b> ({{ i + 1 }}) {{ studyTask.task.name }} </b>
+                            </span>
+                            <div class="d-inline">
+                                <span class="badge">
+                                    {{ studyTask.task.taskType }}
+                                </span>
+                                <span class="badge">
+                                    {{ studyTask.task.fromPlatform }}
+                                </span>
+                            </div>
+                        </span>
+                        <span class="text-ellipses" style="color: darkgray">
+                            {{ studyTask.task.description }}
+                        </span>
+                        <span class="url text-ellipses" *ngIf="studyTask.task.externalURL">
+                            Linked to:
+                            <a [href]="studyTask.task.externalURL" target="_blank" class="url">{{
+                                studyTask.task.externalURL
+                            }}</a>
+                        </span>
+                    </div>
+                </mat-list-item>
+            </ng-container>
+        </mat-list>
+    </div> -->

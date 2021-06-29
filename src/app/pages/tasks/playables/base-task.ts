@@ -2,7 +2,7 @@ import { Component, OnDestroy } from "@angular/core";
 import { Subject } from "rxjs";
 import { wait } from "src/app/common/commonMethods";
 import { TaskData } from "src/app/models/TaskData";
-import { LoaderService } from "src/app/services/loader.service";
+import { LoaderService } from "src/app/services/loader/loader.service";
 import { Navigation } from "../shared/navigation-buttons/navigation-buttons.component";
 import { Playable, IOnComplete } from "./playable";
 declare function setFullScreen(): any;

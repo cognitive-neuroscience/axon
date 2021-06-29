@@ -9,7 +9,12 @@ import { SessionStorageService } from "./sessionStorage.service";
 import { take } from "rxjs/operators";
 import { isConsent, isCustomTask, isSurveyMonkeyQuestionnaire } from "../common/commonMethods";
 import { EmbeddedPageData } from "../models/InternalDTOs";
-import { TaskType } from "../models/enums";
+import { Platform, TaskType } from "../models/enums";
+import { BehaviorSubject } from "rxjs";
+import { StudyTask } from "../models/Task";
+import { HttpClient } from "@angular/common/http";
+import { TaskService } from "./task.service";
+import { TaskNames } from "../models/TaskData";
 
 @Injectable({
     providedIn: "root",
@@ -22,13 +27,22 @@ export class TaskManagerService {
     private _currentTaskIndex: number = 0;
     private _study: Study = null;
 
+    get study(): Study {
+        return this._study;
+    }
+
+    get currentStudyTask(): StudyTask {
+        return this._study ? this._study.tasks[this._currentTaskIndex] : null;
+    }
+
     constructor(
         private _studyService: StudyService,
         private _snackbarService: SnackbarService,
         private _router: Router,
         private _userService: UserService,
         private _authService: AuthService,
-        private _sessionStorageService: SessionStorageService
+        private _sessionStorageService: SessionStorageService,
+        private _taskService: TaskService
     ) {}
 
     // 1. call startStudy, which gets study from backend DB and extracts tasks
@@ -42,8 +56,9 @@ export class TaskManagerService {
             this.handleErr();
             return;
         }
+
         this._studyService
-            .getStudy(code)
+            .getStudyByStudyCode(code)
             .pipe(take(1))
             .subscribe(
                 (study) => {
@@ -74,64 +89,65 @@ export class TaskManagerService {
 
     // ------------------------------------
 
-    private _routeToTask(task: string) {
-        if (isSurveyMonkeyQuestionnaire(task)) {
-            // if task is of type survey monkey questionnaire
-            const id = task.split("-")[1];
-            if (!id) {
-                this.handleErr();
-                return;
-            }
-            const data: EmbeddedPageData = {
-                ID: id,
-                taskType: TaskType.QUESTIONNAIRE,
-            };
-            this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
-                // this._router.navigate([RouteMap.surveymonkeyquestionnaire.route], { state: data });
-            });
-        } else if (isCustomTask(task)) {
-            // if task is a custom task
-            const id = task.split("-")[1];
-            if (!id) {
-                this.handleErr();
-                return;
-            }
-            // const data: EmbeddedPageData = {
-            //     ID: id,
-            //     taskType: TaskType.,
-            // };
-            this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
-                // this._router.navigate([RouteMap.pavloviatask.route], { state: data });
-            });
-        } else if (isConsent(task)) {
-            // const data: EmbeddedPageData = {
-            //     // taskType: TaskType.Questionnaire,
-            //     ID: task,
-            // };
-            this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
-                // this._router.navigate([RouteMap[task].route], { state: data });
-            });
-        } else {
-            // if task is a normal hard coded task
-            // const route = RouteMap[task].route;
-            // if (!route) {
-            //     this.handleErr();
-            //     return;
-            // }
-            this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
-                // this._router.navigate([route]);
-            });
+    private _routeToTask(studyTask: StudyTask) {
+        if (studyTask.task.fromPlatform === Platform.PAVLOVIA) {
+            // handle embed
+        } else if (studyTask.task.taskType === TaskType.QUESTIONNAIRE) {
+            // render questionnaire
+        } else if (studyTask.task.taskType === TaskType.EXPERIMENTAL || studyTask.task.taskType === TaskType.NAB) {
         }
-        this._snackbarService.openSuccessSnackbar("Redirecting you to the next step");
+        // if (isSurveyMonkeyQuestionnaire(task)) {
+        //     // if task is of type survey monkey questionnaire
+        //     const id = task.split("-")[1];
+        //     if (!id) {
+        //         this.handleErr();
+        //         return;
+        //     }
+        //     const data: EmbeddedPageData = {
+        //         ID: id,
+        //         taskType: TaskType.QUESTIONNAIRE,
+        //     };
+        //     this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
+        //         // this._router.navigate([RouteMap.surveymonkeyquestionnaire.route], { state: data });
+        //     });
+        // } else if (isCustomTask(task)) {
+        //     // if task is a custom task
+        //     const id = task.split("-")[1];
+        //     if (!id) {
+        //         this.handleErr();
+        //         return;
+        //     }
+        //     // const data: EmbeddedPageData = {
+        //     //     ID: id,
+        //     //     taskType: TaskType.,
+        //     // };
+        //     this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
+        //         // this._router.navigate([RouteMap.pavloviatask.route], { state: data });
+        //     });
+        // } else if (isConsent(task)) {
+        //     // const data: EmbeddedPageData = {
+        //     //     // taskType: TaskType.Questionnaire,
+        //     //     ID: task,
+        //     // };
+        //     this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
+        //         // this._router.navigate([RouteMap[task].route], { state: data });
+        //     });
+        // } else {
+        //     // if task is a normal hard coded task
+        //     // const route = RouteMap[task].route;
+        //     // if (!route) {
+        //     //     this.handleErr();
+        //     //     return;
+        //     // }
+        //     this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
+        //         // this._router.navigate([route]);
+        //     });
+        // }
+        // this._snackbarService.openSuccessSnackbar("Redirecting you to the next step");
     }
 
     private _routeToFinalPage(): void {
         this._router.navigate(["/complete"]);
-    }
-
-    getStudyCode(): string {
-        const token = this._sessionStorageService.getStudyCodeFromSessionStorage();
-        return token ? token : "";
     }
 
     next(): void {
@@ -142,7 +158,7 @@ export class TaskManagerService {
         const totalTasks = this._study.tasks.length;
         // route to next task if there is still another task to go to
         if (this._currentTaskIndex < totalTasks) {
-            // this._routeToTask(this._study.tasks[this._currentTaskIndex]);
+            this._routeToTask(this.currentStudyTask);
             this._currentTaskIndex++;
             return;
         } else {

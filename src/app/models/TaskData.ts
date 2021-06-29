@@ -1,4 +1,5 @@
 import { UseHand } from "../pages/tasks/playables/finger-tapping/finger-tapping-task.component";
+import { RatingTaskCounterBalance } from "../pages/tasks/playables/everyday-choice/rater/rater.component";
 import { SmileyFaceTaskCounterbalance } from "../pages/tasks/playables/smiley-face/smiley-face.component";
 import { BEStrings, Key, UserResponse } from "./InternalDTOs";
 
@@ -9,31 +10,18 @@ export enum TaskNames {
     NBACK = "nback",
     STROOP = "stroop",
     TRAILMAKING = "trailmaking",
-    COLORGAME = "colorgame",
-    SHAPEGAME = "shapegame",
     TASKSWITCHING = "taskswitching",
     DEMANDSELECTION = "demandselection",
-    SIMON = "simon",
     SMILEYFACE = "smileyface",
-    RATING = "rating",
-    CHOICE = "choice",
-    POSTCHOICE = "postchoice",
-    RATINGNEW = "ratingnew",
-    CHOICENEW = "choicenew",
+    EVERYDAYCHOICE = "everydaychoice",
 }
 
 export abstract class TaskData {
     trial: number;
     userID: string;
-    score: number;
     submitted: string; // ISO date string
     isPractice: boolean;
-    isCorrect: boolean;
     studyCode: string;
-}
-
-export interface Stimuli {
-    set: any[];
 }
 
 export class StroopTaskData extends TaskData {
@@ -42,6 +30,8 @@ export class StroopTaskData extends TaskData {
     isCongruent: boolean;
     responseTime: number;
     set: number;
+    isCorrect: boolean;
+    score: number;
 }
 
 export class NBackTaskData extends TaskData {
@@ -49,14 +39,8 @@ export class NBackTaskData extends TaskData {
     userAnswer: UserResponse;
     responseTime: number;
     set: number;
-}
-
-export class NBackStimuli implements Stimuli {
-    set: {
-        trial: number;
-        currentLetter: string;
-        nback: string;
-    }[];
+    isCorrect: boolean;
+    score: number;
 }
 
 export class TaskSwitchingTaskData extends TaskData {
@@ -65,6 +49,8 @@ export class TaskSwitchingTaskData extends TaskData {
     actualAnswer: UserResponse;
     userAnswer: UserResponse;
     responseTime: number;
+    isCorrect: boolean;
+    score: number;
 }
 
 export class DemandSelectionTaskData extends TaskData {
@@ -81,6 +67,8 @@ export class DemandSelectionTaskData extends TaskData {
     userAnswer: UserResponse;
     block: number;
     rotation: number;
+    isCorrect: boolean;
+    score: number;
 }
 
 export class TrailMakingTaskData extends TaskData {
@@ -88,6 +76,7 @@ export class TrailMakingTaskData extends TaskData {
     actualAnswer: string;
     userAnswer: string;
     timeFromLastClick: number;
+    isCorrect: boolean;
 }
 
 export class FingerTappingTaskData extends TaskData {
@@ -96,6 +85,7 @@ export class FingerTappingTaskData extends TaskData {
     handUsed: string;
     timeFromLastKeyPress: number;
     keyPressed: Key;
+    isCorrect: boolean;
 }
 
 export class DigitSpanTaskData extends TaskData {
@@ -104,28 +94,8 @@ export class DigitSpanTaskData extends TaskData {
     responseTime: number; // time from when keypad entered screen to participant submitting their response
     numberOfDigits: number;
     isForwardMemoryMode: boolean;
-}
-
-export class RatingTask extends TaskData {
-    counterbalance: number;
-    ratingType: string;
-    activity: string;
-    userAnswer: string;
-    responseTime: number;
-}
-
-export class ChoiceTask extends TaskData {
-    activityLeft: string;
-    activityRight: string;
-    userAnswer: string;
-    responseTime: number;
-}
-
-export class PostChoiceTask extends TaskData {
-    ratingType: string;
-    activity: string;
-    userAnswer: string;
-    responseTime: number;
+    isCorrect: boolean;
+    score: number;
 }
 
 export class OddballTaskData extends TaskData {
@@ -136,6 +106,8 @@ export class OddballTaskData extends TaskData {
     userAnswer: string;
     target: string;
     block: number;
+    isCorrect: boolean;
+    score: number;
 }
 
 export class SmileyFaceTaskData extends TaskData {
@@ -148,6 +120,18 @@ export class SmileyFaceTaskData extends TaskData {
     rewarded: boolean;
     isRescheduledReward: boolean;
     rewardedMore: SmileyFaceTaskCounterbalance;
+    isCorrect: boolean;
+    score: number;
+}
+
+export class EverydayChoiceTaskData extends TaskData {
+    taskName: string;
+    counterbalance: RatingTaskCounterBalance;
+    activity: string;
+    question: string;
+    userAnswer: number;
+    activityType: "DoNothing" | "DoSomething" | "";
+    responseTime: number;
 }
 
 export function mapTaskIdToTitle(task: string) {
@@ -168,4 +152,12 @@ export class CustomTask {
     name: string;
     url: string;
     description: string;
+}
+
+export class ParticipantData {
+    userId: number;
+    studyId: number;
+    taskOrder: number;
+    submittedAt: string;
+    data: TaskData[];
 }
