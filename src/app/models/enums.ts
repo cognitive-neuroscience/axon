@@ -3,6 +3,8 @@ export enum RouteNames {
     LANDINGPAGE_REGISTER_SUBROUTE = "register",
 
     TASKPLAYER = "playtask",
+
+    QUESTIONNAIRE = "questionnaire",
 }
 
 export enum AdminRouteNames {

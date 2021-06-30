@@ -4,6 +4,7 @@ import { environment } from "src/environments/environment";
 import { ParticipantData, TaskData } from "../models/TaskData";
 import { Observable } from "rxjs";
 import { TimerService } from "./timer.service";
+import { FeedbackQuestionnaireResponse } from "../models/Questionnaire";
 
 @Injectable({
     providedIn: "root",
@@ -15,10 +16,10 @@ export class ParticipantDataService {
 
     // TaskData polymorphic object used for all task data
     uploadTaskData(
-        userId: number,
+        userId: string,
         studyId: number,
         taskOrder: number,
-        taskData: TaskData[]
+        taskData: TaskData[] | { [key: string]: any }[]
     ): Observable<HttpResponse<any>> {
         const participantData: ParticipantData = {
             userId: userId,
@@ -28,7 +29,7 @@ export class ParticipantDataService {
             data: taskData,
         };
 
-        return this.http.post(`${environment.apiBaseURL}/${this.RESOURCE_PATH}/`, participantData, {
+        return this.http.post(`${environment.apiBaseURL}${this.RESOURCE_PATH}`, participantData, {
             observe: "response",
         });
     }
@@ -37,5 +38,9 @@ export class ParticipantDataService {
         return this.http.get<ParticipantData[]>(
             `${environment.apiBaseURL}/${this.RESOURCE_PATH}/${studyId}/${taskOrder}`
         );
+    }
+
+    uploadFeedback(data: FeedbackQuestionnaireResponse): Observable<HttpResponse<any>> {
+        return this.http.post(`${environment.apiBaseURL}${this.RESOURCE_PATH}/feedback`, data, { observe: "response" });
     }
 }

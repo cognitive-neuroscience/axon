@@ -26,10 +26,9 @@ import { CommonModule } from "@angular/common";
 import { RotateDirective } from "./shared/Rotate.directive";
 import { ColorGameComponent } from "./unused/color-game/color-game.component";
 import { EmbeddedPageComponent } from "./questionnaires/embedded-page/embedded-page.component";
-import { DemographicsQuestionnaireComponent } from "./questionnaires/demographics-questionnaire/demographics-questionnaire.component";
 import { SafeResoucePipe } from "src/app/pipes/safe.pipe";
-import { PreviewQuestionnaireDialogComponent } from "../admin/admin-dashboard/study-components/manage-questionnaires/preview-questionnaire-dialog/preview-questionnaire-dialog.component";
 import { SelectOptionComponent } from "./shared/select-option/select-option.component";
+import { QuestionnaireReaderComponent } from "./questionnaires/questionnaire-reader/questionnaire-reader.component";
 
 @NgModule({
     declarations: [
@@ -53,8 +52,6 @@ import { SelectOptionComponent } from "./shared/select-option/select-option.comp
         TrailMakingComponent,
 
         EmbeddedPageComponent,
-        PreviewQuestionnaireDialogComponent,
-        DemographicsQuestionnaireComponent,
 
         NumpadComponent,
         SliderComponent,
@@ -65,6 +62,7 @@ import { SelectOptionComponent } from "./shared/select-option/select-option.comp
         RotateDirective,
 
         SafeResoucePipe,
+        QuestionnaireReaderComponent,
     ],
     imports: [CommonModule, MaterialModule, NgZorroModule, FormsModule, ReactiveFormsModule],
     exports: [EmbeddedPageComponent],

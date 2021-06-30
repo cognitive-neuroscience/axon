@@ -4,14 +4,12 @@ import { Observable, of, Subscription } from "rxjs";
 import { take } from "rxjs/operators";
 import { EmbeddedPageData } from "src/app/models/InternalDTOs";
 import { TaskType } from "src/app/models/enums";
-import { Questionnaire } from "src/app/models/Questionnaire";
 import { CustomTask } from "src/app/models/TaskData";
 import { AuthService } from "src/app/services/auth.service";
 import { ConfirmationService } from "src/app/services/confirmation/confirmation.service";
-import { CustomTaskService } from "src/app/services/custom-task.service";
-import { QuestionnaireService } from "src/app/services/questionnaire.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { TaskManagerService } from "src/app/services/task-manager.service";
+import { UserService } from "src/app/services/user.service";
 
 @Component({
     selector: "app-embedded-page",
@@ -33,8 +31,7 @@ export class EmbeddedPageComponent implements OnInit, OnDestroy {
         private confirmationService: ConfirmationService,
         private taskManager: TaskManagerService,
         private snackbar: SnackbarService,
-        private questionnaireService: QuestionnaireService,
-        private customTaskService: CustomTaskService,
+        private userService: UserService,
         private _router: Router
     ) {
         // bandaid fix. Must improve this later
@@ -50,18 +47,18 @@ export class EmbeddedPageComponent implements OnInit, OnDestroy {
                             );
                             return;
                         }
-                        const subjectID = this.authService.getDecodedToken().UserID;
-                        const code = this.taskManager.study.studyCode;
-                        this.embeddedSurveyLink = this.parseURL(data.url, subjectID, code);
+                        const subjectID = this.userService.user.id;
+                        const studyID = this.taskManager.study.id;
+                        this.embeddedSurveyLink = this.parseURL(data.url, subjectID.toString(), studyID);
                     })
             );
         }
     }
 
-    getLink(params: EmbeddedPageData): Observable<Questionnaire | CustomTask> {
+    getLink(params: EmbeddedPageData): Observable<CustomTask> {
         switch (params.taskType) {
             case TaskType.QUESTIONNAIRE:
-                return this.questionnaireService.getQuestionnaireByID(params.ID);
+            // return this.questionnaireService.getQuestionnaireByID(params.ID);
             default:
                 // should never reach here
                 return of(null);
@@ -70,22 +67,20 @@ export class EmbeddedPageComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         if (this.adminPreviewing()) {
-            const subjectID = this.authService.getDecodedToken().Email;
-            this.embeddedSurveyLink = this.parseURL(this.previewLink, subjectID, "NOTAPPLICABLE");
+            this.embeddedSurveyLink = this.parseURL(this.previewLink, this.userService.user.id.toString(), 0);
         }
     }
 
-    private parseURL(url: string, subjectID: string, studyCode: string): string {
-        // we expect a url like https://www.surveymonkey.com/r/ABCDEFG?s=[s_value]&e=[e_value] OR
-        // https://run.pavlovia.org/Sharp_lab/corsi-test/html?subject=[s_value]&studyCode=[e_value]
+    private parseURL(url: string, subjectID: string, studyId: number): string {
+        // we expect a url like https://run.pavlovia.org/Sharp_lab/corsi-test/html?subject=[s_value]&studyid=[e_value]
         const sVal = "[s_value]";
         const eVal = "[e_value]";
 
-        return `${url.replace(sVal, subjectID)}`.replace(eVal, studyCode);
+        return `${url.replace(sVal, subjectID)}`.replace(eVal, studyId.toString());
     }
 
     adminPreviewing(): boolean {
-        return this.authService.isAdmin() && !!this.previewLink;
+        return true;
     }
 
     ngOnDestroy() {

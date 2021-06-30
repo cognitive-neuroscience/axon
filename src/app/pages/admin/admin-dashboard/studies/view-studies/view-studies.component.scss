@@ -33,6 +33,18 @@
     }
 }
 
+.study-id {
+    display: flex;
+    align-items: center;
+    font-size: 2rem;
+    background-color: #3f51b5;
+    padding: 0 10px;
+    color: white;
+    border-radius: 8px;
+    margin-right: 1.2rem;
+    height: 40px;
+}
+
 .title {
     background-color: gray !important;
     margin: 15px 0 !important;
@@ -73,4 +85,17 @@
 
 .study-inactive {
     color: red;
+}
+
+.icons {
+    font-size: 2.3rem;
+    margin-left: 10px;
+
+    &.started {
+        color: green !important;
+    }
+
+    &.stopped {
+        color: red !important;
+    }
 }

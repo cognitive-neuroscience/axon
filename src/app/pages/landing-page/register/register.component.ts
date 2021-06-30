@@ -1,10 +1,11 @@
 import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ParticipantRouteNames, Role, RouteNames } from "src/app/models/enums";
 import { LoaderService } from "src/app/services/loader/loader.service";
+import { SessionStorageService } from "src/app/services/sessionStorage.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { UserService } from "src/app/services/user.service";
 
@@ -41,7 +42,9 @@ export class RegisterComponent implements OnInit {
         private fb: FormBuilder,
         private userService: UserService,
         private snackbarService: SnackbarService,
-        private loaderService: LoaderService
+        private loaderService: LoaderService,
+        private sessionStorageService: SessionStorageService,
+        private route: ActivatedRoute
     ) {}
 
     registerForm = this.fb.group(
@@ -53,7 +56,22 @@ export class RegisterComponent implements OnInit {
         { validators: passwordMatchingValidator }
     );
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        this._getQueryParams();
+    }
+
+    // If the url contains a study shortcode then we get it here.
+    // Otherwise the user will be prompted to enter their own shortcode.
+    private _getQueryParams() {
+        this.subscriptions.push(
+            this.route.queryParams.subscribe((params) => {
+                const studyIdFromURL = params["studyid"];
+                if (studyIdFromURL) {
+                    this.sessionStorageService.setStudyIdInSessionStorage(studyIdFromURL);
+                }
+            })
+        );
+    }
 
     onSubmit() {
         const email = this.registerForm.controls.email.value;
@@ -68,6 +86,7 @@ export class RegisterComponent implements OnInit {
                     this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_SUBROUTE]);
                 },
                 (error: HttpErrorResponse) => {
+                    this.loaderService.hideLoader();
                     console.error(error);
                     this.snackbarService.openErrorSnackbar(error.error.message);
                 }

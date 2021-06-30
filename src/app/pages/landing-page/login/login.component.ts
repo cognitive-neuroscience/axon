@@ -2,12 +2,13 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { AuthService } from "src/app/services/auth.service";
 import { Subscription } from "rxjs";
 import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { User } from "src/app/models/Login";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { FormBuilder, Validators } from "@angular/forms";
 import { LoaderService } from "src/app/services/loader/loader.service";
 import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames } from "src/app/models/enums";
+import { SessionStorageService } from "src/app/services/sessionStorage.service";
 
 @Component({
     selector: "app-login",
@@ -54,11 +55,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     constructor(
+        private route: ActivatedRoute,
         private authService: AuthService,
         private router: Router,
         private snackbarService: SnackbarService,
         private fb: FormBuilder,
-        private loaderService: LoaderService
+        private loaderService: LoaderService,
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit() {}

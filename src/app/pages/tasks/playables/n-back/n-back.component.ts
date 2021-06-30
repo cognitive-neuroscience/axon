@@ -59,11 +59,6 @@ export class NBackComponent extends AbstractBaseTaskComponent {
     private durationFixationPresented: number;
     private numTrials: number;
 
-    // shared state variables
-    userID: string;
-    studyCode: string;
-    config: TaskConfig;
-
     // high level variables
     counterbalance: number;
     taskData: NBackTaskData[];
@@ -106,7 +101,7 @@ export class NBackComponent extends AbstractBaseTaskComponent {
     configure(metadata: NBackMetadata, config: TaskConfig) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
+            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
 
             this.numTrials = throwErrIfNotDefined(metadata.config.numTrials, "num trials not defined");
             this.maxResponseTime = throwErrIfNotDefined(
@@ -169,7 +164,7 @@ export class NBackComponent extends AbstractBaseTaskComponent {
             set: this.counterbalance,
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
-            studyCode: this.studyCode,
+            studyId: this.studyId,
         });
 
         this.setTimer(this.maxResponseTime, () => {

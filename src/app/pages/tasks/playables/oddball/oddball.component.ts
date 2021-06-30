@@ -74,11 +74,6 @@ export class OddballComponent extends AbstractBaseTaskComponent {
     private numTargetTrials: number;
     private numNovelStimuli: number;
 
-    // shared state variables
-    userID: string;
-    studyCode: string;
-    config: TaskConfig;
-
     // high level variables
     taskData: OddballTaskData[];
     stimuli: OddballStimulus[];
@@ -116,7 +111,7 @@ export class OddballComponent extends AbstractBaseTaskComponent {
     configure(metadata: OddballTaskMetadata, config: TaskConfig) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
+            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
 
             this.durationFixationJitteredLowerBound = throwErrIfNotDefined(
                 metadata.config.durationFixationJitteredLowerBound,
@@ -204,7 +199,7 @@ export class OddballComponent extends AbstractBaseTaskComponent {
             actualAnswer: this.currentStimulus.isTarget ? targetResponseKey : nonTargetResponseKey,
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
-            studyCode: this.studyCode,
+            studyId: this.studyId,
             target: OddballTargetStimulus,
             block: this.blockNum,
         });

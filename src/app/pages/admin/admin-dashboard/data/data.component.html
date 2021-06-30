@@ -4,7 +4,7 @@
     <div class="d-flex flex-column">
         <h2>Participant data for {{ study?.internalName }}</h2>
         <h2 style="color: rgb(110, 110, 110); margin: 0">External name: {{ study?.externalName }}</h2>
-        <h2 style="color: rgb(110, 110, 110)">Study code: {{ study?.studyCode }}</h2>
+        <h2 style="color: rgb(110, 110, 110)">Study ID: {{ study?.id }}</h2>
     </div>
 
     <button
@@ -12,7 +12,7 @@
         class="select-button"
         style="width: 200px"
         mat-button
-        [matMenuTriggerFor]="studyCodes"
+        [matMenuTriggerFor]="studyTasks"
     >
         Select Data
         <mat-icon>dehaze</mat-icon>
@@ -20,7 +20,7 @@
 
     <hr />
 
-    <mat-menu #studyCodes="matMenu">
+    <mat-menu #studyTasks="matMenu">
         <button
             *ngFor="let studyTask of study.tasks"
             mat-menu-item

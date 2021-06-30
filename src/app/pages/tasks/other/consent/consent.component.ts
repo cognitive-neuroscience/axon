@@ -27,7 +27,7 @@ export class ConsentComponent implements OnInit, OnDestroy {
         private _snackbarService: SnackbarService,
         private confirmationService: ConfirmationService
     ) {
-        if (!this.taskManager.hasStudy()) {
+        if (!this.taskManager.hasStudy) {
             this.taskManager.handleErr();
         } else {
             const params = this._router.getCurrentNavigation().extras.state as EmbeddedPageData;

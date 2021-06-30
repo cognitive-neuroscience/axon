@@ -12,8 +12,6 @@ import { CrowdSourceLoginComponent } from "./pages/landing-page/crowdsource-logi
 import { ConfirmationComponent } from "./services/confirmation/confirmation.component";
 import { LoaderComponent } from "./services/loader/loader.component";
 import { CreateGuestDialogComponent } from "./pages/admin/admin-dashboard/manage-guests/create-guest-dialog/create-guest-dialog.component";
-import { CreateQuestionnaireDialogComponent } from "./pages/admin/admin-dashboard/study-components/manage-questionnaires/create-questionnaire-dialog/create-questionnaire-dialog.component";
-import { HelpQuestionnaireDialogComponent } from "./pages/admin/admin-dashboard/study-components/manage-questionnaires/help-questionnaire-dialog/help-questionnaire-dialog.component";
 import { LandingPageComponent } from "./pages/landing-page/landing-page.component";
 import { RegisterComponent } from "./pages/landing-page/register/register.component";
 import { AdminModule } from "./pages/admin/admin.module";
@@ -30,8 +28,6 @@ import { ErrorInterceptor } from "./interceptors/error.interceptor";
         ConfirmationComponent,
         LoaderComponent,
         CreateGuestDialogComponent,
-        CreateQuestionnaireDialogComponent,
-        HelpQuestionnaireDialogComponent,
         LandingPageComponent,
         RegisterComponent,
     ],

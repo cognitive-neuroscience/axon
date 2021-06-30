@@ -7,6 +7,7 @@ import { RegisterComponent } from "../pages/landing-page/register/register.compo
 import { ParticipantRouteNames, RouteNames } from "../models/enums";
 import { CrowdSourceLoginComponent } from "../pages/landing-page/crowdsource-login/crowdsource-login.component";
 import { TaskPlayerComponent } from "../pages/tasks/playables/task-player/task-player.component";
+import { QuestionnaireReaderComponent } from "../pages/tasks/questionnaires/questionnaire-reader/questionnaire-reader.component";
 
 const routes: Routes = [
     {
@@ -25,6 +26,10 @@ const routes: Routes = [
     {
         path: RouteNames.TASKPLAYER,
         component: TaskPlayerComponent,
+    },
+    {
+        path: RouteNames.QUESTIONNAIRE,
+        component: QuestionnaireReaderComponent,
     },
     { path: "complete", component: FinalPageComponent },
 ];

@@ -53,8 +53,6 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     private durationOutOftimeMessageShown: number;
 
     // shared state variables
-    userID: string;
-    studyCode: string;
     ratingTaskActivities: string[];
 
     // high level variables
@@ -92,7 +90,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     configure(metadata: ChoiceTaskMetadata, config: TaskConfig) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
+            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
         } catch (error) {
             throw new error("values not defined, cannot start study");
         }
@@ -137,7 +135,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
             responseTime: null,
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
-            studyCode: this.studyCode,
+            studyId: this.studyId,
         });
 
         this.setStimuliUI(this.currentStimulus);

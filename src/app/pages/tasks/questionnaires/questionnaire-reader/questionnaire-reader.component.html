@@ -1,0 +1,105 @@
+<div *ngIf="isValid" class="questionnaire-container">
+    <h1 class="mat-h1 my-3 title-text">
+        <b>{{ title }}</b>
+        <hr />
+    </h1>
+    <div *ngIf="isValid">
+        <form [formGroup]="questionnaire">
+            <ng-container *ngFor="let question of questions">
+                <div [ngSwitch]="question.questionType">
+                    <div class="my-5" *ngSwitchCase="'multipleChoiceSelect'">
+                        <h2 class="title-text">{{ question.title }}</h2>
+                        <p class="sub-text">{{ question.textContent }}</p>
+                        <mat-form-field class="w-50">
+                            <mat-label>{{ question.label }}</mat-label>
+                            <mat-select [formControlName]="question.key">
+                                <mat-option
+                                    *ngFor="let option of question.multipleChoiceOptions"
+                                    [value]="option.value"
+                                    >{{ option.label }}</mat-option
+                                >
+                            </mat-select>
+                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')"
+                                >This is required</mat-error
+                            >
+                        </mat-form-field>
+                    </div>
+
+                    <div class="my-5" *ngSwitchCase="'radiobuttons'">
+                        <h2 class="title-text">{{ question.title }}</h2>
+                        <p class="sub-text">{{ question.textContent }}</p>
+                        <br />
+                        <mat-radio-group
+                            class="{{ question.radiobuttonPresentation }}"
+                            [formControlName]="question.key"
+                        >
+                            <mat-radio-button
+                                *ngFor="let radiobutton of question.multipleChoiceOptions"
+                                class="{{ question.radiobuttonPresentation === 'horizontal' ? 'label-above' : '' }}"
+                                [value]="radiobutton.value"
+                            >
+                                {{ radiobutton.label }}
+                            </mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+
+                    <div class="my-5" *ngSwitchCase="'freeTextResponse'">
+                        <h2 class="title-text">{{ question.title }}</h2>
+                        <p class="sub-text">{{ question.textContent }}</p>
+                        <mat-form-field class="w-50 d-block">
+                            <mat-label>{{ question.label }}</mat-label>
+                            <textarea rows="4" [formControlName]="question.key" matInput type="text"></textarea>
+                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')"
+                                >This is required</mat-error
+                            >
+                        </mat-form-field>
+                    </div>
+
+                    <div class="my-5" *ngSwitchCase="'input'">
+                        <h2 class="title-text">{{ question.title }}</h2>
+                        <p class="sub-text">{{ question.textContent }}</p>
+                        <mat-form-field class="w-50 d-block">
+                            <mat-label>{{ question.label }}</mat-label>
+                            <input
+                                matInput
+                                [formControlName]="question.key"
+                                [type]="question.validation?.isNumeric ? 'number' : 'text'"
+                            />
+                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')"
+                                >This is required</mat-error
+                            >
+                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('min')"
+                                >Must be above {{ question.validation.min }}</mat-error
+                            >
+                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('max')"
+                                >Must be below {{ question.validation.max }}</mat-error
+                            >
+                        </mat-form-field>
+                    </div>
+
+                    <div class="my-5" *ngSwitchCase="'displayText'">
+                        <h2 class="title-text">{{ question.title }}</h2>
+                        <p class="sub-text">{{ question.textContent }}</p>
+                    </div>
+
+                    <div class="my-5" *ngSwitchCase="'divider'">
+                        <hr />
+                    </div>
+
+                    <div *ngSwitchDefault>
+                        <span class="error-text">Could not get question</span>
+                    </div>
+                </div>
+            </ng-container>
+            <button
+                (click)="onSubmit()"
+                class="w-25 mb-5"
+                [disabled]="!questionnaire.valid || questionnaireMetadata.mode === 'test'"
+                color="primary"
+                mat-raised-button
+            >
+                Submit
+            </button>
+        </form>
+    </div>
+</div>

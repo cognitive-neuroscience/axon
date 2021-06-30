@@ -4,17 +4,12 @@ import { StudyService } from "./study.service";
 import { SnackbarService } from "./snackbar.service";
 import { Router } from "@angular/router";
 import { UserService } from "./user.service";
-import { AuthService } from "./auth.service";
 import { SessionStorageService } from "./sessionStorage.service";
 import { take } from "rxjs/operators";
-import { isConsent, isCustomTask, isSurveyMonkeyQuestionnaire } from "../common/commonMethods";
-import { EmbeddedPageData } from "../models/InternalDTOs";
-import { Platform, TaskType } from "../models/enums";
-import { BehaviorSubject } from "rxjs";
+import { Platform, RouteNames, TaskType } from "../models/enums";
 import { StudyTask } from "../models/Task";
-import { HttpClient } from "@angular/common/http";
-import { TaskService } from "./task.service";
-import { TaskNames } from "../models/TaskData";
+import { TaskPlayerNavigationConfig } from "../pages/tasks/playables/task-player/task-player.component";
+import { QuestionnaireNavigationConfig } from "../pages/tasks/questionnaires/questionnaire-reader/questionnaire-reader.component";
 
 @Injectable({
     providedIn: "root",
@@ -35,14 +30,16 @@ export class TaskManagerService {
         return this._study ? this._study.tasks[this._currentTaskIndex] : null;
     }
 
+    get hasStudy(): boolean {
+        return !!this.study;
+    }
+
     constructor(
         private _studyService: StudyService,
         private _snackbarService: SnackbarService,
         private _router: Router,
         private _userService: UserService,
-        private _authService: AuthService,
-        private _sessionStorageService: SessionStorageService,
-        private _taskService: TaskService
+        private _sessionStorageService: SessionStorageService
     ) {}
 
     // 1. call startStudy, which gets study from backend DB and extracts tasks
@@ -50,29 +47,25 @@ export class TaskManagerService {
     // 3. when finished, the task will call taskFinished and we increment the task number
     // 4. repeat until we are out of tasks. Display completion code
 
-    startStudy(): void {
-        const code = this._sessionStorageService.getStudyCodeFromSessionStorage();
-        if (!code) {
-            this.handleErr();
-            return;
-        }
-
+    configureStudy(studyId: number, currentIndex: number) {
+        this._currentTaskIndex = currentIndex;
         this._studyService
-            .getStudyByStudyCode(code)
+            .getStudyById(studyId)
             .pipe(take(1))
             .subscribe(
                 (study) => {
-                    // keep study in local memory to ensure participant does not refresh
                     this._study = study;
-                    this.next();
-                    return;
+                    if (!this._userService.userHasValue) this._userService.updateUser();
+                    this.start(this.currentStudyTask);
                 },
                 (err) => {
-                    console.error(err);
                     this.handleErr();
-                    return;
                 }
             );
+    }
+
+    start(studyTask: StudyTask) {
+        this._routeToTask(studyTask);
     }
 
     // only use to force the study to break
@@ -93,94 +86,47 @@ export class TaskManagerService {
         if (studyTask.task.fromPlatform === Platform.PAVLOVIA) {
             // handle embed
         } else if (studyTask.task.taskType === TaskType.QUESTIONNAIRE) {
-            // render questionnaire
+            const config = Object.keys(studyTask.config).length === 0 ? studyTask.task.config : studyTask.config;
+            const navigationConfig: QuestionnaireNavigationConfig = {
+                metadata: config,
+                mode: "actual",
+            };
+            this._router.navigate([`${RouteNames.QUESTIONNAIRE}`], { state: navigationConfig });
         } else if (studyTask.task.taskType === TaskType.EXPERIMENTAL || studyTask.task.taskType === TaskType.NAB) {
+            const config = Object.keys(studyTask.config).length === 0 ? studyTask.task.config : studyTask.config;
+            const navigationConfig: TaskPlayerNavigationConfig = {
+                metadata: config,
+                mode: "actual",
+            };
+            this._router.navigate([`${RouteNames.TASKPLAYER}`], { state: navigationConfig });
         }
-        // if (isSurveyMonkeyQuestionnaire(task)) {
-        //     // if task is of type survey monkey questionnaire
-        //     const id = task.split("-")[1];
-        //     if (!id) {
-        //         this.handleErr();
-        //         return;
-        //     }
-        //     const data: EmbeddedPageData = {
-        //         ID: id,
-        //         taskType: TaskType.QUESTIONNAIRE,
-        //     };
-        //     this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
-        //         // this._router.navigate([RouteMap.surveymonkeyquestionnaire.route], { state: data });
-        //     });
-        // } else if (isCustomTask(task)) {
-        //     // if task is a custom task
-        //     const id = task.split("-")[1];
-        //     if (!id) {
-        //         this.handleErr();
-        //         return;
-        //     }
-        //     // const data: EmbeddedPageData = {
-        //     //     ID: id,
-        //     //     taskType: TaskType.,
-        //     // };
-        //     this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
-        //         // this._router.navigate([RouteMap.pavloviatask.route], { state: data });
-        //     });
-        // } else if (isConsent(task)) {
-        //     // const data: EmbeddedPageData = {
-        //     //     // taskType: TaskType.Questionnaire,
-        //     //     ID: task,
-        //     // };
-        //     this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
-        //         // this._router.navigate([RouteMap[task].route], { state: data });
-        //     });
-        // } else {
-        //     // if task is a normal hard coded task
-        //     // const route = RouteMap[task].route;
-        //     // if (!route) {
-        //     //     this.handleErr();
-        //     //     return;
-        //     // }
-        //     this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
-        //         // this._router.navigate([route]);
-        //     });
-        // }
-        // this._snackbarService.openSuccessSnackbar("Redirecting you to the next step");
     }
 
-    private _routeToFinalPage(): void {
-        this._router.navigate(["/complete"]);
+    private _routeToFinalPage(completionCode: string): void {
+        this._router.navigate(["/complete"], { state: { completionCode: completionCode } });
     }
 
     next(): void {
-        if (!this.hasStudy()) {
+        if (!this.hasStudy) {
             this.handleErr();
             return;
         }
-        const totalTasks = this._study.tasks.length;
+        this._currentTaskIndex++;
+
+        const totalTasks = this.study.tasks.length;
         // route to next task if there is still another task to go to
         if (this._currentTaskIndex < totalTasks) {
             this._routeToTask(this.currentStudyTask);
-            this._currentTaskIndex++;
             return;
         } else {
-            const userID = this._authService.getDecodedToken().UserID;
-            const studyCode = this._sessionStorageService.getStudyCodeFromSessionStorage();
-            this._userService
-                .markUserAsComplete(userID, studyCode)
-                .pipe(take(1))
-                .subscribe(
-                    () => {
-                        this._routeToFinalPage();
-                        return;
-                    },
-                    (err) => {
-                        this.handleErr();
-                        return;
-                    }
-                );
+            this._userService.markCompletion(this.study.id).subscribe(
+                (completionCode: string) => {
+                    this._routeToFinalPage(completionCode);
+                },
+                (err) => {
+                    this.handleErr();
+                }
+            );
         }
-    }
-
-    hasStudy(): boolean {
-        return this._study ? true : false;
     }
 }

@@ -1,7 +1,7 @@
 import { UseHand } from "../pages/tasks/playables/finger-tapping/finger-tapping-task.component";
 import { RatingTaskCounterBalance } from "../pages/tasks/playables/everyday-choice/rater/rater.component";
 import { SmileyFaceTaskCounterbalance } from "../pages/tasks/playables/smiley-face/smiley-face.component";
-import { BEStrings, Key, UserResponse } from "./InternalDTOs";
+import { Key, UserResponse } from "./InternalDTOs";
 
 export enum TaskNames {
     ODDBALL = "oddball",
@@ -21,7 +21,7 @@ export abstract class TaskData {
     userID: string;
     submitted: string; // ISO date string
     isPractice: boolean;
-    studyCode: string;
+    studyId: number;
 }
 
 export class StroopTaskData extends TaskData {
@@ -134,19 +134,6 @@ export class EverydayChoiceTaskData extends TaskData {
     responseTime: number;
 }
 
-export function mapTaskIdToTitle(task: string) {
-    switch (task) {
-        case "demographicsquestionnaire":
-            return "Demographics Questionnaire";
-        case BEStrings.FEEDBACKQUESTIONNAIRE:
-            return "Feedback Questionnaire";
-        case BEStrings.EXPERIMENTUSERS:
-            return "Registered Participants";
-        default:
-            return "";
-    }
-}
-
 export class CustomTask {
     customTaskID: string;
     name: string;
@@ -155,9 +142,9 @@ export class CustomTask {
 }
 
 export class ParticipantData {
-    userId: number;
+    userId: string;
     studyId: number;
     taskOrder: number;
     submittedAt: string;
-    data: TaskData[];
+    data: TaskData[] | { [key: string]: any }[];
 }

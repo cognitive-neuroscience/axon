@@ -1,15 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { Observable } from "rxjs";
-import { SnackbarService } from "../../../../services/snackbar.service";
 import { DateTime } from "luxon";
 import { StudyService } from "../../../../services/study.service";
 import { Study } from "../../../../models/Study";
-import { filter, map, mergeAll, take } from "rxjs/operators";
-import { mapTaskIdToTitle, ParticipantData } from "../../../../models/TaskData";
-import { LoaderService } from "../../../../services/loader/loader.service";
-import { AuthService } from "src/app/services/auth.service";
-import { isConsent, isCustomTask, isSurveyMonkeyQuestionnaire } from "src/app/common/commonMethods";
-import { StudyTask } from "src/app/models/Task";
+import { take } from "rxjs/operators";
 import { ActivatedRoute } from "@angular/router";
 import { UserService } from "src/app/services/user.service";
 import { ParticipantDataService } from "src/app/services/participant-data.service";
@@ -31,10 +25,7 @@ export class DataComponent implements OnInit {
     fileName: string = null;
 
     constructor(
-        private snackbarService: SnackbarService,
         private studyService: StudyService,
-        private loaderService: LoaderService,
-        private authService: AuthService,
         private route: ActivatedRoute,
         private userService: UserService,
         private studyDataService: ParticipantDataService

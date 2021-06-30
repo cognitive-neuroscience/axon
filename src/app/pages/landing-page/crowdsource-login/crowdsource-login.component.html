@@ -27,8 +27,8 @@
                     <mat-error *ngIf="workerid.invalid">This is required</mat-error>
                 </mat-form-field>
                 <mat-form-field class="w-100" *ngIf="!urlContainsCode">
-                    <mat-label>Enter the study code</mat-label>
-                    <input matInput type="text" [(ngModel)]="studyCode" #code="ngModel" name="studyCode" required />
+                    <mat-label>Enter the study ID</mat-label>
+                    <input matInput type="number" [(ngModel)]="studyId" #code="ngModel" name="studyId" required />
                     <mat-error *ngIf="code.invalid">This is required</mat-error>
                 </mat-form-field>
                 <br />

@@ -1,5 +1,5 @@
 <div class="w-100">
-    <button *ngIf="isValid()" (click)="download()" class="btn btn-primary my-2">
+    <button color="primary" mat-raised-button *ngIf="isValid()" (click)="download()" class="mb-3">
         Export this data to an excel spreadsheet
         <mat-icon>vertical_align_bottom</mat-icon>
     </button>
@@ -22,7 +22,7 @@
                         >
                             <!-- Created embedded table with the trial data -->
                             <div class="w-100 my-5">
-                                <span class="badge">Trials</span>
+                                <span class="badge">Data</span>
                                 <div>
                                     <table class="w-100" mat-table [dataSource]="element.expandable">
                                         <ng-container

@@ -78,11 +78,6 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
     private ltGtColor: Color;
     private counterbalanceMode: "none" | "counterbalance" | "counterbalance-alternative";
 
-    // shared state variables
-    userID: string;
-    studyCode: string;
-    config: TaskConfig;
-
     // high level variables
     counterbalance: DemandSelectionCounterbalance;
     taskData: DemandSelectionTaskData[];
@@ -125,7 +120,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
     configure(metadata: DemandSelectionMetadata, config: TaskConfig) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
+            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
 
             this.numTrials = throwErrIfNotDefined(metadata.config.numTrials, "num trials not defined");
             this.maxResponseTime = throwErrIfNotDefined(
@@ -275,7 +270,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
             rotation: this.currentStimulus.rotation,
             isPractice: this.isPractice,
             submitted: this.timerService.getCurrentTimestamp(),
-            studyCode: this.studyCode,
+            studyId: this.studyId,
         });
 
         this.showFixation = false;

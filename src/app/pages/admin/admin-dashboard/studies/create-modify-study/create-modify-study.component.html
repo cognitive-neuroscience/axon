@@ -96,7 +96,7 @@
             </mat-form-field>
         </div>
 
-        <div class="my-3 w-50">
+        <div class="mx-auto my-3 w-75">
             <div class="droplist" cdkDropList (cdkDropListDropped)="drop($event)">
                 <div class="dropbox {{ task.type }}" *ngFor="let task of selectedTasks; let i = index" cdkDrag>
                     <div style="width: 10%">

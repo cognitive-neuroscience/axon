@@ -219,14 +219,14 @@ export class ChoiceComponent implements OnInit, OnDestroy {
 
         this.data.push({
             trial: this.currentTrial,
-            userID: this.authService.getDecodedToken().UserID,
+            userID: null,
             userAnswer: UserResponse.NA,
             activityLeft: this.currentActivityLeft,
             activityRight: this.currentActivityRight,
             responseTime: 0,
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
-            studyCode: null,
+            studyId: null,
         });
     }
 
@@ -255,28 +255,27 @@ export class ChoiceComponent implements OnInit, OnDestroy {
             if (this.currentTrial < this.actualTrials) {
                 this.continueGame();
             } else {
-                this.proceedtoNextStep();
-
-                if (this.authService.isAdmin()) {
-                    this.proceedtoNextStep();
-                } else {
-                    this.uploadResults(this.data).subscribe(
-                        (ok) => {
-                            if (ok) {
-                                this.proceedtoNextStep();
-                            } else {
-                                this.router.navigate(["/login/mturk"]);
-                                console.error("There was an error uploading the results");
-                                this.snackbarService.openErrorSnackbar("There was an error uploading the results");
-                            }
-                        },
-                        (err) => {
-                            this.router.navigate(["/login/mturk"]);
-                            console.log("There was an error uploading the results");
-                            this.snackbarService.openErrorSnackbar("There was an error uploading the results");
-                        }
-                    );
-                }
+                // this.proceedtoNextStep();
+                // if (this.authService.isAdmin()) {
+                //     this.proceedtoNextStep();
+                // } else {
+                //     this.uploadResults(this.data).subscribe(
+                //         (ok) => {
+                //             if (ok) {
+                //                 this.proceedtoNextStep();
+                //             } else {
+                //                 this.router.navigate(["/login/mturk"]);
+                //                 console.error("There was an error uploading the results");
+                //                 this.snackbarService.openErrorSnackbar("There was an error uploading the results");
+                //             }
+                //         },
+                //         (err) => {
+                //             this.router.navigate(["/login/mturk"]);
+                //             console.log("There was an error uploading the results");
+                //             this.snackbarService.openErrorSnackbar("There was an error uploading the results");
+                //         }
+                //     );
+                // }
             }
         }
     }
@@ -293,13 +292,13 @@ export class ChoiceComponent implements OnInit, OnDestroy {
     }
 
     continueAhead() {
-        if (this.authService.isAdmin()) {
-            console.log(this.data);
-            this.router.navigate(["/dashboard/components"]);
-            this.snackbarService.openInfoSnackbar("Task completed");
-        } else {
-            this.taskManager.next();
-        }
+        // if (this.authService.isAdmin()) {
+        //     console.log(this.data);
+        //     this.router.navigate(["/dashboard/components"]);
+        //     this.snackbarService.openInfoSnackbar("Task completed");
+        // } else {
+        //     this.taskManager.next();
+        // }
     }
 
     reset() {

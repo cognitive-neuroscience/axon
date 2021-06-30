@@ -4,24 +4,14 @@ import { Injectable } from "@angular/core";
     providedIn: "root",
 })
 export class SessionStorageService {
-    private TOKEN = "token";
-    private CODE = "code";
+    private STUDYID = "STUDYID";
 
-    setTokenInSessionStorage(token: string): void {
-        sessionStorage.setItem(this.TOKEN, token);
+    setStudyIdInSessionStorage(code: string): void {
+        sessionStorage.setItem(this.STUDYID, code);
     }
 
-    setStudyCodeInSessionStorage(code: string): void {
-        sessionStorage.setItem(this.CODE, code);
-    }
-
-    // returns null if no token
-    getTokenFromSessionStorage(): string {
-        return sessionStorage.getItem(this.TOKEN);
-    }
-
-    getStudyCodeFromSessionStorage(): string {
-        return sessionStorage.getItem(this.CODE);
+    getStudyIdFromSessionStorage(): string {
+        return sessionStorage.getItem(this.STUDYID);
     }
 
     clearSessionStorage(): void {

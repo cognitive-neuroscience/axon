@@ -27,7 +27,7 @@ export class CreateCustomTaskDialogComponent implements OnInit {
     }
 
     private setQueryParameters(url: string): string {
-        return `${url}?participant=[s_value]&studycode=[e_value]`;
+        return `${url}?participant=[s_value]&studyid=[e_value]`;
     }
 
     constructor(private dialogRef: MatDialogRef<CreateCustomTaskDialogComponent>) {}

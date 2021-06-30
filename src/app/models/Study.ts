@@ -7,7 +7,6 @@ export class Study {
     internalName: string;
     externalName: string;
     started: boolean;
-    studyCode: string;
     description: string;
     tasks: StudyTask[];
     canEdit: boolean;

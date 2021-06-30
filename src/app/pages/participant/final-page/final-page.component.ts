@@ -2,10 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { SnackbarService } from "../../../services/snackbar.service";
 import { UserService } from "../../../services/user.service";
 import { TaskManagerService } from "../../../services/task-manager.service";
-import { AuthService } from "../../../services/auth.service";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { SessionStorageService } from "../../../services/sessionStorage.service";
-import { take } from "rxjs/operators";
 
 @Component({
     selector: "app-final-page",
@@ -15,37 +13,17 @@ import { take } from "rxjs/operators";
 export class FinalPageComponent implements OnInit {
     constructor(
         private _snackbar: SnackbarService,
-        private _userService: UserService,
-        private _taskManager: TaskManagerService,
-        private _authService: AuthService,
         private _router: Router,
         private _sessionStorage: SessionStorageService
-    ) {}
+    ) {
+        const params = this._router.getCurrentNavigation().extras.state as { completionCode: string };
+        this.completionCode = params.completionCode;
+    }
 
     shouldShowCopiedMessage: boolean = false;
     completionCode: string = "";
 
-    ngOnInit(): void {
-        const studyCode = this._taskManager.study.studyCode;
-        const userID = this._authService.getDecodedToken().UserID;
-
-        this.getCompletionCode(userID, studyCode);
-    }
-
-    getCompletionCode(userId: string, expCode: string) {
-        if (userId && expCode) {
-            this._userService
-                .getCompletionCode(userId, expCode)
-                .pipe(take(1))
-                .subscribe((completionCode) => {
-                    // user navigated to complete without finishing
-                    if (!completionCode) {
-                        this.handleErr();
-                    }
-                    this.completionCode = completionCode;
-                });
-        }
-    }
+    ngOnInit(): void {}
 
     handleErr() {
         this._sessionStorage.clearSessionStorage();

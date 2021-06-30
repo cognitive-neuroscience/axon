@@ -1,17 +1,12 @@
-import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
-import { Observable, of, Subscription } from "rxjs";
-import { map, mergeMap } from "rxjs/operators";
-import { ConsentIds } from "src/app/common/commonMethods";
-import { Questionnaire } from "src/app/models/Questionnaire";
-import { ConfirmationService } from "src/app/services/confirmation/confirmation.service";
-import { QuestionnaireService } from "src/app/services/questionnaire.service";
-import { SnackbarService } from "src/app/services/snackbar.service";
-import { CreateQuestionnaireDialogComponent } from "./create-questionnaire-dialog/create-questionnaire-dialog.component";
-import { HelpQuestionnaireDialogComponent } from "./help-questionnaire-dialog/help-questionnaire-dialog.component";
-import { PreviewQuestionnaireDialogComponent } from "./preview-questionnaire-dialog/preview-questionnaire-dialog.component";
+import { Observable, Subscription } from "rxjs";
+import { map } from "rxjs/operators";
+import { RouteNames, TaskType } from "src/app/models/enums";
+import { Task } from "src/app/models/Task";
+import { QuestionnaireNavigationConfig } from "src/app/pages/tasks/questionnaires/questionnaire-reader/questionnaire-reader.component";
+import { TaskService } from "src/app/services/task.service";
 
 @Component({
     selector: "app-manage-questionnaires",
@@ -19,100 +14,33 @@ import { PreviewQuestionnaireDialogComponent } from "./preview-questionnaire-dia
     styleUrls: ["./manage-questionnaires.component.scss"],
 })
 export class ManageQuestionnairesComponent implements OnInit {
-    constructor(
-        private questionnaireService: QuestionnaireService,
-        private dialog: MatDialog,
-        private snackbarService: SnackbarService,
-        private confirmationService: ConfirmationService,
-        private router: Router
-    ) {}
+    constructor(private dialog: MatDialog, private taskService: TaskService, private router: Router) {}
 
-    questionnaires: Observable<Questionnaire[]>;
     subscriptions: Subscription[] = [];
-    displayedQuestionnaireColumns = ["name", "description", "url", "actions"];
-    hiddenQuestionnaires = [
-        ...ConsentIds,
-        // RouteMap.consent.id,
-        // RouteMap.demographicsquestionnaire.id
-    ];
+    displayedQuestionnaireColumns = ["name", "description", "actions"];
 
-    ngOnInit(): void {
-        // this.questionnaires = this.questionnaireService.questionnaires.pipe(
-        //     map((questionnaireList) =>
-        //         questionnaireList
-        //             ? questionnaireList.filter(
-        //                   (questionnaire) => !this.hiddenQuestionnaires.includes(questionnaire.questionnaireID)
-        //               )
-        //             : []
-        //     )
-        // );
-        // this.questionnaireService.update();
+    ngOnInit() {
+        this.tasks = this.taskService.tasks;
     }
 
-    openCreateQuestionnaireModal() {
-        const dialogRef = this.dialog.open(CreateQuestionnaireDialogComponent, { width: "30%" });
-        this.subscriptions.push(
-            dialogRef.afterClosed().subscribe((data: Questionnaire) => {
-                if (data) this._createQuestionnaire(data);
-            })
+    tasks: Observable<Task[]>;
+
+    get questionnaires(): Observable<Task[]> {
+        return this.tasks.pipe(
+            map((tasks) => (tasks ? tasks.filter((task) => task.taskType === TaskType.QUESTIONNAIRE) : []))
         );
     }
 
-    private _createQuestionnaire(questionnaire: Questionnaire) {
-        this.questionnaireService.createQuestionnaire(questionnaire).subscribe(
-            (data) => {
-                this.questionnaireService.update();
-                this.snackbarService.openSuccessSnackbar("Successfully created new questionnaire");
-            },
-            (err: HttpErrorResponse) => {
-                let errMsg = err.error?.message;
-                if (!errMsg) {
-                    errMsg = "Could not create questionnaire";
-                }
-                this.snackbarService.openErrorSnackbar(err.error?.message);
-            }
-        );
-    }
+    previewQuestionnaire(questionnaire: Task) {
+        const questionnaireConfig: QuestionnaireNavigationConfig = {
+            metadata: questionnaire.config,
+            mode: "test",
+        };
 
-    deleteQuestionnaire(questionnaire: Questionnaire) {
-        this.confirmationService
-            .openConfirmationDialog("Are you sure you want to delete the questionnaire: " + questionnaire.name + "?")
-            .pipe(
-                mergeMap((ok) => {
-                    if (ok) {
-                        return this.questionnaireService.deleteQuestionnaireByID(questionnaire.questionnaireID);
-                    } else {
-                        return of(false);
-                    }
-                })
-            )
-            .subscribe(
-                (data) => {
-                    if (data) {
-                        this.questionnaireService.update();
-                        this.snackbarService.openSuccessSnackbar("Successfully deleted " + questionnaire.name);
-                    }
-                },
-                (err) => {
-                    console.error(err);
-                    this.snackbarService.openErrorSnackbar("There was an error deleting the user");
-                }
-            );
-    }
-
-    openQuestionnaireHelpModal() {
-        this.dialog.open(HelpQuestionnaireDialogComponent, { width: "70%" });
+        this.router.navigate([`${RouteNames.QUESTIONNAIRE}`], { state: questionnaireConfig });
     }
 
     ngOnDestroy() {
         this.subscriptions.forEach((sub) => sub.unsubscribe());
-    }
-
-    previewQuestionnaire(questionnaire: Questionnaire) {
-        this.dialog.open(PreviewQuestionnaireDialogComponent, {
-            width: "80%",
-            height: "90%",
-            data: questionnaire,
-        });
     }
 }

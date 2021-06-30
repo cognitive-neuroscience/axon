@@ -147,7 +147,6 @@ export class CreateModifyStudyComponent implements OnInit {
             createdAt: this.study.createdAt,
             deletedAt: this.study.deletedAt,
             started: this.study.started,
-            studyCode: this.study.studyCode,
             description: this.studyForm.controls["description"].value,
             canEdit: true,
             tasks: this.selectedTasks.map((task, index) => {
@@ -184,7 +183,6 @@ export class CreateModifyStudyComponent implements OnInit {
             createdAt: null,
             deletedAt: null,
             started: false,
-            studyCode: "",
             description: this.studyForm.controls["description"].value,
             canEdit: true,
             tasks: this.selectedTasks.map((task, index) => {

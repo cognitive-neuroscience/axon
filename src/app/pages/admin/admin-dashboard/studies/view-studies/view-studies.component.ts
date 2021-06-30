@@ -19,9 +19,13 @@ import { CreateModifyStudyComponent } from "../create-modify-study/create-modify
     styleUrls: ["./view-studies.component.scss"],
 })
 export class ViewStudiesComponent implements OnInit, OnDestroy {
-    LINK: string = environment.production
-        ? "https://psharplab.campus.mcgill.ca/#/crowdsource-participant?code="
-        : "http://localhost:4200/#/crowdsource-participant?code=";
+    CROWDSOURCE_LINK: string = environment.production
+        ? "https://psharplab.campus.mcgill.ca/#/crowdsource-participant?studyid="
+        : "http://localhost:4200/#/crowdsource-participant?studyid=";
+
+    ACCOUNT_LINK: string = environment.production
+        ? "httpsL//psharplab.campus.mcgill.ca/#/register?studyid="
+        : "http://localhost:4200/#/register?studyid=";
 
     subscriptions: Subscription[] = [];
 
@@ -79,10 +83,6 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
         );
     }
 
-    showCopiedMessage() {
-        this.snackbarService.openSuccessSnackbar("Copied to clipboard");
-    }
-
     toggleStudyActiveStatus(study: Study, event: MatSlideToggleChange) {
         const active = event.checked;
         const originalValue = !study.started;
@@ -116,6 +116,10 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
                     }
                 })
         );
+    }
+
+    showCopiedMessage(copyLinkFor: string) {
+        this.snackbarService.openSuccessSnackbar(`Copied link for ${copyLinkFor}`);
     }
 
     ngOnDestroy() {

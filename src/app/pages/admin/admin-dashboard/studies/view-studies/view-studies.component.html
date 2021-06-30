@@ -12,11 +12,13 @@
         <mat-expansion-panel *ngFor="let study of studies | async">
             <mat-expansion-panel-header class="panel-item-header">
                 <div class="d-flex w-100" style="flex-direction: row; justify-content: space-between">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <span class="study-id">{{ study.id }}</span>
+                    </div>
                     <div class="flex-column" style="width: 80%; justify-content: space-around">
                         <span style="font-size: 1.5rem">
                             <b>{{ study.internalName ? study.internalName : study.externalName }}</b>
                         </span>
-                        <span>{{ study.studyCode }}</span>
                         <span class="panel-item-header-description text-ellipses">
                             {{ study.description }}
                         </span>
@@ -27,10 +29,11 @@
                             (change)="toggleStudyActiveStatus(study, $event)"
                             (click)="$event.stopPropagation()"
                         >
-                            <span [class.study-inactive]="!study.started">
-                                {{ study.started ? "Study Active" : "Study Inactive" }}
-                            </span>
                         </mat-slide-toggle>
+                        <div [class.study-inactive]="!study.started">
+                            <mat-icon class="icons started" *ngIf="study.started">run_circle</mat-icon>
+                            <mat-icon class="icons stopped" *ngIf="!study.started">stop_circle</mat-icon>
+                        </div>
                     </div>
                 </div>
             </mat-expansion-panel-header>
@@ -55,6 +58,8 @@
                                 matTooltipPosition="left"
                                 matTooltip="share this link with participants who are logging in or registering an email with us"
                                 mat-button
+                                (click)="showCopiedMessage('participants with registered accounts')"
+                                [cdkCopyToClipboard]="ACCOUNT_LINK + study.id"
                                 color="primary"
                             >
                                 <div class="copy-button-container">
@@ -66,6 +71,8 @@
                                 matTooltipPosition="left"
                                 matTooltip="share this link with participants joining from sites like mturk or prolific"
                                 mat-button
+                                (click)="showCopiedMessage('mturk or prolific users')"
+                                [cdkCopyToClipboard]="CROWDSOURCE_LINK + study.id"
                             >
                                 <div class="copy-button-container">
                                     <span> Copy link for crowd sourced participants </span>

@@ -1,6 +1,5 @@
 import { Component, HostListener } from "@angular/core";
 import { thisOrDefault, throwErrIfNotDefined } from "src/app/common/commonMethods";
-import { StimuliProvidedType } from "src/app/models/enums";
 import { Key } from "src/app/models/InternalDTOs";
 import { FingerTappingTaskData } from "src/app/models/TaskData";
 import { ComponentName } from "src/app/services/component-factory.service";
@@ -51,11 +50,6 @@ export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
     private durationFixationPresented: number;
     private useHand: UseHand;
 
-    // shared state variables
-    userID: string;
-    studyCode: string;
-    config: TaskConfig;
-
     // high level variables
     taskData: FingerTappingTaskData[];
     stimuli = null; // not used
@@ -84,7 +78,7 @@ export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
     configure(metadata: FingerTappingMetadata, config: TaskConfig) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
+            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
 
             this.maxResponseTime = throwErrIfNotDefined(
                 metadata.config.maxResponseTime,
@@ -152,7 +146,7 @@ export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
                 submitted: this.timerService.getCurrentTimestamp(),
                 isPractice: this.isPractice,
                 isCorrect: event.key !== this.lastKeyPressed,
-                studyCode: this.studyCode,
+                studyId: this.studyId,
                 block: this.blockNum,
                 dominantHand: this.handedness,
                 handUsed: this.useHand,

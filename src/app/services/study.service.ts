@@ -42,9 +42,9 @@ export class StudyService {
             });
     }
 
-    getStudyByStudyCode(code: string): Observable<Study> {
+    getStudyById(studyId: number): Observable<Study> {
         return this._http
-            .get<Study>(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${code}`, { observe: "response" })
+            .get<Study>(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${studyId}`, { observe: "response" })
             .pipe(map((res) => res.body as Study));
     }
 

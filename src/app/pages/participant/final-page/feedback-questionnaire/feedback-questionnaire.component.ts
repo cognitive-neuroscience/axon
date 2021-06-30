@@ -1,12 +1,10 @@
 import { Component, OnInit } from "@angular/core";
-import { QuestionnaireService } from "../../../../services/questionnaire.service";
 import { FeedbackQuestionnaireResponse } from "../../../../models/Questionnaire";
-import { AuthService } from "../../../../services/auth.service";
 import { TaskManagerService } from "../../../../services/task-manager.service";
-import { take } from "rxjs/operators";
-import { SnackbarService } from "../../../../services/snackbar.service";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MatSelectChange } from "@angular/material/select";
+import { UserService } from "src/app/services/user.service";
+import { ParticipantDataService } from "src/app/services/participant-data.service";
 
 @Component({
     selector: "app-feedback-questionnaire",
@@ -60,11 +58,10 @@ export class FeedbackQuestionnaireComponent implements OnInit {
     }
 
     constructor(
-        private questionnaireService: QuestionnaireService,
-        private authService: AuthService,
         private taskManager: TaskManagerService,
-        private snackbarService: SnackbarService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private userService: UserService,
+        private participantDataService: ParticipantDataService
     ) {}
 
     ngOnInit(): void {}
@@ -76,26 +73,18 @@ export class FeedbackQuestionnaireComponent implements OnInit {
     }
 
     saveResponse() {
-        const userID = this.authService.getDecodedToken().UserID;
-        const studyCode = this.taskManager.study.studyCode;
+        const userID = this.userService.user.id.toString();
+        const studyID = this.taskManager.study.id;
 
         const obj: FeedbackQuestionnaireResponse = {
-            userID: userID,
-            studyCode: studyCode,
+            userId: userID,
+            studyId: studyID,
             issuesEncountered: this.feedbackQuestionnaire.get("issuesEncountered").value,
             additionalFeedback: this.feedbackQuestionnaire.get("additionalFeedback").value,
             browser: this.showOtherField ? this.otherField : this.feedbackQuestionnaire.get("browser").value,
+            submittedAt: "",
         };
 
-        this.questionnaireService
-            .saveFeedQuestionnaireResponse(obj)
-            .pipe(take(1))
-            .subscribe((ok) => {
-                if (ok) {
-                    this.formSubmitted = true;
-                } else {
-                    this.snackbarService.openErrorSnackbar("There was an error submitting feedback");
-                }
-            });
+        this.participantDataService.uploadFeedback(obj);
     }
 }

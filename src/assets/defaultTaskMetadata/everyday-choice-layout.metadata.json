@@ -21,7 +21,11 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "There are two parts to the task: <br> 1) Answering questions about different activities <br> 2) Indicating your preference between different activities"
+                        "textContent": "There are two parts to the task: <br> 1) Answering questions about different activities <br> 2) Indicating your preference between different activities. <br> You will also complete some questionnaires at the end."
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Please note that Part 1 is the longest and takes around 40 minutes. The rest is much shorter, and the entire experiment will last from 1 hour to 1 hour and 20 minutess."
                     },
                     {
                         "sectionType": "text",
@@ -351,11 +355,15 @@
                 "sections": [
                     {
                         "sectionType": "text",
-                        "textContent": "Hooray! You have finished the Everyday Activities Game."
+                        "textContent": "Hooray! You have finished the Everyday Activities Game. We appreciate your time and effort in helping with our research."
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "We appreciate your time and effort in helping with our research."
+                        "textContent": "Before you go, you will complete some short questionnaires."
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "You will <br> 1) answer the questions on the questionnaire, and click CONTINUE to the next questionnaire <br> 2) repeat until you finish the last questionnaire, and click SUBMIT YOUR ANSWERS <br> 3) clicking NEXT to obtain your completion code."
                     }
                 ],
                 "buttons": {

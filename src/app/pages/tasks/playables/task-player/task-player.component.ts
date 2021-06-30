@@ -31,8 +31,8 @@ export interface ComponentMetadata {
 }
 
 export class TaskConfig {
-    userID: number;
-    studyCode: string;
+    userID: string;
+    studyID: number;
     private data: {
         [key: string]: any;
     };
@@ -48,13 +48,13 @@ export class TaskConfig {
     }
 
     constructor(
-        userId: number,
-        studyCode: string,
+        userId: string,
+        studyId: number,
         counterBalanceGroups?: CounterBalanceGroup,
         counterBalanceNumber?: number
     ) {
         this.userID = userId;
-        this.studyCode = studyCode;
+        this.studyID = studyId;
         this.counterBalanceGroups = counterBalanceGroups || null;
         this.counterbalanceNumber = counterBalanceNumber || null;
         this.data = {};
@@ -97,15 +97,17 @@ export class TaskPlayerComponent implements OnDestroy {
     subscription: Subscription;
 
     // metadata config
-    state = new TaskConfig(null, "", {}, null); // this state will be shared with each step in the task
+    state = new TaskConfig(null, null, {}, null); // this state will be shared with each step in the task
 
     handleTaskVariablesAndPlayTask(taskMetadataConfig: TaskMetadata, mode: "test" | "actual") {
         if (mode === "test") {
-            this.state.userID = 0;
-            this.state.studyCode = "TEST_CODE";
+            this.state.userID = "TEST";
+            this.state.studyID = 0;
         } else {
-            this.state.userID = this.userService.user.id;
-            this.state.studyCode = this.taskManager.study.studyCode;
+            this.state.userID = this.userService.isCrowdsourcedUser
+                ? this.userService.user.email
+                : this.userService.user.id.toString();
+            this.state.studyID = this.taskManager.study.id;
         }
 
         const counterBalanceGroups = taskMetadataConfig.config.counterBalanceGroups;
@@ -181,7 +183,9 @@ export class TaskPlayerComponent implements OnDestroy {
     handleUploadData(): Observable<boolean> {
         return this.uploadDataService
             .uploadTaskData(
-                this.userService.user?.id,
+                this.userService.isCrowdsourcedUser
+                    ? this.userService.user.email
+                    : this.userService.user?.id.toString(),
                 this.taskManager.study?.id,
                 this.taskManager.currentStudyTask.taskOrder,
                 this.taskData
@@ -215,7 +219,7 @@ export class TaskPlayerComponent implements OnDestroy {
         this.index = 0;
         this.taskData = [];
         this.steps = [];
-        this.state = new TaskConfig(null, "", {}, null);
+        this.state = new TaskConfig(null, null, {}, null);
     }
 
     ngOnDestroy() {

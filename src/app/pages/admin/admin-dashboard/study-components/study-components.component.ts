@@ -1,20 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
+import { Component, OnInit } from "@angular/core";
+import { Observable } from "rxjs";
+import { TaskService } from "src/app/services/task.service";
+import { UserService } from "src/app/services/user.service";
 
 @Component({
-  selector: 'app-study-components',
-  templateUrl: './study-components.component.html',
-  styleUrls: ['./study-components.component.scss']
+    selector: "app-study-components",
+    templateUrl: "./study-components.component.html",
+    styleUrls: ["./study-components.component.scss"],
 })
 export class StudyComponentsComponent implements OnInit {
+    constructor(private userService: UserService, private taskService: TaskService) {}
 
-  constructor(private authService: AuthService) { }
+    ngOnInit(): void {
+        if (!this.taskService.hasTasks) this.taskService.update();
+    }
 
-  ngOnInit(): void {
-  }
-
-  isAdmin(): boolean {
-    return this.authService.isAdmin();
-  }
-
+    get isAdmin(): Observable<boolean> {
+        return this.userService.userIsAdmin;
+    }
 }

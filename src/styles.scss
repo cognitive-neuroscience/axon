@@ -331,3 +331,15 @@ html.cdk-global-scrollblock {
 html.cdk-global-scrollblock body {
     position: fixed;
 }
+
+// for the questionnaire component to put the label above the radio buttons
+.mat-radio-group {
+    .label-above {
+        flex-grow: 1;
+        flex-basis: 0;
+        .mat-radio-label {
+            flex-direction: column-reverse;
+            white-space: initial;
+        }
+    }
+}

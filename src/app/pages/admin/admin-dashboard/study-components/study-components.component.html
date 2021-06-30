@@ -2,10 +2,10 @@
     <mat-tab label="Psharplab Tasks">
         <app-view-tasks></app-view-tasks>
     </mat-tab>
-    <mat-tab label="Psharplab Questionnaires" [disabled]="!isAdmin()">
+    <mat-tab label="Psharplab Questionnaires" [disabled]="!(isAdmin | async)">
         <app-manage-questionnaires></app-manage-questionnaires>
     </mat-tab>
-    <mat-tab label="Pavlovia Tasks" [disabled]="!isAdmin()">
+    <mat-tab label="Pavlovia Tasks" [disabled]="!(isAdmin | async)">
         <app-manage-custom-tasks></app-manage-custom-tasks>
     </mat-tab>
 </mat-tab-group>

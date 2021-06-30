@@ -3,14 +3,18 @@ import { HttpClient, HttpResponse } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { BehaviorSubject, Observable } from "rxjs";
 import { map, take } from "rxjs/operators";
-import { User } from "../models/Login";
+import { CrowdsourcedUser, User } from "../models/Login";
 import { Role } from "../models/enums";
+import { TimerService } from "./timer.service";
 
 @Injectable({
     providedIn: "root",
 })
 export class UserService {
-    private readonly RESOURCE_PATH = "/users";
+    private readonly USERS_RESOURCE_PATH = "/users";
+    private readonly CROWDSOURCED_USERS_RESOURCE_PATH = "/crowdsourcedusers";
+    isCrowdsourcedUser: boolean = false;
+    crowdsourcedUserStudyId: number;
 
     private _guestsSubject: BehaviorSubject<User[]>;
     get guests(): Observable<User[]> {
@@ -36,7 +40,7 @@ export class UserService {
         return this._userBehaviorSubject.asObservable().pipe(map((user) => (user ? user.role === Role.ADMIN : false)));
     }
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private timerService: TimerService) {
         this._guestsSubject = new BehaviorSubject(null);
         this._userBehaviorSubject = new BehaviorSubject(null);
     }
@@ -46,21 +50,41 @@ export class UserService {
     }
 
     deleteGuest(guest: User): Observable<HttpResponse<any>> {
-        return this.http.delete(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${guest.id}`, {
+        return this.http.delete(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/${guest.id}`, {
             observe: "response",
         });
     }
 
-    getUserDetails(id: string): Observable<HttpResponse<any>> {
-        return this.http.get(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${id}`, { observe: "response" });
-    }
-
     updateUser(): void {
-        this._getUser()
-            .pipe(take(1))
-            .subscribe((user) => {
-                this._userBehaviorSubject.next(user);
-            });
+        if (this.isCrowdsourcedUser) {
+            this._getCrowdsourcedUser(this.crowdsourcedUserStudyId)
+                .pipe(take(1))
+                .subscribe(
+                    (crowdsourcedUser) => {
+                        const user: User = {
+                            id: 0,
+                            email: crowdsourcedUser.participantId,
+                            role: Role.PARTICIPANT,
+                            createdAt: crowdsourcedUser.registerDate,
+                        };
+                        this._userBehaviorSubject.next(user);
+                    },
+                    (err) => {
+                        throw new Error(err);
+                    }
+                );
+        } else {
+            this._getUser()
+                .pipe(take(1))
+                .subscribe(
+                    (user) => {
+                        this._userBehaviorSubject.next(user);
+                    },
+                    (err) => {
+                        throw new Error(err);
+                    }
+                );
+        }
     }
 
     updateGuests(): void {
@@ -71,18 +95,12 @@ export class UserService {
             });
     }
 
-    markUserAsComplete(userID: string, studyCode: string): Observable<HttpResponse<any>> {
-        const obj = {
-            id: userID,
-            code: studyCode,
-        };
-        return this.http.post(`${environment.apiBaseURL}${this.RESOURCE_PATH}/complete`, obj, { observe: "response" });
-    }
-
-    getCompletionCode(userID: string, studyCode: string): Observable<string> {
+    markCompletion(studyId: number): Observable<string> {
         return this.http
-            .get(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${userID}/${studyCode}`, { observe: "response" })
-            .pipe(map((res) => res.body as string));
+            .patch(`${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}/${studyId}`, {
+                observe: "response",
+            })
+            .pipe(map((res) => res as string));
     }
 
     registerUser(email: string, password: string, role?: Role): Observable<HttpResponse<any>> {
@@ -92,16 +110,35 @@ export class UserService {
         };
         if (role) obj["role"] = role;
 
-        return this.http.post<HttpResponse<any>>(`${environment.apiBaseURL}${this.RESOURCE_PATH}`, obj, {
+        return this.http.post<HttpResponse<any>>(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}`, obj, {
+            observe: "response",
+        });
+    }
+
+    registerCrowdsourcedUser(participantId: string, studyID: number): Observable<HttpResponse<any>> {
+        const crowdsourcedUser: CrowdsourcedUser = {
+            participantId: participantId,
+            studyId: studyID,
+            registerDate: this.timerService.getCurrentTimestamp(),
+            completionCode: "",
+        };
+
+        return this.http.post(`${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}`, crowdsourcedUser, {
             observe: "response",
         });
     }
 
     private _getGuests() {
-        return this.http.get<User[]>(`${environment.apiBaseURL}${this.RESOURCE_PATH}/guests`);
+        return this.http.get<User[]>(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/guests`);
     }
 
     private _getUser() {
-        return this.http.get<User>(`${environment.apiBaseURL}${this.RESOURCE_PATH}`);
+        return this.http.get<User>(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}`);
+    }
+
+    private _getCrowdsourcedUser(studyId: number) {
+        return this.http.get<CrowdsourcedUser>(
+            `${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}/${studyId}`
+        );
     }
 }

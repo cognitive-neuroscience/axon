@@ -59,11 +59,6 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
     private delayToShowHelpMessage: number;
     private durationHelpMessageShown: number;
 
-    // shared state variables
-    userID: string;
-    studyCode: string;
-    config: TaskConfig;
-
     // high level variables
     taskData: DigitSpanTaskData[];
     stimuli: DigitSpanStimulus[];
@@ -105,7 +100,7 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
     configure(metadata: DigitSpanMetadata, config: TaskConfig) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
+            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
 
             this.maxResponseTime = throwErrIfNotDefined(
                 metadata.config.maxResponseTime,
@@ -165,7 +160,7 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
             trial: ++this.trialNum,
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
-            studyCode: this.studyCode,
+            studyId: this.studyId,
             userAnswer: UserResponse.NA,
             actualAnswer: this.getActualAnswer(),
             responseTime: 0,

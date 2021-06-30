@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { SnackbarService } from "../../../services/snackbar.service";
-import { AuthService } from "../../../services/auth.service";
 import { TaskManagerService } from "../../../services/task-manager.service";
-import { SessionStorageService } from "../../../services/sessionStorage.service";
 import { Subscription } from "rxjs";
+import { UserService } from "src/app/services/user.service";
+import { take } from "rxjs/operators";
 
 @Component({
     selector: "app-crowdsource-login",
@@ -13,16 +13,15 @@ import { Subscription } from "rxjs";
 })
 export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
     workerId: string = "";
-    studyCode: string = "";
+    studyId: number;
     urlContainsCode: boolean = false;
     subscriptions: Subscription[] = [];
 
     constructor(
         private _route: ActivatedRoute,
         private _snackbarService: SnackbarService,
-        private _authService: AuthService,
         private _taskManager: TaskManagerService,
-        private _sessionStorageService: SessionStorageService
+        private userService: UserService
     ) {}
 
     ngOnInit(): void {
@@ -34,40 +33,51 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
     private _getQueryParams() {
         this.subscriptions.push(
             this._route.queryParams.subscribe((params) => {
-                const urlCode = params["code"];
-                if (urlCode) {
+                const studyIdFromURL = params["studyid"] as string;
+                if (studyIdFromURL) {
                     this.urlContainsCode = true;
-                    this.studyCode = urlCode;
+                    this.studyId = parseInt(studyIdFromURL);
                 }
             })
         );
     }
 
     onRegister() {
-        // sets JWT and records worker in DB
-        this._authService.loginTurker(this.workerId, this.studyCode).subscribe(
-            (response) => {
-                this._snackbarService.openSuccessSnackbar("Registered: " + this.workerId);
-                if (response.headers.get("Authorization")) {
-                    const tokenString = response.headers.get("Authorization").split(" ")[1];
-                    this._sessionStorageService.setTokenInSessionStorage(tokenString);
-                    this._sessionStorageService.setStudyCodeInSessionStorage(this.studyCode);
-                }
-                this._taskManager.startStudy();
-            },
-            (err) => {
-                // if headers too large error
-                if (err.status && err.status === 431) {
-                    this._snackbarService.openErrorSnackbar(
-                        "There was an error. Please try clearing your cookies, or open the study in incognito mode.",
-                        "",
-                        6000
+        this.userService
+            .registerCrowdsourcedUser(this.workerId, this.studyId)
+            .pipe(take(1))
+            .subscribe(
+                (response) => {
+                    this.userService.isCrowdsourcedUser = true;
+                    this.userService.crowdsourcedUserStudyId = this.studyId;
+                    this.userService.userAsync.subscribe(
+                        (user) => {
+                            if (user !== null) {
+                                this._snackbarService.openSuccessSnackbar("Registered: " + this.workerId);
+                                this._taskManager.configureStudy(this.studyId, 0);
+                            }
+                        },
+                        (err) => {
+                            throw new Error(err);
+                        }
                     );
-                } else {
-                    this._snackbarService.openErrorSnackbar(err.error?.message);
+                    this.userService.updateUser();
+                },
+                (err) => {
+                    // if headers too large error
+                    if (err.status && err.status === 431) {
+                        this._snackbarService.openErrorSnackbar(
+                            "There was an error. Please try clearing your cookies, or open the study in incognito mode.",
+                            "",
+                            6000
+                        );
+                    } else {
+                        console.log(err);
+
+                        this._snackbarService.openErrorSnackbar(err.message || err.error?.message);
+                    }
                 }
-            }
-        );
+            );
     }
 
     ngOnDestroy() {

@@ -5,10 +5,16 @@ import { TaskData } from "src/app/models/TaskData";
 import { LoaderService } from "src/app/services/loader/loader.service";
 import { Navigation } from "../shared/navigation-buttons/navigation-buttons.component";
 import { Playable, IOnComplete } from "./playable";
+import { TaskConfig } from "./task-player/task-player.component";
 declare function setFullScreen(): any;
 
 @Component({ template: "" })
 export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
+    // shared state variables
+    userID: string;
+    studyId: number;
+    config: TaskConfig;
+
     // base task local state variables
     taskData: TaskData[];
     onComplete: Subject<IOnComplete> = new Subject();

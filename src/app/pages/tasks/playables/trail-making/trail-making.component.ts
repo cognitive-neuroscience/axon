@@ -47,11 +47,6 @@ export class TrailMakingComponent extends AbstractBaseTaskComponent {
     private trialType: TrailMakingTrialType;
     private durationOutOfTimeMessageShown: number;
 
-    // shared state variables
-    userID: string;
-    studyCode: string;
-    config: TaskConfig;
-
     // high level variables
     counterbalance: number;
     taskData: TrailMakingTaskData[];
@@ -87,7 +82,7 @@ export class TrailMakingComponent extends AbstractBaseTaskComponent {
     configure(metadata: TrailMakingMetadata, config: TaskConfig) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
+            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
 
             this.maxResponseTime = throwErrIfNotDefined(
                 metadata.config.maxResponseTime,
@@ -191,7 +186,7 @@ export class TrailMakingComponent extends AbstractBaseTaskComponent {
                 isCorrect: isCorrect,
                 submitted: this.timerService.getCurrentTimestamp(),
                 isPractice: this.isPractice,
-                studyCode: this.studyCode,
+                studyId: this.studyId,
             });
 
             this.timerService.clearTimer();

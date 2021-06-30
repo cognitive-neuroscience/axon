@@ -66,11 +66,6 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
     private counterbalance: RatingTaskCounterBalance;
     private numDoSomethingActivities: number;
 
-    // shared state
-    userID: string;
-    studyCode: string;
-    config: TaskConfig;
-
     // high level variables
     taskData: EverydayChoiceTaskData[];
     stimuli: RatingTaskStimuli[];
@@ -99,7 +94,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
     configure(metadata: RaterTaskMetadata, config: TaskConfig) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
+            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
         } catch (error) {
             throw new error("values not defined, cannot start study");
         }
@@ -163,7 +158,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
             responseTime: null,
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
-            studyCode: this.studyCode,
+            studyId: this.studyId,
         });
 
         this.setStimuliUI(this.currentStimulus);

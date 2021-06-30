@@ -8,6 +8,13 @@ export class User {
     createdAt: string;
 }
 
+export class CrowdsourcedUser {
+    participantId: string;
+    studyId: number;
+    registerDate: string;
+    completionCode: string;
+}
+
 export class JWT {
     UserID: string;
     Email: string;

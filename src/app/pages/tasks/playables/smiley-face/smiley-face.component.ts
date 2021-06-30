@@ -70,11 +70,6 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     private numFacesMoreRewarded: number;
     private numFacesLessRewarded: number;
 
-    // shared state variables
-    userID: string;
-    studyCode: string;
-    config: TaskConfig;
-
     // high level variables
     counterbalance: SmileyFaceTaskCounterbalance;
     taskData: SmileyFaceTaskData[];
@@ -113,7 +108,7 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     configure(metadata: SmileyFaceMetadata, config: TaskConfig) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyCode = throwErrIfNotDefined(config.studyCode, "no study code defined");
+            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
 
             this.maxResponseTime = throwErrIfNotDefined(
                 metadata.config.maxResponseTime,
@@ -195,7 +190,7 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
             userID: this.userID,
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
-            studyCode: this.studyCode,
+            studyId: this.studyId,
             isRescheduledReward: this.currentStimulus.isRescheduledReward,
             rewardedMore: this.counterbalance,
         });
