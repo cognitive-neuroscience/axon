@@ -22,19 +22,15 @@
 
     <mat-menu #studyTasks="matMenu">
         <button
-            *ngFor="let studyTask of study.tasks"
+            *ngFor="let studyTask of study.tasks; let i = index"
             mat-menu-item
-            (click)="getAndDisplayData(study.internalName, studyTask.task.name, study.id, studyTask.taskOrder)"
+            (click)="getAndDisplayData(study, i)"
         >
             {{ studyTask.taskOrder }} : {{ studyTask.task.name }}
         </button>
         <hr />
-        <button (click)="getAndDisplayData(study.internalName, 'registered participants', study.id, 3)" mat-menu-item>
-            Registered Participants
-        </button>
-        <button (click)="getAndDisplayData(study.internalName, 'feedback questionnaire', study.id, 3)" mat-menu-item>
-            Feedback Questionnaire
-        </button>
+        <button mat-menu-item>Registered Participants</button>
+        <button mat-menu-item>Feedback Questionnaire</button>
     </mat-menu>
 
     <app-data-table *ngIf="isAdmin | async" [fileName]="fileName" [tableData]="tableData"></app-data-table>

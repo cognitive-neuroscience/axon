@@ -17,6 +17,7 @@
                 <ng-container matColumnDef="expandedDetail">
                     <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
                         <div
+                            *ngIf="element.expandable.length > 0"
                             class="element-detail"
                             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'"
                         >

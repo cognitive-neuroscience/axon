@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from "@angular/core";
 import { Router } from "@angular/router";
-import { ParticipantDataService } from "src/app/services/participant-data.service";
+import { ParticipantDataService } from "src/app/services/study-data.service";
 declare function setFullScreen(): any;
 @Component({
     selector: "app-shape-game",

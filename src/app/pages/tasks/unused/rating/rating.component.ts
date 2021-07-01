@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from "@angular/core";
 import { Router } from "@angular/router";
-import { ParticipantDataService } from "src/app/services/participant-data.service";
+import { ParticipantDataService } from "src/app/services/study-data.service";
 import { TaskManagerService } from "../../../../services/task-manager.service";
 import { AuthService } from "../../../../services/auth.service";
 import { SnackbarService } from "../../../../services/snackbar.service";

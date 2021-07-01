@@ -6,7 +6,7 @@ import { getRandomNumber, thisOrDefault } from "src/app/common/commonMethods";
 import { ComponentFactoryService, ComponentName } from "src/app/services/component-factory.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { TaskManagerService } from "src/app/services/task-manager.service";
-import { ParticipantDataService } from "src/app/services/participant-data.service";
+import { ParticipantDataService } from "src/app/services/study-data.service";
 import { Navigation } from "../../shared/navigation-buttons/navigation-buttons.component";
 import { IOnComplete } from "../playable";
 import { LoaderService } from "src/app/services/loader/loader.service";

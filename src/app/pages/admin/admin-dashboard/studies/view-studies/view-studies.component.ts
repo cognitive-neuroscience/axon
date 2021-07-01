@@ -110,6 +110,7 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
                 .subscribe((ok) => {
                     // either a boolean or httpresponse, so we can check truthiness
                     if (ok) {
+                        this.studyService.update();
                         this.snackbarService.openSuccessSnackbar("Successfully updated task");
                     } else {
                         study.started = originalValue;

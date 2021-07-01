@@ -4,7 +4,7 @@ import { TaskManagerService } from "../../../../services/task-manager.service";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MatSelectChange } from "@angular/material/select";
 import { UserService } from "src/app/services/user.service";
-import { ParticipantDataService } from "src/app/services/participant-data.service";
+import { ParticipantDataService } from "src/app/services/study-data.service";
 
 @Component({
     selector: "app-feedback-questionnaire",

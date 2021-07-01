@@ -1,6 +1,5 @@
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { SnackbarType, TaskType } from "./enums";
-import { Task } from "./Task";
 
 export class JsonForm {
     img: string;
@@ -78,10 +77,6 @@ export enum Color {
     TRANSPARENT = "transparent",
 }
 
-export class StudiesRoutingMap {
-    [key: string]: Task;
-}
-
 export enum Feedback {
     CORRECT = "Correct",
     INCORRECT = "Incorrect",
@@ -107,10 +102,4 @@ export enum UserResponse {
     BOTH = "BOTH",
     SHORT = "SHORT",
     LONG = "LONG",
-}
-
-// special strings that are important to the backend
-export enum BEStrings {
-    EXPERIMENTUSERS = "experiment_users",
-    FEEDBACKQUESTIONNAIRE = "feedback_questionnaire_responses",
 }
