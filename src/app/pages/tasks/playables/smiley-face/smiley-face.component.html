@@ -2,7 +2,7 @@
     <!-- Start Practice Round -->
     <div class="full-box flex-column-center">
         <div *ngIf="showStimulus" class="w-100 d-flex flex-row align-items-center justify-content-center">
-            <div *ngIf="smileyFaceType === 'SHORT'">
+            <!-- <div *ngIf="smileyFaceType === 'SHORT'">
                 <img src="/assets/images/stimuli/smileyface/short.png" alt="short face" class="smiley-face-img" />
             </div>
             <div *ngIf="smileyFaceType === 'NONE'">
@@ -10,6 +10,9 @@
             </div>
             <div *ngIf="smileyFaceType === 'LONG'">
                 <img src="/assets/images/stimuli/smileyface/long.png" alt="long face" class="smiley-face-img" />
+            </div> -->
+            <div *ngIf="stimulusBlobShown">
+                <img class="smiley-face-img" [src]="stimulusBlobShown" alt="Stimulus" />
             </div>
         </div>
 

@@ -220,7 +220,7 @@
                 "interTrialDelay": 0,
                 "showFeedbackAfterEachTrial": true,
                 "durationOfFeedback": 1000,
-                "numTrials": 10,
+                "numTrials": 5,
                 "delayToShowHelpMessage": 4000,
                 "durationHelpMessageShown": 6000,
                 "probOfShiftFirstPatch": 10,
@@ -275,51 +275,6 @@
                             "firstPatch": "blue",
                             "secondPatch": "orange",
                             "digit": 1
-                        },
-                        {
-                            "firstPatchImgName": "abstPa.png",
-                            "secondPatchImgName": "abstPb.png",
-                            "rotation": 105,
-                            "counterbalance": "NONE",
-                            "firstPatch": "blue",
-                            "secondPatch": "orange",
-                            "digit": 7
-                        },
-                        {
-                            "firstPatchImgName": "abstPa.png",
-                            "secondPatchImgName": "abstPb.png",
-                            "rotation": 105,
-                            "counterbalance": "NONE",
-                            "firstPatch": "blue",
-                            "secondPatch": "orange",
-                            "digit": 6
-                        },
-                        {
-                            "firstPatchImgName": "abstPa.png",
-                            "secondPatchImgName": "abstPb.png",
-                            "rotation": 105,
-                            "counterbalance": "NONE",
-                            "firstPatch": "orange",
-                            "secondPatch": "blue",
-                            "digit": 4
-                        },
-                        {
-                            "firstPatchImgName": "abstPa.png",
-                            "secondPatchImgName": "abstPb.png",
-                            "rotation": 105,
-                            "counterbalance": "NONE",
-                            "firstPatch": "orange",
-                            "secondPatch": "blue",
-                            "digit": 1
-                        },
-                        {
-                            "firstPatchImgName": "abstPa.png",
-                            "secondPatchImgName": "abstPb.png",
-                            "rotation": 105,
-                            "counterbalance": "NONE",
-                            "firstPatch": "blue",
-                            "secondPatch": "orange",
-                            "digit": 1
                         }
                     ]
                 }
@@ -334,38 +289,21 @@
                         "sectionType": "text",
                         "injection": "cached-string",
                         "cacheKey": "demandselection-num-correct",
-                        "textContent": "You got ??? out of 10 correct"
+                        "textContent": "You got ??? out of 5 correct"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Let''s practice again."
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" when you are ready for the next stage"
                     }
                 ]
             }
         },
         {
             "component": "DISPLAYCOMPONENT",
-            "skippable": true,
-            "skippableCacheKey": "demandselection-should-skip",
-            "content": {
-                "title": "",
-                "sections": [
-                    {
-                        "sectionType": "text",
-                        "textContent": "We will repeat this round so you can get more practice."
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "Click \"NEXT\" when you are ready for the next stage"
-                    }
-                ],
-                "buttons": {
-                    "isStart": false,
-                    "previousDisabled": false,
-                    "nextDisabled": false
-                }
-            }
-        },
-        {
-            "component": "DISPLAYCOMPONENT",
-            "skippable": true,
-            "skippableCacheKey": "demandselection-should-skip",
             "content": {
                 "title": "More instructions",
                 "sections": [
@@ -426,7 +364,7 @@
                 "interTrialDelay": 0,
                 "showFeedbackAfterEachTrial": true,
                 "durationOfFeedback": 1000,
-                "numTrials": 10,
+                "numTrials": 5,
                 "delayToShowHelpMessage": 4000,
                 "probOfShiftFirstPatch": 10,
                 "probOfShiftSecondPatch": 90,
@@ -448,76 +386,9 @@
                         "sectionType": "text",
                         "injection": "cached-string",
                         "cacheKey": "demandselection-num-correct",
-                        "textContent": "You got ??? out of 10 correct"
+                        "textContent": "You got ??? out of 5 correct"
                     }
                 ]
-            }
-        },
-        {
-            "component": "DISPLAYCOMPONENT",
-            "content": {
-                "title": "Instructions Recap",
-                "sections": [
-                    {
-                        "sectionType": "text",
-                        "textContent": "Orange number: Determine if the number is less or greater than 5"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "LESS than 5: Press the LEFT arrow key ⬅️"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "GREATER than 5: Press the RIGHT arrow key ➡️"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "<br />"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "Blue number: Determine if the number is odd or even"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "If number is ODD: Press the LEFT arrow key ⬅️"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "If number is EVEN: Press the RIGHT arrow key ➡️"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "Click \"START\" to launch the practice"
-                    }
-                ],
-                "buttons": {
-                    "isStart": true,
-                    "previousDisabled": true,
-                    "nextDisabled": false
-                }
-            }
-        },
-        {
-            "component": "DEMANDSELECTIONCOMPONENT",
-            "config": {
-                "isPractice": true,
-                "skippable": false,
-                "maxResponseTime": 5000,
-                "interTrialDelay": 0,
-                "showFeedbackAfterEachTrial": true,
-                "durationOfFeedback": 1000,
-                "numTrials": 20,
-                "delayToShowHelpMessage": 4000,
-                "probOfShiftFirstPatch": 10,
-                "probOfShiftSecondPatch": 90,
-                "oddEvenColor": "blue",
-                "ltGtColor": "orange",
-                "counterbalanceMode": "none",
-                "stimuliConfig": {
-                    "type": "generated",
-                    "stimuli": null
-                }
             }
         },
         {

@@ -308,7 +308,7 @@
                 "timerConfig": {
                     "timer": 5000,
                     "showTimer": true,
-                    "canSkipTimer": true,
+                    "canSkipTimer": false,
                     "skipAvailableAfterXSeconds": 0,
                     "countDown": true
                 },
@@ -366,7 +366,7 @@
                 "timerConfig": {
                     "timer": 5000,
                     "showTimer": true,
-                    "canSkipTimer": true,
+                    "canSkipTimer": false,
                     "skipAvailableAfterXSeconds": 0,
                     "countDown": true
                 },

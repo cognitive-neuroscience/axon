@@ -1,14 +1,13 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { AuthService } from "src/app/services/auth.service";
 import { Subscription } from "rxjs";
-import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
+import { HttpErrorResponse } from "@angular/common/http";
 import { Router } from "@angular/router";
-import { User } from "src/app/models/Login";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { FormBuilder, Validators } from "@angular/forms";
 import { LoaderService } from "src/app/services/loader/loader.service";
 import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames } from "src/app/models/enums";
-import { mergeMap, take } from "rxjs/operators";
+import { take } from "rxjs/operators";
 import { UserService } from "src/app/services/user.service";
 
 @Component({
@@ -62,7 +61,7 @@ export class LoginComponent implements OnDestroy {
                 },
                 (error: HttpErrorResponse) => {
                     this.loaderService.hideLoader();
-                    this.snackbarService.openErrorSnackbar(error.error?.message || error.message);
+                    this.snackbarService.openErrorSnackbar(error.message);
                 }
             );
     }

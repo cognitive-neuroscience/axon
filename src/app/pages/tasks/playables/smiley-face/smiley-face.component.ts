@@ -11,6 +11,7 @@ import { SmileyFaceStimulus, SmileyFaceType } from "src/app/services/data-genera
 import { ComponentName } from "src/app/services/component-factory.service";
 import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
 import { LoaderService } from "src/app/services/loader/loader.service";
+import { ImageService } from "src/app/services/image.service";
 
 interface SmileyFaceMetadata {
     component: ComponentName;
@@ -86,7 +87,8 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     trialScore: number = 0;
     responseAllowed: boolean = false;
     scoreForSpecificTrial: number = 0;
-    smileyFaceType: SmileyFaceType;
+    stimulusBlobShown: any;
+    blobs: any[];
 
     // timers
     maxResponseTimer: any;
@@ -100,7 +102,8 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         protected snackbarService: SnackbarService,
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
-        protected loaderService: LoaderService
+        protected loaderService: LoaderService,
+        protected imageService: ImageService
     ) {
         super(loaderService);
     }
@@ -144,33 +147,42 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     }
 
     async start() {
-        this.taskData = [];
-        this.currentStimuliIndex = 0;
-        this.blockNum = this.config.getCacheValue(SmileyFaceCache.BLOCK_NUM) || 1; // set to 1 if not defined
+        this.imageService
+            .loadImagesAsBlobs([
+                "/assets/images/stimuli/smileyface/short.png",
+                "/assets/images/stimuli/smileyface/no.png",
+                "/assets/images/stimuli/smileyface/long.png",
+            ])
+            .subscribe((blobs) => {
+                this.blobs = blobs;
+                this.taskData = [];
+                this.currentStimuliIndex = 0;
+                this.blockNum = this.config.getCacheValue(SmileyFaceCache.BLOCK_NUM) || 1; // set to 1 if not defined
 
-        // either the stimuli have been defined in config or we generate it here from service
-        if (!this.stimuli) {
-            this.stimuli =
-                this.counterbalance === SmileyFaceTaskCounterbalance.SHORT_FACE_REWARDED_MORE
-                    ? this.dataGenService.generateSmileyFaceStimuli(
-                          this.numShortFaces,
-                          this.numFacesMoreRewarded,
-                          this.numLongFaces,
-                          this.numFacesLessRewarded
-                      )
-                    : this.dataGenService.generateSmileyFaceStimuli(
-                          this.numShortFaces,
-                          this.numFacesLessRewarded,
-                          this.numLongFaces,
-                          this.numFacesMoreRewarded
-                      );
-        }
-        super.start();
+                // either the stimuli have been defined in config or we generate it here from service
+                if (!this.stimuli) {
+                    this.stimuli =
+                        this.counterbalance === SmileyFaceTaskCounterbalance.SHORT_FACE_REWARDED_MORE
+                            ? this.dataGenService.generateSmileyFaceStimuli(
+                                  this.numShortFaces,
+                                  this.numFacesMoreRewarded,
+                                  this.numLongFaces,
+                                  this.numFacesLessRewarded
+                              )
+                            : this.dataGenService.generateSmileyFaceStimuli(
+                                  this.numShortFaces,
+                                  this.numFacesLessRewarded,
+                                  this.numLongFaces,
+                                  this.numFacesMoreRewarded
+                              );
+                }
+                super.start();
+            });
     }
 
     async beginRound() {
         this.timerService.clearTimer();
-        this.smileyFaceType = SmileyFaceType.NONE;
+        this.showImage(this.blobs[1]);
         this.showStimulus = false;
         this.scoreForSpecificTrial = 0;
 
@@ -208,7 +220,7 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
 
         // set back to no face after given time
         this.setTimer("showStimulusTimer", this.durationStimulusPresented, () => {
-            this.smileyFaceType = SmileyFaceType.NONE;
+            this.showImage(this.blobs[1]);
         });
 
         this.setTimer("maxResponseTimer", this.maxResponseTime, () => {
@@ -221,7 +233,17 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     }
 
     private setStimuliUI(stimulus: SmileyFaceStimulus) {
-        this.smileyFaceType = stimulus.faceShown;
+        switch (stimulus.faceShown) {
+            case SmileyFaceType.SHORT:
+                this.showImage(this.blobs[0]);
+                break;
+            case SmileyFaceType.NONE:
+                this.showImage(this.blobs[1]);
+                break;
+            case SmileyFaceType.LONG:
+                this.showImage(this.blobs[2]);
+                break;
+        }
     }
 
     private isValidKey(key: string): boolean {
@@ -276,7 +298,7 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         this.showStimulus = false;
         this.showFixation = false;
         this.responseAllowed = false;
-        this.smileyFaceType = SmileyFaceType.NONE;
+        this.showImage(this.blobs[1]);
 
         const thisTrial = this.taskData[this.taskData.length - 1];
 
@@ -347,5 +369,13 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
             this.beginRound();
             return;
         }
+    }
+
+    private showImage(blob: Blob) {
+        const fr = new FileReader();
+        fr.addEventListener("load", () => {
+            this.stimulusBlobShown = fr.result;
+        });
+        fr.readAsDataURL(blob);
     }
 }
