@@ -1,0 +1,25 @@
+.participant-study {
+    background: white;
+    border: 1px solid lightgray;
+    padding: 20px;
+    margin-bottom: 2%;
+    border-radius: 8px;
+
+    .progress-bar-container {
+        padding: 20px 0;
+        border-radius: 3px;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: space-around;
+    }
+}
+
+.error-text {
+    color: red;
+}
+
+.study-complete {
+    background: #a8eaa4;
+}

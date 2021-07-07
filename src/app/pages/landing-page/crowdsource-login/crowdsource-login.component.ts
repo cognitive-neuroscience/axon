@@ -5,6 +5,9 @@ import { TaskManagerService } from "../../../services/task-manager.service";
 import { Subscription } from "rxjs";
 import { UserService } from "src/app/services/user.service";
 import { take } from "rxjs/operators";
+import { wait } from "src/app/common/commonMethods";
+import { LoaderService } from "src/app/services/loader/loader.service";
+declare function setFullScreen(): any;
 
 @Component({
     selector: "app-crowdsource-login",
@@ -21,7 +24,8 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
         private _route: ActivatedRoute,
         private _snackbarService: SnackbarService,
         private _taskManager: TaskManagerService,
-        private userService: UserService
+        private userService: UserService,
+        private loaderService: LoaderService
     ) {}
 
     ngOnInit(): void {
@@ -42,7 +46,10 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
         );
     }
 
-    onRegister() {
+    async onRegister() {
+        this.loaderService.showLoader();
+        await this.startGameInFullScreen();
+        this.loaderService.hideLoader();
         this.userService
             .registerCrowdsourcedUser(this.workerId, this.studyId)
             .pipe(take(1))
@@ -61,6 +68,8 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                             throw new Error(err);
                         }
                     );
+                    // trigger the above subscribe. Need to get user first because the study route is only
+                    // entitled when the user cookie has been set in the header
                     this.userService.updateUser();
                 },
                 (err) => {
@@ -73,11 +82,15 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                         );
                     } else {
                         console.log(err);
-
                         this._snackbarService.openErrorSnackbar(err.message || err.error?.message);
                     }
                 }
             );
+    }
+
+    async startGameInFullScreen() {
+        setFullScreen();
+        await wait(1000); // delay to allow screen to expand
     }
 
     ngOnDestroy() {

@@ -144,8 +144,6 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     }
 
     async start() {
-        await this.startGameInFullScreen();
-
         this.taskData = [];
         this.currentStimuliIndex = 0;
         this.blockNum = this.config.getCacheValue(SmileyFaceCache.BLOCK_NUM) || 1; // set to 1 if not defined

@@ -15,10 +15,28 @@ export class NavigationButtonsComponent implements OnInit {
     previousDisabled: boolean = false;
 
     @Input()
-    nextDisabled: boolean = false;
+    warn: boolean = false;
 
     @Input()
-    isStart: boolean = false;
+    nextDisabled: boolean = false;
+
+    private _isStart: boolean = false;
+
+    @Input()
+    set isStart(isStart: boolean) {
+        if (isStart) this.forwardButtonText = "START";
+        this._isStart = isStart;
+    }
+
+    get isStart(): boolean {
+        return this._isStart;
+    }
+
+    @Input()
+    backButtonText: string = "PREVIOUS";
+
+    @Input()
+    forwardButtonText: string = "NEXT";
 
     @Output()
     onPrevious: EventEmitter<Navigation> = new EventEmitter();

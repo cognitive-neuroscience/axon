@@ -4,6 +4,7 @@ import { environment } from "src/environments/environment";
 import { Observable } from "rxjs";
 import { SessionStorageService } from "./sessionStorage.service";
 import { TimerService } from "./timer.service";
+import { User } from "../models/Login";
 
 @Injectable({
     providedIn: "root",
@@ -15,12 +16,12 @@ export class AuthService {
         private timerService: TimerService
     ) {}
 
-    login(email: string, password: string): Observable<HttpResponse<any>> {
+    login(email: string, password: string): Observable<User> {
         const obj = {
             email: email,
             password: password,
         };
-        return this.http.post<HttpResponse<any>>(environment.apiBaseURL + "/login", obj, { observe: "response" });
+        return this.http.post<User>(environment.apiBaseURL + "/login", obj);
     }
 
     logout(): Observable<HttpResponse<any>> {

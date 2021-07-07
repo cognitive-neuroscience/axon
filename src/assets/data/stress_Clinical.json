@@ -1,32 +1,22 @@
 {
     "img": "../../../assets/images/consent/consentOrgs.png",
-    "title": [
-        "BEFORE YOU CAN PROCEED YOU MUST READ THE FOLLOWING CONSENT FORM"
-    ],
+    "title": "BEFORE YOU CAN PROCEED YOU MUST READ THE FOLLOWING CONSENT FORM",
     "summary": [
         {
             "caption": "Study title:",
-            "words": [
-                "Stress in Parkinson’s disease and its effects on cognition and mood: A pilot study"
-            ]
+            "words": ["Stress in Parkinson’s disease and its effects on cognition and mood: A pilot study"]
         },
         {
             "caption": "Principal investigator:",
-            "words": [
-                "Madeleine Sharp MD MSc, Department of Neurology and Neurosurgery"
-            ]
+            "words": ["Madeleine Sharp MD MSc, Department of Neurology and Neurosurgery"]
         },
         {
             "caption": "Sponsor:",
-            "words": [
-                "internal"
-            ]
+            "words": ["internal"]
         },
         {
             "caption": "Protocol:",
-            "words": [
-                "2020-6116, version 3"
-            ]
+            "words": ["2020-6116, version 3"]
         }
     ],
     "body": [
@@ -81,9 +71,7 @@
         },
         {
             "caption": "WILL YOU BE PAID?",
-            "words": [
-                "You will be entered to win one of four $100 Amazon e-gift cards."
-            ]
+            "words": ["You will be entered to win one of four $100 Amazon e-gift cards."]
         },
         {
             "caption": "CONTACT INFORMATION",

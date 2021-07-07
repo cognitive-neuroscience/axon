@@ -28,6 +28,8 @@ export class CreateModifyStudyComponent implements OnInit {
 
     tasks: Observable<Task[]>;
 
+    private originalSelectedTasks: Task[] = [];
+
     constructor(
         private userService: UserService,
         private fb: FormBuilder,
@@ -37,26 +39,7 @@ export class CreateModifyStudyComponent implements OnInit {
         private snackbarService: SnackbarService,
         @Optional() private dialogRef: MatDialogRef<CreateModifyStudyComponent>,
         @Optional() @Inject(MAT_DIALOG_DATA) public study: Study
-    ) {
-        this.selectedTasks = [];
-        this.studyForm = this.fb.group({
-            externalName: ["", Validators.compose([Validators.required, Validators.maxLength(255)])],
-            internalName: ["", Validators.compose([Validators.maxLength(255)])],
-            description: ["", Validators.maxLength(500)],
-        });
-
-        if (!this.study) {
-            this.mode = "CREATE";
-        } else {
-            this.mode = "EDIT";
-            this.studyForm.controls["externalName"].setValue(study.externalName);
-            this.studyForm.controls["internalName"].setValue(study.internalName);
-            this.studyForm.controls["description"].setValue(study.description);
-            study.tasks.forEach((studyTask) => {
-                this.selectedTasks.push(studyTask.task);
-            });
-        }
-    }
+    ) {}
 
     get isAdmin(): Observable<boolean> {
         return this.userService.userIsAdmin;
@@ -112,9 +95,42 @@ export class CreateModifyStudyComponent implements OnInit {
         );
     }
 
+    get consentForms(): Observable<Task[]> {
+        return this.tasks.pipe(
+            map((tasks) => (tasks ? tasks.filter((task) => task.taskType === TaskType.CONSENT) : []))
+        );
+    }
+
     ngOnInit(): void {
         this.tasks = this.taskService.tasks;
         if (!this.taskService.hasTasks) this.taskService.update();
+
+        this.selectedTasks = [];
+        this.studyForm = this.fb.group({
+            externalName: ["", Validators.compose([Validators.required, Validators.maxLength(255)])],
+            internalName: ["", Validators.compose([Validators.maxLength(255)])],
+            description: ["", Validators.maxLength(500)],
+            consent: ["", Validators.required],
+        });
+
+        if (!this.study) {
+            this.mode = "CREATE";
+        } else {
+            this.mode = "EDIT";
+            this.studyForm.controls["externalName"].setValue(this.study.externalName);
+            this.studyForm.controls["internalName"].setValue(this.study.internalName);
+            this.studyForm.controls["description"].setValue(this.study.description);
+
+            this.tasks.pipe(take(1)).subscribe((task) => {
+                const foundTask = task.find((t) => t.id === this.study.consent);
+                this.studyForm.controls["consent"].setValue(foundTask.id);
+            });
+
+            this.study.tasks.forEach((studyTask) => {
+                this.selectedTasks.push(studyTask.task);
+                this.originalSelectedTasks.push(studyTask.task);
+            });
+        }
     }
 
     handleSelection(task: Task) {
@@ -149,6 +165,7 @@ export class CreateModifyStudyComponent implements OnInit {
             started: this.study.started,
             description: this.studyForm.controls["description"].value,
             canEdit: true,
+            consent: this.studyForm.controls["consent"].value,
             tasks: this.selectedTasks.map((task, index) => {
                 return {
                     studyId: this.study.id,
@@ -160,8 +177,16 @@ export class CreateModifyStudyComponent implements OnInit {
             }),
         };
 
+        console.log(study);
+
         this.studyService
-            .editStudy(study)
+            .editStudy(
+                study,
+                !this.taskArraysAreTheSame(
+                    this.originalSelectedTasks,
+                    study.tasks.map((t) => t.task)
+                )
+            )
             .pipe(take(1))
             .subscribe(
                 () => {
@@ -175,6 +200,15 @@ export class CreateModifyStudyComponent implements OnInit {
             );
     }
 
+    private taskArraysAreTheSame(tasks1: Task[], tasks2: Task[]): boolean {
+        if (!tasks1 || !tasks2 || tasks1.length !== tasks2.length) return false;
+
+        for (let i = 0; i < tasks1.length; i++) {
+            if (tasks1[i].id !== tasks2[i].id) return false;
+        }
+        return true;
+    }
+
     handleCreateStudy(): void {
         const study: Study = {
             id: null,
@@ -185,6 +219,7 @@ export class CreateModifyStudyComponent implements OnInit {
             started: false,
             description: this.studyForm.controls["description"].value,
             canEdit: true,
+            consent: this.studyForm.controls["consent"].value,
             tasks: this.selectedTasks.map((task, index) => {
                 return {
                     studyId: null,
@@ -208,7 +243,7 @@ export class CreateModifyStudyComponent implements OnInit {
                     ]);
                 },
                 (err: HttpErrorResponse) => {
-                    this.snackbarService.openErrorSnackbar(err.error?.message);
+                    this.snackbarService.openErrorSnackbar(err.message);
                 }
             );
     }

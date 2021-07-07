@@ -7,7 +7,11 @@ import { RegisterComponent } from "../pages/landing-page/register/register.compo
 import { ParticipantRouteNames, RouteNames } from "../models/enums";
 import { CrowdSourceLoginComponent } from "../pages/landing-page/crowdsource-login/crowdsource-login.component";
 import { TaskPlayerComponent } from "../pages/tasks/playables/task-player/task-player.component";
-import { QuestionnaireReaderComponent } from "../pages/tasks/questionnaires/questionnaire-reader/questionnaire-reader.component";
+import { QuestionnaireReaderComponent } from "../pages/tasks/questionnaire-reader/questionnaire-reader.component";
+import { FeedbackQuestionnaireComponent } from "../pages/participant/final-page/feedback-questionnaire/feedback-questionnaire.component";
+import { PavloviaTasksComponent } from "../pages/admin/admin-dashboard/study-components/pavlovia-tasks/pavlovia-tasks.component";
+import { EmbeddedPageComponent } from "../pages/tasks/embedded-page/embedded-page.component";
+import { ConsentPageComponent } from "../pages/tasks/consent/consent-page/consent-page.component";
 
 const routes: Routes = [
     {
@@ -24,14 +28,23 @@ const routes: Routes = [
         component: CrowdSourceLoginComponent,
     },
     {
+        path: RouteNames.CONSENT,
+        component: ConsentPageComponent,
+    },
+    {
         path: RouteNames.TASKPLAYER,
         component: TaskPlayerComponent,
+    },
+    {
+        path: RouteNames.PAVLOVIA,
+        component: EmbeddedPageComponent,
     },
     {
         path: RouteNames.QUESTIONNAIRE,
         component: QuestionnaireReaderComponent,
     },
     { path: "complete", component: FinalPageComponent },
+    // { path: "*", component: NotFoundCompo } TODO
 ];
 
 @NgModule({

@@ -25,6 +25,7 @@ import { MatDividerModule } from "@angular/material/divider";
 import { MatStepperModule } from "@angular/material/stepper";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
 
 const modules = [
     MatInputModule,
@@ -52,6 +53,7 @@ const modules = [
     MatStepperModule,
     MatChipsModule,
     MatSlideToggleModule,
+    MatProgressBarModule,
 ];
 
 @NgModule({

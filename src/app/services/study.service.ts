@@ -54,10 +54,14 @@ export class StudyService {
         });
     }
 
-    editStudy(study: Study): Observable<HttpResponse<any>> {
-        return this._http.put<HttpResponse<any>>(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${study.id}`, study, {
-            observe: "response",
-        });
+    editStudy(study: Study, isModifyingTasks: boolean): Observable<HttpResponse<any>> {
+        return this._http.put<HttpResponse<any>>(
+            `${environment.apiBaseURL}${this.RESOURCE_PATH}/${study.id}?includetasksupdate=${isModifyingTasks}`,
+            study,
+            {
+                observe: "response",
+            }
+        );
     }
 
     deleteStudy(studyId: number): Observable<HttpResponse<any>> {

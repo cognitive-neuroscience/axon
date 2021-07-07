@@ -1,0 +1,3 @@
+<ng-container *ngIf="data">
+    <app-consent [consentNavigationConfig]="data" (emitConsent)="onEmitConsent($event)"></app-consent>
+</ng-container>

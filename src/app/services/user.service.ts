@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { BehaviorSubject, Observable } from "rxjs";
 import { map, take } from "rxjs/operators";
-import { CrowdsourcedUser, User } from "../models/Login";
+import { CrowdsourcedUser, StudyUser, User } from "../models/Login";
 import { Role } from "../models/enums";
 import { TimerService } from "./timer.service";
 
@@ -13,8 +13,18 @@ import { TimerService } from "./timer.service";
 export class UserService {
     private readonly USERS_RESOURCE_PATH = "/users";
     private readonly CROWDSOURCED_USERS_RESOURCE_PATH = "/crowdsourcedusers";
+    private readonly STUDY_USERS_RESOURCE_PATH = "/studyusers";
     isCrowdsourcedUser: boolean = false;
     crowdsourcedUserStudyId: number;
+
+    private _studyUsersSubject: BehaviorSubject<StudyUser[]>;
+    get studyUsers(): Observable<StudyUser[]> {
+        return this._studyUsersSubject.asObservable();
+    }
+
+    get hasStudyUsers(): boolean {
+        return this._studyUsersSubject.value !== null;
+    }
 
     private _guestsSubject: BehaviorSubject<User[]>;
     get guests(): Observable<User[]> {
@@ -43,6 +53,7 @@ export class UserService {
     constructor(private http: HttpClient, private timerService: TimerService) {
         this._guestsSubject = new BehaviorSubject(null);
         this._userBehaviorSubject = new BehaviorSubject(null);
+        this._studyUsersSubject = new BehaviorSubject(null);
     }
 
     createGuest(username: string, password: string): Observable<HttpResponse<any>> {
@@ -95,12 +106,24 @@ export class UserService {
             });
     }
 
+    updateStudyUsers(): void {
+        this._getStudyUsers()
+            .pipe(take(1))
+            .subscribe((studyUsers) => {
+                this._studyUsersSubject.next(studyUsers);
+            });
+    }
+
     markCompletion(studyId: number): Observable<string> {
         return this.http
             .patch(`${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}/${studyId}`, {
                 observe: "response",
             })
             .pipe(map((res) => res as string));
+    }
+
+    updateStudyUser(studyUser: StudyUser): Observable<any> {
+        return this.http.patch(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}`, studyUser);
     }
 
     registerUser(email: string, password: string, role?: Role): Observable<HttpResponse<any>> {
@@ -113,6 +136,34 @@ export class UserService {
         return this.http.post<HttpResponse<any>>(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}`, obj, {
             observe: "response",
         });
+    }
+
+    getCrowdsourcedUsersByStudyId(studyId: number): Observable<CrowdsourcedUser[]> {
+        return this.http.get<CrowdsourcedUser[]>(
+            `${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}/${studyId}`
+        );
+    }
+
+    // register a given account holding participant with a study id
+    registerParticipantForStudy(user: User, studyId: number): Observable<any> {
+        const studyUser: StudyUser = {
+            userId: user.id,
+            studyId: studyId,
+            completionCode: "",
+            registerDate: this.timerService.getCurrentTimestamp(),
+            dueDate: {
+                valid: false,
+                time: this.timerService.getCurrentTimestamp(),
+            }, // nullable time
+            currentTaskIndex: 0,
+            hasAcceptedConsent: false,
+        };
+
+        return this.http.post(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}`, studyUser);
+    }
+
+    getStudyUsersForStudy(studyId: number): Observable<StudyUser[]> {
+        return this.http.get<StudyUser[]>(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}/${studyId}`);
     }
 
     registerCrowdsourcedUser(participantId: string, studyID: number): Observable<HttpResponse<any>> {
@@ -138,7 +189,11 @@ export class UserService {
 
     private _getCrowdsourcedUser(studyId: number) {
         return this.http.get<CrowdsourcedUser>(
-            `${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}/${studyId}`
+            `${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}/user/${studyId}`
         );
+    }
+
+    private _getStudyUsers(): Observable<StudyUser[]> {
+        return this.http.get<StudyUser[]>(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}/studies`);
     }
 }

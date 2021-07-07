@@ -8,11 +8,15 @@
                 "sections": [
                     {
                         "sectionType": "text",
-                        "textContent": "There are two parts to this game. Part 1 is the number game"
+                        "textContent": "There are two parts to this game."
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Thank you for participating. First, we will go through the instructions and then you will have some opportunity to practice."
+                        "textContent": "PART 1: Number game"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "First we will go through the instructions and then you will have some opportunity to practice."
                     },
                     {
                         "sectionType": "text",
@@ -70,11 +74,11 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Lesser than 5: Press the left arrow key ⬅️"
+                        "textContent": "Lesser than (<) 5: Press the left arrow key ⬅️"
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Greater than 5: Press the right arrow key ➡️"
+                        "textContent": "Greater than (>) 5: Press the right arrow key ➡️"
                     },
                     {
                         "sectionType": "text",
@@ -217,7 +221,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "The game will launch in fullscreen"
+                        "textContent": "(The game will launch in fullscreen)"
                     },
                     {
                         "sectionType": "text",
@@ -671,6 +675,37 @@
                 "stimuliConfig": {
                     "type": "generated",
                     "stimuli": null
+                }
+            }
+        },
+        {
+            "component": "DISPLAYCOMPONENT",
+            "content": {
+                "title": "Congratulations!",
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "You finished the game successfully"
+                    },
+                    {
+                        "sectionType": "text",
+                        "injection": "cached-string",
+                        "cacheKey": "task-switching-num-correct",
+                        "textContent": "You scored ??? points"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Thank you for your participation"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" to proceed"
+                    }
+                ],
+                "buttons": {
+                    "isStart": false,
+                    "previousDisabled": true,
+                    "nextDisabled": false
                 }
             }
         }

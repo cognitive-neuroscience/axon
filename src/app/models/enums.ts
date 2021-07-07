@@ -5,6 +5,10 @@ export enum RouteNames {
     TASKPLAYER = "playtask",
 
     QUESTIONNAIRE = "questionnaire",
+
+    PAVLOVIA = "pavlovia",
+
+    CONSENT = "consent",
 }
 
 export enum AdminRouteNames {
@@ -55,4 +59,9 @@ export enum Role {
 export enum StimuliProvidedType {
     HARDCODED = "hardcoded",
     GENERATED = "generated",
+}
+
+export enum ParticipantType {
+    CROWDSOURCED = "CROWDSOURCED",
+    ACCOUNTHOLDER = "ACCOUNTHOLDER",
 }

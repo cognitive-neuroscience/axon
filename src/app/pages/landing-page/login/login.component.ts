@@ -2,20 +2,21 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { AuthService } from "src/app/services/auth.service";
 import { Subscription } from "rxjs";
 import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { User } from "src/app/models/Login";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { FormBuilder, Validators } from "@angular/forms";
 import { LoaderService } from "src/app/services/loader/loader.service";
 import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames } from "src/app/models/enums";
-import { SessionStorageService } from "src/app/services/sessionStorage.service";
+import { mergeMap, take } from "rxjs/operators";
+import { UserService } from "src/app/services/user.service";
 
 @Component({
     selector: "app-login",
     templateUrl: "./login.component.html",
     styleUrls: ["./login.component.scss"],
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnDestroy {
     private readonly LOGIN_SUCCESS_STR = "Successfully logged in!";
 
     subscriptions: Subscription[] = [];
@@ -39,32 +40,41 @@ export class LoginComponent implements OnInit, OnDestroy {
         const email = this.loginForm.controls.email.value;
         const password = this.loginForm.controls.password.value;
 
-        this.subscriptions.push(
-            this.authService.login(email, password).subscribe(
-                (response: HttpResponse<User>) => {
-                    this.loaderService.hideLoader();
-                    this.snackbarService.openSuccessSnackbar(this.LOGIN_SUCCESS_STR);
-                    this.handleNavigate(response.body.role);
+        this.authService
+            .login(email, password)
+            .pipe(take(1))
+            .subscribe(
+                (response) => {
+                    this.userService.userAsync.subscribe(
+                        (user) => {
+                            if (user !== null) {
+                                this.loaderService.hideLoader();
+                                this.snackbarService.openSuccessSnackbar(this.LOGIN_SUCCESS_STR);
+                                this.handleNavigate(response.role);
+                            }
+                        },
+                        (err) => {
+                            this.loaderService.hideLoader();
+                            this.snackbarService.openErrorSnackbar(err.message);
+                        }
+                    );
+                    this.userService.updateUser();
                 },
                 (error: HttpErrorResponse) => {
                     this.loaderService.hideLoader();
                     this.snackbarService.openErrorSnackbar(error.error?.message || error.message);
                 }
-            )
-        );
+            );
     }
 
     constructor(
-        private route: ActivatedRoute,
         private authService: AuthService,
         private router: Router,
         private snackbarService: SnackbarService,
         private fb: FormBuilder,
         private loaderService: LoaderService,
-        private sessionStorageService: SessionStorageService
+        private userService: UserService
     ) {}
-
-    ngOnInit() {}
 
     private handleNavigate(role: Role) {
         switch (role) {

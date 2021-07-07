@@ -55,7 +55,7 @@
 
             <div class="d-flex justify-content-between">
                 <button
-                    [disabled]="!feedbackQuestionnaire.valid || !isValid()"
+                    [disabled]="!feedbackQuestionnaire.valid || !isValid"
                     (click)="submitForm()"
                     mat-raised-button
                     color="primary"

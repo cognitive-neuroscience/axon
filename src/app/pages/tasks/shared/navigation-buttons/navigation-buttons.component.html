@@ -4,12 +4,18 @@
         <div>
             <button mat-raised-button color="primary" [disabled]="previousDisabled" (click)="handlePrevious()">
                 <mat-icon>arrow_backward</mat-icon>
-                &nbsp; PREVIOUS
+                &nbsp; {{ backButtonText }}
             </button>
         </div>
         <div>
-            <button mat-raised-button color="primary" [disabled]="nextDisabled" (click)="handleNext()">
-                {{ isStart ? "START" : "NEXT" }}
+            <button
+                [class.error-text]="warn"
+                mat-raised-button
+                color="primary"
+                [disabled]="nextDisabled"
+                (click)="handleNext()"
+            >
+                {{ forwardButtonText }}
                 &nbsp;
                 <mat-icon>arrow_forward</mat-icon>
             </button>

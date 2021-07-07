@@ -3,7 +3,6 @@ import { NgModule } from "@angular/core";
 import { AppRoutingModule } from "./routing/app-routing.module";
 import { AppComponent } from "./app.component";
 import { LoginComponent } from "./pages/landing-page/login/login.component";
-import { ConsentComponent } from "./pages/tasks/other/consent/consent.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MaterialModule } from "./modules/material/material.module";
@@ -23,7 +22,6 @@ import { ErrorInterceptor } from "./interceptors/error.interceptor";
     declarations: [
         AppComponent,
         LoginComponent,
-        ConsentComponent,
         CrowdSourceLoginComponent,
         ConfirmationComponent,
         LoaderComponent,

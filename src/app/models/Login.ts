@@ -1,4 +1,5 @@
 import { Role } from "./enums";
+import { Study } from "./Study";
 
 export class User {
     id: number;
@@ -15,9 +16,18 @@ export class CrowdsourcedUser {
     completionCode: string;
 }
 
-export class JWT {
-    UserID: string;
-    Email: string;
-    Role: Role;
-    exp: number;
+export class NullTime {
+    valid: boolean;
+    time: string;
+}
+
+export class StudyUser {
+    userId: number;
+    studyId: number;
+    completionCode: string;
+    registerDate: string;
+    dueDate: NullTime;
+    currentTaskIndex: number;
+    hasAcceptedConsent: boolean;
+    study?: Study;
 }

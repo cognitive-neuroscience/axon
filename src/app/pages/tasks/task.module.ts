@@ -25,10 +25,14 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { RotateDirective } from "./shared/Rotate.directive";
 import { ColorGameComponent } from "./unused/color-game/color-game.component";
-import { EmbeddedPageComponent } from "./questionnaires/embedded-page/embedded-page.component";
+import { EmbeddedPageComponent } from "./embedded-page/embedded-page.component";
 import { SafeResoucePipe } from "src/app/pipes/safe.pipe";
 import { SelectOptionComponent } from "./shared/select-option/select-option.component";
-import { QuestionnaireReaderComponent } from "./questionnaires/questionnaire-reader/questionnaire-reader.component";
+import { QuestionnaireReaderComponent } from "./questionnaire-reader/questionnaire-reader.component";
+import { IntroDialogComponent } from "./embedded-page/intro-dialog/intro-dialog.component";
+import { ConfirmDoneDialogComponent } from "./embedded-page/confirm-done-dialog/confirm-done-dialog.component";
+import { ConsentPageComponent } from "./consent/consent-page/consent-page.component";
+import { SharedModule } from "../shared/shared.module";
 
 @NgModule({
     declarations: [
@@ -63,8 +67,11 @@ import { QuestionnaireReaderComponent } from "./questionnaires/questionnaire-rea
 
         SafeResoucePipe,
         QuestionnaireReaderComponent,
+        IntroDialogComponent,
+        ConfirmDoneDialogComponent,
+        ConsentPageComponent,
     ],
-    imports: [CommonModule, MaterialModule, NgZorroModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule, MaterialModule, NgZorroModule, FormsModule, ReactiveFormsModule, SharedModule],
     exports: [EmbeddedPageComponent],
 })
 export class TaskModule {}

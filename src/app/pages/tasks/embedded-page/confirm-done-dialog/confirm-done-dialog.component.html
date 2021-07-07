@@ -1,0 +1,13 @@
+<div>
+    <h1 style="margin: 0">Please enter the code word you see on the screen:</h1>
+    <mat-form-field class="my-5 w-100" style="font-size: 1rem">
+        <input placeholder="enter completion word here" type="text" matInput [(ngModel)]="enteredWord" />
+    </mat-form-field>
+
+    <div class="d-flex justify-content-between">
+        <button class="w-25" color="primary" [disabled]="!enteredWord" mat-raised-button (click)="onConfirmWord()">
+            Submit
+        </button>
+        <button class="w-25" color="warn" mat-raised-button (click)="onCancel()">Cancel</button>
+    </div>
+</div>

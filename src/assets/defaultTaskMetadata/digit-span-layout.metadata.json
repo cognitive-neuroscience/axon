@@ -4,23 +4,15 @@
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "Welcome to the Digit Span Task",
+                "title": "Welcome to the Number Game Part 1",
                 "sections": [
                     {
                         "sectionType": "text",
-                        "textContent": "Read the instructions carefully"
+                        "textContent": "Please read the instructions carefully"
                     },
                     {
                         "sectionType": "text",
                         "textContent": "This is a memory test"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "You will see a sequence of numbers appear on the screen <b>one at a time</b>. For instance, the numers <b>3, 9, 2</b> will appear one at a time"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "Then, using the keypad shown on the screen, you will need to enter those same numbers <b>in the same order (i.e. 3, 9, 2)</b> and click the \"Submit\" key"
                     },
                     {
                         "sectionType": "text",
@@ -37,7 +29,36 @@
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "Practice round pt. 1",
+                "title": "",
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "A sequence of numbers appear on the screen <b>one at a time</b>. (Ex: 3, 9, 2)"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Using the keypad shown on the screen, you will need to enter those same numbers <b>in the same order (Ex: 3, 9, 2)</b>."
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "You must click the \"Submit\" key to record your answer"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" to proceed"
+                    }
+                ],
+                "buttons": {
+                    "isStart": false,
+                    "previousDisabled": false,
+                    "nextDisabled": false
+                }
+            }
+        },
+        {
+            "component": "DISPLAYCOMPONENT",
+            "content": {
+                "title": "Practice round",
                 "sections": [
                     {
                         "sectionType": "text",
@@ -45,7 +66,11 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Remember when the keypad is shown, you need to enter the numbers <b>in the same order</b> as they were shown and click submit."
+                        "textContent": "Remember when the keypad is shown, you need to enter the numbers <b>in the same order</b> as they were shown and then click submit."
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "If you don't remember, press skip"
                     },
                     {
                         "sectionType": "text",
@@ -90,11 +115,11 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Remember when the keypad is shown, you need to enter the numbers <b>in the same order</b> as they were shown and click submit."
+                        "textContent": "Remember when the keypad is shown, you need to enter the numbers <b>in the same order</b> as they were shown and click the <b>submit</b> button."
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "If you don't remember the numbers, click skip or just wait until the next trial."
+                        "textContent": "If you don't remember the numbers, click skip for the next trial."
                     },
                     {
                         "sectionType": "text",
@@ -131,23 +156,15 @@
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "Practice round pt. 2",
+                "title": "Welcome to the Number Game Part 2",
                 "sections": [
                     {
                         "sectionType": "text",
-                        "textContent": "Read the instructions carefully"
+                        "textContent": "A sequence of numbers appear on the screen <b>one at a time</b>. (Ex: 3, 9, 2)"
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Good job!"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "You will see a sequence of numbers appear on the screen <b>one at a time</b>. For instance, the number <b>3, 9, 2<b/> will appear one at a time."
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "Then, using the keypad shown on the screen, you will need to enter those same numbers <b>in the reverse order (2, 9, 3)<b/> and click the 'Submit' key"
+                        "textContent": "Using the keypad shown on the screen, you will need to enter those same numbers <b>in REVERSE order (Ex: 2, 9, 3)</b> and then click the \"Submit\" key."
                     },
                     {
                         "sectionType": "text",
@@ -172,7 +189,11 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Rememebr when the keypad is shown, you need to neter the numbers <b>in the reverse order</b> that they were shown in and click submit"
+                        "textContent": "Rememebr when the keypad is shown, you need to enter the numbers <b>in reverse order</b> as they were shown and click submit"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "If you don't remember, press skip"
                     },
                     {
                         "sectionType": "text",
@@ -221,11 +242,11 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Remember when the keypad is shown, you need to enter the numbers <b>in the reverse order</b> as they were shown and click the <b>submit</b> button"
+                        "textContent": "Remember when the keypad is shown, you need to enter the numbers <b>in reverse order</b> as they were shown and click the <b>submit</b> button"
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "If you don't remember the numbers, click skip or just wait until the next trial."
+                        "textContent": "If you don't remember the numbers, press skip for the the next trial."
                     },
                     {
                         "sectionType": "text",
@@ -262,12 +283,8 @@
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "The game has finished",
+                "title": "Congratulations!",
                 "sections": [
-                    {
-                        "sectionType": "text",
-                        "textContent": "Congratulations!"
-                    },
                     {
                         "sectionType": "text",
                         "textContent": "You finished the game successfully"

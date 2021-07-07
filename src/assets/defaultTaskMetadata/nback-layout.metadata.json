@@ -19,15 +19,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "In this task, you will be presented with letters. One letter at a time will be presented on screen"
-                    },
-                    {
-                        "sectionType": "text",
                         "textContent": "This is a memory task:"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "For each letter, you have to decide if it is the same letter that was presented 2 letters ago."
                     },
                     {
                         "sectionType": "text",
@@ -37,6 +29,31 @@
                 "buttons": {
                     "isStart": false,
                     "previousDisabled": true,
+                    "nextDisabled": false
+                }
+            }
+        },
+        {
+            "component": "DISPLAYCOMPONENT",
+            "content": {
+                "title": "",
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "In this task, letters will be shown on the screen."
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "For each letter, you have to decide if it is the <b>same letter</b> that was presented <b>2 letters ago</b>"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" to proceed"
+                    }
+                ],
+                "buttons": {
+                    "isStart": false,
+                    "previousDisabled": false,
                     "nextDisabled": false
                 }
             }
@@ -86,7 +103,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "You press ➡️ because there was another K two letters ago, i.e. SAME letter"
+                        "textContent": "Note that for the first two letters of the task, there is no letter to compare to, so you just press ⬅️ for these."
                     },
                     {
                         "sectionType": "text",
@@ -106,13 +123,17 @@
                 "title": "Here is an example",
                 "sections": [
                     {
+                        "sectionType": "text",
+                        "textContent": "The next letter is K:"
+                    },
+                    {
                         "sectionType": "image-horizontal",
                         "imageAlignment": "center",
                         "imagePath": "/assets/images/instructions/nback/examplePart2.png"
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "You press ⬅️ for all other letters"
+                        "textContent": "Now, you press ➡️ because a K was also <b>presented</b> two letters ago"
                     },
                     {
                         "sectionType": "text",
@@ -159,7 +180,7 @@
                 "sections": [
                     {
                         "sectionType": "text",
-                        "textContent": "Let's practice. You will have very little time to respond, so be ready!"
+                        "textContent": "Let's practice! You will have very little time to respond, so be ready!"
                     },
                     {
                         "sectionType": "text",
@@ -171,11 +192,11 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "⬅️ if the letter is <b>not the same</b> as 2 letters ago"
+                        "textContent": "⬅️ (left arrow) if the letter is <b>NOT THE SAME</b> as 2 letters ago"
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "➡️ if the letter is <b>the same</b> as 2 letters ago"
+                        "textContent": "➡️ (right arrow) if the letter is <b>THE SAME/b> as 2 letters ago"
                     },
                     {
                         "sectionType": "text",
@@ -225,11 +246,11 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "⬅️ if the letter is <b>not the same</b> as 2 letters ago"
+                        "textContent": "⬅️ (left arrow) if the letter is <b>NOT THE SAME</b> as 2 letters ago"
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "➡️ if the letter is <b>the same</b> as 2 letters ago"
+                        "textContent": "➡️ (right arrow) if the letter is <b>THE SAME/b> as 2 letters ago"
                     },
                     {
                         "sectionType": "text",

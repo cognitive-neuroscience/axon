@@ -4,7 +4,7 @@
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "Welcome to the Finger Tapping Task",
+                "title": "Welcome to the Finger Tapping Game",
                 "sections": [
                     {
                         "sectionType": "text",
@@ -49,12 +49,12 @@
                 "title": "",
                 "sections": [
                     {
-                        "sectionType": "text",
-                        "textContent": "Using your index finger:"
+                        "sectionType": "image-horizontal",
+                        "imagePath": "/assets/images/instructions/fingertapping/index-finger-banner.png"
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "You will have to <b>alternatively</b> tap the <b>P</b> and <b>Q</b> keys of the keyboard <b>as fast as you can</b>"
+                        "textContent": "You will have to <b>alternatively tap</b> the <b>P</b> and <b>Q</b> keys of the keyboard <b>as fast as you can</b>"
                     },
                     {
                         "sectionType": "text",
@@ -62,7 +62,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Just before you start, we will tell you which hand to use"
+                        "textContent": "We will tell you which hand to use right before each round"
                     },
                     {
                         "sectionType": "text",
@@ -83,11 +83,7 @@
                 "sections": [
                     {
                         "sectionType": "text",
-                        "textContent": "The keys you will be tapping on the keyboard"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "Are the \"Q\" and the \"P\" keys"
+                        "textContent": "The keys you will be tapping on the keyboard are the \"Q\" and the \"P\" keys"
                     },
                     {
                         "sectionType": "text",
@@ -116,7 +112,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "For the practice, please use your <b>RIGHT</b> hand"
+                        "textContent": "For the practice, please use your <b>RIGHT</b> index finger"
                     },
                     {
                         "sectionType": "text",
@@ -137,7 +133,7 @@
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "You must use ONLY the INDEX finger of a SINGLE hand",
+                "title": "Remember, you must use a SINGLE hand, and tap as fast as you can",
                 "timerConfig": {
                     "timer": 5000,
                     "showTimer": true,
@@ -151,7 +147,8 @@
             "component": "FINGERTAPPINGCOMPONENT",
             "config": {
                 "isPractice": true,
-                "maxResponseTime": 1000000,
+                "maxResponseTime": 10000,
+
                 "durationFixationPresented": 50,
                 "useHand": "RIGHT"
             }
@@ -171,15 +168,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "In the first two rounds, you have to keep tapping as <b>fast as you can</b> with a SINGLE index finger for 1 full minute"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "In the third round, you haev to keep tapping <b>as fast as you can</b> with BOTH index fingers for 20 seconds"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "You'll get a break between each round and we will tell you which hand to use before you begin"
+                        "textContent": "You’ll get a break between each round and we will tell you which hand to use just before you begin."
                     },
                     {
                         "sectionType": "text",
@@ -196,15 +185,44 @@
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "1st Round",
+                "title": "",
                 "sections": [
                     {
                         "sectionType": "text",
-                        "textContent": "Please use your <b>DOMINANT HAND</b> for this round"
+                        "textContent": "In the <b>first two rounds</b>, you have to tap <b>as fast as you can</b> with a <b>SINGLE</b> index finger for 1 full minute"
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "(if you're right-handed, that is your right hand)"
+                        "textContent": "We will tell you which hand to use before each round"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "In the <b>third round</b>, you have to use <b>BOTH</b> index fingers, one for each key, and keep tapping <b>as fast as you can</b> for 20 seconds"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" to continue"
+                    }
+                ],
+                "buttons": {
+                    "isStart": false,
+                    "previousDisabled": false,
+                    "nextDisabled": false
+                }
+            }
+        },
+        {
+            "component": "DISPLAYCOMPONENT",
+            "content": {
+                "title": "First Round",
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "Please use the index finger of your <b>DOMINANT HAND</b> for this round"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "(if you are right-handed, that is your right hand)"
                     },
                     {
                         "sectionType": "text",
@@ -212,11 +230,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Tap the \"P\" and \"Q\" keys as fast as you can with your <b>DOMINANT HAND INDEX FINGER</b>"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "The game will launch in fullscreen"
+                        "textContent": "Tap the \"P\" and \"Q\" keys as fast as you can"
                     },
                     {
                         "sectionType": "text",
@@ -233,7 +247,7 @@
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "You must use ONLY the INDEX finger of a SINGLE hand",
+                "title": "Remember, you must use a SINGLE hand and tap as fast as you can",
                 "timerConfig": {
                     "timer": 5000,
                     "showTimer": true,
@@ -249,13 +263,13 @@
                 "isPractice": false,
                 "maxResponseTime": 60000,
                 "durationFixationPresented": 50,
-                "useHand": "DOMINAT"
+                "useHand": "DOMINANT"
             }
         },
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "Round 2",
+                "title": "It's break time",
                 "timerConfig": {
                     "timer": 120000,
                     "showTimer": true,
@@ -266,7 +280,7 @@
                 "sections": [
                     {
                         "sectionType": "text",
-                        "textContent": "Please use your <b>NON DOMINANT</b> hand for this round."
+                        "textContent": "<b>Second Round:</b> Please use your <b>NON-DOMINANT</b> hand for this round."
                     },
                     {
                         "sectionType": "text",
@@ -274,11 +288,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Remember: Tap the \"P\" and the \"Q\" keys as fast as you can"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "You have to wait at least <b>30 seconds</b> before being able to continue"
+                        "textContent": "You have to wait for <b> at least 30 seconds</b> before being able to continue"
                     },
                     {
                         "sectionType": "text",
@@ -294,7 +304,7 @@
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "You must use ONLY the INDEX finger of a SINGLE hand",
+                "title": "You must use a SINGLE hand and tap as fast as you can",
                 "timerConfig": {
                     "timer": 5000,
                     "showTimer": true,
@@ -317,7 +327,7 @@
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "Round 3",
+                "title": "It's break time",
                 "timerConfig": {
                     "timer": 120000,
                     "showTimer": true,
@@ -328,19 +338,15 @@
                 "sections": [
                     {
                         "sectionType": "text",
-                        "textContent": "Please use your <b>BOTH INDEX FINGERS</b> hand for this round."
+                        "textContent": "<b>Third round:</b> Please use <b>BOTH INDEX FINGERS</b> for this round."
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "This means you must use your LEFT finger to tap 'Q' and your RIGHT finger to tap 'P'"
+                        "textContent": "This means you must use your LEFT finger to tap 'Q' and your RIGHT finger to tap 'P', and alternate between the two"
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "And remember, as before, your goal is to alternate between tapping the 'P' and the 'Q' keys as fast as you can!"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "You have to wait at least <b>30 seconds</b> before being able to continue"
+                        "textContent": "You have to wait <b> at least 30 seconds</b> before being able to continue"
                     },
                     {
                         "sectionType": "text",
@@ -356,7 +362,7 @@
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "You must use ONLY the INDEX finger of a SINGLE hand",
+                "title": "You must use BOTH your index fingers, and tap as fast as you can",
                 "timerConfig": {
                     "timer": 5000,
                     "showTimer": true,

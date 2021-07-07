@@ -5,6 +5,9 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { MatSelectChange } from "@angular/material/select";
 import { UserService } from "src/app/services/user.service";
 import { ParticipantDataService } from "src/app/services/study-data.service";
+import { SnackbarService } from "src/app/services/snackbar.service";
+import { TimerService } from "src/app/services/timer.service";
+import { ParticipantType } from "src/app/models/enums";
 
 @Component({
     selector: "app-feedback-questionnaire",
@@ -31,7 +34,7 @@ export class FeedbackQuestionnaireComponent implements OnInit {
         browser: ["", [Validators.maxLength(250)]],
     });
 
-    isValid(): boolean {
+    get isValid(): boolean {
         const issuesEncountered: string = this.feedbackQuestionnaire.get("issuesEncountered").value;
         const additionalFeedback: string = this.feedbackQuestionnaire.get("additionalFeedback").value;
         const browser: string = this.feedbackQuestionnaire.get("browser").value;
@@ -61,13 +64,15 @@ export class FeedbackQuestionnaireComponent implements OnInit {
         private taskManager: TaskManagerService,
         private fb: FormBuilder,
         private userService: UserService,
-        private participantDataService: ParticipantDataService
+        private participantDataService: ParticipantDataService,
+        private snackbarService: SnackbarService,
+        private timerService: TimerService
     ) {}
 
     ngOnInit(): void {}
 
     submitForm() {
-        if (this.feedbackQuestionnaire.valid && this.isValid()) {
+        if (this.feedbackQuestionnaire.valid && this.isValid) {
             this.saveResponse();
         }
     }
@@ -82,9 +87,20 @@ export class FeedbackQuestionnaireComponent implements OnInit {
             issuesEncountered: this.feedbackQuestionnaire.get("issuesEncountered").value,
             additionalFeedback: this.feedbackQuestionnaire.get("additionalFeedback").value,
             browser: this.showOtherField ? this.otherField : this.feedbackQuestionnaire.get("browser").value,
-            submittedAt: "",
+            submittedAt: this.timerService.getCurrentTimestamp(),
+            participantType: this.userService.isCrowdsourcedUser
+                ? ParticipantType.CROWDSOURCED
+                : ParticipantType.ACCOUNTHOLDER,
         };
 
-        this.participantDataService.uploadFeedback(obj);
+        this.participantDataService.uploadFeedback(obj).subscribe(
+            (done) => {
+                this.formSubmitted = true;
+                this.snackbarService.openSuccessSnackbar("thank you for submitting your feedback");
+            },
+            (err) => {
+                this.snackbarService.openErrorSnackbar(err.message);
+            }
+        );
     }
 }

@@ -131,8 +131,6 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
     }
 
     async start() {
-        await this.startGameInFullScreen();
-
         this.taskData = [];
         this.currentStimuliIndex = 0;
         this.currentLevel = "first";
@@ -178,15 +176,17 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
         this.showHelpMessage("Please enter your response", this.delayToShowHelpMessage, this.durationHelpMessageShown);
 
         this.setTimer(this.maxResponseTime, async () => {
-            this.responseAllowed = false;
-            this.showStimulus = false;
-            this.showKeypad = false;
-            const message = "Please do your best to provide your answer in the time allotted for the next trial.";
-            this.snackbarService.openInfoSnackbar(message, undefined, this.durationHelpMessageShown);
-            await wait(this.durationHelpMessageShown);
-            if (this.isDestroyed) return;
+            if (!this.isDestroyed) {
+                this.responseAllowed = false;
+                this.showStimulus = false;
+                this.showKeypad = false;
+                const message = "Please do your best to provide your answer in the time allotted for the next trial.";
+                this.snackbarService.openInfoSnackbar(message, undefined, this.durationHelpMessageShown);
+                await wait(this.durationHelpMessageShown);
+                if (this.isDestroyed) return;
 
-            this.handleRoundInteraction(null);
+                this.handleRoundInteraction(null);
+            }
         });
     }
 
@@ -221,7 +221,7 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
 
     private showHelpMessage(helpMessage: string, delay: number, duration: number) {
         this.snackbarTimeout = window.setTimeout(() => {
-            this.snackbarService.openInfoSnackbar(helpMessage, undefined, duration, "center");
+            if (!this.isDestroyed) this.snackbarService.openInfoSnackbar(helpMessage, undefined, duration, "center");
         }, delay);
     }
 

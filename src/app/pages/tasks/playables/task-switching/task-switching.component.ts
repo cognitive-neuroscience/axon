@@ -130,8 +130,6 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
     }
 
     async start() {
-        await this.startGameInFullScreen();
-
         this.taskData = [];
         this.currentStimuliIndex = 0;
 

@@ -2,6 +2,7 @@ import { UseHand } from "../pages/tasks/playables/finger-tapping/finger-tapping-
 import { RatingTaskCounterBalance } from "../pages/tasks/playables/everyday-choice/rater/rater.component";
 import { SmileyFaceTaskCounterbalance } from "../pages/tasks/playables/smiley-face/smiley-face.component";
 import { Key, UserResponse } from "./InternalDTOs";
+import { ParticipantType } from "./enums";
 
 export enum TaskNames {
     ODDBALL = "oddball",
@@ -41,6 +42,8 @@ export class NBackTaskData extends TaskData {
     set: number;
     isCorrect: boolean;
     score: number;
+    letterShown: string;
+    nback: string;
 }
 
 export class TaskSwitchingTaskData extends TaskData {
@@ -145,6 +148,7 @@ export class ParticipantData {
     userId: string;
     studyId: number;
     taskOrder: number;
+    participantType: ParticipantType;
     submittedAt: string;
     data: TaskData[] | { [key: string]: any }[];
 }

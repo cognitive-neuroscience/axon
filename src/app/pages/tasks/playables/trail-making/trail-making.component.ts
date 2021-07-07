@@ -103,9 +103,6 @@ export class TrailMakingComponent extends AbstractBaseTaskComponent {
     }
 
     async start() {
-        await this.startGameInFullScreen();
-        if (this.isDestroyed) return;
-
         this.taskData = [];
         this.correctItems = [];
 
@@ -146,12 +143,14 @@ export class TrailMakingComponent extends AbstractBaseTaskComponent {
 
     private setMaxResponseTimer(delay: number, duration: number, message: string, cbFunc?: () => void) {
         this.maxResponseTimer = setTimeout(async () => {
-            this.showStimulus = false;
-            this.responseAllowed = false;
-            this.snackbarService.openInfoSnackbar(message, "", duration);
-            await wait(this.durationOutOfTimeMessageShown);
-            if (this.isDestroyed) return;
-            if (cbFunc) cbFunc();
+            if (!this.isDestroyed) {
+                this.showStimulus = false;
+                this.responseAllowed = false;
+                this.snackbarService.openInfoSnackbar(message, "", duration);
+                await wait(this.durationOutOfTimeMessageShown);
+                if (this.isDestroyed) return;
+                if (cbFunc) cbFunc();
+            }
         }, delay);
     }
 

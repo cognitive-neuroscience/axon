@@ -25,6 +25,7 @@ interface DemandSelectionMetadata {
         showFeedbackAfterEachTrial: boolean;
         durationOfFeedback: number;
         numTrials: number;
+        skippable: boolean;
         delayToShowHelpMessage: number;
         probOfShiftFirstPatch: number;
         durationHelpMessageShown: number;
@@ -45,6 +46,7 @@ export enum DemandSelectionCache {
     NUM_CORRECT = "demandselection-num-correct",
     HARDER_STRING = "demandselection-harder-string",
     EASIER_STRING = "demandselection-easier-string",
+    SHOULD_SKIP = "demandselection-should-skip",
 }
 
 @Component({
@@ -74,9 +76,11 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
     private probOfShiftFirstPatch: number;
     private probOfShiftSecondPatch: number;
     private numTrials: number;
+    private skippable: boolean;
     private oddEvenColor: Color;
     private ltGtColor: Color;
     private counterbalanceMode: "none" | "counterbalance" | "counterbalance-alternative";
+    thresholdForRepeat: number = 0.8; // currently hardcoded, can change this if required in the future
 
     // high level variables
     counterbalance: DemandSelectionCounterbalance;
@@ -149,6 +153,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         this.showFeedbackAfterEachTrial = thisOrDefault(metadata.config.showFeedbackAfterEachTrial, false);
         this.durationHelpMessageShown = thisOrDefault(metadata.config.durationHelpMessageShown, 6000);
         this.durationOfFeedback = thisOrDefault(metadata.config.durationOfFeedback, 0);
+        this.skippable = thisOrDefault(metadata.config.skippable, false);
         this.delayToShowHelpMessage = thisOrDefault(metadata.config.delayToShowHelpMessage, 4000);
         this.oddEvenColor = thisOrDefault(metadata.config.oddEvenColor, Color.BLUE);
         this.ltGtColor = thisOrDefault(metadata.config.ltGtColor, Color.ORANGE);
@@ -160,8 +165,6 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
     }
 
     async start() {
-        await this.startGameInFullScreen();
-
         // even though this is done at each block, we are caching these values to be
         // used by the display component when counterbalance is required
         this.config.setCacheValue(DemandSelectionCache.EASIER_STRING, "easier patch");
@@ -385,6 +388,10 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
                 DemandSelectionCache.BLOCK_NUM,
                 this.isPractice ? this.blockNum : ++this.blockNum
             );
+
+            const shouldSkip = numCorrect / this.numTrials >= this.thresholdForRepeat;
+            this.config.setCacheValue(DemandSelectionCache.SHOULD_SKIP, shouldSkip);
+
             this.config.setCacheValue(DemandSelectionCache.NUM_CORRECT, numCorrect);
             super.decideToRepeat();
             return;
@@ -394,6 +401,21 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
             if (this.isDestroyed) return;
             this.beginRound();
             return;
+        }
+    }
+
+    afterInit() {
+        if (this.skippable) {
+            const shouldSkip = this.config.getCacheValue(DemandSelectionCache.SHOULD_SKIP) as boolean;
+            if (shouldSkip === undefined) return;
+            // no cached value, do not skip
+            else if (shouldSkip) {
+                // loader is shown on component init (from the base task constructor)
+                // and is supposed to show for 2 seconds. We need to manually cancel that
+                // as the component is marked as destroyed (and timeout is cancelled)
+                this.loaderService.hideLoader();
+                this.handleComplete();
+            }
         }
     }
 }

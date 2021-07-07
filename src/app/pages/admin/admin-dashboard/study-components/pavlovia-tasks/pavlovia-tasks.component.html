@@ -1,0 +1,87 @@
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between">
+        <h2 class="mb-5">Pavlovia Tasks</h2>
+    </div>
+
+    <div *ngIf="(customTasks | async)?.length === 0" style="color: red">No pavlovia tasks</div>
+
+    <h3 class="mat-h3">Neuropsych Battery (NAB)</h3>
+    <hr />
+
+    <table
+        *ngIf="(NABPavloviaTasks | async).length > 0"
+        mat-table
+        [dataSource]="NABPavloviaTasks"
+        class="mat-elevation-z3"
+    >
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td class="first-col-width" mat-cell *matCellDef="let NABTask">{{ NABTask.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Description</th>
+            <td mat-cell *matCellDef="let NABTask">{{ NABTask.description }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="url">
+            <th mat-header-cell *matHeaderCellDef>URL</th>
+            <td mat-cell *matCellDef="let task">{{ task.externalURL }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let NABTask">
+                <button mat-icon-button (click)="run(NABTask)">
+                    <mat-icon style="color: green">play_arrow</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedTaskColumns"></tr>
+        <tr mat-row *matRowDef="let element; columns: displayedTaskColumns"></tr>
+    </table>
+    <span class="error-text" *ngIf="(NABPavloviaTasks | async).length === 0">No NAB pavlovia tasks</span>
+</div>
+
+<div class="container-fluid p-4">
+    <h3 class="mat-h3">Experimental Tasks</h3>
+    <hr />
+
+    <table
+        *ngIf="(experimentalPavloviaTasks | async).length > 0"
+        mat-table
+        [dataSource]="experimentalPavloviaTasks"
+        class="mat-elevation-z3"
+    >
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td class="first-col-width" mat-cell *matCellDef="let task">{{ task.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Description</th>
+            <td mat-cell *matCellDef="let task">{{ task.description }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="url">
+            <th mat-header-cell *matHeaderCellDef>URL</th>
+            <td mat-cell *matCellDef="let task">{{ task.externalURL }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let task">
+                <button mat-icon-button (click)="run(task)">
+                    <mat-icon style="color: green">play_arrow</mat-icon>
+                </button>
+            </td></ng-container
+        >
+
+        <tr mat-header-row *matHeaderRowDef="displayedTaskColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedTaskColumns"></tr>
+    </table>
+    <span class="error-text" *ngIf="(experimentalPavloviaTasks | async).length === 0"
+        >No experimental pavlovia tasks</span
+    >
+</div>

@@ -19,7 +19,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "In this task, you will be presented with different words for colors (e.g. \"blue\") printed in different colored ink:"
+                        "textContent": "In this task, different words for colors (Ex. \"BLUE\") will be presented in different colored ink:"
                     },
                     {
                         "sectionType": "image-square",
@@ -27,7 +27,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "It's your goal to respond to the <b>color</b> of the ink that the word is printed in, not the word itself."
+                        "textContent": "You have to response to the <b>COLOR</b> of the ink that the word is printed in, <b>NOT</b> the word itself."
                     },
                     {
                         "sectionType": "image-square",
@@ -52,19 +52,15 @@
                 "sections": [
                     {
                         "sectionType": "text",
-                        "textContent": "If you see \"blue\" with red ink then you should respond \"1\""
+                        "textContent": "If you see \"BLUE\" with red ink then you should respond \"1\""
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "If you see \"blue\" with blue ink then you should respond \"2\""
+                        "textContent": "If you see \"BLUE\" with blue ink then you should respond \"2\"; etc..."
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "If you see \"blue\" with green ink then you should respond \"3\""
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "Only the color of the ink matters, not the word itself."
+                        "textContent": "Again, only the COLOR of the ink matters, NOT the word itself."
                     },
                     {
                         "sectionType": "text",
@@ -147,7 +143,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "You will earn 10 points for every correct answer"
+                        "textContent": "You will earn 10 points for every right answer"
                     },
                     {
                         "sectionType": "text",
@@ -189,13 +185,21 @@
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "Congratulations! You have finished the game successfully",
+                "title": "Congratulations! You finished the game successfully",
                 "sections": [
                     {
                         "sectionType": "text",
                         "injection": "cached-string",
                         "cacheKey": "total-score",
                         "textContent": "You scored: ??? points"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Thank you for your participation."
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" to proceed"
                     }
                 ],
                 "buttons": {

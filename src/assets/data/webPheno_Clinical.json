@@ -1,32 +1,22 @@
 {
     "img": "../../../assets/images/consent/consentOrgs.png",
-    "title": [
-        "BEFORE YOU CAN PROCEED YOU MUST READ THE FOLLOWING CONSENT FORM"
-    ],
+    "title": "BEFORE YOU CAN PROCEED YOU MUST READ THE FOLLOWING CONSENT FORM",
     "summary": [
         {
             "caption": "Study title:",
-            "words": [
-                "Deep cognitive endophenotyping of Parkinson’s disease: A platform development and pilot study"
-            ]
+            "words": ["Deep cognitive endophenotyping of Parkinson’s disease: A platform development and pilot study"]
         },
         {
             "caption": "Principal investigator:",
-            "words": [
-                "Madeleine Sharp MD MSc, Department of Neurology and Neurosurgery"
-            ]
+            "words": ["Madeleine Sharp MD MSc, Department of Neurology and Neurosurgery"]
         },
         {
             "caption": "Sponsor:",
-            "words": [
-                "Parkinson Foundation"
-            ]
+            "words": ["Parkinson Foundation"]
         },
         {
             "caption": "Protocol:",
-            "words": [
-                "2020-6045, version 2"
-            ]
+            "words": ["2020-6045, version 2"]
         }
     ],
     "body": [
@@ -83,9 +73,7 @@
         },
         {
             "caption": "WILL YOU BE PAID?",
-            "words": [
-                "You will be entered to win one of ten $100 Amazon e-gift cards."
-            ]
+            "words": ["You will be entered to win one of ten $100 Amazon e-gift cards."]
         },
         {
             "caption": "CONTACT INFORMATION",

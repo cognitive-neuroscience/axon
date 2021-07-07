@@ -159,8 +159,6 @@ export class OddballComponent extends AbstractBaseTaskComponent {
         this.currentStimuliIndex = 0;
         this.blockNum = this.config.getCacheValue(OddballCache.BLOCK_NUM) || 1; // set to 1 if not defined
 
-        await this.startGameInFullScreen();
-
         // either the stimuli has been defined in config or we generate it here in an observable
         if (!this.stimuli) {
             const cachedNovelStimuli = (this.config.getCacheValue(OddballCache.NOVEL_STIMULI) || []) as string[];

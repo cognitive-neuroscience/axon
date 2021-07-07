@@ -4,7 +4,7 @@
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "Welcome to the Connect the dots game - Part 1",
+                "title": "Welcome to Connect the dots game - Part 1",
                 "sections": [
                     {
                         "sectionType": "text",
@@ -20,7 +20,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Click NEXT to proceed"
+                        "textContent": "Click \"NEXT\" to proceed"
                     }
                 ],
                 "buttons": {
@@ -84,7 +84,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Click \"START\" when you are ready for the actual game"
+                        "textContent": "Click \"START\" when you are ready"
                     }
                 ],
                 "buttons": {
@@ -111,7 +111,7 @@
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "Welcome to the Connect the dots game - part 2",
+                "title": "Welcome to the Connect the dots game - Part 2",
                 "sections": [
                     {
                         "sectionType": "text",
@@ -119,15 +119,15 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "In this task, you will be shown circles with numbers and letters on the screen"
+                        "textContent": "In this task, you will be shown circles with numbers and letters"
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Starting with number 1, you must click the circles ALTERNATING between numbers and letters in ascending order as fast as possible."
+                        "textContent": "Starting with number 1, you must click the circles ALTERNATING between numbers and letters in increasing order as fast as possible."
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "See this example:"
+                        "textContent": "Like this:"
                     },
                     {
                         "sectionType": "image-horizontal",
@@ -207,7 +207,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Click \"START\" when you are ready for the actual game"
+                        "textContent": "Click \"START\" when you are ready"
                     }
                 ],
                 "buttons": {
@@ -234,12 +234,8 @@
         {
             "component": "DISPLAYCOMPONENT",
             "content": {
-                "title": "The game has finished",
+                "title": "Congratulations!",
                 "sections": [
-                    {
-                        "sectionType": "text",
-                        "textContent": "Congratulations!"
-                    },
                     {
                         "sectionType": "text",
                         "textContent": "You finished the game successfully"

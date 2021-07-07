@@ -97,9 +97,6 @@ export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
     }
 
     async start() {
-        await this.startGameInFullScreen();
-        if (this.isDestroyed) return;
-
         this.taskData = [];
         this.currentStimuliIndex = 0;
 

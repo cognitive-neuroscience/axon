@@ -39,6 +39,10 @@ export class TaskService {
         return this.http.get<Task[]>(`${environment.apiBaseURL}${this.RESOURCE_PATH}`);
     }
 
+    getTaskByTaskId(taskId: number): Observable<Task> {
+        return this.http.get<Task>(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${taskId}`);
+    }
+
     getLocalDefaultMetadata(taskName: TaskNames): Observable<any> {
         const PATH = "assets/defaultTaskMetadata/";
         let fileName: string;

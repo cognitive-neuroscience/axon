@@ -1,31 +1,6 @@
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { SnackbarType, TaskType } from "./enums";
 
-export class JsonForm {
-    img: string;
-    title: string;
-    summary: {
-        caption: string;
-        words: string[];
-    }[];
-    secondTitle: string;
-    body: {
-        caption: string;
-        words: string[];
-    }[];
-    endMessage: string;
-    buttons: {
-        reject: {
-            show: boolean;
-            text: string;
-        };
-        accept: {
-            show: boolean;
-            text: string;
-        };
-    };
-}
-
 export class ConfirmationDialogMessage {
     message: string;
 

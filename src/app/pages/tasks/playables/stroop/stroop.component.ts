@@ -122,8 +122,6 @@ export class StroopComponent extends AbstractBaseTaskComponent {
     }
 
     async start() {
-        await this.startGameInFullScreen();
-
         this.taskData = [];
         this.currentStimuliIndex = 0;
 

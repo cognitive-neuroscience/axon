@@ -1,0 +1,40 @@
+@import "../../../../app/sass/mixins";
+
+.questionnaire-container {
+    padding: 2% 4%;
+}
+
+.form {
+    font-size: 1rem;
+}
+
+.title-text {
+    color: #3f51b5;
+}
+
+.sub-text {
+    color: #464646;
+}
+
+.error-text {
+    color: red;
+}
+
+.horizontal {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+
+    @include for-small-device-only {
+        width: 100%;
+    }
+
+    @include for-desktop-up {
+        width: 50%;
+    }
+}
+
+.vertical {
+    display: flex;
+    flex-direction: column;
+}

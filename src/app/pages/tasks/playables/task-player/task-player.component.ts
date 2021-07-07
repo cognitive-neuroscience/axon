@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit, ViewContainerRef } from "@angular/core";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Observable, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
-import { getRandomNumber, thisOrDefault } from "src/app/common/commonMethods";
+import { getRandomNumber } from "src/app/common/commonMethods";
 import { ComponentFactoryService, ComponentName } from "src/app/services/component-factory.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { TaskManagerService } from "src/app/services/task-manager.service";
@@ -11,7 +11,7 @@ import { Navigation } from "../../shared/navigation-buttons/navigation-buttons.c
 import { IOnComplete } from "../playable";
 import { LoaderService } from "src/app/services/loader/loader.service";
 import { UserService } from "src/app/services/user.service";
-import { AdminRouteNames, Role, RouteNames } from "src/app/models/enums";
+import { AdminRouteNames, Role } from "src/app/models/enums";
 
 export interface CounterBalanceGroup {
     [key: number]: any;
@@ -80,7 +80,8 @@ export class TaskPlayerComponent implements OnDestroy {
         private uploadDataService: ParticipantDataService,
         private router: Router,
         private snackbarService: SnackbarService,
-        private loaderService: LoaderService
+        private loaderService: LoaderService,
+        private route: ActivatedRoute
     ) {
         const navigationConfig = this.router.getCurrentNavigation().extras.state as TaskPlayerNavigationConfig;
         if (navigationConfig) {
@@ -188,6 +189,7 @@ export class TaskPlayerComponent implements OnDestroy {
                     : this.userService.user?.id.toString(),
                 this.taskManager.study?.id,
                 this.taskManager.currentStudyTask.taskOrder,
+                this.userService.isCrowdsourcedUser,
                 this.taskData
             )
             .pipe(map((ok) => ok.ok));

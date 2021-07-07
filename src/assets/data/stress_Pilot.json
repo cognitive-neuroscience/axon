@@ -1,37 +1,25 @@
 {
     "img": "../../../assets/images/consent/consentOrgs.png",
-    "title": [
-        "BEFORE YOU CAN PROCEED YOU MUST READ THE FOLLOWING CONSENT FORM"
-    ],
+    "title": "BEFORE YOU CAN PROCEED YOU MUST READ THE FOLLOWING CONSENT FORM",
     "summary": [
         {
             "caption": "Study title:",
-            "words": [
-                "Stress in Parkinson’s disease and its effects on cognition and mood: A pilot study"
-            ]
+            "words": ["Stress in Parkinson’s disease and its effects on cognition and mood: A pilot study"]
         },
         {
             "caption": "Principal investigator:",
-            "words": [
-                "Madeleine Sharp MD MSc, Department of Neurology and Neurosurgery"
-            ]
+            "words": ["Madeleine Sharp MD MSc, Department of Neurology and Neurosurgery"]
         },
         {
             "caption": "Sponsor:",
-            "words": [
-                "internal"
-            ]
+            "words": ["internal"]
         },
         {
             "caption": "Protocol:",
-            "words": [
-                "2020-6116, version 3"
-            ]
+            "words": ["2020-6116, version 3"]
         }
     ],
-    "secondTitle": [
-        "** You must be over the age of 18 to participate in the following research study. **"
-    ],
+    "secondTitle": ["** You must be over the age of 18 to participate in the following research study. **"],
     "body": [
         {
             "caption": "STUDY PURPOSE",
@@ -56,9 +44,7 @@
         },
         {
             "caption": "BENEFITS",
-            "words": [
-                "There is no direct benefit to you for participating in this research."
-            ]
+            "words": ["There is no direct benefit to you for participating in this research."]
         },
         {
             "caption": "POTENTIAL RISKS",

@@ -9,9 +9,11 @@ import { environment } from "../../../../../../environments/environment";
 import { UserService } from "src/app/services/user.service";
 import { Router } from "@angular/router";
 import { AdminRouteNames } from "src/app/models/enums";
-import { mergeMap } from "rxjs/operators";
+import { map, mergeMap } from "rxjs/operators";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { CreateModifyStudyComponent } from "../create-modify-study/create-modify-study.component";
+import { TaskService } from "src/app/services/task.service";
+import { Task } from "src/app/models/Task";
 
 @Component({
     selector: "app-view-studies",
@@ -24,7 +26,7 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
         : "http://localhost:4200/#/crowdsource-participant?studyid=";
 
     ACCOUNT_LINK: string = environment.production
-        ? "httpsL//psharplab.campus.mcgill.ca/#/register?studyid="
+        ? "https://psharplab.campus.mcgill.ca/#/register?studyid="
         : "http://localhost:4200/#/register?studyid=";
 
     subscriptions: Subscription[] = [];
@@ -35,7 +37,8 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
         private confirmationService: ConfirmationService,
         private snackbarService: SnackbarService,
         private userService: UserService,
-        private router: Router
+        private router: Router,
+        private taskService: TaskService
     ) {}
 
     studies: Observable<Study[]>;
@@ -44,9 +47,15 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
         return this.userService.userIsAdmin;
     }
 
+    taskNameFromId(taskId: number): Observable<Task> {
+        return this.taskService.tasks.pipe(map((tasks) => (tasks ? tasks.find((t) => t.id === taskId) : null)));
+    }
+
     ngOnInit(): void {
         this.studies = this.studyService.studiesAsync;
         if (!this.studyService.hasStudies) this.studyService.update();
+
+        if (!this.taskService.hasTasks) this.taskService.update();
     }
 
     navigateToCreateStudy() {
@@ -56,6 +65,8 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
     }
 
     handleEdit(study: Study) {
+        console.log(study);
+
         this.dialog.open(CreateModifyStudyComponent, { width: "90%", height: "80%", data: study });
     }
 
@@ -68,7 +79,7 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
     handleDelete(study: Study) {
         this.subscriptions.push(
             this.confirmationService
-                .openConfirmationDialog(`Are you sure you want to delete this study?`)
+                .openConfirmationDialog(`Are you sure you want to archive this study?`)
                 .pipe(
                     mergeMap((ok) => {
                         return ok ? this.studyService.deleteStudy(study.id) : of(false);
@@ -77,7 +88,7 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
                 .subscribe((ok) => {
                     if (ok) {
                         this.studyService.update();
-                        this.snackbarService.openSuccessSnackbar("Successfully deleted study");
+                        this.snackbarService.openSuccessSnackbar("Successfully archived study");
                     }
                 })
         );
@@ -92,7 +103,7 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
                 .openConfirmationDialog(
                     `Are you sure you want to ${active ? "activate" : "deactivate"} the study?`,
                     `${
-                        active
+                        active && study.canEdit
                             ? "This will allow participants to start your study. Once you activate the study, you will not be able to edit it in the future"
                             : ""
                     }`
@@ -101,7 +112,7 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
                     mergeMap((ok) => {
                         if (ok) {
                             study.canEdit = false;
-                            return this.studyService.editStudy(study);
+                            return this.studyService.editStudy(study, false);
                         } else {
                             return of(false);
                         }

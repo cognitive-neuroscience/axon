@@ -1,6 +1,39 @@
 <div>
     <h2 class="mb-5">Your Studies</h2>
-    <hr />
 
-    <div></div>
+    <div>
+        <div
+            *ngFor="let studyUser of studyUsers | async"
+            class="participant-study mat-elevation-z3 {{ studyIsDone(studyUser) ? 'study-complete' : '' }}"
+        >
+            <h1>
+                <b>{{ studyUser.study.externalName }}</b>
+            </h1>
+
+            <section>
+                <div class="progress-bar-container my-3">
+                    <label>Progress:</label>
+                    <mat-progress-bar [value]="getProgress(studyUser)"></mat-progress-bar>
+                    <span *ngIf="!studyUser.hasAcceptedConsent" class="error-text mt-3 d-block"
+                        >You must read and accept the consent form below before starting the study</span
+                    >
+                </div>
+            </section>
+
+            <div class="button-container">
+                <button (click)="openConsentDialog(studyUser)" class="w-25" mat-raised-button color="accent">
+                    View Consent
+                </button>
+                <button
+                    (click)="startOrContinueStudy(studyUser)"
+                    [disabled]="!studyUser.hasAcceptedConsent || studyIsDone(studyUser) || !studyUser.study.started"
+                    class="w-25"
+                    mat-raised-button
+                    color="primary"
+                >
+                    {{ getButtonText(studyUser) }}
+                </button>
+            </div>
+        </div>
+    </div>
 </div>

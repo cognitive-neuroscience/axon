@@ -73,6 +73,11 @@
         border-bottom-right-radius: 3px;
         border-bottom: none;
     }
+
+    &.disabled {
+        background: darkgray;
+        cursor: not-allowed;
+    }
 }
 
 .select-task {

@@ -74,10 +74,4 @@ export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
         this.onComplete.complete();
         return;
     }
-
-    async startGameInFullScreen() {
-        setFullScreen();
-        await wait(1000); // delay to allow screen to expand
-        if (this.isDestroyed) return;
-    }
 }

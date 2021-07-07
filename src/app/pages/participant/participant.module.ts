@@ -9,6 +9,7 @@ import { FeedbackQuestionnaireComponent } from "./final-page/feedback-questionna
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MaterialModule } from "src/app/modules/material/material.module";
 import { FinalPageComponent } from "./final-page/final-page.component";
+import { ConsentDialogComponent } from "./participant-dashboard/participant-studies/consent-dialog/consent-dialog.component";
 
 @NgModule({
     declarations: [
@@ -16,6 +17,7 @@ import { FinalPageComponent } from "./final-page/final-page.component";
         ParticipantStudiesComponent,
         FinalPageComponent,
         FeedbackQuestionnaireComponent,
+        ConsentDialogComponent,
     ],
     imports: [
         CommonModule,

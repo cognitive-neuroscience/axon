@@ -13,7 +13,7 @@
             <mat-expansion-panel-header class="panel-item-header">
                 <div class="d-flex w-100" style="flex-direction: row; justify-content: space-between">
                     <div class="d-flex justify-content-center align-items-center">
-                        <span class="study-id">{{ study.id }}</span>
+                        <span class="study-id font-weight-bold">{{ study.id }}</span>
                     </div>
                     <div class="flex-column" style="width: 80%; justify-content: space-around">
                         <span style="font-size: 1.5rem">
@@ -23,9 +23,10 @@
                             {{ study.description }}
                         </span>
                     </div>
-                    <div class="d-flex my-3" style="align-items: center; width: 20%">
+                    <div class="d-flex" style="align-items: center; width: 20%">
                         <mat-slide-toggle
                             [(ngModel)]="study.started"
+                            [disabled]="!(isAdmin | async)"
                             (change)="toggleStudyActiveStatus(study, $event)"
                             (click)="$event.stopPropagation()"
                         >
@@ -81,6 +82,16 @@
                             </button>
                         </div>
                     </div>
+
+                    <div>
+                        <span class="title badge">CONSENT</span>
+                    </div>
+                    <div>
+                        <span class="internal-name">{{
+                            (taskNameFromId(study.consent) | async)?.name || "could not find name"
+                        }}</span>
+                    </div>
+
                     <div>
                         <span class="title badge">TASKS</span>
                     </div>
@@ -128,11 +139,11 @@
                         </button>
 
                         <button
+                            [disabled]="!(isAdmin | async)"
                             (click)="handleEdit(study)"
                             class="w-25"
                             color="primary"
                             mat-raised-button
-                            [disabled]="!(isAdmin | async) || !study.canEdit"
                         >
                             Edit Study
                         </button>
@@ -144,7 +155,7 @@
                             mat-raised-button
                             [disabled]="!(isAdmin | async)"
                         >
-                            Delete Study
+                            Archive Study
                         </button>
                     </div>
                 </div>

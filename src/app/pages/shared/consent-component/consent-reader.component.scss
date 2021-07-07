@@ -1,0 +1,44 @@
+.mat-h1 {
+    padding: 20px;
+    font-weight: 500;
+}
+
+.image {
+    width: 100%;
+    text-align: center;
+
+    & img {
+        width: 100%;
+        max-width: 800px;
+    }
+}
+
+.title {
+    text-align: center;
+}
+
+.summary {
+    font-size: 1rem;
+}
+
+.secondTitle {
+    font-size: 1rem;
+    text-align: center;
+}
+
+.max-height {
+    max-height: 80%;
+}
+
+.body {
+    font-size: 1rem;
+}
+
+.endMessage {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.bottom-button-bar {
+    padding: 10px 0 50px 0;
+}

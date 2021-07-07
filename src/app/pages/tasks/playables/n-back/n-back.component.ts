@@ -127,8 +127,6 @@ export class NBackComponent extends AbstractBaseTaskComponent {
     }
 
     async start() {
-        await this.startGameInFullScreen();
-
         this.taskData = [];
         this.currentStimuliIndex = 0;
 
@@ -165,6 +163,8 @@ export class NBackComponent extends AbstractBaseTaskComponent {
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
             studyId: this.studyId,
+            letterShown: this.currentLetter,
+            nback: this.nback,
         });
 
         this.setTimer(this.maxResponseTime, () => {

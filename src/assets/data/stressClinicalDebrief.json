@@ -1,8 +1,6 @@
 {
     "img": "../../../assets/images/consent/consentOrgs.png",
-    "title": [
-        "DEBRIEFING ABOUT THE DECEPTION USED IN THE STUDY"
-    ],
+    "title": "DEBRIEFING ABOUT THE DECEPTION USED IN THE STUDY",
     "body": [
         {
             "caption": "Thank you for participating!",
@@ -29,7 +27,7 @@
         },
         {
             "caption": "",
-            "words":[
+            "words": [
                 "Given the ubiquitous nature of stress, it is critical that we study it in order to understand the range of consequences it can hold for brain health."
             ]
         },

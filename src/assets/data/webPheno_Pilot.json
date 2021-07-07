@@ -1,37 +1,25 @@
 {
     "img": "../../../assets/images/consent/consentOrgs.png",
-    "title": [
-        "BEFORE YOU CAN PROCEED YOU MUST READ THE FOLLOWING CONSENT FORM"
-    ],
+    "title": "BEFORE YOU CAN PROCEED YOU MUST READ THE FOLLOWING CONSENT FORM",
     "summary": [
         {
             "caption": "Study title:",
-            "words": [
-                "Deep cognitive endophenotyping of Parkinson’s disease: A platform development and pilot study"
-            ]
+            "words": ["Deep cognitive endophenotyping of Parkinson’s disease: A platform development and pilot study"]
         },
         {
             "caption": "Principal investigator:",
-            "words": [
-                "Madeleine Sharp MD MSc, Department of Neurology and Neurosurgery"
-            ]
+            "words": ["Madeleine Sharp MD MSc, Department of Neurology and Neurosurgery"]
         },
         {
             "caption": "Sponsor:",
-            "words": [
-                "Parkinson Foundation"
-            ]
+            "words": ["Parkinson Foundation"]
         },
         {
             "caption": "Protocol:",
-            "words": [
-                "2020-6045, version 2"
-            ]
+            "words": ["2020-6045, version 2"]
         }
     ],
-    "secondTitle": [
-        "** You must be over the age of 18 to participate in the following research study. **"
-    ],
+    "secondTitle": ["** You must be over the age of 18 to participate in the following research study. **"],
     "body": [
         {
             "caption": "STUDY PURPOSE",
@@ -56,9 +44,7 @@
         },
         {
             "caption": "BENEFITS",
-            "words": [
-                "There is no direct benefit to you for participating in this research."
-            ]
+            "words": ["There is no direct benefit to you for participating in this research."]
         },
         {
             "caption": "POTENTIAL RISKS",

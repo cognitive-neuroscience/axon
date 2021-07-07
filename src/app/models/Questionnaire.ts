@@ -1,3 +1,5 @@
+import { ParticipantType } from "./enums";
+
 export class FeedbackQuestionnaireResponse {
     userId: string;
     studyId: number;
@@ -5,4 +7,5 @@ export class FeedbackQuestionnaireResponse {
     additionalFeedback: string;
     browser: string;
     submittedAt: string;
+    participantType: ParticipantType;
 }

@@ -88,7 +88,7 @@ export class RegisterComponent implements OnInit {
                 (error: HttpErrorResponse) => {
                     this.loaderService.hideLoader();
                     console.error(error);
-                    this.snackbarService.openErrorSnackbar(error.error.message);
+                    this.snackbarService.openErrorSnackbar(error.message);
                 }
             )
         );

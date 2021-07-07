@@ -5,7 +5,7 @@ import { Observable, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 import { RouteNames, TaskType } from "src/app/models/enums";
 import { Task } from "src/app/models/Task";
-import { QuestionnaireNavigationConfig } from "src/app/pages/tasks/questionnaires/questionnaire-reader/questionnaire-reader.component";
+import { QuestionnaireNavigationConfig } from "src/app/pages/tasks/questionnaire-reader/questionnaire-reader.component";
 import { TaskService } from "src/app/services/task.service";
 
 @Component({

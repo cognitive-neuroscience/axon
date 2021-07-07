@@ -50,11 +50,11 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "One patch is hiding numbers that change color less often"
+                        "textContent": "One patch is hiding numbers that change color <b>less</b> often"
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "The other patch is hiding numbers that change color more often"
+                        "textContent": "The other patch is hiding numbers that change color <b>more</b> often"
                     },
                     {
                         "sectionType": "text",
@@ -79,11 +79,11 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "However, we recommend that <b>you try both patches at the beginning</b>"
+                        "textContent": "However, we recommend that you <b>try both patches at the beginning</b>"
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Try to avoid choosing the patch solely based on how they look or on their location"
+                        "textContent": "Try to avoid choosing the patch solely based on its deisgn or its location"
                     },
                     {
                         "sectionType": "text",
@@ -124,7 +124,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Then use the arrow keys as before to give us your answer"
+                        "textContent": "3. Then use the arrow keys as before to give us your answer"
                     },
                     {
                         "sectionType": "text",
@@ -145,23 +145,19 @@
                 "sections": [
                     {
                         "sectionType": "text",
-                        "textContent": "Remember, the color of the number tells you what you must identify about that number"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "<br />"
-                    },
-                    {
-                        "sectionType": "text",
                         "textContent": "Orange number:"
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "LESS than 5: Press the LEFT arrow key ⬅️"
+                        "textContent": "Determine if the number is less than or greater than 5"
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "GREATER than 5: Press the RIGHT arrow key ➡️"
+                        "textContent": "LESS than (<) 5 : Press the LEFT arrow key ⬅️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "GREATER than (>) 5: Press the RIGHT arrow key ➡️"
                     },
                     {
                         "sectionType": "text",
@@ -170,6 +166,10 @@
                     {
                         "sectionType": "text",
                         "textContent": "Blue number:"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Determine if the number is odd or even"
                     },
                     {
                         "sectionType": "text",
@@ -220,7 +220,7 @@
                 "interTrialDelay": 0,
                 "showFeedbackAfterEachTrial": true,
                 "durationOfFeedback": 1000,
-                "numTrials": 5,
+                "numTrials": 10,
                 "delayToShowHelpMessage": 4000,
                 "durationHelpMessageShown": 6000,
                 "probOfShiftFirstPatch": 10,
@@ -275,6 +275,51 @@
                             "firstPatch": "blue",
                             "secondPatch": "orange",
                             "digit": 1
+                        },
+                        {
+                            "firstPatchImgName": "abstPa.png",
+                            "secondPatchImgName": "abstPb.png",
+                            "rotation": 105,
+                            "counterbalance": "NONE",
+                            "firstPatch": "blue",
+                            "secondPatch": "orange",
+                            "digit": 7
+                        },
+                        {
+                            "firstPatchImgName": "abstPa.png",
+                            "secondPatchImgName": "abstPb.png",
+                            "rotation": 105,
+                            "counterbalance": "NONE",
+                            "firstPatch": "blue",
+                            "secondPatch": "orange",
+                            "digit": 6
+                        },
+                        {
+                            "firstPatchImgName": "abstPa.png",
+                            "secondPatchImgName": "abstPb.png",
+                            "rotation": 105,
+                            "counterbalance": "NONE",
+                            "firstPatch": "orange",
+                            "secondPatch": "blue",
+                            "digit": 4
+                        },
+                        {
+                            "firstPatchImgName": "abstPa.png",
+                            "secondPatchImgName": "abstPb.png",
+                            "rotation": 105,
+                            "counterbalance": "NONE",
+                            "firstPatch": "orange",
+                            "secondPatch": "blue",
+                            "digit": 1
+                        },
+                        {
+                            "firstPatchImgName": "abstPa.png",
+                            "secondPatchImgName": "abstPb.png",
+                            "rotation": 105,
+                            "counterbalance": "NONE",
+                            "firstPatch": "blue",
+                            "secondPatch": "orange",
+                            "digit": 1
                         }
                     ]
                 }
@@ -289,19 +334,56 @@
                         "sectionType": "text",
                         "injection": "cached-string",
                         "cacheKey": "demandselection-num-correct",
-                        "textContent": "You got ??? out of 5 correct"
+                        "textContent": "You got ??? out of 10 correct"
                     }
                 ]
             }
         },
         {
             "component": "DISPLAYCOMPONENT",
+            "skippable": true,
+            "skippableCacheKey": "demandselection-should-skip",
             "content": {
-                "title": "Recap Instructions",
+                "title": "",
                 "sections": [
                     {
                         "sectionType": "text",
-                        "textContent": "Remember, the color of the number tells you what you must identify about that number"
+                        "textContent": "We will repeat this round so you can get more practice."
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" when you are ready for the next stage"
+                    }
+                ],
+                "buttons": {
+                    "isStart": false,
+                    "previousDisabled": false,
+                    "nextDisabled": false
+                }
+            }
+        },
+        {
+            "component": "DISPLAYCOMPONENT",
+            "skippable": true,
+            "skippableCacheKey": "demandselection-should-skip",
+            "content": {
+                "title": "More instructions",
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "Orange number:"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Determine if the number is less or greater than 5"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "LESS than (<) 5 : Press the LEFT arrow key ⬅️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "GREATER than (>) 5: Press the RIGHT arrow key ➡️"
                     },
                     {
                         "sectionType": "text",
@@ -309,7 +391,76 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Orange number:"
+                        "textContent": "Blue number:"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Determine if the number is odd or even"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "If number is ODD: Press the LEFT arrow key ⬅️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "If number is EVEN: Press the RIGHT arrow key ➡️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" to proceed"
+                    }
+                ],
+                "buttons": {
+                    "isStart": false,
+                    "previousDisabled": false,
+                    "nextDisabled": false
+                }
+            }
+        },
+        {
+            "component": "DEMANDSELECTIONCOMPONENT",
+            "config": {
+                "isPractice": true,
+                "skippable": true,
+                "maxResponseTime": 5000,
+                "interTrialDelay": 0,
+                "showFeedbackAfterEachTrial": true,
+                "durationOfFeedback": 1000,
+                "numTrials": 10,
+                "delayToShowHelpMessage": 4000,
+                "probOfShiftFirstPatch": 10,
+                "probOfShiftSecondPatch": 90,
+                "oddEvenColor": "blue",
+                "ltGtColor": "orange",
+                "counterbalanceMode": "none",
+                "stimuliConfig": {
+                    "type": "generated",
+                    "stimuli": null
+                }
+            }
+        },
+        {
+            "component": "DISPLAYCOMPONENT",
+            "content": {
+                "title": "",
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "injection": "cached-string",
+                        "cacheKey": "demandselection-num-correct",
+                        "textContent": "You got ??? out of 10 correct"
+                    }
+                ]
+            }
+        },
+        {
+            "component": "DISPLAYCOMPONENT",
+            "content": {
+                "title": "Instructions Recap",
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "Orange number: Determine if the number is less or greater than 5"
                     },
                     {
                         "sectionType": "text",
@@ -325,7 +476,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Blue number:"
+                        "textContent": "Blue number: Determine if the number is odd or even"
                     },
                     {
                         "sectionType": "text",
@@ -351,11 +502,12 @@
             "component": "DEMANDSELECTIONCOMPONENT",
             "config": {
                 "isPractice": true,
+                "skippable": false,
                 "maxResponseTime": 5000,
                 "interTrialDelay": 0,
                 "showFeedbackAfterEachTrial": true,
                 "durationOfFeedback": 1000,
-                "numTrials": 5,
+                "numTrials": 20,
                 "delayToShowHelpMessage": 4000,
                 "probOfShiftFirstPatch": 10,
                 "probOfShiftSecondPatch": 90,
@@ -363,54 +515,8 @@
                 "ltGtColor": "orange",
                 "counterbalanceMode": "none",
                 "stimuliConfig": {
-                    "type": "hardcoded",
-                    "stimuli": [
-                        {
-                            "firstPatchImgName": "abstPa.png",
-                            "secondPatchImgName": "abstPb.png",
-                            "rotation": 270,
-                            "counterbalance": "NONE",
-                            "firstPatch": "orange",
-                            "secondPatch": "blue",
-                            "digit": 1
-                        },
-                        {
-                            "firstPatchImgName": "abstPa.png",
-                            "secondPatchImgName": "abstPb.png",
-                            "rotation": 105,
-                            "counterbalance": "NONE",
-                            "firstPatch": "blue",
-                            "secondPatch": "orange",
-                            "digit": 1
-                        },
-                        {
-                            "firstPatchImgName": "abstPa.png",
-                            "secondPatchImgName": "abstPb.png",
-                            "rotation": 105,
-                            "counterbalance": "NONE",
-                            "firstPatch": "orange",
-                            "secondPatch": "blue",
-                            "digit": 7
-                        },
-                        {
-                            "firstPatchImgName": "abstPa.png",
-                            "secondPatchImgName": "abstPb.png",
-                            "rotation": 105,
-                            "counterbalance": "NONE",
-                            "firstPatch": "orange",
-                            "secondPatch": "blue",
-                            "digit": 9
-                        },
-                        {
-                            "firstPatchImgName": "abstPa.png",
-                            "secondPatchImgName": "abstPb.png",
-                            "rotation": 105,
-                            "counterbalance": "NONE",
-                            "firstPatch": "blue",
-                            "secondPatch": "orange",
-                            "digit": 3
-                        }
-                    ]
+                    "type": "generated",
+                    "stimuli": null
                 }
             }
         },
@@ -425,7 +531,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "There are six short parts to the game, each lasting a few minutes. You can take short beraks in between each."
+                        "textContent": "There are six short parts to the game, each lasting a few minutes. You can take short breaks in between each."
                     },
                     {
                         "sectionType": "text",
@@ -449,6 +555,10 @@
                         "injection": "cached-string",
                         "cacheKey": "demandselection-block-num",
                         "textContent": "This is part ??? of the game"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" to proceed"
                     }
                 ]
             }
@@ -468,7 +578,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "The numbers hiding behind each patch change color more or less often depending on the patch"
+                        "textContent": "The numbers hiding behind each patch change color <b>more</b> or <b>less</b> often depending on the patch"
                     },
                     {
                         "sectionType": "text",
@@ -518,15 +628,7 @@
                 "sections": [
                     {
                         "sectionType": "text",
-                        "textContent": "Remember, the color of the number tells you what you must identify about that number"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "<br />"
-                    },
-                    {
-                        "sectionType": "text",
-                        "textContent": "Orange number:"
+                        "textContent": "Orange number: Determine if the number is less than or greater than 5"
                     },
                     {
                         "sectionType": "text",
@@ -542,7 +644,7 @@
                     },
                     {
                         "sectionType": "text",
-                        "textContent": "Blue number:"
+                        "textContent": "Blue number: Determine if the number is odd or even"
                     },
                     {
                         "sectionType": "text",
@@ -589,7 +691,17 @@
             "component": "DISPLAYCOMPONENT",
             "content": {
                 "title": "Congrats, you have finished this part",
-                "sections": []
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" to proceed"
+                    }
+                ],
+                "buttons": {
+                    "isStart": false,
+                    "previousDisabled": true,
+                    "nextDisabled": false
+                }
             }
         },
         {
@@ -602,8 +714,62 @@
                         "injection": "cached-string",
                         "cacheKey": "demandselection-block-num",
                         "textContent": "This is part ??? of the game"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" to proceed"
                     }
-                ]
+                ],
+                "buttons": {
+                    "isStart": false,
+                    "previousDisabled": false,
+                    "nextDisabled": false
+                }
+            }
+        },
+        {
+            "component": "DISPLAYCOMPONENT",
+            "content": {
+                "title": "Recap Instructions",
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "Orange number: Determine if the number is less than or greater than 5"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "LESS than 5: Press the LEFT arrow key ⬅️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "GREATER than 5: Press the RIGHT arrow key ➡️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "<br />"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Blue number: Determine if the number is odd or even"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "If number is ODD: Press the LEFT arrow key ⬅️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "If number is EVEN: Press the RIGHT arrow key ➡️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"START\" when you are ready"
+                    }
+                ],
+                "buttons": {
+                    "isStart": true,
+                    "previousDisabled": false,
+                    "nextDisabled": false
+                }
             }
         },
         {
@@ -631,7 +797,17 @@
             "component": "DISPLAYCOMPONENT",
             "content": {
                 "title": "Congrats, you have finished this part",
-                "sections": []
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" to proceed"
+                    }
+                ],
+                "buttons": {
+                    "isStart": false,
+                    "previousDisabled": true,
+                    "nextDisabled": false
+                }
             }
         },
         {
@@ -644,8 +820,62 @@
                         "injection": "cached-string",
                         "cacheKey": "demandselection-block-num",
                         "textContent": "This is part ??? of the game"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" to proceed"
                     }
-                ]
+                ],
+                "buttons": {
+                    "isStart": false,
+                    "previousDisabled": false,
+                    "nextDisabled": false
+                }
+            }
+        },
+        {
+            "component": "DISPLAYCOMPONENT",
+            "content": {
+                "title": "Recap Instructions",
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "Orange number: Determine if the number is less than or greater than 5"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "LESS than 5: Press the LEFT arrow key ⬅️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "GREATER than 5: Press the RIGHT arrow key ➡️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "<br />"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Blue number: Determine if the number is odd or even"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "If number is ODD: Press the LEFT arrow key ⬅️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "If number is EVEN: Press the RIGHT arrow key ➡️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"START\" when you are ready"
+                    }
+                ],
+                "buttons": {
+                    "isStart": true,
+                    "previousDisabled": false,
+                    "nextDisabled": false
+                }
             }
         },
         {
@@ -673,7 +903,12 @@
             "component": "DISPLAYCOMPONENT",
             "content": {
                 "title": "Congrats, you have finished this part",
-                "sections": []
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" to proceed"
+                    }
+                ]
             }
         },
         {
@@ -686,8 +921,57 @@
                         "injection": "cached-string",
                         "cacheKey": "demandselection-block-num",
                         "textContent": "This is part ??? of the game"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" to proceed"
                     }
                 ]
+            }
+        },
+        {
+            "component": "DISPLAYCOMPONENT",
+            "content": {
+                "title": "Recap Instructions",
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "Orange number: Determine if the number is less than or greater than 5"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "LESS than 5: Press the LEFT arrow key ⬅️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "GREATER than 5: Press the RIGHT arrow key ➡️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "<br />"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Blue number: Determine if the number is odd or even"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "If number is ODD: Press the LEFT arrow key ⬅️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "If number is EVEN: Press the RIGHT arrow key ➡️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"START\" when you are ready"
+                    }
+                ],
+                "buttons": {
+                    "isStart": true,
+                    "previousDisabled": false,
+                    "nextDisabled": false
+                }
             }
         },
         {
@@ -715,7 +999,21 @@
             "component": "DISPLAYCOMPONENT",
             "content": {
                 "title": "Congrats, you have finished this part",
-                "sections": []
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" to proceed"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "<b>Please pay attention. We will be asking you to do something different!!!</b>"
+                    }
+                ],
+                "buttons": {
+                    "isStart": false,
+                    "previousDisabled": true,
+                    "nextDisabled": false
+                }
             }
         },
         {
@@ -748,6 +1046,51 @@
                         "textContent": "Click \"NEXT\" to proceed"
                     }
                 ]
+            }
+        },
+        {
+            "component": "DISPLAYCOMPONENT",
+            "content": {
+                "title": "Recap Instructions",
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "Orange number: Determine if the number is less than or greater than 5"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "LESS than 5: Press the LEFT arrow key ⬅️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "GREATER than 5: Press the RIGHT arrow key ➡️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "<br />"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Blue number: Determine if the number is odd or even"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "If number is ODD: Press the LEFT arrow key ⬅️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "If number is EVEN: Press the RIGHT arrow key ➡️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"START\" when you are ready"
+                    }
+                ],
+                "buttons": {
+                    "isStart": false,
+                    "previousDisabled": false,
+                    "nextDisabled": false
+                }
             }
         },
         {
@@ -775,7 +1118,12 @@
             "component": "DISPLAYCOMPONENT",
             "content": {
                 "title": "Congrats, you have finished this part",
-                "sections": []
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "<b>Please pay attention. We will be asking you to do something different!!!</b>"
+                    }
+                ]
             }
         },
         {
@@ -811,6 +1159,51 @@
             }
         },
         {
+            "component": "DISPLAYCOMPONENT",
+            "content": {
+                "title": "Recap Instructions",
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "Orange number: Determine if the number is less than or greater than 5"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "LESS than 5: Press the LEFT arrow key ⬅️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "GREATER than 5: Press the RIGHT arrow key ➡️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "<br />"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Blue number: Determine if the number is odd or even"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "If number is ODD: Press the LEFT arrow key ⬅️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "If number is EVEN: Press the RIGHT arrow key ➡️"
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"START\" when you are ready"
+                    }
+                ],
+                "buttons": {
+                    "isStart": false,
+                    "previousDisabled": false,
+                    "nextDisabled": false
+                }
+            }
+        },
+        {
             "component": "DEMANDSELECTIONCOMPONENT",
             "config": {
                 "isPractice": false,
@@ -828,6 +1221,31 @@
                 "stimuliConfig": {
                     "type": "generated",
                     "stimuli": null
+                }
+            }
+        },
+        {
+            "component": "DISPLAYCOMPONENT",
+            "content": {
+                "title": "Congratulations!",
+                "sections": [
+                    {
+                        "sectionType": "text",
+                        "textContent": "You finished the game successfully."
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Thank you for your participation."
+                    },
+                    {
+                        "sectionType": "text",
+                        "textContent": "Click \"NEXT\" to proceed"
+                    }
+                ],
+                "buttons": {
+                    "isStart": false,
+                    "previousDisabled": true,
+                    "nextDisabled": false
                 }
             }
         }
