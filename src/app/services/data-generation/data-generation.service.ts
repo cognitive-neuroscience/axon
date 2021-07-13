@@ -29,7 +29,6 @@ import {
     SmileyFaceType,
     StroopStimulus,
     TaskSwitchingStimulus,
-    TrailMakingStimuliSet,
     TrailMakingStimulus,
     TrailMakingTrialType,
 } from "./stimuli-models";
@@ -51,7 +50,7 @@ export class DataGenerationService {
             RatingTaskActivities.DoSomething,
             numDoSomethingActivities
         );
-        const doNothingActivities = deepClone(RatingTaskActivities.DoNothing.slice(0, 1));
+        const doNothingActivities = deepClone(RatingTaskActivities.DoNothing);
         const activities = shuffle(doSomethingActivities.concat(doNothingActivities));
 
         const ratingTaskData: RatingTaskStimuli[] = activities.map((activity) => {
