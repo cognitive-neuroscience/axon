@@ -7,7 +7,7 @@ import { UserService } from "src/app/services/user.service";
 
 class Question {
     questionType: "multipleChoiceSelect" | "radiobuttons" | "freeTextResponse" | "displayText" | "divider" | "input";
-    radiobuttonPresentation?: "horizontal" | "vertical";
+    radiobuttonPresentation?: "horizontal" | "vertical" = "horizontal";
     key: string; // unique property of the input - this is what will be used when getting the data. Mandatory for all questionTypes except divider and free text
     label?: string; // label of the input
     title?: string; // title of the input - shown above the input itself

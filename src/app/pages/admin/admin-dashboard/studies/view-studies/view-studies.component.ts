@@ -65,8 +65,6 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
     }
 
     handleEdit(study: Study) {
-        console.log(study);
-
         this.dialog.open(CreateModifyStudyComponent, { width: "90%", height: "80%", data: study });
     }
 
@@ -111,7 +109,6 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
                 .pipe(
                     mergeMap((ok) => {
                         if (ok) {
-                            study.canEdit = false;
                             return this.studyService.editStudy(study, false);
                         } else {
                             return of(false);

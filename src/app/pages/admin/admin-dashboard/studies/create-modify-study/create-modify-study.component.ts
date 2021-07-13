@@ -177,8 +177,6 @@ export class CreateModifyStudyComponent implements OnInit {
             }),
         };
 
-        console.log(study);
-
         this.studyService
             .editStudy(
                 study,

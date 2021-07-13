@@ -8,8 +8,8 @@
             <ng-container *ngFor="let question of questions">
                 <div [ngSwitch]="question.questionType">
                     <div class="my-5" *ngSwitchCase="'multipleChoiceSelect'">
-                        <h2 class="title-text">{{ question.title }}</h2>
-                        <p class="sub-text">{{ question.textContent }}</p>
+                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="question.title"></h2>
+                        <p *ngIf="question.textContent" class="sub-text" [innerHTML]="question.textContent"></p>
                         <mat-form-field class="w-50">
                             <mat-label>{{ question.label }}</mat-label>
                             <mat-select [formControlName]="question.key">
@@ -26,8 +26,8 @@
                     </div>
 
                     <div class="my-5" *ngSwitchCase="'radiobuttons'">
-                        <h2 class="title-text">{{ question.title }}</h2>
-                        <p class="sub-text">{{ question.textContent }}</p>
+                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="question.title"></h2>
+                        <p *ngIf="question.textContent" class="sub-text" [innerHTML]="question.textContent"></p>
                         <br />
                         <mat-radio-group
                             class="{{ question.radiobuttonPresentation }}"
@@ -44,8 +44,8 @@
                     </div>
 
                     <div class="my-5" *ngSwitchCase="'freeTextResponse'">
-                        <h2 class="title-text">{{ question.title }}</h2>
-                        <p class="sub-text">{{ question.textContent }}</p>
+                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="question.title"></h2>
+                        <p *ngIf="question.textContent" class="sub-text" [innerHTML]="question.textContent"></p>
                         <mat-form-field class="w-50 d-block">
                             <mat-label>{{ question.label }}</mat-label>
                             <textarea rows="4" [formControlName]="question.key" matInput type="text"></textarea>
@@ -56,8 +56,8 @@
                     </div>
 
                     <div class="my-5" *ngSwitchCase="'input'">
-                        <h2 class="title-text">{{ question.title }}</h2>
-                        <p class="sub-text">{{ question.textContent }}</p>
+                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="question.title"></h2>
+                        <p *ngIf="question.textContent" class="sub-text" [innerHTML]="question.textContent"></p>
                         <mat-form-field class="w-50 d-block">
                             <mat-label>{{ question.label }}</mat-label>
                             <input
@@ -78,8 +78,8 @@
                     </div>
 
                     <div class="my-5" *ngSwitchCase="'displayText'">
-                        <h2 class="title-text">{{ question.title }}</h2>
-                        <p class="sub-text">{{ question.textContent }}</p>
+                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="question.title"></h2>
+                        <p *ngIf="question.textContent" class="sub-text" [innerHTML]="question.textContent"></p>
                     </div>
 
                     <div class="my-5" *ngSwitchCase="'divider'">
