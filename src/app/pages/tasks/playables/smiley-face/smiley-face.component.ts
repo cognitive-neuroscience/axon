@@ -222,14 +222,14 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         this.setStimuliUI(this.currentStimulus);
 
         // set back to no face after given time
-        // this.setTimer("showStimulusTimer", this.durationStimulusPresented, () => {
-        //     this.showImage(this.blobs[1]);
-        // });
+        this.setTimer("showStimulusTimer", this.durationStimulusPresented, () => {
+            this.showImage(this.blobs[1]);
+        });
 
-        // this.setTimer("maxResponseTimer", this.maxResponseTime, () => {
-        //     this.responseAllowed = false;
-        //     this.handleRoundInteraction(null);
-        // });
+        this.setTimer("maxResponseTimer", this.maxResponseTime, () => {
+            this.responseAllowed = false;
+            this.handleRoundInteraction(null);
+        });
 
         this.timerService.startTimer();
         this.responseAllowed = true;
