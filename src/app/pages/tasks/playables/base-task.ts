@@ -24,8 +24,8 @@ export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
     constructor(protected loaderService: LoaderService) {
         loaderService.showLoader();
         setTimeout(() => {
-            if (this.isDestroyed) return;
             loaderService.hideLoader();
+            if (this.isDestroyed) return;
             this.start();
         }, 2000);
     }

@@ -27,6 +27,7 @@ interface SmileyFaceMetadata {
         numLongFaces: number;
         numFacesMoreRewarded: number;
         numFacesLessRewarded: number;
+        showHint: boolean;
         stimuliConfig: {
             type: StimuliProvidedType;
             stimuli: SmileyFaceStimulus[];
@@ -70,6 +71,7 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     private numLongFaces: number;
     private numFacesMoreRewarded: number;
     private numFacesLessRewarded: number;
+    showHint: boolean;
 
     // high level variables
     counterbalance: SmileyFaceTaskCounterbalance;
@@ -139,6 +141,7 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         this.durationFixationPresented = thisOrDefault(metadata.config.durationFixationPresented, 0);
         this.durationNoFacePresented = thisOrDefault(metadata.config.durationNoFacePresented, 500);
         this.durationStimulusPresented = thisOrDefault(metadata.config.durationStimulusPresented, 450);
+        this.showHint = thisOrDefault(metadata.config.showHint, false);
 
         this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as SmileyFaceTaskCounterbalance;
 
@@ -219,14 +222,14 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         this.setStimuliUI(this.currentStimulus);
 
         // set back to no face after given time
-        this.setTimer("showStimulusTimer", this.durationStimulusPresented, () => {
-            this.showImage(this.blobs[1]);
-        });
+        // this.setTimer("showStimulusTimer", this.durationStimulusPresented, () => {
+        //     this.showImage(this.blobs[1]);
+        // });
 
-        this.setTimer("maxResponseTimer", this.maxResponseTime, () => {
-            this.responseAllowed = false;
-            this.handleRoundInteraction(null);
-        });
+        // this.setTimer("maxResponseTimer", this.maxResponseTime, () => {
+        //     this.responseAllowed = false;
+        //     this.handleRoundInteraction(null);
+        // });
 
         this.timerService.startTimer();
         this.responseAllowed = true;

@@ -2,15 +2,6 @@
     <!-- Start Practice Round -->
     <div class="full-box flex-column-center">
         <div *ngIf="showStimulus" class="w-100 d-flex flex-row align-items-center justify-content-center">
-            <!-- <div *ngIf="smileyFaceType === 'SHORT'">
-                <img src="/assets/images/stimuli/smileyface/short.png" alt="short face" class="smiley-face-img" />
-            </div>
-            <div *ngIf="smileyFaceType === 'NONE'">
-                <img src="/assets/images/stimuli/smileyface/no.png" alt="no face" class="smiley-face-img" />
-            </div>
-            <div *ngIf="smileyFaceType === 'LONG'">
-                <img src="/assets/images/stimuli/smileyface/long.png" alt="long face" class="smiley-face-img" />
-            </div> -->
             <div *ngIf="stimulusBlobShown">
                 <img class="smiley-face-img" [src]="stimulusBlobShown" alt="Stimulus" />
             </div>
@@ -20,6 +11,10 @@
             <i class="material-icons" style="font-size: 60px">add</i>
         </div>
 
+        <div *ngIf="showHint && showStimulus">
+            <span class="feedback">{{ currentStimulus.faceShown }}</span>
+        </div>
+
         <div *ngIf="showFeedback" align="center">
             <div class="feedback">
                 <span *ngIf="feedback">{{ feedback }}</span>
@@ -27,182 +22,4 @@
             </div>
         </div>
     </div>
-    <!-- 
-    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 2">
-        <div class="h-100 flex-column-center uppercase instructions" align="center">
-            <img class="w-100" src="/assets/images/instructions/smileyface/2.png" alt="Smiley face instruction 2" />
-        </div>
-
-        <div class="w-100 p-4 uppercase">
-            <div class="d-flex flex-row align-items-center justify-content-between">
-                <div>
-                    <button mat-raised-button color="primary" (click)="proceedtoPreviousStep()">
-                        <mat-icon> arrow_backward </mat-icon>
-                        &nbsp; PREVIOUS
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary" (click)="startPractice()">
-                        START &nbsp;
-                        <mat-icon> arrow_forward </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 3">
-        <mat-spinner [diameter]="75"></mat-spinner>
-    </div>
-
-    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 4">
-        <div class="w-100" *ngIf="isStimulus">
-            <div class="d-flex flex-row align-items-center justify-content-center">
-                <div [style.display]="smileyFaceType === 'SHORT' ? 'block' : 'none'">
-                    <img class="smiley-face-img" src="/assets/images/stimuli/smileyface/short.png" alt="short face" />
-                </div>
-                <div [style.display]="smileyFaceType === 'NONE' ? 'block' : 'none'">
-                    <img class="smiley-face-img" src="/assets/images/stimuli/smileyface/no.png" alt="no face" />
-                </div>
-                <div [style.display]="smileyFaceType === 'LONG' ? 'block' : 'none'">
-                    <img class="smiley-face-img" src="/assets/images/stimuli/smileyface/long.png" alt="long face" />
-                </div>
-            </div>
-        </div>
-
-        <div *ngIf="showFixation">
-            <i class="material-icons" style="font-size: 60px">add</i>
-        </div>
-
-        <div *ngIf="!isStimulus" align="center">
-            <div class="feedback" *ngIf="feedback">
-                <span>{{ feedback }}</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 5">
-        <mat-spinner [diameter]="75"></mat-spinner>
-    </div>
-
-    <div class="full-box flex-column-center" *ngIf="!isBreak && step === 6">
-        <div class="h-100 flex-column-center uppercase instructions" align="center">
-            <img class="w-100" src="/assets/images/instructions/smileyface/3.png" alt="Smiley face instruction 3" />
-        </div>
-
-        <div class="w-100 p-4 uppercase">
-            <div class="flex-row-space-between">
-                <div>
-                    <button mat-raised-button color="primary" disabled>
-                        <mat-icon> arrow_backward </mat-icon>
-                        &nbsp; PREVIOUS
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary" (click)="startActualGame()">
-                        START &nbsp;
-                        <mat-icon> arrow_forward </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="full-box flex-column-center" *ngIf="!isBreak && (step === 7 || step === 11 || step === 15)">
-        <mat-spinner [diameter]="75"></mat-spinner>
-    </div>
-
-    <div class="full-box flex-column-center" *ngIf="!isBreak && (step === 8 || step === 12 || step === 16)">
-        <div class="w-100 px-4 uppercase instructions" align="center">
-            <div class="bold">Get Ready!</div>
-            <div class="bold">{{ countdownDisplayValue }}</div>
-
-            <img
-                class="w-100"
-                src="/assets/images/instructions/smileyface/countdown.png"
-                alt="Press Z for short mouth and M for long"
-            />
-        </div>
-    </div>
-
-    <div class="full-box flex-column-center" *ngIf="!isBreak && (step === 9 || step === 13 || step === 17)">
-        <div class="w-100" *ngIf="isStimulus">
-            <div class="d-flex flex-row align-items-center justify-content-center">
-                <div [style.display]="smileyFaceType === 'SHORT' ? 'block' : 'none'">
-                    <img class="smiley-face-img" src="/assets/images/stimuli/smileyface/short.png" alt="" />
-                </div>
-                <div [style.display]="smileyFaceType === 'NONE' ? 'block' : 'none'">
-                    <img class="smiley-face-img" src="/assets/images/stimuli/smileyface/no.png" alt="" />
-                </div>
-                <div [style.display]="smileyFaceType === 'LONG' ? 'block' : 'none'">
-                    <img class="smiley-face-img" src="/assets/images/stimuli/smileyface/long.png" alt="" />
-                </div>
-            </div>
-        </div>
-
-        <div *ngIf="showFixation">
-            <i class="material-icons" style="font-size: 60px">add</i>
-        </div>
-
-        <div *ngIf="!isStimulus" align="center">
-            <div class="feedback" *ngIf="feedback">
-                <span>{{ feedback }}</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="full-box flex-column-center" *ngIf="!isBreak && (step === 10 || step === 14 || step === 18)">
-        <mat-spinner [diameter]="75"></mat-spinner>
-    </div>
-
-    <div class="full-box flex-column-space-between" *ngIf="!isBreak && step === 19">
-        <div class="uppercase instructions h-100 flex-column-center" align="center">
-            <div class="bold mb-5">The game has finished</div>
-            <div>Congratulations!</div>
-            <div class="mb-5">You finished the game successfully</div>
-            <div class="mb-5">You won {{ totalScore }} points</div>
-            <div>Thank you for your participation.</div>
-            <div class="bold uppercase">Click 'CONTINUE'</div>
-        </div>
-
-        <div class="w-100 p-4 uppercase">
-            <div class="flex-row-space-between">
-                <div>
-                    <button mat-raised-button color="primary" disabled>
-                        <mat-icon> arrow_backward </mat-icon>
-                        &nbsp; PREVIOUS
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary" (click)="continueAhead()">
-                        CONTINUE &nbsp;
-                        <mat-icon> arrow_forward </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="full-box flex-column-space-between" *ngIf="isBreak">
-        <div class="uppercase instructions h-100 flex-column-center" align="center">
-            <img class="w-100" src="/assets/images/instructions/smileyface/break.png" alt="Smiley face instruction 2" />
-        </div>
-
-        <div class="w-100 p-4 uppercase">
-            <div class="flex-row-space-between">
-                <div>
-                    <button mat-raised-button color="primary" disabled>
-                        <mat-icon> arrow_backward </mat-icon>
-                        &nbsp; PREVIOUS
-                    </button>
-                </div>
-                <div>
-                    <button mat-raised-button color="primary" (click)="resume()">
-                        RESUME &nbsp;
-                        <mat-icon> arrow_forward </mat-icon>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div> -->
 </div>
