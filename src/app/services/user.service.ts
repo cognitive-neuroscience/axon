@@ -6,11 +6,12 @@ import { map, take } from "rxjs/operators";
 import { CrowdsourcedUser, StudyUser, User } from "../models/Login";
 import { Role } from "../models/enums";
 import { TimerService } from "./timer.service";
+import { CanClear } from "./clearance.service";
 
 @Injectable({
     providedIn: "root",
 })
-export class UserService {
+export class UserService implements CanClear {
     private readonly USERS_RESOURCE_PATH = "/users";
     private readonly CROWDSOURCED_USERS_RESOURCE_PATH = "/crowdsourcedusers";
     private readonly STUDY_USERS_RESOURCE_PATH = "/studyusers";
@@ -195,5 +196,17 @@ export class UserService {
 
     private _getStudyUsers(): Observable<StudyUser[]> {
         return this.http.get<StudyUser[]>(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}/studies`);
+    }
+
+    clearService() {
+        if (this._guestsSubject.value) {
+            this._guestsSubject.next(null);
+        }
+        if (this._studyUsersSubject.value) {
+            this._studyUsersSubject.next(null);
+        }
+        if (this._userBehaviorSubject.value) {
+            this._userBehaviorSubject.next(null);
+        }
     }
 }

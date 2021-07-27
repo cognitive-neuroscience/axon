@@ -1,4 +1,4 @@
-<mat-tab-group>
+<mat-tab-group (selectedTabChange)="saveTabPref($event)" [(selectedIndex)]="selectedTabIndex">
     <mat-tab label="Psharplab Tasks">
         <app-view-tasks></app-view-tasks>
     </mat-tab>

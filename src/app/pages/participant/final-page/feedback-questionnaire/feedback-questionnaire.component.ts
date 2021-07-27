@@ -78,7 +78,9 @@ export class FeedbackQuestionnaireComponent implements OnInit {
     }
 
     saveResponse() {
-        const userID = this.userService.user.id.toString();
+        const userID = this.userService.isCrowdsourcedUser
+            ? this.userService.user.email
+            : this.userService.user.id.toString();
         const studyID = this.taskManager.study.id;
 
         const obj: FeedbackQuestionnaireResponse = {

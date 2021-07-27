@@ -5,7 +5,7 @@ import { SnackbarService } from "./snackbar.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "./user.service";
 import { SessionStorageService } from "./sessionStorage.service";
-import { mergeMap, take } from "rxjs/operators";
+import { map, mergeMap, take } from "rxjs/operators";
 import { ParticipantRouteNames, Platform, RouteNames, TaskType } from "../models/enums";
 import { StudyTask, Task } from "../models/Task";
 import { TaskPlayerNavigationConfig } from "../pages/tasks/playables/task-player/task-player.component";
@@ -14,11 +14,13 @@ import { of } from "rxjs";
 import { TaskService } from "./task.service";
 import { ConsentNavigationConfig } from "../pages/shared/consent-component/consent-reader.component";
 import { EmbeddedPageNavigationConfig } from "../pages/tasks/embedded-page/embedded-page.component";
+import { CanClear } from "./clearance.service";
+import { StudyUser } from "../models/Login";
 
 @Injectable({
     providedIn: "root",
 })
-export class TaskManagerService {
+export class TaskManagerService implements CanClear {
     /**
      * This service is in charge of handling routing of the participant to the tasks assigned
      */
@@ -98,12 +100,6 @@ export class TaskManagerService {
         this._routeToTask(studyTask);
     }
 
-    // only use to force the study to break
-    private clear() {
-        this._study = null;
-        this._currentTaskIndex = 0;
-    }
-
     handleErr(): void {
         this._sessionStorageService.clearSessionStorage();
         this._router.navigate(["crowdsource-participant"]);
@@ -158,8 +154,32 @@ export class TaskManagerService {
             this.handleErr();
             return;
         }
-        this._currentTaskIndex++;
 
+        if (this._userService.isCrowdsourcedUser) {
+            ++this._currentTaskIndex;
+            this.handleNext();
+        } else {
+            this._userService.studyUsers
+                .pipe(
+                    map((studyUsers) => studyUsers.find((studyUser) => studyUser.studyId === this.study.id)),
+                    mergeMap((studyUser) => {
+                        studyUser.currentTaskIndex = ++this._currentTaskIndex;
+                        return this._userService.updateStudyUser(studyUser);
+                    }),
+                    take(1)
+                )
+                .subscribe(
+                    (res) => {
+                        this.handleNext();
+                    },
+                    (err) => {
+                        this.handleErr();
+                    }
+                );
+        }
+    }
+
+    private handleNext() {
         const totalTasks = this.study.tasks.length;
         // route to next task if there is still another task to go to
         if (this._currentTaskIndex < totalTasks) {
@@ -175,5 +195,10 @@ export class TaskManagerService {
                 }
             );
         }
+    }
+
+    clearService() {
+        this._study = null;
+        this._currentTaskIndex = 0;
     }
 }

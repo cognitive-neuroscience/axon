@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit, ViewContainerRef } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, OnDestroy, ViewContainerRef } from "@angular/core";
+import { Router } from "@angular/router";
 import { Observable, Subscription } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, take } from "rxjs/operators";
 import { getRandomNumber } from "src/app/common/commonMethods";
 import { ComponentFactoryService, ComponentName } from "src/app/services/component-factory.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
@@ -9,9 +9,9 @@ import { TaskManagerService } from "src/app/services/task-manager.service";
 import { ParticipantDataService } from "src/app/services/study-data.service";
 import { Navigation } from "../../shared/navigation-buttons/navigation-buttons.component";
 import { IOnComplete } from "../playable";
-import { LoaderService } from "src/app/services/loader/loader.service";
 import { UserService } from "src/app/services/user.service";
 import { AdminRouteNames, Role } from "src/app/models/enums";
+import { TaskData } from "src/app/models/TaskData";
 
 export interface CounterBalanceGroup {
     [key: number]: any;
@@ -79,9 +79,7 @@ export class TaskPlayerComponent implements OnDestroy {
         private userService: UserService,
         private uploadDataService: ParticipantDataService,
         private router: Router,
-        private snackbarService: SnackbarService,
-        private loaderService: LoaderService,
-        private route: ActivatedRoute
+        private snackbarService: SnackbarService
     ) {
         const navigationConfig = this.router.getCurrentNavigation().extras.state as TaskPlayerNavigationConfig;
         if (navigationConfig) {
@@ -95,12 +93,14 @@ export class TaskPlayerComponent implements OnDestroy {
     index = 0;
     taskData: any[] = [];
     steps: ComponentMetadata[] = [];
+    mode: "test" | "actual" = "test";
     subscription: Subscription;
 
     // metadata config
     state = new TaskConfig(null, null, {}, null); // this state will be shared with each step in the task
 
     handleTaskVariablesAndPlayTask(taskMetadataConfig: TaskMetadata, mode: "test" | "actual") {
+        this.mode = mode;
         if (mode === "test") {
             this.state.userID = "TEST";
             this.state.studyID = 0;
@@ -172,16 +172,29 @@ export class TaskPlayerComponent implements OnDestroy {
         this.subscription.unsubscribe();
         this.viewContainer.clear();
 
-        if (onComplete.taskData) this.taskData = this.taskData.concat(onComplete.taskData);
-
-        if (onComplete.navigation === Navigation.NEXT) {
-            this.renderNextStep();
+        if (onComplete.taskData && this.mode === "actual") {
+            this.handleUploadData(onComplete.taskData)
+                .pipe(take(1))
+                .subscribe(
+                    (ok) => {
+                        if (ok) {
+                            onComplete.navigation === Navigation.NEXT
+                                ? this.renderNextStep()
+                                : this.renderPreviousStep();
+                        } else {
+                            this.taskManager.handleErr();
+                        }
+                    },
+                    (err) => {
+                        this.taskManager.handleErr();
+                    }
+                );
         } else {
-            this.renderPreviousStep();
+            onComplete.navigation === Navigation.NEXT ? this.renderNextStep() : this.renderPreviousStep();
         }
     }
 
-    handleUploadData(): Observable<boolean> {
+    handleUploadData(taskData: TaskData[]): Observable<boolean> {
         return this.uploadDataService
             .uploadTaskData(
                 this.userService.isCrowdsourcedUser
@@ -190,7 +203,7 @@ export class TaskPlayerComponent implements OnDestroy {
                 this.taskManager.study?.id,
                 this.taskManager.currentStudyTask.taskOrder,
                 this.userService.isCrowdsourcedUser,
-                this.taskData
+                taskData
             )
             .pipe(map((ok) => ok.ok));
     }
@@ -201,25 +214,12 @@ export class TaskPlayerComponent implements OnDestroy {
             this.router.navigate([`${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.COMPONENTS_SUBROUTE}`]);
             this.snackbarService.openInfoSnackbar("Task completed");
         } else {
-            this.loaderService.showLoader();
-            this.handleUploadData().subscribe(
-                (ok) => {
-                    this.reset();
-                    this.loaderService.hideLoader();
-                    this.taskManager.next();
-                },
-                (err) => {
-                    this.reset();
-                    this.loaderService.hideLoader();
-                    this.taskManager.handleErr();
-                }
-            );
+            this.taskManager.next();
         }
     }
 
     reset() {
         this.index = 0;
-        this.taskData = [];
         this.steps = [];
         this.state = new TaskConfig(null, null, {}, null);
     }

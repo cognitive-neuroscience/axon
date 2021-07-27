@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
+import { take } from "rxjs/operators";
 import { ParticipantDataService } from "src/app/services/study-data.service";
 import { TaskManagerService } from "src/app/services/task-manager.service";
 import { UserService } from "src/app/services/user.service";
@@ -139,6 +140,7 @@ export class QuestionnaireReaderComponent {
                 this.userService.isCrowdsourcedUser,
                 [questionaireResponse]
             )
+            .pipe(take(1))
             .subscribe(
                 (ok) => {
                     this.taskManager.next();

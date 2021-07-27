@@ -4,6 +4,7 @@ import { AbstractControl, FormBuilder, ValidationErrors, Validators } from "@ang
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { ParticipantRouteNames, Role, RouteNames } from "src/app/models/enums";
+import { ClearanceService } from "src/app/services/clearance.service";
 import { LoaderService } from "src/app/services/loader/loader.service";
 import { SessionStorageService } from "src/app/services/sessionStorage.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
@@ -44,7 +45,8 @@ export class RegisterComponent implements OnInit {
         private snackbarService: SnackbarService,
         private loaderService: LoaderService,
         private sessionStorageService: SessionStorageService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private clearanceService: ClearanceService
     ) {}
 
     registerForm = this.fb.group(
@@ -74,6 +76,8 @@ export class RegisterComponent implements OnInit {
     }
 
     onSubmit() {
+        this.clearanceService.clearServices();
+
         const email = this.registerForm.controls.email.value;
         const password = this.registerForm.controls.password.value;
         this.loaderService.showLoader();

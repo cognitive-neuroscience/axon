@@ -101,6 +101,10 @@ export class CreateModifyStudyComponent implements OnInit {
         );
     }
 
+    get canRemoveTask(): boolean {
+        return this.mode === "CREATE" || (this.mode === "EDIT" && this.study.canEdit);
+    }
+
     ngOnInit(): void {
         this.tasks = this.taskService.tasks;
         if (!this.taskService.hasTasks) this.taskService.update();

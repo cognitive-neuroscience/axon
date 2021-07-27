@@ -141,7 +141,7 @@
                             {{ task.description }}
                         </span>
                     </div>
-                    <div *ngIf="study && study.canEdit" style="width: 10%; text-align: end">
+                    <div *ngIf="canRemoveTask" style="width: 10%; text-align: end">
                         <mat-icon class="droplist-item-cancel" (click)="removeElement(i)">cancel</mat-icon>
                     </div>
                 </div>

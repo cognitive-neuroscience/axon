@@ -4,12 +4,12 @@ import { Study } from "../models/Study";
 import { HttpClient, HttpResponse } from "@angular/common/http";
 import { environment } from "src/environments/environment";
 import { map, take } from "rxjs/operators";
-import { AuthService } from "./auth.service";
+import { CanClear } from "./clearance.service";
 
 @Injectable({
     providedIn: "root",
 })
-export class StudyService {
+export class StudyService implements CanClear {
     /**
      * This service is in charge of handling the CRUD operations of studies
      * from the ADMIN's perspective.
@@ -70,5 +70,11 @@ export class StudyService {
 
     private _getAllStudies(): Observable<Study[]> {
         return this._http.get<Study[]>(`${environment.apiBaseURL}${this.RESOURCE_PATH}`);
+    }
+
+    clearService() {
+        if (this._studiesBehaviorSubject.value) {
+            this._studiesBehaviorSubject.next(null);
+        }
     }
 }

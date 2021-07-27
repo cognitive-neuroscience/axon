@@ -9,6 +9,7 @@ import { LoaderService } from "src/app/services/loader/loader.service";
 import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames } from "src/app/models/enums";
 import { take } from "rxjs/operators";
 import { UserService } from "src/app/services/user.service";
+import { ClearanceService } from "src/app/services/clearance.service";
 
 @Component({
     selector: "app-login",
@@ -35,6 +36,8 @@ export class LoginComponent implements OnDestroy {
     }
 
     onSubmit() {
+        this.clearanceService.clearServices();
+
         this.loaderService.showLoader();
         const email = this.loginForm.controls.email.value;
         const password = this.loginForm.controls.password.value;
@@ -44,18 +47,20 @@ export class LoginComponent implements OnDestroy {
             .pipe(take(1))
             .subscribe(
                 (response) => {
-                    this.userService.userAsync.subscribe(
-                        (user) => {
-                            if (user !== null) {
+                    this.subscriptions.push(
+                        this.userService.userAsync.subscribe(
+                            (user) => {
+                                if (user !== null) {
+                                    this.loaderService.hideLoader();
+                                    this.snackbarService.openSuccessSnackbar(this.LOGIN_SUCCESS_STR);
+                                    this.handleNavigate(response.role);
+                                }
+                            },
+                            (err) => {
                                 this.loaderService.hideLoader();
-                                this.snackbarService.openSuccessSnackbar(this.LOGIN_SUCCESS_STR);
-                                this.handleNavigate(response.role);
+                                this.snackbarService.openErrorSnackbar(err.message);
                             }
-                        },
-                        (err) => {
-                            this.loaderService.hideLoader();
-                            this.snackbarService.openErrorSnackbar(err.message);
-                        }
+                        )
                     );
                     this.userService.updateUser();
                 },
@@ -72,7 +77,8 @@ export class LoginComponent implements OnDestroy {
         private snackbarService: SnackbarService,
         private fb: FormBuilder,
         private loaderService: LoaderService,
-        private userService: UserService
+        private userService: UserService,
+        private clearanceService: ClearanceService
     ) {}
 
     private handleNavigate(role: Role) {
