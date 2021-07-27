@@ -1,18 +1,27 @@
 import { Component } from "@angular/core";
 import { FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
+import { NzMarks } from "ng-zorro-antd/slider";
 import { take } from "rxjs/operators";
 import { ParticipantDataService } from "src/app/services/study-data.service";
 import { TaskManagerService } from "src/app/services/task-manager.service";
 import { UserService } from "src/app/services/user.service";
 
 class Question {
-    questionType: "multipleChoiceSelect" | "radiobuttons" | "freeTextResponse" | "displayText" | "divider" | "input";
+    questionType:
+        | "multipleChoiceSelect"
+        | "radiobuttons"
+        | "freeTextResponse"
+        | "displayText"
+        | "divider"
+        | "input"
+        | "slider";
     radiobuttonPresentation?: "horizontal" | "vertical" = "horizontal";
     key: string; // unique property of the input - this is what will be used when getting the data. Mandatory for all questionTypes except divider and free text
     label?: string; // label of the input
     title?: string; // title of the input - shown above the input itself
     textContent?: string; // explanatory text below the title
+    legend?: string[]; // legend for slider, slider values are spaced out automatically
     validation?: {
         required?: boolean;
         isNumeric?: boolean;
@@ -122,6 +131,26 @@ export class QuestionnaireReaderComponent {
             }
         });
         return true;
+    }
+
+    handleSliderValueSelected(key: string, value: number) {
+        this.questionnaire.controls[key].setValue(value);
+    }
+
+    getSliderMarks(legend: string[]): NzMarks {
+        const tempMarks: NzMarks = {};
+        if (!legend || legend.length == 0) {
+            return {};
+        }
+        let index = 0;
+        const tickIncrement = 100 / (legend.length - 1);
+
+        for (let i = 0; i < legend.length; i++) {
+            tempMarks[index] = legend[i];
+            index += tickIncrement;
+        }
+
+        return tempMarks;
     }
 
     onSubmit() {

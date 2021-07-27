@@ -16,6 +16,16 @@
     color: #464646;
 }
 
+.slider-container {
+    margin: 80px 30px;
+    display: flex;
+    flex-direction: row;
+
+    .slider-error {
+        margin-top: 50px;
+    }
+}
+
 .error-text {
     color: red;
 }

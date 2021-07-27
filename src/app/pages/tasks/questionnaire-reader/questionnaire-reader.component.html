@@ -77,6 +77,24 @@
                         </mat-form-field>
                     </div>
 
+                    <div class="slider-container" *ngSwitchCase="'slider'">
+                        <div class="w-75">
+                            <h2 *ngIf="question.title" class="title-text" [innerHTML]="question.title"></h2>
+                            <p *ngIf="question.textContent" class="sub-text" [innerHTML]="question.textContent"></p>
+                            <div class="w-75 d-block">
+                                <app-slider
+                                    [marks]="getSliderMarks(question.legend)"
+                                    (sliderValueSelected)="handleSliderValueSelected(question.key, $event)"
+                                ></app-slider>
+                            </div>
+                        </div>
+                        <div class="w-25 slider-error error-text" style="font-size: 75%">
+                            <span *ngIf="questionnaire.get(question.key)?.hasError('required')">
+                                This is required
+                            </span>
+                        </div>
+                    </div>
+
                     <div class="my-5" *ngSwitchCase="'displayText'">
                         <h2 *ngIf="question.title" class="title-text" [innerHTML]="question.title"></h2>
                         <p *ngIf="question.textContent" class="sub-text" [innerHTML]="question.textContent"></p>
