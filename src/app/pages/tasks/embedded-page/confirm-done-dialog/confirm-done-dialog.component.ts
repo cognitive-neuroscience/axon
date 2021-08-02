@@ -10,7 +10,7 @@ import { SnackbarService } from "src/app/services/snackbar.service";
 export class ConfirmDoneDialogComponent implements OnInit {
     enteredWord: string = "";
 
-    private readonly completionWord = "BRAINTASKS";
+    private readonly completionWord = "BRAIN";
 
     constructor(
         private dialogRef: MatDialogRef<ConfirmDoneDialogComponent>,

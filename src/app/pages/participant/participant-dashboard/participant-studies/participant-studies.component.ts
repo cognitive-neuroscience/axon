@@ -55,7 +55,7 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
 
     getButtonText(studyUser: StudyUser): string {
         if (!studyUser.study.started) {
-            return "Study not started";
+            return "Sharplab has not started this study";
         } else if (studyUser.currentTaskIndex === 0) {
             return "Start study";
         } else if (studyUser.currentTaskIndex === studyUser.study.tasks.length) {

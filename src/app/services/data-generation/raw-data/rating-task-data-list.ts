@@ -66,7 +66,7 @@ export const RatingTaskActivities = {
         "Do the groceries",
         "Tidy the house",
         "Organize your cupboards",
-        "Go to a cutural event",
+        "Go to a cultural event",
         "Clean or vacuum the floor",
         "Meet with your accountant or financial planner",
         "Iron your dress clothes",
