@@ -10,6 +10,7 @@ import { SnackbarService } from "src/app/services/snackbar.service";
 import { TaskManagerService } from "src/app/services/task-manager.service";
 import { TaskService } from "src/app/services/task.service";
 import { UserService } from "src/app/services/user.service";
+import { FeedbackQuestionnaireComponent } from "../../final-page/feedback-questionnaire/feedback-questionnaire.component";
 import { ConsentDialogComponent } from "./consent-dialog/consent-dialog.component";
 declare function setFullScreen(): any;
 
@@ -94,6 +95,10 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
                     this.snackbar.openErrorSnackbar(err.message);
                 }
             );
+    }
+
+    openFeedbackDialog(studyUser: StudyUser) {
+        this.dialog.open(FeedbackQuestionnaireComponent, { width: "60%", height: "70%", data: studyUser });
     }
 
     async startOrContinueStudy(studyUser: StudyUser) {

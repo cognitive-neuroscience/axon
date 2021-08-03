@@ -2,7 +2,9 @@
     <div *ngIf="!formSubmitted">
         <div [formGroup]="feedbackQuestionnaire" class="form">
             <div>
-                <label class="w-100 font-weight-bold">Did you encounter any issues during our study?</label>
+                <label class="w-100 font-weight-bold"
+                    >Did you encounter any issues during our study (technological glitches)?</label
+                >
                 <mat-form-field class="w-100">
                     <textarea
                         formControlName="issuesEncountered"

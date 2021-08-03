@@ -15,7 +15,11 @@ import { FingerTappingTaskComponent } from "../pages/tasks/playables/finger-tapp
 import { TrailMakingComponent } from "../pages/tasks/playables/trail-making/trail-making.component";
 
 export enum ComponentName {
+    // Generic components
     DISPLAY_COMPONENT = "DISPLAYCOMPONENT",
+    SELECT_OPTION_COMPONENT = "SELECTOPTIONCOMPONENT",
+
+    // Task related components
     RATING_COMPONMENT = "RATINGCOMPONENT",
     CHOICE_COMPONENT = "CHOICECOMPONENT",
     ODDBALL_COMPONENT = "ODDBALLCOMPONENT",
@@ -25,10 +29,11 @@ export enum ComponentName {
     DEMAND_SELECTION_COMPONENT = "DEMANDSELECTIONCOMPONENT",
     TASK_SWITCHING_COMPONENT = "TASKSWITCHINGCOMPONENT",
     DIGIT_SPAN_COMPONENT = "DIGITSPANCOMPONENT",
-    SELECT_OPTION_COMPONENT = "SELECTOPTIONCOMPONENT",
     FINGER_TAPPING_COMPONENT = "FINGERTAPPINGCOMPONENT",
     TRAIL_MAKING_COMPONENT = "TRAILMAKINGCOMPONENT",
 }
+
+export const GenericComponentsList = [ComponentName.DISPLAY_COMPONENT, ComponentName.SELECT_OPTION_COMPONENT];
 
 @Injectable({
     providedIn: "root",

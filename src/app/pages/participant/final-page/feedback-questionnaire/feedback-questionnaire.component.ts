@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { FeedbackQuestionnaireResponse } from "../../../../models/Questionnaire";
 import { TaskManagerService } from "../../../../services/task-manager.service";
 import { FormBuilder, Validators } from "@angular/forms";
@@ -8,6 +8,8 @@ import { ParticipantDataService } from "src/app/services/study-data.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { TimerService } from "src/app/services/timer.service";
 import { ParticipantType } from "src/app/models/enums";
+import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { StudyUser } from "src/app/models/Login";
 
 @Component({
     selector: "app-feedback-questionnaire",
@@ -66,7 +68,8 @@ export class FeedbackQuestionnaireComponent implements OnInit {
         private userService: UserService,
         private participantDataService: ParticipantDataService,
         private snackbarService: SnackbarService,
-        private timerService: TimerService
+        private timerService: TimerService,
+        @Inject(MAT_DIALOG_DATA) public studyUser: StudyUser
     ) {}
 
     ngOnInit(): void {}
@@ -78,10 +81,19 @@ export class FeedbackQuestionnaireComponent implements OnInit {
     }
 
     saveResponse() {
-        const userID = this.userService.isCrowdsourcedUser
-            ? this.userService.user.email
-            : this.userService.user.id.toString();
-        const studyID = this.taskManager.study.id;
+        let userID: string;
+        let studyID: number;
+
+        if (this.studyUser) {
+            // this component is being represented as a modal and data is being passed to it that way
+            userID = this.studyUser.userId.toString();
+            studyID = this.studyUser.studyId;
+        } else {
+            userID = this.userService.isCrowdsourcedUser
+                ? this.userService.user.email
+                : this.userService.user.id.toString();
+            studyID = this.taskManager.study.id;
+        }
 
         const obj: FeedbackQuestionnaireResponse = {
             userId: userID,

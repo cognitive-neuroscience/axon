@@ -72,6 +72,15 @@
                 >
                     {{ getButtonText(studyUser) }}
                 </button>
+                <button
+                    (click)="openFeedbackDialog(studyUser)"
+                    *ngIf="studyIsDone(studyUser) || !studyUser.study.started"
+                    class="w-25"
+                    mat-raised-button
+                    color="primary"
+                >
+                    Submit Feedback
+                </button>
             </div>
         </div>
     </div>

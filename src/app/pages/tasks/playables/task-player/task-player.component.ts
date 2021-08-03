@@ -1,9 +1,13 @@
 import { Component, OnDestroy, ViewContainerRef } from "@angular/core";
 import { Router } from "@angular/router";
-import { Observable, Subscription } from "rxjs";
-import { map, take } from "rxjs/operators";
+import { Observable, of, Subscription } from "rxjs";
+import { map, mergeMap, take } from "rxjs/operators";
 import { getRandomNumber } from "src/app/common/commonMethods";
-import { ComponentFactoryService, ComponentName } from "src/app/services/component-factory.service";
+import {
+    ComponentFactoryService,
+    ComponentName,
+    GenericComponentsList,
+} from "src/app/services/component-factory.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { TaskManagerService } from "src/app/services/task-manager.service";
 import { ParticipantDataService } from "src/app/services/study-data.service";
@@ -172,9 +176,11 @@ export class TaskPlayerComponent implements OnDestroy {
         this.subscription.unsubscribe();
         this.viewContainer.clear();
 
+        const shouldSetTaskAsComplete = this.hasCompletedAllBlocks();
+
         if (onComplete.taskData && this.mode === "actual") {
             this.handleUploadData(onComplete.taskData)
-                .pipe(take(1))
+                .pipe(mergeMap((ok) => (ok && shouldSetTaskAsComplete ? this.taskManager.setTaskAsComplete() : of(ok))))
                 .subscribe(
                     (ok) => {
                         if (ok) {
@@ -192,6 +198,21 @@ export class TaskPlayerComponent implements OnDestroy {
         } else {
             onComplete.navigation === Navigation.NEXT ? this.renderNextStep() : this.renderPreviousStep();
         }
+    }
+
+    private hasCompletedAllBlocks(): boolean {
+        for (let i = this.index + 1; i < this.steps.length; i++) {
+            const componentName = this.steps[i].component;
+            if (!GenericComponentsList.includes(componentName)) {
+                // GenericComponentsList contains a list of components that are used to display generic info and
+                // aren't related to implementation of a particular task. If our ith component name is not generic,
+                // that means that it is task specific and we still have other blocks to go. Otherwise we have finished
+                // the last block.
+                // TODO: add a test case for this
+                return false;
+            }
+        }
+        return true;
     }
 
     handleUploadData(taskData: TaskData[]): Observable<boolean> {

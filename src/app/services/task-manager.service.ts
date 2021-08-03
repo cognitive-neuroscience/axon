@@ -10,7 +10,7 @@ import { ParticipantRouteNames, Platform, RouteNames, TaskType } from "../models
 import { StudyTask, Task } from "../models/Task";
 import { TaskPlayerNavigationConfig } from "../pages/tasks/playables/task-player/task-player.component";
 import { QuestionnaireNavigationConfig } from "../pages/tasks/questionnaire-reader/questionnaire-reader.component";
-import { of } from "rxjs";
+import { Observable, of } from "rxjs";
 import { TaskService } from "./task.service";
 import { ConsentNavigationConfig } from "../pages/shared/consent-component/consent-reader.component";
 import { EmbeddedPageNavigationConfig } from "../pages/tasks/embedded-page/embedded-page.component";
@@ -103,7 +103,11 @@ export class TaskManagerService implements CanClear {
     handleErr(): void {
         this._sessionStorageService.clearSessionStorage();
         this._router.navigate(["crowdsource-participant"]);
-        this._snackbarService.openErrorSnackbar("There was an error. Please contact the sharplab");
+        this._snackbarService.openErrorSnackbar(
+            "There was an error. Please contact sharplab.neuro@mcgill.ca",
+            undefined,
+            15000
+        );
     }
 
     // ------------------------------------
@@ -155,28 +159,22 @@ export class TaskManagerService implements CanClear {
             return;
         }
 
-        if (this._userService.isCrowdsourcedUser) {
-            ++this._currentTaskIndex;
-            this.handleNext();
-        } else {
-            this._userService.studyUsers
-                .pipe(
-                    map((studyUsers) => studyUsers.find((studyUser) => studyUser.studyId === this.study.id)),
-                    mergeMap((studyUser) => {
-                        studyUser.currentTaskIndex = ++this._currentTaskIndex;
-                        return this._userService.updateStudyUser(studyUser);
-                    }),
-                    take(1)
-                )
-                .subscribe(
-                    (res) => {
-                        this.handleNext();
-                    },
-                    (err) => {
-                        this.handleErr();
-                    }
-                );
-        }
+        // currentTaskIndex is incremented in the setTaskAsComplete method for account holders
+        if (this._userService.isCrowdsourcedUser) ++this._currentTaskIndex;
+
+        this.handleNext();
+    }
+
+    // only for account holders because they're current task index is saved
+    setTaskAsComplete(): Observable<boolean> {
+        return this._userService.studyUsers.pipe(
+            map((studyUsers) => studyUsers.find((studyUser) => studyUser.studyId === this.study.id)),
+            mergeMap((studyUser) => {
+                studyUser.currentTaskIndex = ++this._currentTaskIndex;
+                return this._userService.updateStudyUser(studyUser);
+            }),
+            take(1)
+        );
     }
 
     private handleNext() {
