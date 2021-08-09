@@ -33,7 +33,6 @@ export class EmbeddedPageComponent implements OnInit, OnDestroy {
     subscriptions: Subscription[] = [];
 
     constructor(
-        private confirmationService: ConfirmationService,
         private taskManager: TaskManagerService,
         private userService: UserService,
         private _router: Router,
@@ -43,14 +42,19 @@ export class EmbeddedPageComponent implements OnInit, OnDestroy {
             .state as EmbeddedPageNavigationConfig;
         if (embeddedPageNavigation) {
             this.embeddedPageNavigation = embeddedPageNavigation;
-            const userId = embeddedPageNavigation.mode === "test" ? "PLACEHOLDERUSERID" : this.userService.user.id;
-            const studyId = embeddedPageNavigation.mode === "test" ? 0 : this.taskManager.study.id;
+            let userId: string;
+            let studyId: number;
 
-            this.embeddedSurveyLink = this.parseURL(
-                embeddedPageNavigation.config.externalURL,
-                userId.toString(),
-                studyId
-            );
+            if (embeddedPageNavigation.mode === "test") {
+                userId = "PLACEHOLDERUSERID";
+                studyId = 0;
+            } else {
+                userId = this.userService.isCrowdsourcedUser
+                    ? this.userService.user.email
+                    : this.userService.user.id.toString();
+                studyId = this.taskManager.study.id;
+            }
+            this.embeddedSurveyLink = this.parseURL(embeddedPageNavigation.config.externalURL, userId, studyId);
         }
     }
 
