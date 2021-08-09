@@ -8,10 +8,9 @@ import { ParticipantRouteNames, RouteNames } from "../models/enums";
 import { CrowdSourceLoginComponent } from "../pages/landing-page/crowdsource-login/crowdsource-login.component";
 import { TaskPlayerComponent } from "../pages/tasks/playables/task-player/task-player.component";
 import { QuestionnaireReaderComponent } from "../pages/tasks/questionnaire-reader/questionnaire-reader.component";
-import { FeedbackQuestionnaireComponent } from "../pages/participant/final-page/feedback-questionnaire/feedback-questionnaire.component";
-import { PavloviaTasksComponent } from "../pages/admin/admin-dashboard/study-components/pavlovia-tasks/pavlovia-tasks.component";
 import { EmbeddedPageComponent } from "../pages/tasks/embedded-page/embedded-page.component";
 import { ConsentPageComponent } from "../pages/tasks/consent/consent-page/consent-page.component";
+import { ForgotPasswordComponent } from "../pages/landing-page/forgot-password/forgot-password.component";
 
 const routes: Routes = [
     {
@@ -21,6 +20,7 @@ const routes: Routes = [
             { path: "", redirectTo: RouteNames.LANDINGPAGE_LOGIN_SUBROUTE, pathMatch: "full" },
             { path: RouteNames.LANDINGPAGE_LOGIN_SUBROUTE, component: LoginComponent },
             { path: RouteNames.LANDINGPAGE_REGISTER_SUBROUTE, component: RegisterComponent },
+            { path: RouteNames.LANDINGPAGE_FORGOT_PASSWPRD, component: ForgotPasswordComponent },
         ],
     },
     {

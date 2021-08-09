@@ -17,6 +17,7 @@ import { AdminModule } from "./pages/admin/admin.module";
 import { ParticipantModule } from "./pages/participant/participant.module";
 import { TaskModule } from "./pages/tasks/task.module";
 import { ErrorInterceptor } from "./interceptors/error.interceptor";
+import { ForgotPasswordComponent } from './pages/landing-page/forgot-password/forgot-password.component';
 
 @NgModule({
     declarations: [
@@ -28,6 +29,7 @@ import { ErrorInterceptor } from "./interceptors/error.interceptor";
         CreateGuestDialogComponent,
         LandingPageComponent,
         RegisterComponent,
+        ForgotPasswordComponent,
     ],
     imports: [
         BrowserModule,
