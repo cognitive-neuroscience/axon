@@ -12,7 +12,7 @@
                         <p *ngIf="question.textContent" class="sub-text" [innerHTML]="question.textContent"></p>
                         <mat-form-field class="w-50">
                             <mat-label>{{ question.label }}</mat-label>
-                            <mat-select [formControlName]="question.key">
+                            <mat-select [formControlName]="question.key" [multiple]="question.allowMultipleSelections">
                                 <mat-option
                                     *ngFor="let option of question.multipleChoiceOptions"
                                     [value]="option.value"

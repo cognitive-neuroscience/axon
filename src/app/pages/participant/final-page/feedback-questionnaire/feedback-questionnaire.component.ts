@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, Optional } from "@angular/core";
 import { FeedbackQuestionnaireResponse } from "../../../../models/Questionnaire";
 import { TaskManagerService } from "../../../../services/task-manager.service";
 import { FormBuilder, Validators } from "@angular/forms";
@@ -69,7 +69,7 @@ export class FeedbackQuestionnaireComponent implements OnInit {
         private participantDataService: ParticipantDataService,
         private snackbarService: SnackbarService,
         private timerService: TimerService,
-        @Inject(MAT_DIALOG_DATA) public studyUser: StudyUser
+        @Optional() @Inject(MAT_DIALOG_DATA) public studyUser: StudyUser
     ) {}
 
     ngOnInit(): void {}

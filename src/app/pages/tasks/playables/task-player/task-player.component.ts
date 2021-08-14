@@ -176,7 +176,7 @@ export class TaskPlayerComponent implements OnDestroy {
         this.subscription.unsubscribe();
         this.viewContainer.clear();
 
-        const shouldSetTaskAsComplete = this.hasCompletedAllBlocks();
+        const shouldSetTaskAsComplete = !this.userService.isCrowdsourcedUser && this.hasCompletedAllBlocks();
 
         if (onComplete.taskData && this.mode === "actual") {
             this.handleUploadData(onComplete.taskData)

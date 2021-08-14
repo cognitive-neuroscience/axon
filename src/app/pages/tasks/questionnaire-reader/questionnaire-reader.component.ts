@@ -17,6 +17,7 @@ class Question {
         | "input"
         | "slider";
     radiobuttonPresentation?: "horizontal" | "vertical" = "horizontal";
+    allowMultipleSelections?: boolean; // for multiple choice select, allow multiple choices
     key: string; // unique property of the input - this is what will be used when getting the data. Mandatory for all questionTypes except divider and free text
     label?: string; // label of the input
     title?: string; // title of the input - shown above the input itself
@@ -156,7 +157,12 @@ export class QuestionnaireReaderComponent {
     onSubmit() {
         const questionaireResponse = {};
         Object.keys(this.questionnaire.controls).forEach((key) => {
-            questionaireResponse[key] = this.questionnaire.controls[key].value;
+            const value = this.questionnaire.controls[key].value;
+            const isArray = Array.isArray(this.questionnaire.controls[key].value);
+            const reducer = (acc: string, currVal: string, currIndex: number) =>
+                currIndex === 0 ? currVal : `${acc}, ${currVal}`;
+
+            questionaireResponse[key] = isArray ? (value as string[]).reduce(reducer, "") : value;
         });
 
         this.participantDataService
