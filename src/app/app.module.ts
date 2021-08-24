@@ -17,7 +17,8 @@ import { AdminModule } from "./pages/admin/admin.module";
 import { ParticipantModule } from "./pages/participant/participant.module";
 import { TaskModule } from "./pages/tasks/task.module";
 import { ErrorInterceptor } from "./interceptors/error.interceptor";
-import { ForgotPasswordComponent } from './pages/landing-page/forgot-password/forgot-password.component';
+import { SendResetPasswordComponent } from "./pages/landing-page/forgot-password/send-reset-password/send-reset-password.component";
+import { ResetPasswordLoginComponent } from "./pages/landing-page/forgot-password/change-password-page/reset-password-login.component";
 
 @NgModule({
     declarations: [
@@ -29,7 +30,8 @@ import { ForgotPasswordComponent } from './pages/landing-page/forgot-password/fo
         CreateGuestDialogComponent,
         LandingPageComponent,
         RegisterComponent,
-        ForgotPasswordComponent,
+        SendResetPasswordComponent,
+        ResetPasswordLoginComponent,
     ],
     imports: [
         BrowserModule,

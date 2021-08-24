@@ -1,7 +1,8 @@
 export enum RouteNames {
     LANDINGPAGE_LOGIN_SUBROUTE = "login",
     LANDINGPAGE_REGISTER_SUBROUTE = "register",
-    LANDINGPAGE_FORGOT_PASSWPRD = "reset",
+    LANDINGPAGE_FORGOT_PASSWORD = "send-reset-email",
+    LANDINGPAGE_RESET_PASSWORD = "reset",
 
     TASKPLAYER = "playtask",
 

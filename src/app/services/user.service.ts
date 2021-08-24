@@ -78,6 +78,7 @@ export class UserService implements CanClear {
                             email: crowdsourcedUser.participantId,
                             role: Role.PARTICIPANT,
                             createdAt: crowdsourcedUser.registerDate,
+                            changePasswordRequired: false,
                         };
                         this._userBehaviorSubject.next(user);
                     },
@@ -143,6 +144,13 @@ export class UserService implements CanClear {
         return this.http.get<CrowdsourcedUser[]>(
             `${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}/${studyId}`
         );
+    }
+
+    changePassword(email: string, tempPassword: string, oldPassword: string): Observable<any> {
+        return this.http.post(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/changepassword`, {
+            email,
+            tempPassword,
+        });
     }
 
     // register a given account holding participant with a study id

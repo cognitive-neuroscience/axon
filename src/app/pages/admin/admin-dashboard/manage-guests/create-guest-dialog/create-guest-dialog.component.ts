@@ -31,6 +31,7 @@ export class CreateGuestDialogComponent implements OnInit {
             createdAt: null,
             email: this.newUserEmail,
             role: Role.GUEST,
+            changePasswordRequired: false,
         };
         this.dialogRef.close(user);
     }

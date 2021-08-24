@@ -1,4 +1,4 @@
-import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
+import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -104,5 +104,9 @@ export class RegisterComponent implements OnInit {
 
     navigateToLoginPage() {
         this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_SUBROUTE]);
+    }
+
+    navigateToForgotPassword() {
+        this.router.navigate([RouteNames.LANDINGPAGE_FORGOT_PASSWORD]);
     }
 }

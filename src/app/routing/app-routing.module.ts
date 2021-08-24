@@ -10,7 +10,8 @@ import { TaskPlayerComponent } from "../pages/tasks/playables/task-player/task-p
 import { QuestionnaireReaderComponent } from "../pages/tasks/questionnaire-reader/questionnaire-reader.component";
 import { EmbeddedPageComponent } from "../pages/tasks/embedded-page/embedded-page.component";
 import { ConsentPageComponent } from "../pages/tasks/consent/consent-page/consent-page.component";
-import { ForgotPasswordComponent } from "../pages/landing-page/forgot-password/forgot-password.component";
+import { SendResetPasswordComponent } from "../pages/landing-page/forgot-password/send-reset-password/send-reset-password.component";
+import { ResetPasswordLoginComponent } from "../pages/landing-page/forgot-password/change-password-page/reset-password-login.component";
 
 const routes: Routes = [
     {
@@ -20,7 +21,11 @@ const routes: Routes = [
             { path: "", redirectTo: RouteNames.LANDINGPAGE_LOGIN_SUBROUTE, pathMatch: "full" },
             { path: RouteNames.LANDINGPAGE_LOGIN_SUBROUTE, component: LoginComponent },
             { path: RouteNames.LANDINGPAGE_REGISTER_SUBROUTE, component: RegisterComponent },
-            { path: RouteNames.LANDINGPAGE_FORGOT_PASSWPRD, component: ForgotPasswordComponent },
+            { path: RouteNames.LANDINGPAGE_FORGOT_PASSWORD, component: SendResetPasswordComponent },
+            {
+                path: RouteNames.LANDINGPAGE_RESET_PASSWORD,
+                component: ResetPasswordLoginComponent,
+            },
         ],
     },
     {

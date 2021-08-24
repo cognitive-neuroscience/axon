@@ -17,6 +17,6 @@ export class LandingPageComponent implements OnInit {
     }
 
     navigateToForgotPassword() {
-        this.router.navigate([RouteNames.LANDINGPAGE_FORGOT_PASSWPRD]);
+        this.router.navigate([RouteNames.LANDINGPAGE_FORGOT_PASSWORD]);
     }
 }

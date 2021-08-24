@@ -31,6 +31,14 @@ export class LoginComponent implements OnDestroy {
         this.router.navigate([RouteNames.LANDINGPAGE_REGISTER_SUBROUTE]);
     }
 
+    navigateToCrowdSourceRegister() {
+        this.router.navigate([ParticipantRouteNames.CROWDSOURCEPARTICIPANT_REGISTER_BASEROUTE]);
+    }
+
+    navigateToForgotPassword() {
+        this.router.navigate([RouteNames.LANDINGPAGE_FORGOT_PASSWORD]);
+    }
+
     onSubmit() {
         this.clearanceService.clearServices();
 

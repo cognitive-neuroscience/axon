@@ -7,6 +7,7 @@ export class User {
     password?: string;
     role: Role;
     createdAt: string;
+    changePasswordRequired: boolean;
 }
 
 export class CrowdsourcedUser {

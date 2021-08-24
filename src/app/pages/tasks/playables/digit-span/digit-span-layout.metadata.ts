@@ -14,7 +14,7 @@ export const DigitSpanLayoutMetadata = {
                     },
                     {
                         sectionType: "text",
-                        textContent: "This is a memory test",
+                        textContent: "This is a memory text",
                     },
                     {
                         sectionType: "text",
