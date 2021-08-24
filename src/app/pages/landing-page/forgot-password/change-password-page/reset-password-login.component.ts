@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { RouteNames } from "src/app/models/enums";
+import { LoaderService } from "src/app/services/loader/loader.service";
 import { SnackbarService } from "src/app/services/snackbar.service";
 import { UserService } from "src/app/services/user.service";
 
@@ -43,7 +44,8 @@ export class ResetPasswordLoginComponent implements OnInit {
         private fb: FormBuilder,
         private router: Router,
         private userService: UserService,
-        private snackbarService: SnackbarService
+        private snackbarService: SnackbarService,
+        private loaderService: LoaderService
     ) {}
 
     ngOnInit(): void {}
@@ -53,12 +55,16 @@ export class ResetPasswordLoginComponent implements OnInit {
         const temporaryPassword = this.resetPasswordForm.controls.temporaryPassword.value;
         const password = this.resetPasswordForm.controls.password.value;
 
+        this.loaderService.showLoader();
+
         this.userService.changePassword(email, temporaryPassword, password).subscribe(
             (res) => {
+                this.loaderService.hideLoader();
                 this.snackbarService.openSuccessSnackbar("password successfully changed, please log in");
                 this.router.navigate([`${RouteNames.LANDINGPAGE_LOGIN_SUBROUTE}`]);
             },
             (err) => {
+                this.loaderService.hideLoader();
                 this.snackbarService.openErrorSnackbar(err);
             }
         );

@@ -146,11 +146,16 @@ export class UserService implements CanClear {
         );
     }
 
-    changePassword(email: string, tempPassword: string, oldPassword: string): Observable<any> {
-        return this.http.post(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/changepassword`, {
-            email,
-            tempPassword,
-        });
+    changePassword(email: string, temporaryPassword: string, newPassword: string): Observable<any> {
+        return this.http.post(
+            `${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/changepassword`,
+            {
+                email,
+                temporaryPassword,
+                newPassword,
+            },
+            { observe: "response" }
+        );
     }
 
     // register a given account holding participant with a study id
