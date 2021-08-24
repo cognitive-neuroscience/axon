@@ -142,9 +142,7 @@ export class CreateModifyStudyComponent implements OnInit {
     }
 
     navigateToViewAllStudies() {
-        this.router.navigate([
-            `${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.STUDIES_SUBROUTE}/${AdminRouteNames.STUDIES_VIEW_SUBROUTE}`,
-        ]);
+        this.router.navigate([`${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.STUDIES_SUBROUTE}`]);
     }
 
     drop(event: CdkDragDrop<string[]>) {
