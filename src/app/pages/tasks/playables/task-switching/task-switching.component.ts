@@ -284,6 +284,7 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
             const shouldSkip = numCorrect / this.numTrials >= this.thresholdForRepeat;
 
             this.config.setCacheValue(TaskSwitchingCache.SHOULD_SKIP, shouldSkip);
+            // this will replace the previous block (i.e. the practice blocks)
             this.config.setCacheValue(TaskSwitchingCache.TOTAL_SCORE, totalScore);
             this.config.setCacheValue(TaskSwitchingCache.NUM_CORRECT, numCorrect);
             this.config.setCacheValue(TaskSwitchingCache.NUM_TRIALS, this.numTrials);

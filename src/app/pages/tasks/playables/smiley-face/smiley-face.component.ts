@@ -200,7 +200,7 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
             block: this.blockNum,
             stimulus: this.currentStimulus.faceShown,
             keyPressed: UserResponse.NA,
-            rewarded: false,
+            rewarded: this.currentStimulus.isRewarded, // this will be modified if reward is postponed (user is incorrect)
             trial: ++this.trialNum,
             userID: this.userID,
             submitted: this.timerService.getCurrentTimestamp(),
@@ -342,6 +342,9 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     private postponeReward(): void {
         const trialWhereUserWasIncorrect = this.currentStimulus;
 
+        const thisTrial = this.taskData[this.taskData.length - 1];
+        thisTrial.rewarded = false;
+
         // iterate through list until you find the next stimulus of the same type that is unrewarded and reward that.
         // if none are found, we complete the iteration without assigning anything as we either have no more trials of that type,
         // or all are rewarded
@@ -360,11 +363,18 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         const finishedLastStimulus = this.currentStimuliIndex >= this.stimuli.length - 1;
 
         if (finishedLastStimulus) {
-            const totalScore = this.taskData.reduce((acc, currVal) => {
-                return acc + currVal.score;
-            }, 0);
+            if (this.isPractice) {
+                this.config.setCacheValue(SmileyFaceCache.TOTAL_SCORE, 0);
+            } else {
+                const previousTotalScore = this.config.getCacheValue(SmileyFaceCache.TOTAL_SCORE);
+                const totalScore = this.taskData.reduce((acc, currVal) => {
+                    return acc + currVal.score;
+                }, 0);
+                this.config.setCacheValue(SmileyFaceCache.TOTAL_SCORE, totalScore + previousTotalScore);
+            }
 
-            this.config.setCacheValue(SmileyFaceCache.TOTAL_SCORE, totalScore);
+            this.config.setCacheValue(SmileyFaceCache.BLOCK_NUM, this.isPractice ? this.blockNum : ++this.blockNum);
+
             super.decideToRepeat();
             return;
         } else {

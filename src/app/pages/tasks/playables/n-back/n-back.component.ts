@@ -257,7 +257,7 @@ export class NBackComponent extends AbstractBaseTaskComponent {
             const totalScore = this.taskData.reduce((acc, currVal) => {
                 return acc + currVal.score;
             }, 0);
-
+            // this will replace the previous block (i.e. the practice block)
             this.config.setCacheValue(NBackCache.TOTAL_SCORE, totalScore);
             super.decideToRepeat();
             return;
