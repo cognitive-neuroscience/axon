@@ -310,8 +310,8 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         switch (thisTrial.userAnswer) {
             case thisTrial.actualAnswer:
                 thisTrial.isCorrect = true;
-                thisTrial.score = 50;
-                this.scoreForSpecificTrial = 50;
+                thisTrial.score = this.currentStimulus.isRewarded ? 50 : 0;
+                this.scoreForSpecificTrial = this.currentStimulus.isRewarded ? 50 : 0;
                 break;
             case UserResponse.NA:
                 this.feedback = Feedback.TOOSLOW;
