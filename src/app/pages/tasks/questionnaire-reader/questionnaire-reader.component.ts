@@ -2,7 +2,8 @@ import { Component } from "@angular/core";
 import { FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { NzMarks } from "ng-zorro-antd/slider";
-import { take } from "rxjs/operators";
+import { of } from "rxjs";
+import { mergeMap, take } from "rxjs/operators";
 import { ParticipantDataService } from "src/app/services/study-data.service";
 import { TaskManagerService } from "src/app/services/task-manager.service";
 import { UserService } from "src/app/services/user.service";
@@ -175,10 +176,22 @@ export class QuestionnaireReaderComponent {
                 this.userService.isCrowdsourcedUser,
                 [questionaireResponse]
             )
-            .pipe(take(1))
+            .pipe(
+                mergeMap((res) => {
+                    if (res.ok) {
+                        return this.userService.isCrowdsourcedUser ? of(true) : this.taskManager.setTaskAsComplete();
+                    }
+                    return of(false);
+                }),
+                take(1)
+            )
             .subscribe(
-                (ok) => {
-                    this.taskManager.next();
+                (res) => {
+                    if (res) {
+                        this.taskManager.next();
+                    } else {
+                        this.taskManager.handleErr();
+                    }
                 },
                 (err) => {
                     this.taskManager.handleErr();

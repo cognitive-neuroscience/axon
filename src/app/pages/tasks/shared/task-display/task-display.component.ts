@@ -3,8 +3,8 @@ import { Subject } from "rxjs";
 import { thisOrDefault } from "src/app/common/commonMethods";
 import { ComponentName } from "src/app/services/component-factory.service";
 import { Navigation } from "../navigation-buttons/navigation-buttons.component";
-import { Playable } from "../../playables/playable";
-import { TaskConfig } from "../../playables/task-player/task-player.component";
+import { Playable } from "../../task-playables/playable";
+import { TaskConfig } from "../../task-playables/task-player/task-player.component";
 
 export interface DisplaySection {
     sectionType: "text" | "image-horizontal" | "image-square" | "image-small";
@@ -21,7 +21,7 @@ export interface ButtonConfig {
     nextDisabled: boolean;
 }
 
-export interface DisplayComponentMetadata {
+export interface TaskDisplayComponentMetadata {
     component: ComponentName;
     skippable?: boolean;
     skippableCacheKey: string;
@@ -40,12 +40,16 @@ export interface DisplayComponentMetadata {
     };
 }
 
+/**
+ * This component is for displaying data within a task, i.e. task instructions
+ */
+
 @Component({
-    selector: "app-display",
-    templateUrl: "./display.component.html",
-    styleUrls: ["./display.component.scss"],
+    selector: "app-task-display",
+    templateUrl: "./task-display.component.html",
+    styleUrls: ["./task-display.component.scss"],
 })
-export class DisplayComponent implements OnDestroy, Playable {
+export class TaskDisplayComponent implements OnDestroy, Playable {
     // metadata variables
     title: string = "";
     subtitle: string = "";
@@ -104,7 +108,7 @@ export class DisplayComponent implements OnDestroy, Playable {
         }
     }
 
-    configure(metadata: DisplayComponentMetadata, config: TaskConfig): void {
+    configure(metadata: TaskDisplayComponentMetadata, config: TaskConfig): void {
         this.config = config;
 
         this.skippable = thisOrDefault(metadata.skippable, false);

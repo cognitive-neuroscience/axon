@@ -6,7 +6,7 @@ import { Observable, Subscription } from "rxjs";
 import { Platform, RouteNames, TaskType } from "../../../../../models/enums";
 import { map } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
-import { TaskPlayerNavigationConfig } from "src/app/pages/tasks/playables/task-player/task-player.component";
+import { TaskPlayerNavigationConfig } from "src/app/pages/tasks/task-playables/task-player/task-player.component";
 
 @Component({
     selector: "app-view-tasks",

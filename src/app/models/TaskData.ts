@@ -1,6 +1,6 @@
-import { UseHand } from "../pages/tasks/playables/finger-tapping/finger-tapping-task.component";
-import { RatingTaskCounterBalance } from "../pages/tasks/playables/everyday-choice/rater/rater.component";
-import { SmileyFaceTaskCounterbalance } from "../pages/tasks/playables/smiley-face/smiley-face.component";
+import { UseHand } from "../pages/tasks/task-playables/finger-tapping/finger-tapping-task.component";
+import { RatingTaskCounterBalance } from "../pages/tasks/task-playables/everyday-choice/rater/rater.component";
+import { SmileyFaceTaskCounterbalance } from "../pages/tasks/task-playables/smiley-face/smiley-face.component";
 import { Key, UserResponse } from "./InternalDTOs";
 import { ParticipantType } from "./enums";
 

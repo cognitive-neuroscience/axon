@@ -366,7 +366,7 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
             if (this.isPractice) {
                 this.config.setCacheValue(SmileyFaceCache.TOTAL_SCORE, 0);
             } else {
-                const previousTotalScore = this.config.getCacheValue(SmileyFaceCache.TOTAL_SCORE);
+                const previousTotalScore = this.config.getCacheValue(SmileyFaceCache.TOTAL_SCORE) || 0;
                 const totalScore = this.taskData.reduce((acc, currVal) => {
                     return acc + currVal.score;
                 }, 0);

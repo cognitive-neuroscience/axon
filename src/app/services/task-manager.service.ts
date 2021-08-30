@@ -2,20 +2,19 @@ import { Injectable } from "@angular/core";
 import { Study } from "../models/Study";
 import { StudyService } from "./study.service";
 import { SnackbarService } from "./snackbar.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { UserService } from "./user.service";
 import { SessionStorageService } from "./sessionStorage.service";
 import { map, mergeMap, take } from "rxjs/operators";
 import { ParticipantRouteNames, Platform, RouteNames, TaskType } from "../models/enums";
 import { StudyTask, Task } from "../models/Task";
-import { TaskPlayerNavigationConfig } from "../pages/tasks/playables/task-player/task-player.component";
+import { TaskPlayerNavigationConfig } from "../pages/tasks/task-playables/task-player/task-player.component";
 import { QuestionnaireNavigationConfig } from "../pages/tasks/questionnaire-reader/questionnaire-reader.component";
 import { Observable, of } from "rxjs";
 import { TaskService } from "./task.service";
 import { ConsentNavigationConfig } from "../pages/shared/consent-component/consent-reader.component";
 import { EmbeddedPageNavigationConfig } from "../pages/tasks/embedded-page/embedded-page.component";
 import { CanClear } from "./clearance.service";
-import { StudyUser } from "../models/Login";
 
 @Injectable({
     providedIn: "root",
@@ -71,9 +70,9 @@ export class TaskManagerService implements CanClear {
             .subscribe(
                 (task: Task) => {
                     if (task === null) {
-                        // crowdsourced user
                         this.start(this.currentStudyTask);
                     } else {
+                        // crowdsourced user, always show consent in the beginning
                         this.showConsent(task);
                     }
                 },
@@ -160,6 +159,8 @@ export class TaskManagerService implements CanClear {
         }
 
         // currentTaskIndex is incremented in the setTaskAsComplete method for account holders
+        // this functionality is kept separate as there are cases where we want to set as complete before
+        // the user officially finishes the task (when the last block is finished, not when the user hits next)
         if (this._userService.isCrowdsourcedUser) ++this._currentTaskIndex;
 
         this.handleNext();

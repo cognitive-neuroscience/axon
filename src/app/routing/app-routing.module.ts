@@ -6,7 +6,7 @@ import { LandingPageComponent } from "../pages/landing-page/landing-page.compone
 import { RegisterComponent } from "../pages/landing-page/register/register.component";
 import { ParticipantRouteNames, RouteNames } from "../models/enums";
 import { CrowdSourceLoginComponent } from "../pages/landing-page/crowdsource-login/crowdsource-login.component";
-import { TaskPlayerComponent } from "../pages/tasks/playables/task-player/task-player.component";
+import { TaskPlayerComponent } from "../pages/tasks/task-playables/task-player/task-player.component";
 import { QuestionnaireReaderComponent } from "../pages/tasks/questionnaire-reader/questionnaire-reader.component";
 import { EmbeddedPageComponent } from "../pages/tasks/embedded-page/embedded-page.component";
 import { ConsentPageComponent } from "../pages/tasks/consent/consent-page/consent-page.component";
