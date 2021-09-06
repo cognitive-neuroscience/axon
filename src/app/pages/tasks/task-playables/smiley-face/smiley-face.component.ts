@@ -181,6 +181,10 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
                                   this.numFacesMoreRewarded
                               );
                 }
+
+                console.log(this.stimuli.filter((x) => x.faceShown === SmileyFaceType.LONG && x.isRewarded == true));
+                console.log(this.stimuli.filter((x) => x.faceShown === SmileyFaceType.SHORT && x.isRewarded == true));
+
                 super.start();
             });
     }
@@ -315,19 +319,17 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
                 break;
             case UserResponse.NA:
                 this.feedback = Feedback.TOOSLOW;
-                this.postponeReward();
+                if (this.currentStimulus.isRewarded) this.postponeReward();
                 this.scoreForSpecificTrial = 0;
                 break;
             default:
                 thisTrial.isCorrect = false;
-                this.postponeReward();
+                if (this.currentStimulus.isRewarded) this.postponeReward();
                 thisTrial.score = 0;
                 this.scoreForSpecificTrial = 0;
                 break;
         }
 
-        if (this.feedback === Feedback.TOOSLOW) {
-        }
         if ((this.currentStimulus.isRewarded && thisTrial.isCorrect) || this.feedback === Feedback.TOOSLOW) {
             this.showFeedback = true;
             await wait(this.durationFeedbackPresented);

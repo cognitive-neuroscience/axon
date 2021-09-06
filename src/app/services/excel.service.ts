@@ -28,8 +28,6 @@ export class ExcelService {
 
     private _saveAsExcelFile(buffer: any, fileName: string): void {
         const data: Blob = new Blob([buffer], { type: this.EXCEL_TYPE });
-        console.log(data);
-
         FileSaver.saveAs(data, fileName + this.EXCEL_EXTENSION);
     }
 }

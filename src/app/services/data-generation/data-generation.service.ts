@@ -214,7 +214,7 @@ export class DataGenerationService {
         const trialSize = numShortFace + numLongFace;
         // select the indices that short faces will be shown at. The rest will be long faces
         const shortFaceIndices = generateRandomNonrepeatingNumberList(numShortFace, 0, trialSize);
-        // from those short faces, select a random subset
+        // from those short faces, select a random subset that are rewarded
         const shortFaceRewardedTrials = generateRandomNonrepeatingNumberList(numShortFaceRewarded, 0, numShortFace);
         // out of the number of long faces, select a random subset that are rewarded
         const numLongFaceRewardedTrials = generateRandomNonrepeatingNumberList(numLongFaceRewarded, 0, numLongFace);

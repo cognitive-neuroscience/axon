@@ -124,8 +124,12 @@ export class UserService implements CanClear {
             .pipe(map((res) => res as string));
     }
 
-    updateStudyUser(studyUser: StudyUser): Observable<any> {
-        return this.http.patch(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}`, studyUser);
+    updateStudyUser(studyUser: StudyUser): Observable<boolean> {
+        return this.http
+            .patch(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}`, studyUser, {
+                observe: "response",
+            })
+            .pipe(map((res) => res.ok));
     }
 
     registerUser(email: string, password: string, role?: Role): Observable<HttpResponse<any>> {
