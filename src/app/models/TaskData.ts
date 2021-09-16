@@ -30,7 +30,6 @@ export class StroopTaskData extends TaskData {
     userAnswer: UserResponse;
     isCongruent: boolean;
     responseTime: number;
-    set: number;
     isCorrect: boolean;
     score: number;
 }

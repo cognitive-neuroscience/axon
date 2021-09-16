@@ -26,18 +26,9 @@ export class ImageBlob {
 }
 
 export class StroopStimulus {
-    trial: number;
     color: string;
     congruent: boolean;
     word: string;
-}
-
-export class StroopStimuliSet {
-    practice: StroopStimulus[];
-    1: StroopStimulus[];
-    2: StroopStimulus[];
-    3: StroopStimulus[];
-    4: StroopStimulus[];
 }
 
 export class SmileyFaceStimulus {

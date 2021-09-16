@@ -32,7 +32,6 @@ import {
     TrailMakingStimulus,
     TrailMakingTrialType,
 } from "./stimuli-models";
-import { StroopSet } from "./raw-data/stroop-data-list";
 import { NBackSet } from "./raw-data/nback-data-list";
 import { Color } from "src/app/models/InternalDTOs";
 import { DemandSelectionImageNames } from "./raw-data/demand-selection-image-list";
@@ -184,21 +183,50 @@ export class DataGenerationService {
 
     // end of oddball data generation
 
-    generateStroopStimuli(isPractice: boolean, numTrials: number, counterbalance: number): StroopStimulus[] {
-        const stroopSets = Object.keys(StroopSet);
+    generateStroopStimuli(numTrials: number, numCongruent: number): StroopStimulus[] {
+        if (numTrials < numCongruent) throw new Error("Number of congruent trials must be fewer than number of trials");
 
-        // subtract 1 because one set is the practice set
-        if (counterbalance < 1 || counterbalance > stroopSets.length - 1)
-            throw new Error("No such stroop group exists");
-        if (isPractice) {
-            if (numTrials > StroopSet.practice.length)
-                throw new Error("number of trials greater than number of practice trials");
-            return StroopSet.practice.slice(0, numTrials);
-        } else {
-            const selectedSet = StroopSet[counterbalance] as StroopStimulus[];
-            if (numTrials > selectedSet.length)
-                throw new Error("number of trials greater than number of stroop trials");
-            return selectedSet.slice(0, numTrials);
+        const generatedStimuli: StroopStimulus[] = new Array(numTrials);
+        const congruentIndices = generateRandomNonrepeatingNumberList(numCongruent, 0, numTrials);
+
+        for(let i = 0; i < generatedStimuli.length; i++) {
+            const color = this.getNewColor();
+            const isCongruentTrial = congruentIndices.includes(i);
+
+            if (isCongruentTrial) {
+                generatedStimuli[i] = {
+                    color: color,
+                    congruent: true,
+                    word: color
+                }
+            } else {
+                let nonCongruentColor = color;
+                while(color === nonCongruentColor) {
+                    nonCongruentColor = this.getNewColor();
+                }
+
+                generatedStimuli[i] = {
+                    color: color,
+                    congruent: false,
+                    word: nonCongruentColor
+                }
+            }
+        }
+
+        return generatedStimuli;
+    }
+
+    private getNewColor(): 'red' | 'blue' | 'green' {
+        const num = getRandomNumber(0, 3)
+        switch (num) {
+            case 0:
+                return 'red';
+            case 1:
+                return 'blue';
+            case 2:
+                return 'green';
+            default:
+                break;
         }
     }
 

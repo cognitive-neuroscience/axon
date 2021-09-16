@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { ImageService } from "../image.service";
 import { DataGenerationService } from "./data-generation.service";
-import { SmileyFaceStimulus, SmileyFaceType } from "./stimuli-models";
+import { SmileyFaceStimulus, SmileyFaceType, StroopStimulus } from "./stimuli-models";
 
 describe("Data Generation Service", () => {
     let service: DataGenerationService;
@@ -93,6 +93,34 @@ describe("Data Generation Service", () => {
                 service.generateSmileyFaceStimuli(1, 2, 2, 1);
             };
             expect(func).toThrow(new Error("Num rewarded cannot be greater than the number of trials"));
+        });
+    });
+
+    describe('stroop task stimuli', () => {
+        it('should throw an error if number of congruent trials is greater than number of trials', () => {
+            const func = () => {
+                service.generateStroopStimuli(1, 2);
+            }
+            expect(func).toThrow(new Error("Number of congruent trials must be fewer than number of trials"));
+        });
+
+        it('should generate the correct number of congruent trials', () => {
+            const generatedStroopStimuli = service.generateStroopStimuli(60, 40);
+            const numCongruentTrials = generatedStroopStimuli.reduce((acc: number, currVal: StroopStimulus) => {
+                return currVal.congruent ? acc + 1 : acc;
+            }, 0);
+            expect(numCongruentTrials).toEqual(40);
+            expect(generatedStroopStimuli.length).toEqual(60);
+        });
+
+        it('should generate the correct congruent and noncongruent trials', () => {
+            const generatedStroopStimuli = service.generateStroopStimuli(60, 40);
+
+            generatedStroopStimuli.forEach(element => {
+                element.congruent ? 
+                    expect(element.color).toEqual(element.word) :
+                    expect(element.color).not.toEqual(element.word);
+            });
         });
     });
 });

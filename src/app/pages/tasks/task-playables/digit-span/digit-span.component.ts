@@ -247,21 +247,23 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
     }
 
     handleRoundInteraction($event: string) {
-        this.cancelAllTimers();
         this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
 
         if ($event === null) {
+            this.cancelAllTimers();
             this.currentTrial.isCorrect = false;
             this.currentTrial.score = 0;
             this.currentTrial.responseTime = this.maxResponseTime;
             this.currentTrial.userAnswer = UserResponse.NA;
         } else if ($event === UserResponse.NA) {
+            this.cancelAllTimers();
             this.responseAllowed = false;
             this.currentTrial.isCorrect = false;
             this.currentTrial.score = 0;
             this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
             this.currentTrial.userAnswer = UserResponse.NA;
         } else {
+            this.cancelAllTimers();
             this.responseAllowed = false;
             this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
             this.currentTrial.userAnswer = this.padString($event);

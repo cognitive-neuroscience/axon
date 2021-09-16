@@ -319,17 +319,19 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
     @HostListener("window:keydown", ["$event"])
     handleRoundInteraction(event: KeyboardEvent) {
         const thisTrial = this.taskData[this.taskData.length - 1];
-        this.clearHelpMessage();
-        this.clearMaxResponseTimer();
         thisTrial.submitted = this.timerService.getCurrentTimestamp();
 
         if (event === null) {
+            this.clearHelpMessage();
+            this.clearMaxResponseTimer();
             thisTrial.userAnswer = UserResponse.NA;
             thisTrial.score = 0;
             thisTrial.isCorrect = false;
             thisTrial.respondToNumberResponseTime = this.maxResponseTime;
             super.handleRoundInteraction(null);
         } else if (this.responseAllowed && this.isValidKey(event.key)) {
+            this.clearHelpMessage();
+            this.clearMaxResponseTimer();
             thisTrial.respondToNumberResponseTime = this.timerService.stopTimerAndGetTime();
             const selectedColor = this.currentStimulus[this.selectedPatch];
             if (selectedColor === this.oddEvenColor) {

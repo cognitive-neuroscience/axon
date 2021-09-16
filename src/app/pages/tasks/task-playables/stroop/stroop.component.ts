@@ -24,6 +24,7 @@ interface StroopTaskMetadata {
         durationOfFeedback: number;
         durationFixationPresented: number;
         numTrials: number;
+        numCongruent: number;
         stimuliConfig: {
             type: StimuliProvidedType;
             stimuli: StroopStimulus[];
@@ -58,6 +59,7 @@ export class StroopComponent extends AbstractBaseTaskComponent {
     private durationOfFeedback: number;
     private durationFixationPresented: number;
     private numTrials: number;
+    private numCongruent: number;
 
     // high level variables
     counterbalance: number;
@@ -114,6 +116,7 @@ export class StroopComponent extends AbstractBaseTaskComponent {
         this.showFeedbackAfterEachTrial = thisOrDefault(metadata.config.showFeedbackAfterEachTrial, false);
         this.durationOfFeedback = thisOrDefault(metadata.config.durationOfFeedback, 0);
         this.showScoreAfterEachTrial = thisOrDefault(metadata.config.showScoreAfterEachTrial, false);
+        this.numCongruent = thisOrDefault(metadata.config.numCongruent, this.numTrials / 2);
 
         this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as number;
 
@@ -128,9 +131,8 @@ export class StroopComponent extends AbstractBaseTaskComponent {
         // either the stimuli has been defined in config or we generate it here from service
         if (!this.stimuli) {
             this.stimuli = this.dataGenService.generateStroopStimuli(
-                this.isPractice,
                 this.numTrials,
-                this.counterbalance
+                this.numCongruent
             );
         }
         super.start();
@@ -145,6 +147,8 @@ export class StroopComponent extends AbstractBaseTaskComponent {
         if (this.isDestroyed) return;
         this.showFixation = false;
 
+        this.setStimuliUI(this.currentStimulus);
+
         this.taskData.push({
             userID: this.userID,
             trial: ++this.trialNum,
@@ -154,13 +158,10 @@ export class StroopComponent extends AbstractBaseTaskComponent {
             responseTime: 0,
             isCorrect: false,
             score: 0,
-            set: this.counterbalance,
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
             studyId: this.studyId,
         });
-
-        this.setStimuliUI(this.currentStimulus);
 
         this.setTimer(this.maxResponseTime, () => {
             this.showStimulus = false;
@@ -196,10 +197,10 @@ export class StroopComponent extends AbstractBaseTaskComponent {
 
     @HostListener("window:keypress", ["$event"])
     handleRoundInteraction(event: KeyboardEvent) {
-        this.cancelAllTimers();
         const thisTrial = this.taskData[this.taskData.length - 1];
         thisTrial.submitted = this.timerService.getCurrentTimestamp();
         if (this.responseAllowed && this.isValidKey(event.key)) {
+            this.cancelAllTimers();
             this.responseAllowed = false;
 
             thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
@@ -219,6 +220,7 @@ export class StroopComponent extends AbstractBaseTaskComponent {
             }
             super.handleRoundInteraction(thisTrial.userAnswer);
         } else if (event === null) {
+            this.cancelAllTimers();
             // max time out
             thisTrial.userAnswer = UserResponse.NA;
             thisTrial.score = 0;

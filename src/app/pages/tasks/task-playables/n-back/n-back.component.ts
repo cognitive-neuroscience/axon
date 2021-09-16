@@ -201,17 +201,18 @@ export class NBackComponent extends AbstractBaseTaskComponent {
 
     @HostListener("window:keydown", ["$event"])
     handleRoundInteraction(event: KeyboardEvent) {
-        this.cancelAllTimers();
         this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
 
         if (event === null) {
             // max time out
+            this.cancelAllTimers();
             this.currentTrial.userAnswer = UserResponse.NA;
             this.currentTrial.score = 0;
             this.currentTrial.responseTime = this.maxResponseTime;
             this.currentTrial.isCorrect = false;
             super.handleRoundInteraction(null);
         } else if (this.responseAllowed && this.isValidKey(event.key)) {
+            this.cancelAllTimers();
             this.responseAllowed = false;
             this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
             this.currentTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.NO : UserResponse.YES;

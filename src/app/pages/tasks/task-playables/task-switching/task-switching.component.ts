@@ -209,17 +209,18 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
 
     @HostListener("window:keydown", ["$event"])
     handleRoundInteraction(event: KeyboardEvent) {
-        this.cancelAllTimers();
         const thisTrial = this.taskData[this.taskData.length - 1];
         thisTrial.submitted = this.timerService.getCurrentTimestamp();
 
         if (event === null) {
+            this.cancelAllTimers();
             thisTrial.isCorrect = false;
             thisTrial.responseTime = this.maxResponseTime;
             thisTrial.score = 0;
             super.handleRoundInteraction(null);
             return;
         } else if (this.responseAllowed && this.isValidKey(event.key)) {
+            this.cancelAllTimers();
             this.responseAllowed = false;
 
             let userAnswer: UserResponse;

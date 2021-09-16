@@ -236,10 +236,10 @@ export class OddballComponent extends AbstractBaseTaskComponent {
      */
     @HostListener("window:keypress", ["$event"])
     handleRoundInteraction(event: KeyboardEvent) {
-        this.cancelAllTimers();
         const thisTrial = this.taskData[this.taskData.length - 1];
         thisTrial.submitted = this.timerService.getCurrentTimestamp();
         if (this.responseAllowed && this.isValidKey(event.key)) {
+            this.cancelAllTimers();
             this.responseAllowed = false;
 
             thisTrial.userAnswer = event.key;
@@ -247,6 +247,7 @@ export class OddballComponent extends AbstractBaseTaskComponent {
 
             super.handleRoundInteraction(event);
         } else if (event === null) {
+            this.cancelAllTimers();
             // we reached max response time
             thisTrial.responseTime = this.maxResponseTime;
             thisTrial.userAnswer = UserResponse.NA;

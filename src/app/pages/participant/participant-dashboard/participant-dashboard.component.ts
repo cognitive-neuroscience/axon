@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { SessionStorageService } from "src/app/services/sessionStorage.service";
-import { SnackbarService } from "src/app/services/snackbar.service";
 import { UserService } from "src/app/services/user.service";
 
 @Component({
@@ -14,7 +13,6 @@ export class ParticipantDashboardComponent implements OnInit {
     constructor(
         private sessionStorageService: SessionStorageService,
         private userService: UserService,
-        private snackbarService: SnackbarService
     ) {}
 
     ngOnInit(): void {
@@ -28,8 +26,9 @@ export class ParticipantDashboardComponent implements OnInit {
                     this.userService.updateStudyUsers();
                 },
                 (err) => {
+                    // user has already registered for this study, but no need to show error
+                    // as it confuses users who think there's an issue
                     this.sessionStorageService.clearSessionStorage();
-                    this.snackbarService.openInfoSnackbar(err.message);
                 }
             );
         }

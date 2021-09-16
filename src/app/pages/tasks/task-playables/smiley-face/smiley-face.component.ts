@@ -280,10 +280,10 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
 
     @HostListener("window:keypress", ["$event"])
     handleRoundInteraction(event: KeyboardEvent) {
-        this.cancelAllTimers();
         const thisTrial = this.taskData[this.taskData.length - 1];
         thisTrial.submitted = this.timerService.getCurrentTimestamp();
         if (this.responseAllowed && this.isValidKey(event.key)) {
+            this.cancelAllTimers();
             this.responseAllowed = false;
             thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
             thisTrial.userAnswer = event.key === Key.Z ? UserResponse.SHORT : UserResponse.LONG;
@@ -291,6 +291,7 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
 
             super.handleRoundInteraction(event.key);
         } else if (event === null) {
+            this.cancelAllTimers();
             // max time out
             this.responseAllowed = false;
             thisTrial.responseTime = this.maxResponseTime;
