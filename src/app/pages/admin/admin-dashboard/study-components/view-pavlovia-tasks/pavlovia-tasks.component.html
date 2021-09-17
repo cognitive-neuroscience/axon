@@ -1,0 +1,12 @@
+<div class="pb-4">
+    <app-view-components-table
+        [data]="NABPavloviaTasksForTable | async"
+        (rowRun)="run($event)"
+    ></app-view-components-table>
+</div>
+<div>
+    <app-view-components-table
+        [data]="experimentalPavloviaTasksForTable | async"
+        (rowRun)="run($event)"
+    ></app-view-components-table>
+</div>

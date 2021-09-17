@@ -3,7 +3,6 @@ import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { Task } from "src/app/models/Task";
-import { ConfirmationService } from "src/app/services/confirmation/confirmation.service";
 import { TaskManagerService } from "src/app/services/task-manager.service";
 import { UserService } from "src/app/services/user.service";
 import { ConfirmDoneDialogComponent } from "./confirm-done-dialog/confirm-done-dialog.component";

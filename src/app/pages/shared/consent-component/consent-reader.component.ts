@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { Router } from "@angular/router";
+import { AbstractBaseReaderComponent } from "../../tasks/shared/base-reader";
 
 class ConsentForm {
     img: string;
@@ -36,9 +37,9 @@ export class ConsentNavigationConfig {
     templateUrl: "./consent-reader.component.html",
     styleUrls: ["./consent-reader.component.scss"],
 })
-export class ConsentReaderComponent {
+export class ConsentReaderComponent implements AbstractBaseReaderComponent {
     @Input()
-    consentNavigationConfig: ConsentNavigationConfig;
+    readerMetadata: ConsentNavigationConfig;
 
     @Output()
     emitConsent: EventEmitter<boolean> = new EventEmitter();
@@ -47,12 +48,12 @@ export class ConsentReaderComponent {
         const state = this.router.getCurrentNavigation()?.extras.state as ConsentNavigationConfig;
 
         if (state) {
-            this.consentNavigationConfig = state;
+            this.readerMetadata = state;
         }
     }
 
-    onConsentResponse(response: boolean) {
-        if (this.consentNavigationConfig.mode !== "test") {
+    onSubmit(response: boolean) {
+        if (this.readerMetadata.mode !== "test") {
             this.emitConsent.next(response);
         }
     }

@@ -1,69 +1,72 @@
 export enum RouteNames {
-    LANDINGPAGE_LOGIN_SUBROUTE = "login",
-    LANDINGPAGE_REGISTER_SUBROUTE = "register",
-    LANDINGPAGE_FORGOT_PASSWORD = "send-reset-email",
-    LANDINGPAGE_RESET_PASSWORD = "reset",
+    LANDINGPAGE_LOGIN_SUBROUTE = 'login',
+    LANDINGPAGE_REGISTER_SUBROUTE = 'register',
+    LANDINGPAGE_FORGOT_PASSWORD = 'send-reset-email',
+    LANDINGPAGE_RESET_PASSWORD = 'reset',
 
-    TASKPLAYER = "playtask",
+    TASKPLAYER = 'playtask',
 
-    QUESTIONNAIRE = "questionnaire",
+    QUESTIONNAIRE = 'questionnaire',
 
-    PAVLOVIA = "pavlovia",
+    PAVLOVIA = 'pavlovia',
 
-    CONSENT = "consent",
+    CONSENT = 'consent',
+
+    INFO_DISPLAY = 'infodisplay',
 }
 
 export enum AdminRouteNames {
-    DASHBOARD_BASEROUTE = "admin-dashboard",
+    DASHBOARD_BASEROUTE = 'admin-dashboard',
 
-    COMPONENTS_SUBROUTE = "components",
-    DATA_SUBROUTE = "data",
-    GUESTS_SUBROUTE = "guests",
-    STUDIES_SUBROUTE = "studies",
-    STUDIES_CREATE_SUBROUTE = "create",
-    STUDIES_VIEW_SUBROUTE = "view",
+    COMPONENTS_SUBROUTE = 'components',
+    DATA_SUBROUTE = 'data',
+    GUESTS_SUBROUTE = 'guests',
+    STUDIES_SUBROUTE = 'studies',
+    STUDIES_CREATE_SUBROUTE = 'create',
+    STUDIES_VIEW_SUBROUTE = 'view',
 }
 
 export enum ParticipantRouteNames {
-    DASHBOARD_BASEROUTE = "participant-dashboard",
-    CROWDSOURCEPARTICIPANT_REGISTER_BASEROUTE = "crowdsource-participant",
+    DASHBOARD_BASEROUTE = 'participant-dashboard',
+    CROWDSOURCEPARTICIPANT_REGISTER_BASEROUTE = 'crowdsource-participant',
 
-    STUDIES_SUBROUTE = "studies",
-    PROFILE_SUBROUTE = "profile",
+    STUDIES_SUBROUTE = 'studies',
+    PROFILE_SUBROUTE = 'profile',
 }
 
 // Each task is one of the following type
 export enum TaskType {
-    NAB = "NAB",
-    EXPERIMENTAL = "EXPERIMENTAL",
-    QUESTIONNAIRE = "QUESTIONNAIRE",
-    CONSENT = "CONSENT",
+    NAB = 'NAB',
+    EXPERIMENTAL = 'EXPERIMENTAL',
+    QUESTIONNAIRE = 'QUESTIONNAIRE',
+    CONSENT = 'CONSENT',
+    INFO_DISPLAY = 'INFO_DISPLAY',
 }
 
 export enum Platform {
-    PSHARPLAB = "PSHARPLAB",
-    SURVEYMONKEY = "SURVEYMONEKY",
-    PAVLOVIA = "PAVLOVIA",
+    PSHARPLAB = 'PSHARPLAB',
+    SURVEYMONKEY = 'SURVEYMONEKY',
+    PAVLOVIA = 'PAVLOVIA',
 }
 
 export enum SnackbarType {
-    SUCCESS = "SUCCESS",
-    ERROR = "ERROR",
-    INFO = "INFO",
+    SUCCESS = 'SUCCESS',
+    ERROR = 'ERROR',
+    INFO = 'INFO',
 }
 
 export enum Role {
-    ADMIN = "ADMIN",
-    PARTICIPANT = "PARTICIPANT",
-    GUEST = "GUEST", // access to admin views but cannot make any calls to backend
+    ADMIN = 'ADMIN',
+    PARTICIPANT = 'PARTICIPANT',
+    GUEST = 'GUEST', // access to admin views but cannot make any calls to backend
 }
 
 export enum StimuliProvidedType {
-    HARDCODED = "hardcoded",
-    GENERATED = "generated",
+    HARDCODED = 'hardcoded',
+    GENERATED = 'generated',
 }
 
 export enum ParticipantType {
-    CROWDSOURCED = "CROWDSOURCED",
-    ACCOUNTHOLDER = "ACCOUNTHOLDER",
+    CROWDSOURCED = 'CROWDSOURCED',
+    ACCOUNTHOLDER = 'ACCOUNTHOLDER',
 }

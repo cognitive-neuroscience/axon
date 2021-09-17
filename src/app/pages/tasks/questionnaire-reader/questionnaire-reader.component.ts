@@ -1,23 +1,24 @@
-import { Component } from "@angular/core";
-import { FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
-import { NzMarks } from "ng-zorro-antd/slider";
-import { of } from "rxjs";
-import { mergeMap, take } from "rxjs/operators";
-import { ParticipantDataService } from "src/app/services/study-data.service";
-import { TaskManagerService } from "src/app/services/task-manager.service";
-import { UserService } from "src/app/services/user.service";
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { NzMarks } from 'ng-zorro-antd/slider';
+import { of } from 'rxjs';
+import { mergeMap, take } from 'rxjs/operators';
+import { ParticipantDataService } from 'src/app/services/study-data.service';
+import { TaskManagerService } from 'src/app/services/task-manager.service';
+import { UserService } from 'src/app/services/user.service';
+import { AbstractBaseReaderComponent } from '../shared/base-reader';
 
 class Question {
     questionType:
-        | "multipleChoiceSelect"
-        | "radiobuttons"
-        | "freeTextResponse"
-        | "displayText"
-        | "divider"
-        | "input"
-        | "slider";
-    radiobuttonPresentation?: "horizontal" | "vertical" = "horizontal";
+        | 'multipleChoiceSelect'
+        | 'radiobuttons'
+        | 'freeTextResponse'
+        | 'displayText'
+        | 'divider'
+        | 'input'
+        | 'slider';
+    radiobuttonPresentation?: 'horizontal' | 'vertical' = 'horizontal';
     allowMultipleSelections?: boolean; // for multiple choice select, allow multiple choices
     key: string; // unique property of the input - this is what will be used when getting the data. Mandatory for all questionTypes except divider and free text
     label?: string; // label of the input
@@ -45,28 +46,28 @@ class QuestionnaireMetadata {
 
 export class QuestionnaireNavigationConfig {
     metadata: QuestionnaireMetadata;
-    mode: "test" | "actual";
+    mode: 'test' | 'actual';
 }
 
 @Component({
-    selector: "app-questionnaire-reader",
-    templateUrl: "./questionnaire-reader.component.html",
-    styleUrls: ["./questionnaire-reader.component.scss"],
+    selector: 'app-questionnaire-reader',
+    templateUrl: './questionnaire-reader.component.html',
+    styleUrls: ['./questionnaire-reader.component.scss'],
 })
-export class QuestionnaireReaderComponent {
-    questionnaireMetadata: QuestionnaireNavigationConfig;
+export class QuestionnaireReaderComponent implements AbstractBaseReaderComponent {
+    readerMetadata: QuestionnaireNavigationConfig;
     questionnaire: FormGroup;
 
     get isValid(): boolean {
-        return this.questionnaireMetadata?.metadata?.questions?.length > 0;
+        return this.readerMetadata?.metadata?.questions?.length > 0;
     }
 
     get title(): string {
-        return this.isValid ? this.questionnaireMetadata.metadata.title : "";
+        return this.isValid ? this.readerMetadata.metadata.title : '';
     }
 
     get questions(): Question[] {
-        return this.isValid ? this.questionnaireMetadata.metadata.questions : [];
+        return this.isValid ? this.readerMetadata.metadata.questions : [];
     }
 
     constructor(
@@ -78,12 +79,12 @@ export class QuestionnaireReaderComponent {
         const state = this.router.getCurrentNavigation().extras.state as QuestionnaireNavigationConfig;
 
         if (state) {
-            this.questionnaireMetadata = state;
+            this.readerMetadata = state;
 
-            if (!this.keysExistAndAreUnique(this.questionnaireMetadata.metadata)) {
+            if (!this.keysExistAndAreUnique(this.readerMetadata.metadata)) {
                 this.taskManager.handleErr();
             } else {
-                this.questionnaire = this.getFormGroup(this.questionnaireMetadata.metadata);
+                this.questionnaire = this.getFormGroup(this.readerMetadata.metadata);
             }
         } else {
             this.taskManager.handleErr();
@@ -95,7 +96,7 @@ export class QuestionnaireReaderComponent {
             [key: string]: FormControl;
         } = {};
         metadata.questions.forEach((question) => {
-            if (question.questionType !== "divider" && question.questionType !== "displayText") {
+            if (question.questionType !== 'divider' && question.questionType !== 'displayText') {
                 // extensible for later if we want to add other validators
                 let validatorFnArr: ValidatorFn[] = [];
                 if (question.validation) {
@@ -111,7 +112,7 @@ export class QuestionnaireReaderComponent {
                 }
 
                 formGroup[question.key] =
-                    validatorFnArr.length > 0 ? new FormControl("", validatorFnArr) : new FormControl("");
+                    validatorFnArr.length > 0 ? new FormControl('', validatorFnArr) : new FormControl('');
             }
         });
 
@@ -122,8 +123,8 @@ export class QuestionnaireReaderComponent {
         const keysMap: { [key: string]: boolean } = {};
 
         metadata.questions.forEach((question) => {
-            if (question.questionType !== "freeTextResponse" && question.questionType !== "divider") {
-                if (question.key === "" || question.key === undefined) return false;
+            if (question.questionType !== 'freeTextResponse' && question.questionType !== 'divider') {
+                if (question.key === '' || question.key === undefined) return false;
 
                 if (keysMap[question.key]) {
                     return false;
@@ -163,7 +164,7 @@ export class QuestionnaireReaderComponent {
             const reducer = (acc: string, currVal: string, currIndex: number) =>
                 currIndex === 0 ? currVal : `${acc}, ${currVal}`;
 
-            questionaireResponse[key] = isArray ? (value as string[]).reduce(reducer, "") : value;
+            questionaireResponse[key] = isArray ? (value as string[]).reduce(reducer, '') : value;
         });
 
         this.participantDataService

@@ -1,20 +1,20 @@
-import { UseHand } from "../pages/tasks/task-playables/finger-tapping/finger-tapping-task.component";
-import { RatingTaskCounterBalance } from "../pages/tasks/task-playables/everyday-choice/rater/rater.component";
-import { SmileyFaceTaskCounterbalance } from "../pages/tasks/task-playables/smiley-face/smiley-face.component";
-import { Key, UserResponse } from "./InternalDTOs";
-import { ParticipantType } from "./enums";
+import { UseHand } from '../pages/tasks/task-playables/finger-tapping/finger-tapping-task.component';
+import { RatingTaskCounterBalance } from '../pages/tasks/task-playables/everyday-choice/rater/rater.component';
+import { SmileyFaceTaskCounterbalance } from '../pages/tasks/task-playables/smiley-face/smiley-face.component';
+import { Key, UserResponse } from './InternalDTOs';
+import { ParticipantType } from './enums';
 
 export enum TaskNames {
-    ODDBALL = "oddball",
-    DIGITSPAN = "digitspan",
-    FINGERTAPPING = "fingertapping",
-    NBACK = "nback",
-    STROOP = "stroop",
-    TRAILMAKING = "trailmaking",
-    TASKSWITCHING = "taskswitching",
-    DEMANDSELECTION = "demandselection",
-    SMILEYFACE = "smileyface",
-    EVERYDAYCHOICE = "everydaychoice",
+    ODDBALL = 'oddball',
+    DIGITSPAN = 'digitspan',
+    FINGERTAPPING = 'fingertapping',
+    NBACK = 'nback',
+    STROOP = 'stroop',
+    TRAILMAKING = 'trailmaking',
+    TASKSWITCHING = 'taskswitching',
+    DEMANDSELECTION = 'demandselection',
+    SMILEYFACE = 'smileyface',
+    EVERYDAYCHOICE = 'everydaychoice',
 }
 
 export abstract class TaskData {
@@ -132,15 +132,8 @@ export class EverydayChoiceTaskData extends TaskData {
     activity: string;
     question: string;
     userAnswer: number;
-    activityType: "DoNothing" | "DoSomething" | "";
+    activityType: 'DoNothing' | 'DoSomething' | '';
     responseTime: number;
-}
-
-export class CustomTask {
-    customTaskID: string;
-    name: string;
-    url: string;
-    description: string;
 }
 
 export class ParticipantData {

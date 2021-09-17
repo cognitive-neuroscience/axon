@@ -1,13 +1,13 @@
-import { OverlayModule } from "@angular/cdk/overlay";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { MatDialog } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { SnackbarService } from "src/app/services/snackbar.service";
+import { OverlayModule } from '@angular/cdk/overlay';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 
-import { PavloviaTasksComponent } from "./pavlovia-tasks.component";
+import { PavloviaTasksComponent } from './pavlovia-tasks.component';
 
-describe("ManageCustomTasksComponent", () => {
+describe('ManageCustomTasksComponent', () => {
     let component: PavloviaTasksComponent;
     let fixture: ComponentFixture<PavloviaTasksComponent>;
 
@@ -31,7 +31,7 @@ describe("ManageCustomTasksComponent", () => {
         fixture.detectChanges();
     });
 
-    it("should create", () => {
+    it('should create', () => {
         expect(component).toBeTruthy();
     });
 });

@@ -2,7 +2,7 @@
 
 // random numbers generated are lowerbound inclusive and upperbound exclusive: [lowerbound, upperbound)
 export function generateRandomNonrepeatingNumberList(size: number, lowerBound: number, upperBound: number): number[] {
-    if (size > upperBound - lowerBound) throw new Error("Size cannot be greater than the bounds");
+    if (size > upperBound - lowerBound) throw new Error('Size cannot be greater than the bounds');
     const randList = [];
     while (randList.length < size) {
         const randNum = getRandomNumber(lowerBound, upperBound);
@@ -79,30 +79,6 @@ export function wait(time: number): Promise<void> {
     });
 }
 
-export function isSurveyMonkeyQuestionnaire(task: string): boolean {
-    return false;
-    // return task.includes(RouteMap.surveymonkeyquestionnaire.id);
-}
-
-export function isCustomTask(task: string): boolean {
-    return false;
-    // return task.includes(RouteMap.pavloviatask.id);
-}
-
-export const ConsentIds = [
-    // RouteMap.consent.id,
-    // RouteMap.webPhenoClinical.id,
-    // RouteMap.webPhenoClinicalFR.id,
-    // RouteMap.stressClinical.id,
-    // RouteMap.stressClinicalFR.id,
-    // RouteMap.stressClinicalDebrief.id,
-    // RouteMap.stressPilot.id,
-];
-// remove later, this is a bandaid fix
-export function isConsent(id: string): boolean {
-    return ConsentIds.includes(id);
-}
-
 export function thisOrDefault<T>(value: T, defaultValue: T): T {
     return value === null || value === undefined ? defaultValue : value;
 }
@@ -113,4 +89,8 @@ export function throwErrIfNotDefined(value: any, errStr: string): any {
     } else {
         return value;
     }
+}
+
+export function objIsEmpty(arg: any): boolean {
+    return Object.keys(arg).length === 0;
 }

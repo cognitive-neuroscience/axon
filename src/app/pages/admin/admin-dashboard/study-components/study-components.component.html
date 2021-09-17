@@ -1,11 +1,18 @@
 <mat-tab-group (selectedTabChange)="saveTabPref($event)" [(selectedIndex)]="selectedTabIndex">
     <mat-tab label="Psharplab Tasks">
-        <app-view-tasks></app-view-tasks>
+        <div class="p-4">
+            <app-view-tasks></app-view-tasks>
+        </div>
     </mat-tab>
     <mat-tab label="Psharplab Questionnaires">
-        <app-manage-questionnaires></app-manage-questionnaires>
+        <div class="p-4">
+            <app-manage-questionnaires></app-manage-questionnaires>
+        </div>
     </mat-tab>
     <mat-tab label="Pavlovia Tasks">
-        <app-pavlovia-tasks></app-pavlovia-tasks>
+        <div class="p-4">
+            <app-pavlovia-tasks></app-pavlovia-tasks>
+        </div>
     </mat-tab>
+    <mat-tab label="Info Display Slides"> </mat-tab>
 </mat-tab-group>

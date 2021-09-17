@@ -1,0 +1,4 @@
+<app-view-components-table
+    [data]="questionnairesForTable | async"
+    (rowRun)="previewQuestionnaire($event)"
+></app-view-components-table>

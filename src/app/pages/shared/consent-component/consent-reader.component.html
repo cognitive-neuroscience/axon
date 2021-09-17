@@ -1,16 +1,16 @@
-<div *ngIf="consentNavigationConfig && consentNavigationConfig.metadata" class="container-fluid scrollable p-5">
+<div *ngIf="readerMetadata && readerMetadata.metadata" class="container-fluid scrollable p-5">
     <div class="image">
-        <img [src]="consentNavigationConfig.metadata?.img" alt="Organizations" />
+        <img [src]="readerMetadata.metadata?.img" alt="Organizations" />
     </div>
 
     <div class="title my-4">
         <h2 class="mat-h2">
-            <b>{{ consentNavigationConfig.metadata?.title }}</b>
+            <b>{{ readerMetadata.metadata?.title }}</b>
         </h2>
     </div>
 
     <div class="summary">
-        <ng-container *ngFor="let block of consentNavigationConfig.metadata?.summary">
+        <ng-container *ngFor="let block of readerMetadata.metadata?.summary">
             <p>
                 <b>{{ block.caption }}&nbsp;</b>
                 <span class="my-1" *ngFor="let wordBlock of block.words">{{ wordBlock }}</span>
@@ -20,12 +20,12 @@
 
     <div class="secondTitle">
         <p>
-            <b>{{ consentNavigationConfig.metadata?.secondTitle }}</b>
+            <b>{{ readerMetadata.metadata?.secondTitle }}</b>
         </p>
     </div>
 
     <div class="body">
-        <div class="my-4" *ngFor="let block of consentNavigationConfig.metadata?.body">
+        <div class="my-4" *ngFor="let block of readerMetadata.metadata?.body">
             <h4>
                 <b>{{ block.caption }}</b>
             </h4>
@@ -36,27 +36,27 @@
     </div>
 
     <div class="endMessage my-4">
-        <span>{{ consentNavigationConfig.metadata?.endMessage }}</span>
+        <span>{{ readerMetadata.metadata?.endMessage }}</span>
     </div>
 
     <div align="center" class="bottom-button-bar">
         <div class="d-flex flex-row align-items-center justify-content-around">
-            <div class="m-2" *ngIf="consentNavigationConfig.metadata?.buttons.reject.show">
-                <button mat-raised-button color="warn" (click)="onConsentResponse(false)">
+            <div class="m-2" *ngIf="readerMetadata.metadata?.buttons.reject.show">
+                <button mat-raised-button color="warn" (click)="onSubmit(false)">
                     {{
-                        consentNavigationConfig.metadata?.buttons.reject.text
-                            ? consentNavigationConfig.metadata?.buttons.reject.text
+                        readerMetadata.metadata?.buttons.reject.text
+                            ? readerMetadata.metadata?.buttons.reject.text
                             : "DECLINE"
                     }}
                     &nbsp;
                     <mat-icon> clear </mat-icon>
                 </button>
             </div>
-            <div class="m-2" *ngIf="consentNavigationConfig.metadata?.buttons.accept.show">
-                <button mat-raised-button color="primary" (click)="onConsentResponse(true)">
+            <div class="m-2" *ngIf="readerMetadata.metadata?.buttons.accept.show">
+                <button mat-raised-button color="primary" (click)="onSubmit(true)">
                     {{
-                        consentNavigationConfig.metadata?.buttons.accept.text
-                            ? consentNavigationConfig.metadata?.buttons.accept.text
+                        readerMetadata.metadata?.buttons.accept.text
+                            ? readerMetadata.metadata?.buttons.accept.text
                             : "ACCEPT"
                     }}
                     &nbsp;

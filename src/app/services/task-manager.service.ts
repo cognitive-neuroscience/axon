@@ -1,23 +1,25 @@
-import { Injectable } from "@angular/core";
-import { Study } from "../models/Study";
-import { StudyService } from "./study.service";
-import { SnackbarService } from "./snackbar.service";
-import { Router } from "@angular/router";
-import { UserService } from "./user.service";
-import { SessionStorageService } from "./sessionStorage.service";
-import { map, mergeMap, take } from "rxjs/operators";
-import { ParticipantRouteNames, Platform, RouteNames, TaskType } from "../models/enums";
-import { StudyTask, Task } from "../models/Task";
-import { TaskPlayerNavigationConfig } from "../pages/tasks/task-playables/task-player/task-player.component";
-import { QuestionnaireNavigationConfig } from "../pages/tasks/questionnaire-reader/questionnaire-reader.component";
-import { Observable, of } from "rxjs";
-import { TaskService } from "./task.service";
-import { ConsentNavigationConfig } from "../pages/shared/consent-component/consent-reader.component";
-import { EmbeddedPageNavigationConfig } from "../pages/tasks/embedded-page/embedded-page.component";
-import { CanClear } from "./clearance.service";
+import { Injectable } from '@angular/core';
+import { Study } from '../models/Study';
+import { StudyService } from './study.service';
+import { SnackbarService } from './snackbar.service';
+import { Router } from '@angular/router';
+import { UserService } from './user.service';
+import { SessionStorageService } from './sessionStorage.service';
+import { map, mergeMap, take } from 'rxjs/operators';
+import { ParticipantRouteNames, Platform, RouteNames, TaskType } from '../models/enums';
+import { StudyTask, Task } from '../models/Task';
+import { TaskPlayerNavigationConfig } from '../pages/tasks/task-playables/task-player/task-player.component';
+import { QuestionnaireNavigationConfig } from '../pages/tasks/questionnaire-reader/questionnaire-reader.component';
+import { Observable, of } from 'rxjs';
+import { TaskService } from './task.service';
+import { ConsentNavigationConfig } from '../pages/shared/consent-component/consent-reader.component';
+import { EmbeddedPageNavigationConfig } from '../pages/tasks/embedded-page/embedded-page.component';
+import { CanClear } from './clearance.service';
+import { objIsEmpty } from '../common/commonMethods';
+import { InfoDisplayNavigationConfig } from '../pages/tasks/info-display/info-display.component';
 
 @Injectable({
-    providedIn: "root",
+    providedIn: 'root',
 })
 export class TaskManagerService implements CanClear {
     /**
@@ -84,7 +86,7 @@ export class TaskManagerService implements CanClear {
 
     private showConsent(consent: Task) {
         const config: ConsentNavigationConfig = {
-            mode: "actual",
+            mode: 'actual',
             metadata: consent.config,
         };
 
@@ -101,9 +103,13 @@ export class TaskManagerService implements CanClear {
 
     handleErr(): void {
         this._sessionStorageService.clearSessionStorage();
-        this._router.navigate(["crowdsource-participant"]);
+        if (this._userService.isCrowdsourcedUser) {
+            this._router.navigate([ParticipantRouteNames.CROWDSOURCEPARTICIPANT_REGISTER_BASEROUTE]);
+        } else {
+            this._router.navigate([ParticipantRouteNames.DASHBOARD_BASEROUTE]);
+        }
         this._snackbarService.openErrorSnackbar(
-            "There was an error. Please contact sharplab.neuro@mcgill.ca",
+            'There was an error. Please contact sharplab.neuro@mcgill.ca',
             undefined,
             15000
         );
@@ -114,41 +120,51 @@ export class TaskManagerService implements CanClear {
     private _routeToTask(studyTask: StudyTask) {
         this._router.navigate([`${ParticipantRouteNames.DASHBOARD_BASEROUTE}`]).then(() => {
             if (studyTask.task.fromPlatform === Platform.PAVLOVIA) {
+                // taskType can also be experimental or NAB from pavlovia
                 const navigationConfig: EmbeddedPageNavigationConfig = {
-                    mode: "actual",
+                    mode: 'actual',
                     config: {
                         externalURL: studyTask.task.externalURL,
                         task: studyTask.task,
                     },
                 };
-                this._router.navigate([`${RouteNames.PAVLOVIA}`], { state: navigationConfig });
+                this._router.navigate([RouteNames.PAVLOVIA], { state: navigationConfig });
             } else if (studyTask.task.taskType === TaskType.QUESTIONNAIRE) {
-                const config = Object.keys(studyTask.config).length === 0 ? studyTask.task.config : studyTask.config;
+                // if config object is empty, that means we use the default config.
+                // otherwise, use the overriding config
+                const config = objIsEmpty(studyTask.config) ? studyTask.task.config : studyTask.config;
                 const navigationConfig: QuestionnaireNavigationConfig = {
                     metadata: config,
-                    mode: "actual",
+                    mode: 'actual',
                 };
-                this._router.navigate([`${RouteNames.QUESTIONNAIRE}`], { state: navigationConfig });
+                this._router.navigate([RouteNames.QUESTIONNAIRE], { state: navigationConfig });
             } else if (studyTask.task.taskType === TaskType.EXPERIMENTAL || studyTask.task.taskType === TaskType.NAB) {
-                const config = Object.keys(studyTask.config).length === 0 ? studyTask.task.config : studyTask.config;
+                const config = objIsEmpty(studyTask.config) ? studyTask.task.config : studyTask.config;
                 const navigationConfig: TaskPlayerNavigationConfig = {
                     metadata: config,
-                    mode: "actual",
+                    mode: 'actual',
                 };
-                this._router.navigate([`${RouteNames.TASKPLAYER}`], { state: navigationConfig });
+                this._router.navigate([RouteNames.TASKPLAYER], { state: navigationConfig });
+            } else if (studyTask.task.taskType === TaskType.INFO_DISPLAY) {
+                const config = objIsEmpty(studyTask.config) ? studyTask.task.config : studyTask.config;
+                const navigationConfig: InfoDisplayNavigationConfig = {
+                    metadata: config,
+                    mode: 'actual',
+                };
+                this._router.navigate([RouteNames.INFO_DISPLAY], { state: navigationConfig });
             }
         });
     }
 
     private _routeToFinalPage(completionCode: string): void {
         if (this._userService.isCrowdsourcedUser) {
-            this._router.navigate(["/complete"], { state: { completionCode: completionCode } });
+            this._router.navigate(['/complete'], { state: { completionCode: completionCode } });
         } else {
             this._userService.updateStudyUsers();
             this._router.navigate([
                 `${ParticipantRouteNames.DASHBOARD_BASEROUTE}/${ParticipantRouteNames.STUDIES_SUBROUTE}`,
             ]);
-            this._snackbarService.openSuccessSnackbar("Completed Study!");
+            this._snackbarService.openSuccessSnackbar('Completed Study!');
         }
     }
 

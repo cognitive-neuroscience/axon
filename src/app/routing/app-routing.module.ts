@@ -12,6 +12,7 @@ import { EmbeddedPageComponent } from "../pages/tasks/embedded-page/embedded-pag
 import { ConsentPageComponent } from "../pages/tasks/consent/consent-page/consent-page.component";
 import { SendResetPasswordComponent } from "../pages/landing-page/forgot-password/send-reset-password/send-reset-password.component";
 import { ResetPasswordLoginComponent } from "../pages/landing-page/forgot-password/change-password-page/reset-password-login.component";
+import { InfoDisplayComponent } from "../pages/tasks/info-display/info-display.component";
 
 const routes: Routes = [
     {
@@ -39,6 +40,10 @@ const routes: Routes = [
     {
         path: RouteNames.TASKPLAYER,
         component: TaskPlayerComponent,
+    },
+    {
+        path: RouteNames.INFO_DISPLAY,
+        component: InfoDisplayComponent,
     },
     {
         path: RouteNames.PAVLOVIA,

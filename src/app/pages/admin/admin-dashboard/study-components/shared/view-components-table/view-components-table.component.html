@@ -1,0 +1,29 @@
+<ng-container *ngIf="tableTitle">
+    <h3 class="mat-h3">{{ tableTitle }}</h3>
+    <hr />
+</ng-container>
+
+<div *ngIf="rowData?.length == 0" style="color: red">{{ msgOnEmpty }}</div>
+
+<table *ngIf="rowData?.length > 0" mat-table [dataSource]="rowData" class="mat-elevation-z3 w-100">
+    <ng-container *ngFor="let row of tableconfig">
+        <ng-container [matColumnDef]="row.columnHeader">
+            <th mat-header-cell *matHeaderCellDef>{{ row.columnHeader }}</th>
+            <td mat-cell *matCellDef="let givenRow">{{ givenRow[row.columnKey] }}</td>
+        </ng-container>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let givenRow">
+            <div class="d-flex justify-content-between">
+                <button mat-icon-button (click)="onSelect(givenRow)">
+                    <mat-icon style="color: green">play_arrow</mat-icon>
+                </button>
+            </div>
+        </td></ng-container
+    >
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
