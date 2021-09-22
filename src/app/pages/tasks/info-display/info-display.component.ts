@@ -3,7 +3,7 @@ import { TaskManagerService } from 'src/app/services/task-manager.service';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { AbstractBaseReaderComponent } from '../shared/base-reader';
-import { ParticipantRouteNames, RouteNames } from 'src/app/models/enums';
+import { ParticipantRouteNames } from 'src/app/models/enums';
 
 export interface InfoDisplayMetadata {
     shouldIncrementIndex: boolean;

@@ -1,26 +1,26 @@
-import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
-import { HttpErrorResponse } from "@angular/common/http";
-import { Component, Inject, OnInit, Optional } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { Router } from "@angular/router";
-import { Observable } from "rxjs";
-import { map, take } from "rxjs/operators";
-import { AdminRouteNames, Platform, TaskType } from "src/app/models/enums";
-import { Study } from "src/app/models/Study";
-import { Task } from "src/app/models/Task";
-import { SnackbarService } from "src/app/services/snackbar.service";
-import { StudyService } from "src/app/services/study.service";
-import { TaskService } from "src/app/services/task.service";
-import { UserService } from "src/app/services/user.service";
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { AdminRouteNames, Platform, TaskType } from 'src/app/models/enums';
+import { Study } from 'src/app/models/Study';
+import { Task } from 'src/app/models/Task';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { StudyService } from 'src/app/services/study.service';
+import { TaskService } from 'src/app/services/task.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
-    selector: "app-create-study",
-    templateUrl: "./create-modify-study.component.html",
-    styleUrls: ["./create-modify-study.component.scss"],
+    selector: 'app-create-study',
+    templateUrl: './create-modify-study.component.html',
+    styleUrls: ['./create-modify-study.component.scss'],
 })
 export class CreateModifyStudyComponent implements OnInit {
-    mode: "EDIT" | "CREATE" = "CREATE";
+    mode: 'EDIT' | 'CREATE' = 'CREATE';
 
     studyForm: FormGroup;
 
@@ -95,6 +95,12 @@ export class CreateModifyStudyComponent implements OnInit {
         );
     }
 
+    get InfoDisplays(): Observable<Task[]> {
+        return this.tasks.pipe(
+            map((tasks) => (tasks ? tasks.filter((task) => task.taskType === TaskType.INFO_DISPLAY) : []))
+        );
+    }
+
     get consentForms(): Observable<Task[]> {
         return this.tasks.pipe(
             map((tasks) => (tasks ? tasks.filter((task) => task.taskType === TaskType.CONSENT) : []))
@@ -102,7 +108,17 @@ export class CreateModifyStudyComponent implements OnInit {
     }
 
     get canRemoveTask(): boolean {
-        return this.mode === "CREATE" || (this.mode === "EDIT" && this.study.canEdit);
+        return this.mode === 'CREATE' || (this.mode === 'EDIT' && this.study.canEdit);
+    }
+
+    getClass(task: Task): string {
+        switch (task.taskType) {
+            case TaskType.EXPERIMENTAL:
+            case TaskType.NAB:
+                return task.fromPlatform;
+            default:
+                return task.taskType;
+        }
     }
 
     ngOnInit(): void {
@@ -111,23 +127,23 @@ export class CreateModifyStudyComponent implements OnInit {
 
         this.selectedTasks = [];
         this.studyForm = this.fb.group({
-            externalName: ["", Validators.compose([Validators.required, Validators.maxLength(255)])],
-            internalName: ["", Validators.compose([Validators.maxLength(255)])],
-            description: ["", Validators.maxLength(500)],
-            consent: ["", Validators.required],
+            externalName: ['', Validators.compose([Validators.required, Validators.maxLength(255)])],
+            internalName: ['', Validators.compose([Validators.maxLength(255)])],
+            description: ['', Validators.maxLength(500)],
+            consent: ['', Validators.required],
         });
 
         if (!this.study) {
-            this.mode = "CREATE";
+            this.mode = 'CREATE';
         } else {
-            this.mode = "EDIT";
-            this.studyForm.controls["externalName"].setValue(this.study.externalName);
-            this.studyForm.controls["internalName"].setValue(this.study.internalName);
-            this.studyForm.controls["description"].setValue(this.study.description);
+            this.mode = 'EDIT';
+            this.studyForm.controls['externalName'].setValue(this.study.externalName);
+            this.studyForm.controls['internalName'].setValue(this.study.internalName);
+            this.studyForm.controls['description'].setValue(this.study.description);
 
             this.tasks.pipe(take(1)).subscribe((task) => {
                 const foundTask = task.find((t) => t.id === this.study.consent);
-                this.studyForm.controls["consent"].setValue(foundTask.id);
+                this.studyForm.controls['consent'].setValue(foundTask.id);
             });
 
             this.study.tasks.forEach((studyTask) => {
@@ -154,20 +170,20 @@ export class CreateModifyStudyComponent implements OnInit {
     }
 
     onSubmit() {
-        this.mode === "CREATE" ? this.handleCreateStudy() : this.handleEditStudy();
+        this.mode === 'CREATE' ? this.handleCreateStudy() : this.handleEditStudy();
     }
 
     handleEditStudy(): void {
         const study: Study = {
             id: this.study.id,
-            internalName: this.studyForm.controls["internalName"].value,
-            externalName: this.studyForm.controls["externalName"].value,
+            internalName: this.studyForm.controls['internalName'].value,
+            externalName: this.studyForm.controls['externalName'].value,
             createdAt: this.study.createdAt,
             deletedAt: this.study.deletedAt,
             started: this.study.started,
-            description: this.studyForm.controls["description"].value,
+            description: this.studyForm.controls['description'].value,
             canEdit: true,
-            consent: this.studyForm.controls["consent"].value,
+            consent: this.studyForm.controls['consent'].value,
             tasks: this.selectedTasks.map((task, index) => {
                 return {
                     studyId: this.study.id,
@@ -191,7 +207,7 @@ export class CreateModifyStudyComponent implements OnInit {
             .subscribe(
                 () => {
                     this.studyService.update();
-                    this.snackbarService.openSuccessSnackbar("Successfully updated " + study.internalName);
+                    this.snackbarService.openSuccessSnackbar('Successfully updated ' + study.internalName);
                     this.dialogRef.close();
                 },
                 (err: HttpErrorResponse) => {
@@ -212,14 +228,14 @@ export class CreateModifyStudyComponent implements OnInit {
     handleCreateStudy(): void {
         const study: Study = {
             id: null,
-            internalName: this.studyForm.controls["internalName"].value,
-            externalName: this.studyForm.controls["externalName"].value,
+            internalName: this.studyForm.controls['internalName'].value,
+            externalName: this.studyForm.controls['externalName'].value,
             createdAt: null,
             deletedAt: null,
             started: false,
-            description: this.studyForm.controls["description"].value,
+            description: this.studyForm.controls['description'].value,
             canEdit: true,
-            consent: this.studyForm.controls["consent"].value,
+            consent: this.studyForm.controls['consent'].value,
             tasks: this.selectedTasks.map((task, index) => {
                 return {
                     studyId: null,
@@ -237,7 +253,7 @@ export class CreateModifyStudyComponent implements OnInit {
             .subscribe(
                 () => {
                     this.studyService.update();
-                    this.snackbarService.openSuccessSnackbar("Successfully created " + study.internalName);
+                    this.snackbarService.openSuccessSnackbar('Successfully created ' + study.internalName);
                     this.router.navigate([
                         `${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.STUDIES_SUBROUTE}`,
                     ]);
