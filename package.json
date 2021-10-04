@@ -21,7 +21,7 @@
         "rxjs": "~6.6.2",
         "tslib": "^2.0.0",
         "web-animations-js": "^2.3.2",
-        "xlsx": "^0.16.8",
+        "xlsx": "^0.17.0",
         "zone.js": "~0.10.2"
     },
     "devDependencies": {
