@@ -19,6 +19,7 @@ import { TaskModule } from "./pages/tasks/task.module";
 import { ErrorInterceptor } from "./interceptors/error.interceptor";
 import { SendResetPasswordComponent } from "./pages/landing-page/forgot-password/send-reset-password/send-reset-password.component";
 import { ResetPasswordLoginComponent } from "./pages/landing-page/forgot-password/change-password-page/reset-password-login.component";
+import { StudyBackgroundComponent } from './pages/landing-page/study-background/study-background.component';
 
 @NgModule({
     declarations: [
@@ -32,6 +33,7 @@ import { ResetPasswordLoginComponent } from "./pages/landing-page/forgot-passwor
         RegisterComponent,
         SendResetPasswordComponent,
         ResetPasswordLoginComponent,
+        StudyBackgroundComponent,
     ],
     imports: [
         BrowserModule,
