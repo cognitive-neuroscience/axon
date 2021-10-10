@@ -54,7 +54,7 @@ const routes: Routes = [
         path: RouteNames.STUDIES_BACKGROUND_BASEROUTE,
         children: [
             {
-                path: '/:id',
+                path: ':id',
                 component: StudyBackgroundComponent,
             },
         ],
