@@ -1,24 +1,24 @@
-import { HttpErrorResponse } from "@angular/common/http";
-import { Component, OnInit } from "@angular/core";
-import { AbstractControl, FormBuilder, ValidationErrors, Validators } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subscription } from "rxjs";
-import { ParticipantRouteNames, Role, RouteNames } from "src/app/models/enums";
-import { ClearanceService } from "src/app/services/clearance.service";
-import { LoaderService } from "src/app/services/loader/loader.service";
-import { SessionStorageService } from "src/app/services/sessionStorage.service";
-import { SnackbarService } from "src/app/services/snackbar.service";
-import { UserService } from "src/app/services/user.service";
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { ParticipantRouteNames, Role, RouteNames } from 'src/app/models/enums';
+import { ClearanceService } from 'src/app/services/clearance.service';
+import { LoaderService } from 'src/app/services/loader/loader.service';
+import { SessionStorageService } from 'src/app/services/sessionStorage.service';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { UserService } from 'src/app/services/user.service';
 
 function passwordMatchingValidator(control: AbstractControl): ValidationErrors | null {
-    const password = control.get("password");
-    const confirmPassword = control.get("confirmPassword");
+    const password = control.get('password');
+    const confirmPassword = control.get('confirmPassword');
 
     if (!password || !password.value || !confirmPassword || !confirmPassword.value) return null;
 
     if (password.value !== confirmPassword.value) {
         const err = {
-            passwordMatch: "Passwords do not match!",
+            passwordMatch: 'Passwords do not match!',
         };
 
         confirmPassword.setErrors(err);
@@ -29,14 +29,14 @@ function passwordMatchingValidator(control: AbstractControl): ValidationErrors |
 }
 
 @Component({
-    selector: "app-register",
-    templateUrl: "./register.component.html",
-    styleUrls: ["./register.component.scss"],
+    selector: 'app-register',
+    templateUrl: './register.component.html',
+    styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
     subscriptions: Subscription[] = [];
 
-    private readonly REGISTER_SUCCESS_STR = "User successfully created!";
+    private readonly REGISTER_SUCCESS_STR = 'User successfully created!';
 
     constructor(
         private router: Router,
@@ -51,9 +51,9 @@ export class RegisterComponent implements OnInit {
 
     registerForm = this.fb.group(
         {
-            email: ["", Validators.compose([Validators.email, Validators.required])],
-            password: ["", Validators.required],
-            confirmPassword: ["", Validators.required],
+            email: ['', Validators.compose([Validators.email, Validators.required])],
+            password: ['', Validators.required],
+            confirmPassword: ['', Validators.required],
         },
         { validators: passwordMatchingValidator }
     );
@@ -62,12 +62,12 @@ export class RegisterComponent implements OnInit {
         this._getQueryParams();
     }
 
-    // If the url contains a study shortcode then we get it here.
-    // Otherwise the user will be prompted to enter their own shortcode.
+    // If the url contains a study id then we get it here and save it into session storage
+    // to be picked up during login
     private _getQueryParams() {
         this.subscriptions.push(
             this.route.queryParams.subscribe((params) => {
-                const studyIdFromURL = params["studyid"];
+                const studyIdFromURL = params['studyid'];
                 if (studyIdFromURL) {
                     this.sessionStorageService.setStudyIdInSessionStorage(studyIdFromURL);
                 }
@@ -87,7 +87,7 @@ export class RegisterComponent implements OnInit {
                 (_) => {
                     this.loaderService.hideLoader();
                     this.snackbarService.openSuccessSnackbar(this.REGISTER_SUCCESS_STR);
-                    this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_SUBROUTE]);
+                    this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
                 },
                 (error: HttpErrorResponse) => {
                     this.loaderService.hideLoader();
@@ -103,10 +103,10 @@ export class RegisterComponent implements OnInit {
     }
 
     navigateToLoginPage() {
-        this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_SUBROUTE]);
+        this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
     }
 
     navigateToForgotPassword() {
-        this.router.navigate([RouteNames.LANDINGPAGE_FORGOT_PASSWORD]);
+        this.router.navigate([RouteNames.LANDINGPAGE_FORGOT_PASSWORD_BASEROUTE]);
     }
 }

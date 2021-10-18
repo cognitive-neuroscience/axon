@@ -1,15 +1,5 @@
 <div class="info-display-container">
-    <h1 class="mat-h1 my-3 title-text">
-        <b>{{ title }}</b>
-        <hr />
-    </h1>
-
-    <ng-container *ngFor="let section of sections">
-        <div class="my-5">
-            <h2 *ngIf="section.header" class="title-text" [innerHTML]="section.header"></h2>
-            <p *ngIf="section.textContent" class="sub-text" [innerHTML]="section.textContent"></p>
-        </div>
-    </ng-container>
+    <app-info-display-viewer [readerMetadata]="readerMetadata.metadata"></app-info-display-viewer>
 
     <div class="button-container">
         <button

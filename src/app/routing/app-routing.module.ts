@@ -20,12 +20,12 @@ const routes: Routes = [
         path: '',
         component: LandingPageComponent,
         children: [
-            { path: '', redirectTo: RouteNames.LANDINGPAGE_LOGIN_SUBROUTE, pathMatch: 'full' },
-            { path: RouteNames.LANDINGPAGE_LOGIN_SUBROUTE, component: LoginComponent },
-            { path: RouteNames.LANDINGPAGE_REGISTER_SUBROUTE, component: RegisterComponent },
-            { path: RouteNames.LANDINGPAGE_FORGOT_PASSWORD, component: SendResetPasswordComponent },
+            { path: '', redirectTo: RouteNames.LANDINGPAGE_LOGIN_BASEROUTE, pathMatch: 'full' },
+            { path: RouteNames.LANDINGPAGE_LOGIN_BASEROUTE, component: LoginComponent },
+            { path: RouteNames.LANDINGPAGE_REGISTER_BASEROUTE, component: RegisterComponent },
+            { path: RouteNames.LANDINGPAGE_FORGOT_PASSWORD_BASEROUTE, component: SendResetPasswordComponent },
             {
-                path: RouteNames.LANDINGPAGE_RESET_PASSWORD,
+                path: RouteNames.LANDINGPAGE_RESET_PASSWORD_BASEROUTE,
                 component: ResetPasswordLoginComponent,
             },
         ],
@@ -51,7 +51,7 @@ const routes: Routes = [
         component: EmbeddedPageComponent,
     },
     {
-        path: RouteNames.STUDIES_BACKGROUND_BASEROUTE,
+        path: RouteNames.LANDINGPAGE_STUDIES_BASEROUTE,
         children: [
             {
                 path: ':id',

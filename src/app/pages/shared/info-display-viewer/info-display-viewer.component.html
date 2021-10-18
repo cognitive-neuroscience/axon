@@ -10,25 +10,4 @@
             <p *ngIf="section.textContent" class="sub-text" [innerHTML]="section.textContent"></p>
         </div>
     </ng-container>
-
-    <div class="button-container">
-        <button
-            (click)="onSubmit('home')"
-            class="w-25"
-            color="secondary"
-            mat-raised-button
-            *ngIf="shouldShowHomeButton"
-        >
-            Return to Home
-        </button>
-        <button
-            (click)="onSubmit('continue')"
-            class="w-25"
-            color="primary"
-            mat-raised-button
-            *ngIf="shouldShowContinueButton"
-        >
-            Continue
-        </button>
-    </div>
 </div>

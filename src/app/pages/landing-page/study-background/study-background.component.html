@@ -1,1 +1,12 @@
-<p>study-background works!</p>
+<div>
+    <app-info-display-viewer *ngIf="studyBackground" [readerMetadata]="studyBackground"></app-info-display-viewer>
+
+    <div>
+        <button (click)="navigate('register')" class="w-25" color="secondary" mat-raised-button>
+            First time registering for a study? Click here
+        </button>
+        <button (click)="navigate('login')" class="w-25" color="primary" mat-raised-button>
+            Already have an account? Click here
+        </button>
+    </div>
+</div>

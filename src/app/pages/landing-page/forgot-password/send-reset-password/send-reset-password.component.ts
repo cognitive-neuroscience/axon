@@ -1,17 +1,17 @@
-import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
-import { ParticipantRouteNames, RouteNames } from "src/app/models/enums";
-import { EmailService } from "src/app/services/email.service";
-import { LoaderService } from "src/app/services/loader/loader.service";
-import { SnackbarService } from "src/app/services/snackbar.service";
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ParticipantRouteNames, RouteNames } from 'src/app/models/enums';
+import { EmailService } from 'src/app/services/email.service';
+import { LoaderService } from 'src/app/services/loader/loader.service';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 
 @Component({
-    selector: "app-send-reset-password",
-    templateUrl: "./send-reset-password.component.html",
-    styleUrls: ["./send-reset-password.scss"],
+    selector: 'app-send-reset-password',
+    templateUrl: './send-reset-password.component.html',
+    styleUrls: ['./send-reset-password.scss'],
 })
 export class SendResetPasswordComponent implements OnInit {
-    email: string = "";
+    email: string = '';
 
     constructor(
         private emailService: EmailService,
@@ -29,8 +29,8 @@ export class SendResetPasswordComponent implements OnInit {
                 (ok) => {
                     this.loaderService.hideLoader();
                     if (ok) {
-                        this.snackbarService.openSuccessSnackbar("reset email sent to " + this.email, undefined, 5000);
-                        this.router.navigate([`${RouteNames.LANDINGPAGE_RESET_PASSWORD}`]);
+                        this.snackbarService.openSuccessSnackbar('reset email sent to ' + this.email, undefined, 5000);
+                        this.router.navigate([`${RouteNames.LANDINGPAGE_RESET_PASSWORD_BASEROUTE}`]);
                     } else {
                         this.snackbarService.openErrorSnackbar(`there was an error sending an email to ${this.email}`);
                     }
@@ -44,7 +44,7 @@ export class SendResetPasswordComponent implements OnInit {
     }
 
     navigateToLoginPage() {
-        this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_SUBROUTE]);
+        this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
     }
 
     navigateToCrowdSourceRegister() {
@@ -52,6 +52,6 @@ export class SendResetPasswordComponent implements OnInit {
     }
 
     navigateToRegister() {
-        this.router.navigate([RouteNames.LANDINGPAGE_REGISTER_SUBROUTE]);
+        this.router.navigate([RouteNames.LANDINGPAGE_REGISTER_BASEROUTE]);
     }
 }

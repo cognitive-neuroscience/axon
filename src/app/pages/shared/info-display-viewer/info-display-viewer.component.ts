@@ -1,20 +1,13 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 export interface InfoDisplayViewerMetadata {
-    shouldIncrementIndex: boolean;
     title?: string;
     sections?: InfoDisplayViewerSection[];
-    buttons?: InfoDisplayViewerButtonConfig;
 }
 
 export interface InfoDisplayViewerSection {
     header: string;
     textContent: string;
-}
-
-export interface InfoDisplayViewerButtonConfig {
-    displayContinueButton: boolean;
-    displayHomeButton: boolean;
 }
 
 @Component({
@@ -23,19 +16,10 @@ export interface InfoDisplayViewerButtonConfig {
     styleUrls: ['./info-display-viewer.component.scss'],
 })
 export class InfoDisplayViewerComponent implements OnInit {
+    @Input()
     readerMetadata: InfoDisplayViewerMetadata;
 
-    onClick: EventEmitter<>;
-
     constructor() {}
-
-    get shouldShowHomeButton(): boolean {
-        return this.readerMetadata?.buttons?.displayHomeButton;
-    }
-
-    get shouldShowContinueButton(): boolean {
-        return this.readerMetadata?.buttons?.displayHomeButton;
-    }
 
     get title(): string {
         return this.readerMetadata?.title || '';

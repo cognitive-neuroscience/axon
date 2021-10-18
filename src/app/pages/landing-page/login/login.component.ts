@@ -1,34 +1,34 @@
-import { Component, OnDestroy } from "@angular/core";
-import { AuthService } from "src/app/services/auth.service";
-import { Subscription } from "rxjs";
-import { HttpErrorResponse } from "@angular/common/http";
-import { Router } from "@angular/router";
-import { SnackbarService } from "src/app/services/snackbar.service";
-import { FormBuilder, Validators } from "@angular/forms";
-import { LoaderService } from "src/app/services/loader/loader.service";
-import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames } from "src/app/models/enums";
-import { take } from "rxjs/operators";
-import { UserService } from "src/app/services/user.service";
-import { ClearanceService } from "src/app/services/clearance.service";
+import { Component, OnDestroy } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
+import { Subscription } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { FormBuilder, Validators } from '@angular/forms';
+import { LoaderService } from 'src/app/services/loader/loader.service';
+import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames } from 'src/app/models/enums';
+import { take } from 'rxjs/operators';
+import { UserService } from 'src/app/services/user.service';
+import { ClearanceService } from 'src/app/services/clearance.service';
 
 @Component({
-    selector: "app-login",
-    templateUrl: "./login.component.html",
-    styleUrls: ["./login.component.scss"],
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnDestroy {
-    private readonly LOGIN_SUCCESS_STR = "Successfully logged in!";
+    private readonly LOGIN_SUCCESS_STR = 'Successfully logged in!';
 
     subscriptions: Subscription[] = [];
 
     loginForm = this.fb.group({
-        email: ["", Validators.compose([Validators.email, Validators.required])],
-        password: ["", Validators.required],
-        confirmPassword: [""],
+        email: ['', Validators.compose([Validators.email, Validators.required])],
+        password: ['', Validators.required],
+        confirmPassword: [''],
     });
 
     navigateToRegister() {
-        this.router.navigate([RouteNames.LANDINGPAGE_REGISTER_SUBROUTE]);
+        this.router.navigate([RouteNames.LANDINGPAGE_REGISTER_BASEROUTE]);
     }
 
     navigateToCrowdSourceRegister() {
@@ -36,7 +36,7 @@ export class LoginComponent implements OnDestroy {
     }
 
     navigateToForgotPassword() {
-        this.router.navigate([RouteNames.LANDINGPAGE_FORGOT_PASSWORD]);
+        this.router.navigate([RouteNames.LANDINGPAGE_FORGOT_PASSWORD_BASEROUTE]);
     }
 
     onSubmit() {
@@ -95,7 +95,7 @@ export class LoginComponent implements OnDestroy {
                 this.router.navigate([ParticipantRouteNames.DASHBOARD_BASEROUTE]);
                 break;
             default:
-                this.snackbarService.openErrorSnackbar("There was an error logging you in");
+                this.snackbarService.openErrorSnackbar('There was an error logging you in');
                 break;
         }
     }
