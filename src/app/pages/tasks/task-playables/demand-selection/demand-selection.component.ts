@@ -186,9 +186,10 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
                     // already set
                     break;
                 case 'counterbalance-alternative':
-                    this.counterbalance === DemandSelectionCounterbalance.SELECTEASYPATCH
-                        ? DemandSelectionCounterbalance.SELECTHARDPATCH
-                        : DemandSelectionCounterbalance.SELECTEASYPATCH;
+                    this.counterbalance =
+                        this.counterbalance === DemandSelectionCounterbalance.SELECTEASYPATCH
+                            ? DemandSelectionCounterbalance.SELECTHARDPATCH
+                            : DemandSelectionCounterbalance.SELECTEASYPATCH;
                     break;
             }
             this.stimuli = this.dataGenService.generateDemandSelectionStimuli(
