@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -13,15 +13,11 @@ import { ViewComponentsTableModel } from '../shared/view-components-table/view-c
     templateUrl: './pavlovia-tasks.component.html',
     styleUrls: ['./pavlovia-tasks.component.scss'],
 })
-export class PavloviaTasksComponent implements OnInit {
-    ngOnInit() {
-        this.tasks = this.taskService.tasks;
-    }
-
-    tasks: Observable<Task[]>;
+export class PavloviaTasksComponent {
+    constructor(private taskService: TaskService, private router: Router) {}
 
     get NABPavloviaTasksForTable(): Observable<ViewComponentsTableModel<Task>> {
-        return this.tasks.pipe(
+        return this.taskService.tasks.pipe(
             map((tasks) =>
                 tasks
                     ? tasks.filter((task) => task.taskType === TaskType.NAB && task.fromPlatform === Platform.PAVLOVIA)
@@ -50,7 +46,7 @@ export class PavloviaTasksComponent implements OnInit {
     }
 
     get experimentalPavloviaTasksForTable(): Observable<ViewComponentsTableModel<Task>> {
-        return this.tasks.pipe(
+        return this.taskService.tasks.pipe(
             map((tasks) =>
                 tasks
                     ? tasks.filter(
@@ -90,6 +86,4 @@ export class PavloviaTasksComponent implements OnInit {
         };
         this.router.navigate([`${RouteNames.PAVLOVIA}`], { state: config });
     }
-
-    constructor(private taskService: TaskService, private router: Router) {}
 }

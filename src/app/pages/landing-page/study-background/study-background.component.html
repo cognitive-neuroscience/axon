@@ -1,12 +1,33 @@
 <div>
+    <div class="text-center">
+        <img style="width: 80px" src="/assets/logo/lablogo.png" alt="Sharplab Logo" />
+        <div class="w-75 mx-auto">
+            <h2 style="color: #3f51b5" class="welcome-header">Welcome to the Sharplab</h2>
+        </div>
+    </div>
+
     <app-info-display-viewer *ngIf="studyBackground" [readerMetadata]="studyBackground"></app-info-display-viewer>
 
-    <div>
-        <button (click)="navigate('register')" class="w-25" color="secondary" mat-raised-button>
-            First time registering for a study? Click here
+    <div style="padding: 2% 4%" *ngIf="!studyBackground">
+        <h1 class="mat-h1" style="color: #3f51b5">This study currently has no info.</h1>
+        <div style="color: #3f51b5">
+            You can still sign up for it by clicking the buttons below. <b>Register</b> if you have never done a study
+            with us, or <b>sign in</b> if you have previously completed a study with us.
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button
+            style="margin-bottom: 15px; color: #3f51b5"
+            (click)="navigate('register')"
+            class="w-25 button"
+            color="secondary"
+            mat-raised-button
+        >
+            First time signing up for a study? Click here to register
         </button>
-        <button (click)="navigate('login')" class="w-25" color="primary" mat-raised-button>
-            Already have an account? Click here
+        <button (click)="navigate('login')" class="w-25 button" color="primary" mat-raised-button>
+            Already have an account? Click here to login
         </button>
     </div>
 </div>

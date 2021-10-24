@@ -1,12 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ParticipantRouteNames, Role, RouteNames } from 'src/app/models/enums';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { SessionStorageService } from 'src/app/services/sessionStorage.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -33,7 +32,7 @@ function passwordMatchingValidator(control: AbstractControl): ValidationErrors |
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
     subscriptions: Subscription[] = [];
 
     private readonly REGISTER_SUCCESS_STR = 'User successfully created!';
@@ -44,8 +43,6 @@ export class RegisterComponent implements OnInit {
         private userService: UserService,
         private snackbarService: SnackbarService,
         private loaderService: LoaderService,
-        private sessionStorageService: SessionStorageService,
-        private route: ActivatedRoute,
         private clearanceService: ClearanceService
     ) {}
 
@@ -57,23 +54,6 @@ export class RegisterComponent implements OnInit {
         },
         { validators: passwordMatchingValidator }
     );
-
-    ngOnInit(): void {
-        this._getQueryParams();
-    }
-
-    // If the url contains a study id then we get it here and save it into session storage
-    // to be picked up during login
-    private _getQueryParams() {
-        this.subscriptions.push(
-            this.route.queryParams.subscribe((params) => {
-                const studyIdFromURL = params['studyid'];
-                if (studyIdFromURL) {
-                    this.sessionStorageService.setStudyIdInSessionStorage(studyIdFromURL);
-                }
-            })
-        );
-    }
 
     onSubmit() {
         this.clearanceService.clearServices();

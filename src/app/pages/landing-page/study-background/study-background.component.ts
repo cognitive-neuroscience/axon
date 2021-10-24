@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { RouteNames } from 'src/app/models/enums';
 import { LoaderService } from 'src/app/services/loader/loader.service';
+import { SessionStorageService } from 'src/app/services/sessionStorage.service';
 import { StudyService } from 'src/app/services/study.service';
 import { InfoDisplayViewerMetadata } from '../../shared/info-display-viewer/info-display-viewer.component';
 
@@ -13,14 +14,15 @@ import { InfoDisplayViewerMetadata } from '../../shared/info-display-viewer/info
     styleUrls: ['./study-background.component.scss'],
 })
 export class StudyBackgroundComponent implements OnInit, OnDestroy {
-    private subscriptions: Subscription[];
+    private subscriptions: Subscription[] = [];
     studyBackground: InfoDisplayViewerMetadata = null;
 
     constructor(
-        private route: ActivatedRoute,
+        private activatedRoute: ActivatedRoute,
         private studyService: StudyService,
         private router: Router,
-        private loader: LoaderService
+        private loader: LoaderService,
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit(): void {
@@ -30,35 +32,43 @@ export class StudyBackgroundComponent implements OnInit, OnDestroy {
     // get studyId so that we can load up the relevant background information on the study
     private _getQueryParams() {
         this.loader.showLoader();
-        this.subscriptions.push(
-            this.route.queryParams.subscribe((params) => {
-                const studyIdFromURL = params['studyid'] as number;
-                if (studyIdFromURL) {
-                    this.subscriptions.push(
-                        this.studyService
-                            .getStudyById(studyIdFromURL)
-                            .pipe(take(1))
-                            .subscribe(
-                                (task) => {
-                                    this.loader.hideLoader();
-                                    this.studyBackground = task.config;
-                                },
-                                (err) => {
-                                    this.loader.hideLoader();
-                                }
-                            )
-                    );
-                }
-            })
-        );
+        const studyIdFromURL = this.activatedRoute.snapshot.paramMap.get('id');
+        const parsedNum = parseInt(studyIdFromURL);
+
+        if (!isNaN(parsedNum)) {
+            this.subscriptions.push(
+                this.studyService
+                    .getStudyById(parsedNum)
+                    .pipe(take(1))
+                    .subscribe(
+                        (task) => {
+                            this.loader.hideLoader();
+                            if (task.status === 204) {
+                                this.router.navigate([`${RouteNames.LANDINGPAGE_NOTFOUND}`]);
+                                return;
+                            } else {
+                                // save the id in session storage so that the user can register for it later
+                                this.sessionStorageService.setStudyIdInSessionStorage(studyIdFromURL);
+                                this.studyBackground =
+                                    Object.keys(task.body.config).length === 0 ? null : task.body.config;
+                            }
+                        },
+                        (err) => {
+                            this.loader.hideLoader();
+                            this.router.navigate([`${RouteNames.LANDINGPAGE_NOTFOUND}`]);
+                        }
+                    )
+            );
+        } else {
+            // handle case with invalid url param
+            this.router.navigate([`${RouteNames.LANDINGPAGE_NOTFOUND}`]);
+        }
     }
 
     navigate(routeTo: 'login' | 'register') {
-        if (routeTo === 'login') {
-            this.router.navigate([`${RouteNames.LANDINGPAGE_LOGIN_BASEROUTE}`]);
-        } else {
-            this.router.navigate([`${RouteNames.LANDINGPAGE_REGISTER_BASEROUTE}`]);
-        }
+        routeTo === 'login'
+            ? this.router.navigate([`${RouteNames.LANDINGPAGE_LOGIN_BASEROUTE}`])
+            : this.router.navigate([`${RouteNames.LANDINGPAGE_REGISTER_BASEROUTE}`]);
     }
 
     ngOnDestroy() {

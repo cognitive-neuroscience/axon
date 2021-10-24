@@ -4,6 +4,7 @@ export enum RouteNames {
     LANDINGPAGE_FORGOT_PASSWORD_BASEROUTE = 'send-reset-email',
     LANDINGPAGE_RESET_PASSWORD_BASEROUTE = 'reset',
     LANDINGPAGE_STUDIES_BASEROUTE = 'studies',
+    LANDINGPAGE_NOTFOUND = 'notfound',
 
     TASKPLAYER = 'playtask',
 

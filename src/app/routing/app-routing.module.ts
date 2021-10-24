@@ -4,7 +4,7 @@ import { LoginComponent } from '../pages/landing-page/login/login.component';
 import { FinalPageComponent } from '../pages/participant/final-page/final-page.component';
 import { LandingPageComponent } from '../pages/landing-page/landing-page.component';
 import { RegisterComponent } from '../pages/landing-page/register/register.component';
-import { ParticipantRouteNames, RouteNames } from '../models/enums';
+import { AdminRouteNames, ParticipantRouteNames, RouteNames } from '../models/enums';
 import { CrowdSourceLoginComponent } from '../pages/landing-page/crowdsource-login/crowdsource-login.component';
 import { TaskPlayerComponent } from '../pages/tasks/task-playables/task-player/task-player.component';
 import { QuestionnaireReaderComponent } from '../pages/tasks/questionnaire-reader/questionnaire-reader.component';
@@ -14,6 +14,8 @@ import { SendResetPasswordComponent } from '../pages/landing-page/forgot-passwor
 import { ResetPasswordLoginComponent } from '../pages/landing-page/forgot-password/change-password-page/reset-password-login.component';
 import { InfoDisplayComponent } from '../pages/tasks/info-display/info-display.component';
 import { StudyBackgroundComponent } from '../pages/landing-page/study-background/study-background.component';
+import { NotFoundComponent } from '../pages/landing-page/not-found/not-found.component';
+import { AdminDashboardComponent } from '../pages/admin/admin-dashboard/admin-dashboard.component';
 
 const routes: Routes = [
     {
@@ -54,6 +56,11 @@ const routes: Routes = [
         path: RouteNames.LANDINGPAGE_STUDIES_BASEROUTE,
         children: [
             {
+                path: '',
+                redirectTo: `/${RouteNames.LANDINGPAGE_NOTFOUND}`, // "/" sets the absolute path, /#/studies without an ID is not a valid URL
+                pathMatch: 'full',
+            },
+            {
                 path: ':id',
                 component: StudyBackgroundComponent,
             },
@@ -64,7 +71,8 @@ const routes: Routes = [
         component: QuestionnaireReaderComponent,
     },
     { path: 'complete', component: FinalPageComponent },
-    // { path: "*", component: NotFoundCompo } TODO
+    { path: 'notfound', component: NotFoundComponent },
+    { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({

@@ -1,33 +1,33 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Study } from "../../../../../models/Study";
-import { StudyService } from "../../../../../services/study.service";
-import { MatDialog } from "@angular/material/dialog";
-import { ConfirmationService } from "../../../../../services/confirmation/confirmation.service";
-import { SnackbarService } from "../../../../../services/snackbar.service";
-import { Observable, of, Subscription } from "rxjs";
-import { environment } from "../../../../../../environments/environment";
-import { UserService } from "src/app/services/user.service";
-import { Router } from "@angular/router";
-import { AdminRouteNames } from "src/app/models/enums";
-import { map, mergeMap } from "rxjs/operators";
-import { MatSlideToggleChange } from "@angular/material/slide-toggle";
-import { CreateModifyStudyComponent } from "../create-modify-study/create-modify-study.component";
-import { TaskService } from "src/app/services/task.service";
-import { Task } from "src/app/models/Task";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Study } from '../../../../../models/Study';
+import { StudyService } from '../../../../../services/study.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationService } from '../../../../../services/confirmation/confirmation.service';
+import { SnackbarService } from '../../../../../services/snackbar.service';
+import { Observable, of, Subscription } from 'rxjs';
+import { environment } from '../../../../../../environments/environment';
+import { UserService } from 'src/app/services/user.service';
+import { Router } from '@angular/router';
+import { AdminRouteNames } from 'src/app/models/enums';
+import { map, mergeMap } from 'rxjs/operators';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { CreateModifyStudyComponent } from '../create-modify-study/create-modify-study.component';
+import { TaskService } from 'src/app/services/task.service';
+import { Task } from 'src/app/models/Task';
 
 @Component({
-    selector: "app-view-studies",
-    templateUrl: "./view-studies.component.html",
-    styleUrls: ["./view-studies.component.scss"],
+    selector: 'app-view-studies',
+    templateUrl: './view-studies.component.html',
+    styleUrls: ['./view-studies.component.scss'],
 })
 export class ViewStudiesComponent implements OnInit, OnDestroy {
     CROWDSOURCE_LINK: string = environment.production
-        ? "https://psharplab.campus.mcgill.ca/#/crowdsource-participant?studyid="
-        : "http://localhost:4200/#/crowdsource-participant?studyid=";
+        ? 'https://psharplab.campus.mcgill.ca/#/crowdsource-participant?studyid='
+        : 'http://localhost:4200/#/crowdsource-participant?studyid=';
 
     ACCOUNT_LINK: string = environment.production
-        ? "https://psharplab.campus.mcgill.ca/#/register?studyid="
-        : "http://localhost:4200/#/register?studyid=";
+        ? 'https://psharplab.campus.mcgill.ca/#/studies/'
+        : 'http://localhost:4200/#/studies/';
 
     subscriptions: Subscription[] = [];
 
@@ -65,7 +65,7 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
     }
 
     handleEdit(study: Study) {
-        this.dialog.open(CreateModifyStudyComponent, { width: "90%", height: "80%", data: study });
+        this.dialog.open(CreateModifyStudyComponent, { width: '90%', height: '80%', data: study });
     }
 
     handleViewData(study: Study) {
@@ -86,7 +86,7 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
                 .subscribe((ok) => {
                     if (ok) {
                         this.studyService.update();
-                        this.snackbarService.openSuccessSnackbar("Successfully archived study");
+                        this.snackbarService.openSuccessSnackbar('Successfully archived study');
                     }
                 })
         );
@@ -99,11 +99,11 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
         this.subscriptions.push(
             this.confirmationService
                 .openConfirmationDialog(
-                    `Are you sure you want to ${active ? "activate" : "deactivate"} the study?`,
+                    `Are you sure you want to ${active ? 'activate' : 'deactivate'} the study?`,
                     `${
                         active && study.canEdit
-                            ? "This will allow participants to start your study. Once you activate the study, you will not be able to edit it in the future"
-                            : ""
+                            ? 'This will allow participants to start your study. Once you activate the study, you will not be able to edit it in the future'
+                            : ''
                     }`
                 )
                 .pipe(
@@ -119,7 +119,7 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
                     // either a boolean or httpresponse, so we can check truthiness
                     if (ok) {
                         this.studyService.update();
-                        this.snackbarService.openSuccessSnackbar("Successfully updated task");
+                        this.snackbarService.openSuccessSnackbar('Successfully updated task');
                     } else {
                         study.started = originalValue;
                     }

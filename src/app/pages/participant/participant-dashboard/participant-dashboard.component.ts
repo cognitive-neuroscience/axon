@@ -1,26 +1,22 @@
-import { Component, OnInit } from "@angular/core";
-import { SessionStorageService } from "src/app/services/sessionStorage.service";
-import { UserService } from "src/app/services/user.service";
+import { Component, OnInit } from '@angular/core';
+import { SessionStorageService } from 'src/app/services/sessionStorage.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
-    selector: "app-participant-dashboard",
-    templateUrl: "./participant-dashboard.component.html",
-    styleUrls: ["./participant-dashboard.component.scss"],
+    selector: 'app-participant-dashboard',
+    templateUrl: './participant-dashboard.component.html',
+    styleUrls: ['./participant-dashboard.component.scss'],
 })
 export class ParticipantDashboardComponent implements OnInit {
-    studyId: number;
-
-    constructor(
-        private sessionStorageService: SessionStorageService,
-        private userService: UserService,
-    ) {}
+    constructor(private sessionStorageService: SessionStorageService, private userService: UserService) {}
 
     ngOnInit(): void {
-        this.studyId = parseInt(this.sessionStorageService.getStudyIdFromSessionStorage());
+        let studyId: number;
+        studyId = parseInt(this.sessionStorageService.getStudyIdFromSessionStorage());
         if (!this.userService.userHasValue) this.userService.updateUser();
 
-        if (this.studyId && this.userService.userHasValue) {
-            this.userService.registerParticipantForStudy(this.userService.user, this.studyId).subscribe(
+        if (studyId && this.userService.userHasValue) {
+            this.userService.registerParticipantForStudy(this.userService.user, studyId).subscribe(
                 (_) => {
                     this.sessionStorageService.clearSessionStorage();
                     this.userService.updateStudyUsers();

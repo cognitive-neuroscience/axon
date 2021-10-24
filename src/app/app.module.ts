@@ -21,6 +21,7 @@ import { SendResetPasswordComponent } from './pages/landing-page/forgot-password
 import { ResetPasswordLoginComponent } from './pages/landing-page/forgot-password/change-password-page/reset-password-login.component';
 import { StudyBackgroundComponent } from './pages/landing-page/study-background/study-background.component';
 import { SharedModule } from './pages/shared/shared.module';
+import { NotFoundComponent } from './pages/landing-page/not-found/not-found.component';
 
 @NgModule({
     declarations: [
@@ -35,10 +36,10 @@ import { SharedModule } from './pages/shared/shared.module';
         SendResetPasswordComponent,
         ResetPasswordLoginComponent,
         StudyBackgroundComponent,
+        NotFoundComponent,
     ],
     imports: [
         BrowserModule,
-        AppRoutingModule,
         BrowserAnimationsModule,
         FormsModule,
         MaterialModule,
@@ -48,6 +49,13 @@ import { SharedModule } from './pages/shared/shared.module';
         ReactiveFormsModule,
         HttpClientModule,
         SharedModule,
+
+        /**
+         * this import must be last as it contains the wild card routes to catch everything.
+         * If it is not last, then it will catch requests meant for child routing modules
+         * and redirect to the not found error page
+         */
+        AppRoutingModule,
     ],
     providers: [
         {

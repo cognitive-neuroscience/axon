@@ -7,6 +7,7 @@
             class="w-25"
             color="secondary"
             mat-raised-button
+            [disabled]="readerMetadata.mode === 'test'"
             *ngIf="shouldShowHomeButton"
         >
             Return to Home
@@ -16,6 +17,7 @@
             class="w-25"
             color="primary"
             mat-raised-button
+            [disabled]="readerMetadata.mode === 'test'"
             *ngIf="shouldShowContinueButton"
         >
             Continue
