@@ -1,13 +1,13 @@
-import { Injectable } from "@angular/core";
-import { Observable, BehaviorSubject, VirtualTimeScheduler } from "rxjs";
-import { Study } from "../models/Study";
-import { HttpClient, HttpResponse } from "@angular/common/http";
-import { environment } from "src/environments/environment";
-import { map, take } from "rxjs/operators";
-import { CanClear } from "./clearance.service";
+import { Injectable } from '@angular/core';
+import { Observable, BehaviorSubject, VirtualTimeScheduler } from 'rxjs';
+import { Study } from '../models/Study';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { map, take } from 'rxjs/operators';
+import { CanClear } from './clearance.service';
 
 @Injectable({
-    providedIn: "root",
+    providedIn: 'root',
 })
 export class StudyService implements CanClear {
     /**
@@ -15,7 +15,7 @@ export class StudyService implements CanClear {
      * from the ADMIN's perspective.
      */
 
-    private readonly RESOURCE_PATH = "/studies";
+    private readonly RESOURCE_PATH = '/studies';
 
     private _studiesBehaviorSubject: BehaviorSubject<Study[]>;
     get studiesAsync(): Observable<Study[]> {
@@ -42,15 +42,15 @@ export class StudyService implements CanClear {
             });
     }
 
-    getStudyById(studyId: number): Observable<Study> {
-        return this._http
-            .get<Study>(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${studyId}`, { observe: "response" })
-            .pipe(map((res) => res.body as Study));
+    getStudyById(studyId: number): Observable<HttpResponse<Study>> {
+        return this._http.get<Study>(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${studyId}`, {
+            observe: 'response',
+        });
     }
 
     createStudy(study: Study): Observable<HttpResponse<any>> {
         return this._http.post<HttpResponse<any>>(`${environment.apiBaseURL}${this.RESOURCE_PATH}`, study, {
-            observe: "response",
+            observe: 'response',
         });
     }
 
@@ -59,13 +59,13 @@ export class StudyService implements CanClear {
             `${environment.apiBaseURL}${this.RESOURCE_PATH}/${study.id}?includetasksupdate=${isModifyingTasks}`,
             study,
             {
-                observe: "response",
+                observe: 'response',
             }
         );
     }
 
     deleteStudy(studyId: number): Observable<HttpResponse<any>> {
-        return this._http.delete(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${studyId}`, { observe: "response" });
+        return this._http.delete(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${studyId}`, { observe: 'response' });
     }
 
     private _getAllStudies(): Observable<Study[]> {

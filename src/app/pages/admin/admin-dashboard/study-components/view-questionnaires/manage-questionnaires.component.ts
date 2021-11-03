@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -13,19 +13,13 @@ import { ViewComponentsTableModel } from '../shared/view-components-table/view-c
     templateUrl: './manage-questionnaires.component.html',
     styleUrls: ['./manage-questionnaires.component.scss'],
 })
-export class ManageQuestionnairesComponent implements OnInit {
+export class ManageQuestionnairesComponent {
     constructor(private taskService: TaskService, private router: Router) {}
 
     subscriptions: Subscription[] = [];
 
-    ngOnInit() {
-        this.tasks = this.taskService.tasks;
-    }
-
-    tasks: Observable<Task[]>;
-
     get questionnairesForTable(): Observable<ViewComponentsTableModel<Task>> {
-        return this.tasks.pipe(
+        return this.taskService.tasks.pipe(
             map((tasks) => (tasks ? tasks.filter((task) => task.taskType === TaskType.QUESTIONNAIRE) : [])),
             map((tasks) => ({
                 tableConfig: [

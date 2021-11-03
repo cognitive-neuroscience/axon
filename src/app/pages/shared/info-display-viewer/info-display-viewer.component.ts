@@ -1,15 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+
+export interface InfoDisplayViewerMetadata {
+    title?: string;
+    sections?: InfoDisplayViewerSection[];
+}
+
+export interface InfoDisplayViewerSection {
+    header: string;
+    textContent: string;
+}
 
 @Component({
-  selector: 'app-info-display-viewer',
-  templateUrl: './info-display-viewer.component.html',
-  styleUrls: ['./info-display-viewer.component.scss']
+    selector: 'app-info-display-viewer',
+    templateUrl: './info-display-viewer.component.html',
+    styleUrls: ['./info-display-viewer.component.scss'],
 })
 export class InfoDisplayViewerComponent implements OnInit {
+    @Input()
+    readerMetadata: InfoDisplayViewerMetadata;
 
-  constructor() { }
+    constructor() {}
 
-  ngOnInit(): void {
-  }
+    get title(): string {
+        return this.readerMetadata?.title || '';
+    }
 
+    get sections(): InfoDisplayViewerSection[] {
+        return this.readerMetadata?.sections || [];
+    }
+
+    ngOnInit(): void {}
 }

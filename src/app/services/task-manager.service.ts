@@ -60,6 +60,7 @@ export class TaskManagerService implements CanClear {
         this._studyService
             .getStudyById(studyId)
             .pipe(
+                map((res) => res.body),
                 mergeMap((study) => {
                     this._study = study;
                     if (!this._userService.userHasValue) this._userService.updateUser();

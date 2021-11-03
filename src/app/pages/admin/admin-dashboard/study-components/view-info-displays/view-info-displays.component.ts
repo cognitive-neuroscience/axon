@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -13,17 +13,11 @@ import { ViewComponentsTableModel } from '../shared/view-components-table/view-c
     templateUrl: './view-info-displays.component.html',
     styleUrls: ['./view-info-displays.component.scss'],
 })
-export class ViewInfoDisplaysComponent implements OnInit {
-    tasks: Observable<Task[]>;
-
+export class ViewInfoDisplaysComponent {
     constructor(private taskService: TaskService, private router: Router) {}
 
-    ngOnInit() {
-        this.tasks = this.taskService.tasks;
-    }
-
     get infoDisplaysForTable(): Observable<ViewComponentsTableModel<Task>> {
-        return this.tasks.pipe(
+        return this.taskService.tasks.pipe(
             map((tasks) => (tasks ? tasks.filter((task) => task.taskType === TaskType.INFO_DISPLAY) : [])),
             map((tasks) => ({
                 tableConfig: [

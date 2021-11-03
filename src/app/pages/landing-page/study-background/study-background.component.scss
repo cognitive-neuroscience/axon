@@ -1,0 +1,12 @@
+.button-container {
+    padding: 2% 4%;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+.button {
+    white-space: normal;
+    line-height: inherit;
+    padding: 8px;
+}
