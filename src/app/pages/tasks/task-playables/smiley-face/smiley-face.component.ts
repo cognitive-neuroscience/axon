@@ -1,18 +1,18 @@
-import { Component, HostListener } from "@angular/core";
-import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
-import { Feedback, Key, UserResponse } from "src/app/models/InternalDTOs";
-import { StimuliProvidedType } from "src/app/models/enums";
-import { SmileyFaceTaskData } from "src/app/models/TaskData";
-import { SnackbarService } from "src/app/services/snackbar.service";
-import { TimerService } from "src/app/services/timer.service";
-import { AbstractBaseTaskComponent } from "../base-task";
-import { TaskConfig } from "../task-player/task-player.component";
-import { SmileyFaceStimulus, SmileyFaceType } from "src/app/services/data-generation/stimuli-models";
-import { ComponentName } from "src/app/services/component-factory.service";
-import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import { LoaderService } from "src/app/services/loader/loader.service";
-import { ImageService } from "src/app/services/image.service";
-import { take } from "rxjs/operators";
+import { Component, HostListener } from '@angular/core';
+import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
+import { Feedback, Key, UserResponse } from 'src/app/models/InternalDTOs';
+import { StimuliProvidedType } from 'src/app/models/enums';
+import { SmileyFaceTaskData } from 'src/app/models/TaskData';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { TimerService } from 'src/app/services/timer.service';
+import { AbstractBaseTaskComponent } from '../base-task';
+import { TaskConfig } from '../task-player/task-player.component';
+import { SmileyFaceStimulus, SmileyFaceType } from 'src/app/services/data-generation/stimuli-models';
+import { ComponentName } from 'src/app/services/component-factory.service';
+import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
+import { LoaderService } from 'src/app/services/loader/loader.service';
+import { ImageService } from 'src/app/services/image.service';
+import { take } from 'rxjs/operators';
 
 interface SmileyFaceMetadata {
     component: ComponentName;
@@ -37,19 +37,19 @@ interface SmileyFaceMetadata {
 }
 
 export enum SmileyFaceTaskCounterbalance {
-    SHORT_FACE_REWARDED_MORE = "SHORTFACEREWARDEDMORE",
-    LONG_FACE_REWARDED_MORE = "LONGFACEREWARDEDMORE",
+    SHORT_FACE_REWARDED_MORE = 'SHORTFACEREWARDEDMORE',
+    LONG_FACE_REWARDED_MORE = 'LONGFACEREWARDEDMORE',
 }
 
 enum SmileyFaceCache {
-    BLOCK_NUM = "smiley-face-block-num",
-    TOTAL_SCORE = "smiley-face-total-score",
+    BLOCK_NUM = 'smiley-face-block-num',
+    TOTAL_SCORE = 'smiley-face-total-score',
 }
 
 @Component({
-    selector: "app-smiley-face",
-    templateUrl: "./smiley-face.component.html",
-    styleUrls: ["./smiley-face.component.scss"],
+    selector: 'app-smiley-face',
+    templateUrl: './smiley-face.component.html',
+    styleUrls: ['./smiley-face.component.scss'],
 })
 export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     /**
@@ -113,22 +113,22 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
 
     configure(metadata: SmileyFaceMetadata, config: TaskConfig) {
         try {
-            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
+            this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
+            this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
             this.maxResponseTime = throwErrIfNotDefined(
                 metadata.config.maxResponseTime,
-                "max response time not defined"
+                'max response time not defined'
             );
-            this.numShortFaces = throwErrIfNotDefined(metadata.config.numShortFaces, "num short faces not defined");
-            this.numLongFaces = throwErrIfNotDefined(metadata.config.numLongFaces, "num long faces not defined");
+            this.numShortFaces = throwErrIfNotDefined(metadata.config.numShortFaces, 'num short faces not defined');
+            this.numLongFaces = throwErrIfNotDefined(metadata.config.numLongFaces, 'num long faces not defined');
             this.numFacesLessRewarded = throwErrIfNotDefined(
                 metadata.config.numFacesLessRewarded,
-                "num faces less rewarded not defined"
+                'num faces less rewarded not defined'
             );
             this.numFacesMoreRewarded = throwErrIfNotDefined(
                 metadata.config.numFacesMoreRewarded,
-                "num faces more rewarded not defined"
+                'num faces more rewarded not defined'
             );
         } catch (error) {
             throw new error(error);
@@ -153,9 +153,9 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     async start() {
         this.imageService
             .loadImagesAsBlobs([
-                "/assets/images/stimuli/smileyface/short.png",
-                "/assets/images/stimuli/smileyface/no.png",
-                "/assets/images/stimuli/smileyface/long.png",
+                '/assets/images/stimuli/smileyface/short.png',
+                '/assets/images/stimuli/smileyface/no.png',
+                '/assets/images/stimuli/smileyface/long.png',
             ])
             .pipe(take(1))
             .subscribe((blobs) => {
@@ -181,10 +181,6 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
                                   this.numFacesMoreRewarded
                               );
                 }
-
-                console.log(this.stimuli.filter((x) => x.faceShown === SmileyFaceType.LONG && x.isRewarded == true));
-                console.log(this.stimuli.filter((x) => x.faceShown === SmileyFaceType.SHORT && x.isRewarded == true));
-
                 super.start();
             });
     }
@@ -228,11 +224,11 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         this.setStimuliUI(this.currentStimulus);
 
         // set back to no face after given time
-        this.setTimer("showStimulusTimer", this.durationStimulusPresented, () => {
+        this.setTimer('showStimulusTimer', this.durationStimulusPresented, () => {
             this.showImage(this.blobs[1]);
         });
 
-        this.setTimer("maxResponseTimer", this.maxResponseTime, () => {
+        this.setTimer('maxResponseTimer', this.maxResponseTime, () => {
             this.responseAllowed = false;
             this.handleRoundInteraction(null);
         });
@@ -259,17 +255,17 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         return key === Key.Z || key === Key.M;
     }
 
-    private setTimer(timerType: "showStimulusTimer" | "maxResponseTimer", delay: number, cbFunc?: () => void) {
-        if (timerType === "showStimulusTimer") {
+    private setTimer(timerType: 'showStimulusTimer' | 'maxResponseTimer', delay: number, cbFunc?: () => void) {
+        if (timerType === 'showStimulusTimer') {
             this.showStimulusTimer = setTimeout(() => {
                 if (cbFunc) cbFunc();
             }, delay);
-        } else if (timerType === "maxResponseTimer") {
+        } else if (timerType === 'maxResponseTimer') {
             this.maxResponseTimer = setTimeout(() => {
                 if (cbFunc) cbFunc();
             }, delay);
         } else {
-            throw new Error("Invalid Timer type, could not set timer");
+            throw new Error('Invalid Timer type, could not set timer');
         }
     }
 
@@ -278,7 +274,7 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         clearTimeout(this.maxResponseTimer);
     }
 
-    @HostListener("window:keypress", ["$event"])
+    @HostListener('window:keypress', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
         const thisTrial = this.taskData[this.taskData.length - 1];
         thisTrial.submitted = this.timerService.getCurrentTimestamp();
@@ -391,7 +387,7 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
 
     private showImage(blob: Blob) {
         const fr = new FileReader();
-        fr.addEventListener("load", () => {
+        fr.addEventListener('load', () => {
             this.stimulusBlobShown = fr.result;
         });
         fr.readAsDataURL(blob);
