@@ -1,11 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { TaskService } from '../../../../../services/task.service';
 import { Task } from '../../../../../models/Task';
 import { Observable, Subscription } from 'rxjs';
 import { Platform, RouteNames, TaskType } from '../../../../../models/enums';
 import { map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
 import { TaskPlayerNavigationConfig } from 'src/app/pages/tasks/task-playables/task-player/task-player.component';
 import { ViewComponentsTableModel } from '../shared/view-components-table/view-components-table.component';
 
@@ -14,19 +13,13 @@ import { ViewComponentsTableModel } from '../shared/view-components-table/view-c
     templateUrl: './view-tasks.component.html',
     styleUrls: ['./view-tasks.component.scss'],
 })
-export class ViewTasksComponent implements OnInit, OnDestroy {
-    subscribers: Subscription[] = [];
-
-    tasklist: Observable<Task[]>;
+export class ViewTasksComponent implements OnDestroy {
+    subscriptions: Subscription[] = [];
 
     constructor(private router: Router, private taskService: TaskService) {}
 
-    ngOnInit() {
-        this.tasklist = this.taskService.tasks;
-    }
-
     get NABTasksForTable(): Observable<ViewComponentsTableModel<Task>> {
-        return this.tasklist.pipe(
+        return this.taskService.tasks.pipe(
             map((tasks) =>
                 tasks
                     ? tasks.filter((task) => task.taskType === TaskType.NAB && task.fromPlatform === Platform.PSHARPLAB)
@@ -60,7 +53,7 @@ export class ViewTasksComponent implements OnInit, OnDestroy {
     }
 
     get experimentalTasksForTable(): Observable<ViewComponentsTableModel<Task>> {
-        return this.tasklist.pipe(
+        return this.taskService.tasks.pipe(
             map((tasks) =>
                 tasks
                     ? tasks.filter(
@@ -87,6 +80,6 @@ export class ViewTasksComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.subscribers.forEach((x) => x.unsubscribe());
+        this.subscriptions.forEach((x) => x.unsubscribe());
     }
 }

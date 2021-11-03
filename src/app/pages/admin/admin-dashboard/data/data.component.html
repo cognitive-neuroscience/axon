@@ -2,7 +2,7 @@
 
 <div *ngIf="studyExists" class="container-fluid p-4">
     <div class="d-flex flex-column">
-        <h2>Participant data for {{ study?.internalName }}</h2>
+        <h2>Participant data for {{ study?.internalName || study?.externalName }}</h2>
         <h2 style="color: rgb(110, 110, 110); margin: 0">External name: {{ study?.externalName }}</h2>
         <h2 style="color: rgb(110, 110, 110)">Study ID: {{ study?.id }}</h2>
     </div>

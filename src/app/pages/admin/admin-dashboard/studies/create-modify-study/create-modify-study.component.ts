@@ -183,6 +183,7 @@ export class CreateModifyStudyComponent implements OnInit {
             started: this.study.started,
             description: this.studyForm.controls['description'].value,
             canEdit: true,
+            config: this.study.config,
             consent: this.studyForm.controls['consent'].value,
             tasks: this.selectedTasks.map((task, index) => {
                 return {
@@ -235,6 +236,7 @@ export class CreateModifyStudyComponent implements OnInit {
             started: false,
             description: this.studyForm.controls['description'].value,
             canEdit: true,
+            config: {},
             consent: this.studyForm.controls['consent'].value,
             tasks: this.selectedTasks.map((task, index) => {
                 return {
