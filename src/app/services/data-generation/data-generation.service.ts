@@ -1,21 +1,21 @@
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {
     deepClone,
     generateRandomNonrepeatingNumberList,
     getRandomNumber,
     selectNRandomElementsNoRepeats,
     shuffle,
-} from "src/app/common/commonMethods";
-import { ImageService } from "../image.service";
+} from 'src/app/common/commonMethods';
+import { ImageService } from '../image.service';
 import {
     OddballImageNames,
     OddballNonTargetStimulus,
     OddballStimulusPath,
     OddballTargetStimulus,
-} from "./raw-data/oddball-image-list";
-import { RatingTaskActivities, RatingTaskQuestionList } from "./raw-data/rating-task-data-list";
+} from './raw-data/oddball-image-list';
+import { RatingTaskActivities, RatingTaskQuestionList } from './raw-data/rating-task-data-list';
 import {
     ChoiceTaskStimulus,
     DemandSelectionCounterbalance,
@@ -31,15 +31,15 @@ import {
     TaskSwitchingStimulus,
     TrailMakingStimulus,
     TrailMakingTrialType,
-} from "./stimuli-models";
-import { NBackSet } from "./raw-data/nback-data-list";
-import { Color } from "src/app/models/InternalDTOs";
-import { DemandSelectionImageNames } from "./raw-data/demand-selection-image-list";
-import { DigitSpanStimuli } from "./raw-data/digit-span-list";
-import { TrailMakingSet } from "./raw-data/trail-making-list";
+} from './stimuli-models';
+import { NBackSet } from './raw-data/nback-data-list';
+import { Color } from 'src/app/models/InternalDTOs';
+import { DemandSelectionImageNames } from './raw-data/demand-selection-image-list';
+import { DigitSpanStimuli } from './raw-data/digit-span-list';
+import { TrailMakingSet } from './raw-data/trail-making-list';
 
 @Injectable({
-    providedIn: "root",
+    providedIn: 'root',
 })
 export class DataGenerationService {
     constructor(private imageService: ImageService) {}
@@ -56,7 +56,7 @@ export class DataGenerationService {
             const questions = shuffle(RatingTaskQuestionList);
             return {
                 activity: activity,
-                type: RatingTaskActivities.DoNothing.includes(activity) ? "DoNothing" : "DoSomething",
+                type: RatingTaskActivities.DoNothing.includes(activity) ? 'DoNothing' : 'DoSomething',
                 questions: questions,
             };
         });
@@ -66,8 +66,8 @@ export class DataGenerationService {
 
     generateChoiceStimuli(activities: string[]): ChoiceTaskStimulus[] {
         if (!activities.length || activities.length <= 2)
-            throw new Error("At least two activities are needed to make a pair list");
-        if (new Set<string>(activities).size !== activities.length) throw new Error("Cannot have duplicate activities");
+            throw new Error('At least two activities are needed to make a pair list');
+        if (new Set<string>(activities).size !== activities.length) throw new Error('Cannot have duplicate activities');
 
         const shuffledActivities = shuffle(activities);
         const pairs: ChoiceTaskStimulus[] = [];
@@ -82,7 +82,7 @@ export class DataGenerationService {
             pairs.push({
                 firstActivity: firstActivity,
                 secondActivity: secondActivity,
-                legend: ["Strongly Choose Left", "Strongly Choose Right"],
+                legend: ['Strongly Choose Left', 'Strongly Choose Right'],
             });
         }
 
@@ -124,10 +124,10 @@ export class DataGenerationService {
 
                 if (numTotalTrials - numTargetTrials - numNovelTrials < 0)
                     throw new Error(
-                        "Number of total trials must be bigger or equal to the number of other types of trials"
+                        'Number of total trials must be bigger or equal to the number of other types of trials'
                     );
                 if (numNovelTrials > Object.keys(novelBlobs).length - scenesToExclude.length)
-                    throw new Error("Cannot create given number of novel stimuli without repeats");
+                    throw new Error('Cannot create given number of novel stimuli without repeats');
 
                 // fill with non target trials
                 stimuli.fill({
@@ -184,12 +184,12 @@ export class DataGenerationService {
     // end of oddball data generation
 
     generateStroopStimuli(numTrials: number, numCongruent: number): StroopStimulus[] {
-        if (numTrials < numCongruent) throw new Error("Number of congruent trials must be fewer than number of trials");
+        if (numTrials < numCongruent) throw new Error('Number of congruent trials must be fewer than number of trials');
 
         const generatedStimuli: StroopStimulus[] = new Array(numTrials);
         const congruentIndices = generateRandomNonrepeatingNumberList(numCongruent, 0, numTrials);
 
-        for(let i = 0; i < generatedStimuli.length; i++) {
+        for (let i = 0; i < generatedStimuli.length; i++) {
             const color = this.getNewColor();
             const isCongruentTrial = congruentIndices.includes(i);
 
@@ -197,19 +197,19 @@ export class DataGenerationService {
                 generatedStimuli[i] = {
                     color: color,
                     congruent: true,
-                    word: color
-                }
+                    word: color,
+                };
             } else {
                 let nonCongruentColor = color;
-                while(color === nonCongruentColor) {
+                while (color === nonCongruentColor) {
                     nonCongruentColor = this.getNewColor();
                 }
 
                 generatedStimuli[i] = {
                     color: color,
                     congruent: false,
-                    word: nonCongruentColor
-                }
+                    word: nonCongruentColor,
+                };
             }
         }
 
@@ -217,7 +217,7 @@ export class DataGenerationService {
     }
 
     private getNewColor(): 'red' | 'blue' | 'green' {
-        const num = getRandomNumber(0, 3)
+        const num = getRandomNumber(0, 3);
         switch (num) {
             case 0:
                 return 'red';
@@ -230,42 +230,22 @@ export class DataGenerationService {
         }
     }
 
-    generateSmileyFaceStimuli(
-        numShortFace: number,
-        numShortFaceRewarded: number,
-        numLongFace: number,
-        numLongFaceRewarded: number
-    ): SmileyFaceStimulus[] {
-        if (numShortFaceRewarded > numShortFace || numLongFaceRewarded > numLongFace)
-            throw new Error("Num rewarded cannot be greater than the number of trials");
-
+    generateSmileyFaceStimuli(numShortFace: number, numLongFace: number): SmileyFaceStimulus[] {
         const trialSize = numShortFace + numLongFace;
         // select the indices that short faces will be shown at. The rest will be long faces
         const shortFaceIndices = generateRandomNonrepeatingNumberList(numShortFace, 0, trialSize);
-        // from those short faces, select a random subset that are rewarded
-        const shortFaceRewardedTrials = generateRandomNonrepeatingNumberList(numShortFaceRewarded, 0, numShortFace);
-        // out of the number of long faces, select a random subset that are rewarded
-        const numLongFaceRewardedTrials = generateRandomNonrepeatingNumberList(numLongFaceRewarded, 0, numLongFace);
 
-        let numLongFaces = 0;
-        let numShortFaces = 0;
-        const trials: SmileyFaceStimulus[] = [];
+        const trials: SmileyFaceStimulus[] = new Array(trialSize);
 
-        for (let i = 0; i < trialSize; i++) {
+        for (let i = 0; i < trials.length; i++) {
             if (shortFaceIndices.includes(i)) {
-                trials.push({
+                trials[i] = {
                     faceShown: SmileyFaceType.SHORT,
-                    isRewarded: !!shortFaceRewardedTrials.includes(numShortFaces),
-                    isRescheduledReward: false,
-                });
-                numShortFaces++;
+                };
             } else {
-                trials.push({
+                trials[i] = {
                     faceShown: SmileyFaceType.LONG,
-                    isRewarded: !!numLongFaceRewardedTrials.includes(numLongFaces),
-                    isRescheduledReward: false,
-                });
-                numLongFaces++;
+                };
             }
         }
         return trials;
@@ -275,15 +255,15 @@ export class DataGenerationService {
         const nbackSets = Object.keys(NBackSet);
 
         // subtract 1 because one set is the practice set
-        if (counterbalance < 1 || counterbalance > nbackSets.length - 1) throw new Error("No such nback group exists");
+        if (counterbalance < 1 || counterbalance > nbackSets.length - 1) throw new Error('No such nback group exists');
         if (isPractice) {
             if (numTrials > NBackSet.practice.length)
-                throw new Error("number of trials greater than number of practice trials");
+                throw new Error('number of trials greater than number of practice trials');
             return NBackSet.practice.slice(0, numTrials);
         } else {
             const selectedSet = NBackSet[counterbalance] as NBackStimulus[];
             if (numTrials > selectedSet.length)
-                throw new Error("number of trials greater than number of stroop trials");
+                throw new Error('number of trials greater than number of stroop trials');
             return selectedSet.slice(0, numTrials);
         }
     }
@@ -340,7 +320,7 @@ export class DataGenerationService {
 
     private getColorStim(usedColorStims: string[]): string {
         if (usedColorStims.length >= DemandSelectionImageNames.length)
-            throw new Error("no more color stims to retrieve for demand selection");
+            throw new Error('no more color stims to retrieve for demand selection');
 
         let randColorStim = DemandSelectionImageNames[getRandomNumber(0, DemandSelectionImageNames.length)];
         while (usedColorStims.includes(randColorStim)) {
@@ -364,7 +344,7 @@ export class DataGenerationService {
     // calculates whether or not the patch should change
     private shouldShift(probability: number): boolean {
         if (probability < 0 || probability > 100)
-            throw new Error("could not calculate shouldShift in demandselection. Invalid probability");
+            throw new Error('could not calculate shouldShift in demandselection. Invalid probability');
         const prob = 100 - probability;
         const randNum = getRandomNumber(0, 100);
         return randNum >= prob;

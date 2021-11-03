@@ -1,31 +1,29 @@
-import { Component, OnInit } from "@angular/core";
-import { forkJoin, Observable, of } from "rxjs";
-import { DateTime } from "luxon";
-import { StudyService } from "../../../../services/study.service";
-import { Study } from "../../../../models/Study";
-import { catchError, mergeMap, take } from "rxjs/operators";
-import { ActivatedRoute } from "@angular/router";
-import { UserService } from "src/app/services/user.service";
-import { ParticipantDataService } from "src/app/services/study-data.service";
-import { DataTableFormat } from "./data-table/data-table.component";
-import { SnackbarService } from "src/app/services/snackbar.service";
-import { ParticipantData } from "src/app/models/TaskData";
-import { ParticipantType, TaskType } from "src/app/models/enums";
-import { LoaderService } from "src/app/services/loader/loader.service";
-import { FeedbackQuestionnaireResponse } from "src/app/models/Questionnaire";
-import { NullTime } from "src/app/models/Login";
+import { Component, OnInit } from '@angular/core';
+import { forkJoin, Observable, of } from 'rxjs';
+import { DateTime } from 'luxon';
+import { StudyService } from '../../../../services/study.service';
+import { Study } from '../../../../models/Study';
+import { catchError, mergeMap, take } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { UserService } from 'src/app/services/user.service';
+import { ParticipantDataService } from 'src/app/services/study-data.service';
+import { DataTableFormat } from './data-table/data-table.component';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { ParticipantData } from 'src/app/models/TaskData';
+import { TaskType } from 'src/app/models/enums';
+import { LoaderService } from 'src/app/services/loader/loader.service';
 
 @Component({
-    selector: "app-data",
-    templateUrl: "./data.component.html",
-    styleUrls: ["./data.component.scss"],
+    selector: 'app-data',
+    templateUrl: './data.component.html',
+    styleUrls: ['./data.component.scss'],
 })
 export class DataComponent implements OnInit {
     // golang sets this as its default value for null dates.
-    private readonly NULL_DATE = "0001-01-01T00:00:00Z";
+    private readonly NULL_DATE = '0001-01-01T00:00:00Z';
 
     private idFromURL: string;
-    selectedTableName: string = "";
+    selectedTableName: string = '';
     studies: Observable<Study[]>;
     tableData: DataTableFormat[]; // json table to populate table component
     fileName: string = null;
@@ -40,7 +38,7 @@ export class DataComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.idFromURL = this.route.snapshot.paramMap.get("id");
+        this.idFromURL = this.route.snapshot.paramMap.get('id');
         if (!this.studyService.hasStudies) this.studyService.update();
     }
 
@@ -71,8 +69,8 @@ export class DataComponent implements OnInit {
                 take(1),
                 catchError((x) => {
                     this.loaderService.hideLoader();
-                    this.snackbarService.openErrorSnackbar("there was an error getting task data");
-                    throw new Error("error getting data");
+                    this.snackbarService.openErrorSnackbar('there was an error getting task data');
+                    throw new Error('error getting data');
                 })
             )
             .subscribe((participantData: ParticipantData[]) => {
@@ -80,10 +78,8 @@ export class DataComponent implements OnInit {
 
                 if (studyTask.task.taskType === TaskType.QUESTIONNAIRE) {
                     dataTableFormat = participantData.map((data) => {
-                        const tempTableDataFieldsObj = {};
-                        for (const [key, value] of Object.entries(data.data[0])) {
-                            tempTableDataFieldsObj[key] = value;
-                        }
+                        // if it's a questionnaire, only the first element in the array is populated
+                        // so grab the keys
                         return {
                             fields: {
                                 userId: data.userId,
@@ -91,7 +87,7 @@ export class DataComponent implements OnInit {
                                 taskOrder: data.taskOrder,
                                 submittedAt: data.submittedAt,
                                 participantType: data.participantType,
-                                ...tempTableDataFieldsObj,
+                                ...data.data[0],
                             },
                             expandable: [],
                         };
@@ -133,7 +129,7 @@ export class DataComponent implements OnInit {
     // pass by reference, so the object will be updated - no need to return anything
     private formatDateForDataRow(row: { [key: string]: any }) {
         for (let [key, value] of Object.entries(row)) {
-            if (key === "dueDate") {
+            if (key === 'dueDate') {
                 // TODO: make a more extensible check in the future rather than just
                 // hard coding the value. If we change dueDate to due_date for example, we will
                 // have to change this hard coded string
@@ -144,7 +140,7 @@ export class DataComponent implements OnInit {
             if (value === this.NULL_DATE) {
                 // for null date values, golang maps it as 0001-01-01T00:00:00Z from the backend. We
                 // want to translate this to NONE so it's more user friendly
-                row[key] = "NONE";
+                row[key] = 'NONE';
             } else if (this.isExpectedDateFormat(value)) {
                 const dt: DateTime = DateTime.fromISO(value as string);
                 row[key] = dt.toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS);
@@ -222,8 +218,8 @@ export class DataComponent implements OnInit {
                 take(1),
                 catchError((x) => {
                     this.loaderService.hideLoader();
-                    this.snackbarService.openErrorSnackbar("there was an error getting task data");
-                    throw new Error("error getting data");
+                    this.snackbarService.openErrorSnackbar('there was an error getting task data');
+                    throw new Error('error getting data');
                 })
             )
             .subscribe(
@@ -253,7 +249,7 @@ export class DataComponent implements OnInit {
     // returns the dateTime or null if invalid
     // checks regex, we expect dates of the form: 2020-12-30T03:13:235Z
     private isExpectedDateFormat(date: string): boolean {
-        if (!date || typeof date !== "string") return false;
+        if (!date || typeof date !== 'string') return false;
         const regex = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d/;
         return regex.test(date);
     }
