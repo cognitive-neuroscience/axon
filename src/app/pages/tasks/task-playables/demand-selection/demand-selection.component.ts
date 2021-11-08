@@ -144,7 +144,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
                 'counterbalanceMode not defined'
             );
         } catch (error) {
-            throw new error('values not defined, cannot start study: ' + error);
+            throw new Error('values not defined, cannot start study: ' + error);
         }
 
         this.config = config;

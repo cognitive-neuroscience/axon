@@ -1,12 +1,12 @@
-import { Component, HostListener } from "@angular/core";
-import { thisOrDefault, throwErrIfNotDefined } from "src/app/common/commonMethods";
-import { Key } from "src/app/models/InternalDTOs";
-import { FingerTappingTaskData } from "src/app/models/TaskData";
-import { ComponentName } from "src/app/services/component-factory.service";
-import { LoaderService } from "src/app/services/loader/loader.service";
-import { TimerService } from "src/app/services/timer.service";
-import { AbstractBaseTaskComponent } from "../base-task";
-import { TaskConfig } from "../task-player/task-player.component";
+import { Component, HostListener } from '@angular/core';
+import { thisOrDefault, throwErrIfNotDefined } from 'src/app/common/commonMethods';
+import { Key } from 'src/app/models/InternalDTOs';
+import { FingerTappingTaskData } from 'src/app/models/TaskData';
+import { ComponentName } from 'src/app/services/component-factory.service';
+import { LoaderService } from 'src/app/services/loader/loader.service';
+import { TimerService } from 'src/app/services/timer.service';
+import { AbstractBaseTaskComponent } from '../base-task';
+import { TaskConfig } from '../task-player/task-player.component';
 
 interface FingerTappingMetadata {
     component: ComponentName;
@@ -19,22 +19,22 @@ interface FingerTappingMetadata {
 }
 
 export enum UseHand {
-    DOMINANT = "DOMINANT",
-    NON_DOMINANT = "NONDOMINANT",
-    LEFT = "LEFT",
-    RIGHT = "RIGHT",
-    BOTH = "BOTH",
+    DOMINANT = 'DOMINANT',
+    NON_DOMINANT = 'NONDOMINANT',
+    LEFT = 'LEFT',
+    RIGHT = 'RIGHT',
+    BOTH = 'BOTH',
 }
 
 export enum FingerTappingCache {
-    HANDEDNESS = "finger-tapping-handedness",
-    BLOCK_NUM = "finger-tapping-block-num",
+    HANDEDNESS = 'finger-tapping-handedness',
+    BLOCK_NUM = 'finger-tapping-block-num',
 }
 
 @Component({
-    selector: "app-finger-tapping-task",
-    templateUrl: "./finger-tapping-task.component.html",
-    styleUrls: ["./finger-tapping-task.component.scss"],
+    selector: 'app-finger-tapping-task',
+    templateUrl: './finger-tapping-task.component.html',
+    styleUrls: ['./finger-tapping-task.component.scss'],
 })
 export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
     /**
@@ -77,16 +77,16 @@ export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
 
     configure(metadata: FingerTappingMetadata, config: TaskConfig) {
         try {
-            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
+            this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
+            this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
             this.maxResponseTime = throwErrIfNotDefined(
                 metadata.config.maxResponseTime,
-                "max response time not defined"
+                'max response time not defined'
             );
-            this.useHand = throwErrIfNotDefined(metadata.config.useHand, "use hand not defined");
+            this.useHand = throwErrIfNotDefined(metadata.config.useHand, 'use hand not defined');
         } catch (error) {
-            throw new error("values not defined, cannot start study");
+            throw new Error('values not defined, cannot start study');
         }
 
         this.config = config;
@@ -130,7 +130,7 @@ export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
         }, this.maxResponseTime);
     }
 
-    @HostListener("window:keypress", ["$event"])
+    @HostListener('window:keypress', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
         if (event === null) {
             super.handleRoundInteraction(null);

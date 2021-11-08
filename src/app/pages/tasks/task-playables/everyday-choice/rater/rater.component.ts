@@ -1,21 +1,21 @@
-import { Component, OnDestroy } from "@angular/core";
-import { SnackbarService } from "src/app/services/snackbar.service";
-import { TimerService } from "src/app/services/timer.service";
-import { throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
-import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import { RatingTaskStimuli } from "src/app/services/data-generation/stimuli-models";
-import { AbstractBaseTaskComponent } from "../../base-task";
-import { TaskConfig } from "../../task-player/task-player.component";
-import { LoaderService } from "src/app/services/loader/loader.service";
-import { NzMarks } from "ng-zorro-antd/slider";
-import { ComponentName } from "src/app/services/component-factory.service";
-import { StimuliProvidedType } from "src/app/models/enums";
-import { EverydayChoiceTaskData } from "src/app/models/TaskData";
+import { Component, OnDestroy } from '@angular/core';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { TimerService } from 'src/app/services/timer.service';
+import { throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
+import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
+import { RatingTaskStimuli } from 'src/app/services/data-generation/stimuli-models';
+import { AbstractBaseTaskComponent } from '../../base-task';
+import { TaskConfig } from '../../task-player/task-player.component';
+import { LoaderService } from 'src/app/services/loader/loader.service';
+import { NzMarks } from 'ng-zorro-antd/slider';
+import { ComponentName } from 'src/app/services/component-factory.service';
+import { StimuliProvidedType } from 'src/app/models/enums';
+import { EverydayChoiceTaskData } from 'src/app/models/TaskData';
 
 export enum RatingTaskCounterBalance {
-    LOWTOHIGHENDORSEMENT = "LOWTOHIGH",
-    HIGHTOLOWENDORSEMENT = "HIGHTOLOW",
-    NA = "NA",
+    LOWTOHIGHENDORSEMENT = 'LOWTOHIGH',
+    HIGHTOLOWENDORSEMENT = 'HIGHTOLOW',
+    NA = 'NA',
 }
 
 export interface RaterTaskMetadata {
@@ -38,13 +38,13 @@ export interface RaterTaskMetadata {
 }
 
 export enum RaterCache {
-    NEW_ACTIVITIES = "rater-new-activities",
+    NEW_ACTIVITIES = 'rater-new-activities',
 }
 
 @Component({
-    selector: "app-rater",
-    templateUrl: "./rater.component.html",
-    styleUrls: ["./rater.component.scss"],
+    selector: 'app-rater',
+    templateUrl: './rater.component.html',
+    styleUrls: ['./rater.component.scss'],
 })
 export class RaterComponent extends AbstractBaseTaskComponent implements OnDestroy {
     /**
@@ -81,8 +81,8 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
 
     currentSliderMarks: NzMarks = {}; // set slider legend
 
-    activityShown: string = "";
-    questionShown: string = "";
+    activityShown: string = '';
+    questionShown: string = '';
 
     maxResponseTimer: any;
     showHelpMessageTimer: any;
@@ -93,10 +93,10 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
 
     configure(metadata: RaterTaskMetadata, config: TaskConfig) {
         try {
-            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
+            this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
+            this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
         } catch (error) {
-            throw new error("values not defined, cannot start study");
+            throw new Error('values not defined, cannot start study');
         }
 
         this.config = config;
@@ -147,7 +147,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         this.timerService.clearTimer();
 
         this.taskData.push({
-            taskName: "Rating Game",
+            taskName: 'Rating Game',
             trial: ++this.trialNum,
             userID: this.userID,
             counterbalance: this.counterbalance,
@@ -173,8 +173,8 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         // if these values are not set in the config, then we assume that they are not wanted
         if (this.maxResponseTime !== undefined) {
             this.setTimer(
-                "maxResponseTimer",
-                "Please do your best to provide your answer in the time allotted for the next trial",
+                'maxResponseTimer',
+                'Please do your best to provide your answer in the time allotted for the next trial',
                 this.maxResponseTime,
                 this.durationOutOftimeMessageShown,
                 async () => {
@@ -187,8 +187,8 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         }
         if (this.delayToShowHelpMessage !== undefined) {
             this.setTimer(
-                "helpMessageTimer",
-                "Please make the rating by adjusting the slider and clicking next",
+                'helpMessageTimer',
+                'Please make the rating by adjusting the slider and clicking next',
                 this.delayToShowHelpMessage,
                 this.durationHelpMessageShown
             );
@@ -268,24 +268,24 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
     }
 
     private setTimer(
-        timerType: "helpMessageTimer" | "maxResponseTimer",
+        timerType: 'helpMessageTimer' | 'maxResponseTimer',
         message: string,
         delay: number,
         duration: number,
         cbFunc?: () => void
     ) {
-        if (timerType === "helpMessageTimer") {
+        if (timerType === 'helpMessageTimer') {
             this.showHelpMessageTimer = setTimeout(() => {
-                this.snackbarService.openErrorSnackbar(message, "", duration);
+                this.snackbarService.openErrorSnackbar(message, '', duration);
                 if (cbFunc) cbFunc();
             }, delay);
-        } else if (timerType === "maxResponseTimer") {
+        } else if (timerType === 'maxResponseTimer') {
             this.maxResponseTimer = setTimeout(() => {
-                this.snackbarService.openErrorSnackbar(message, "", duration);
+                this.snackbarService.openErrorSnackbar(message, '', duration);
                 if (cbFunc) cbFunc();
             }, delay);
         } else {
-            throw new Error("Invalid Timer type, could not set timer");
+            throw new Error('Invalid Timer type, could not set timer');
         }
     }
 

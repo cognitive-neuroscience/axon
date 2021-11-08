@@ -1,16 +1,16 @@
-import { Component } from "@angular/core";
-import { DigitSpanTaskData } from "src/app/models/TaskData";
-import { SnackbarService } from "src/app/services/snackbar.service";
-import { Feedback, UserResponse } from "src/app/models/InternalDTOs";
-import { TimerService } from "src/app/services/timer.service";
-import { StimuliProvidedType } from "src/app/models/enums";
-import { AbstractBaseTaskComponent } from "../base-task";
-import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import { LoaderService } from "src/app/services/loader/loader.service";
-import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
-import { TaskConfig } from "../task-player/task-player.component";
-import { ComponentName } from "src/app/services/component-factory.service";
-import { DigitSpanStimulus } from "src/app/services/data-generation/stimuli-models";
+import { Component } from '@angular/core';
+import { DigitSpanTaskData } from 'src/app/models/TaskData';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { Feedback, UserResponse } from 'src/app/models/InternalDTOs';
+import { TimerService } from 'src/app/services/timer.service';
+import { StimuliProvidedType } from 'src/app/models/enums';
+import { AbstractBaseTaskComponent } from '../base-task';
+import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
+import { LoaderService } from 'src/app/services/loader/loader.service';
+import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
+import { TaskConfig } from '../task-player/task-player.component';
+import { ComponentName } from 'src/app/services/component-factory.service';
+import { DigitSpanStimulus } from 'src/app/services/data-generation/stimuli-models';
 
 interface DigitSpanMetadata {
     component: ComponentName;
@@ -34,9 +34,9 @@ interface DigitSpanMetadata {
 }
 
 @Component({
-    selector: "app-digit-span",
-    templateUrl: "./digit-span.component.html",
-    styleUrls: ["./digit-span.component.scss"],
+    selector: 'app-digit-span',
+    templateUrl: './digit-span.component.html',
+    styleUrls: ['./digit-span.component.scss'],
 })
 export class DigitSpanComponent extends AbstractBaseTaskComponent {
     /**
@@ -67,14 +67,14 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
     // local state variables
     feedback: Feedback;
     showStimulus: boolean = false;
-    digitShown: string = "";
+    digitShown: string = '';
     showFeedback: boolean = false;
     showFixation: boolean = false;
     trialNum: number = 0;
     trialScore: number = 0;
     responseAllowed: boolean = false;
     showKeypad: boolean = false;
-    currentLevel: "first" | "second" = "first";
+    currentLevel: 'first' | 'second' = 'first';
 
     // timers
     maxResponseTimer: any;
@@ -99,20 +99,20 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
 
     configure(metadata: DigitSpanMetadata, config: TaskConfig) {
         try {
-            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
+            this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
+            this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
             this.maxResponseTime = throwErrIfNotDefined(
                 metadata.config.maxResponseTime,
-                "max response time not defined"
+                'max response time not defined'
             );
 
             this.useForwardSequence = throwErrIfNotDefined(
                 metadata.config.useForwardSequence,
-                "sequence direction not defined"
+                'sequence direction not defined'
             );
         } catch (error) {
-            throw new error("Cannot start study, values not defined:" + error);
+            throw new Error('Cannot start study, values not defined:' + error);
         }
 
         this.config = config;
@@ -133,7 +133,7 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
     async start() {
         this.taskData = [];
         this.currentStimuliIndex = 0;
-        this.currentLevel = "first";
+        this.currentLevel = 'first';
 
         // either the stimuli has been defined in config or we generate it here from service
         if (!this.stimuli) {
@@ -173,14 +173,14 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
         this.showKeypad = true;
         this.responseAllowed = true;
 
-        this.showHelpMessage("Please enter your response", this.delayToShowHelpMessage, this.durationHelpMessageShown);
+        this.showHelpMessage('Please enter your response', this.delayToShowHelpMessage, this.durationHelpMessageShown);
 
         this.setTimer(this.maxResponseTime, async () => {
             if (!this.isDestroyed) {
                 this.responseAllowed = false;
                 this.showStimulus = false;
                 this.showKeypad = false;
-                const message = "Please do your best to provide your answer in the time allotted for the next trial.";
+                const message = 'Please do your best to provide your answer in the time allotted for the next trial.';
                 this.snackbarService.openInfoSnackbar(message, undefined, this.durationHelpMessageShown);
                 await wait(this.durationHelpMessageShown);
                 if (this.isDestroyed) return;
@@ -201,7 +201,7 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
         for (const num of sequenceToShow) {
             this.digitShown = num.toString();
             await wait(this.durationDigitPresented);
-            this.digitShown = "";
+            this.digitShown = '';
             await wait(this.durationPauseBetweenDigits);
         }
     }
@@ -209,19 +209,19 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
     private getActualAnswer(): string {
         const thisSequence = this.currentStimulus[this.currentLevel];
         let answer = this.arrayToPaddedString(thisSequence);
-        if (!this.useForwardSequence) answer = answer.split("").reverse().join("");
+        if (!this.useForwardSequence) answer = answer.split('').reverse().join('');
         return answer;
     }
 
     private arrayToPaddedString(arr: number[]): string {
-        let str = "";
+        let str = '';
         arr.forEach((x) => (str = `${str}${x} `));
         return str.slice(0, str.length - 1);
     }
 
     private showHelpMessage(helpMessage: string, delay: number, duration: number) {
         this.snackbarTimeout = window.setTimeout(() => {
-            if (!this.isDestroyed) this.snackbarService.openInfoSnackbar(helpMessage, undefined, duration, "center");
+            if (!this.isDestroyed) this.snackbarService.openInfoSnackbar(helpMessage, undefined, duration, 'center');
         }, delay);
     }
 
@@ -239,7 +239,7 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
 
     // adds spaces in between the letters of a string
     private padString(strToPad: string): string {
-        let x = "";
+        let x = '';
         for (const letter of strToPad) {
             x = `${x}${letter} `;
         }
@@ -310,7 +310,7 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
 
     async decideToRepeat() {
         // already made second attempt and got it wrong - end the game
-        const finishedSecondChance = this.currentLevel === "second" && !this.currentTrial.isCorrect;
+        const finishedSecondChance = this.currentLevel === 'second' && !this.currentTrial.isCorrect;
         // we have reached past the final level and the participant was correct
         const finishedLastStimulus = this.currentStimuliIndex >= this.stimuli.length - 1 && this.currentTrial.isCorrect;
 
@@ -320,9 +320,9 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
         } else {
             if (this.currentTrial.isCorrect) {
                 this.currentStimuliIndex++;
-                this.currentLevel = "first";
+                this.currentLevel = 'first';
             } else {
-                this.currentLevel = "second";
+                this.currentLevel = 'second';
             }
 
             await wait(this.interTrialDelay);

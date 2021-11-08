@@ -1,18 +1,18 @@
-import { Component, HostListener } from "@angular/core";
-import { take } from "rxjs/operators";
-import { getRandomNumber, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
-import { StimuliProvidedType } from "src/app/models/enums";
-import { Feedback, Key, UserResponse } from "src/app/models/InternalDTOs";
-import { OddballTaskData } from "src/app/models/TaskData";
-import { ComponentName } from "src/app/services/component-factory.service";
-import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import { OddballTargetStimulus } from "src/app/services/data-generation/raw-data/oddball-image-list";
-import { OddballStimulus } from "src/app/services/data-generation/stimuli-models";
-import { LoaderService } from "src/app/services/loader/loader.service";
-import { SnackbarService } from "src/app/services/snackbar.service";
-import { TimerService } from "src/app/services/timer.service";
-import { AbstractBaseTaskComponent } from "../base-task";
-import { TaskConfig } from "../task-player/task-player.component";
+import { Component, HostListener } from '@angular/core';
+import { take } from 'rxjs/operators';
+import { getRandomNumber, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
+import { StimuliProvidedType } from 'src/app/models/enums';
+import { Feedback, Key, UserResponse } from 'src/app/models/InternalDTOs';
+import { OddballTaskData } from 'src/app/models/TaskData';
+import { ComponentName } from 'src/app/services/component-factory.service';
+import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
+import { OddballTargetStimulus } from 'src/app/services/data-generation/raw-data/oddball-image-list';
+import { OddballStimulus } from 'src/app/services/data-generation/stimuli-models';
+import { LoaderService } from 'src/app/services/loader/loader.service';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { TimerService } from 'src/app/services/timer.service';
+import { AbstractBaseTaskComponent } from '../base-task';
+import { TaskConfig } from '../task-player/task-player.component';
 
 export interface OddballTaskMetadata {
     component: ComponentName;
@@ -41,14 +41,14 @@ export enum OddballTaskCounterbalance {
 }
 
 enum OddballCache {
-    NOVEL_STIMULI = "oddball-novel-stimuli",
-    BLOCK_NUM = "oddball-block-num",
+    NOVEL_STIMULI = 'oddball-novel-stimuli',
+    BLOCK_NUM = 'oddball-block-num',
 }
 
 @Component({
-    selector: "app-oddball",
-    templateUrl: "./oddball.component.html",
-    styleUrls: ["./oddball.component.scss"],
+    selector: 'app-oddball',
+    templateUrl: './oddball.component.html',
+    styleUrls: ['./oddball.component.scss'],
 })
 export class OddballComponent extends AbstractBaseTaskComponent {
     /**
@@ -110,32 +110,32 @@ export class OddballComponent extends AbstractBaseTaskComponent {
 
     configure(metadata: OddballTaskMetadata, config: TaskConfig) {
         try {
-            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
+            this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
+            this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
             this.durationFixationJitteredLowerBound = throwErrIfNotDefined(
                 metadata.config.durationFixationJitteredLowerBound,
-                "no jitter lower bound found"
+                'no jitter lower bound found'
             );
             this.durationFixationJitteredUpperBound = throwErrIfNotDefined(
                 metadata.config.durationFixationJitteredUpperBound,
-                "no jitter upper bound found"
+                'no jitter upper bound found'
             );
-            this.numTrials = throwErrIfNotDefined(metadata.config.numTrials, "num trials not defined");
+            this.numTrials = throwErrIfNotDefined(metadata.config.numTrials, 'num trials not defined');
             this.numTargetTrials = throwErrIfNotDefined(
                 metadata.config.numTargetTrials,
-                "num target trials not defined"
+                'num target trials not defined'
             );
             this.numNovelStimuli = throwErrIfNotDefined(
                 metadata.config.numNovelStimuli,
-                "num novel stimuli not defined"
+                'num novel stimuli not defined'
             );
             this.durationStimulusPresented = throwErrIfNotDefined(
                 metadata.config.durationStimulusPresented,
-                "duration stimulus presented not defined"
+                'duration stimulus presented not defined'
             );
         } catch (error) {
-            throw new error("values not defined, cannot start study");
+            throw new Error('values not defined, cannot start study');
         }
 
         this.config = config;
@@ -214,12 +214,12 @@ export class OddballComponent extends AbstractBaseTaskComponent {
         this.showStimulus = true;
         this.responseAllowed = true;
 
-        this.setTimer("showStimulusTimer", this.durationStimulusPresented, () => {
+        this.setTimer('showStimulusTimer', this.durationStimulusPresented, () => {
             this.showStimulus = false;
             return;
         });
 
-        this.setTimer("maxResponseTimer", this.maxResponseTime, async () => {
+        this.setTimer('maxResponseTimer', this.maxResponseTime, async () => {
             this.responseAllowed = false;
             this.handleRoundInteraction(null);
         });
@@ -234,7 +234,7 @@ export class OddballComponent extends AbstractBaseTaskComponent {
      * When we receive null as an arg (meaning that the maxResponseTime has been reached)
      * then we know to complete.
      */
-    @HostListener("window:keypress", ["$event"])
+    @HostListener('window:keypress', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
         const thisTrial = this.taskData[this.taskData.length - 1];
         thisTrial.submitted = this.timerService.getCurrentTimestamp();
@@ -319,23 +319,23 @@ export class OddballComponent extends AbstractBaseTaskComponent {
         clearTimeout(this.showStimulusTimer);
     }
 
-    private setTimer(timerType: "showStimulusTimer" | "maxResponseTimer", delay: number, cbFunc?: () => void) {
-        if (timerType === "showStimulusTimer") {
+    private setTimer(timerType: 'showStimulusTimer' | 'maxResponseTimer', delay: number, cbFunc?: () => void) {
+        if (timerType === 'showStimulusTimer') {
             this.showStimulusTimer = setTimeout(() => {
                 if (cbFunc) cbFunc();
             }, delay);
-        } else if (timerType === "maxResponseTimer") {
+        } else if (timerType === 'maxResponseTimer') {
             this.maxResponseTimer = setTimeout(() => {
                 if (cbFunc) cbFunc();
             }, delay);
         } else {
-            throw new Error("Invalid Timer type, could not set timer");
+            throw new Error('Invalid Timer type, could not set timer');
         }
     }
 
     private showImage(blob: Blob) {
         const fr = new FileReader();
-        fr.addEventListener("load", () => {
+        fr.addEventListener('load', () => {
             this.stimulusShown = fr.result;
         });
         fr.readAsDataURL(blob);

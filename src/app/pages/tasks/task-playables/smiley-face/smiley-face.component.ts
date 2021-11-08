@@ -131,7 +131,7 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
                 'num faces more rewarded not defined'
             );
         } catch (error) {
-            throw new error(error);
+            throw new Error(error);
         }
 
         this.config = config;

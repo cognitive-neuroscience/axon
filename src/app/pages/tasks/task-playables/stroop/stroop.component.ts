@@ -1,17 +1,17 @@
-import { Component, HostListener } from "@angular/core";
-import { StroopTaskData } from "../../../../models/TaskData";
-import { SnackbarService } from "../../../../services/snackbar.service";
-import { Key } from "src/app/models/InternalDTOs";
-import { StimuliProvidedType } from "src/app/models/enums";
-import { TimerService } from "../../../../services/timer.service";
-import { UserResponse, Feedback } from "../../../../models/InternalDTOs";
-import { AbstractBaseTaskComponent } from "../base-task";
-import { ComponentName } from "src/app/services/component-factory.service";
-import { StroopStimulus } from "src/app/services/data-generation/stimuli-models";
-import { TaskConfig } from "../task-player/task-player.component";
-import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import { LoaderService } from "src/app/services/loader/loader.service";
-import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
+import { Component, HostListener } from '@angular/core';
+import { StroopTaskData } from '../../../../models/TaskData';
+import { SnackbarService } from '../../../../services/snackbar.service';
+import { Key } from 'src/app/models/InternalDTOs';
+import { StimuliProvidedType } from 'src/app/models/enums';
+import { TimerService } from '../../../../services/timer.service';
+import { UserResponse, Feedback } from '../../../../models/InternalDTOs';
+import { AbstractBaseTaskComponent } from '../base-task';
+import { ComponentName } from 'src/app/services/component-factory.service';
+import { StroopStimulus } from 'src/app/services/data-generation/stimuli-models';
+import { TaskConfig } from '../task-player/task-player.component';
+import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
+import { LoaderService } from 'src/app/services/loader/loader.service';
+import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 
 interface StroopTaskMetadata {
     component: ComponentName;
@@ -33,13 +33,13 @@ interface StroopTaskMetadata {
 }
 
 export enum StroopCache {
-    TOTAL_SCORE = "stroop-total-score",
+    TOTAL_SCORE = 'stroop-total-score',
 }
 
 @Component({
-    selector: "app-stroop-task",
-    templateUrl: "./stroop.component.html",
-    styleUrls: ["./stroop.component.scss"],
+    selector: 'app-stroop-task',
+    templateUrl: './stroop.component.html',
+    styleUrls: ['./stroop.component.scss'],
 })
 export class StroopComponent extends AbstractBaseTaskComponent {
     /**
@@ -97,16 +97,16 @@ export class StroopComponent extends AbstractBaseTaskComponent {
 
     configure(metadata: StroopTaskMetadata, config: TaskConfig) {
         try {
-            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
+            this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
+            this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
-            this.numTrials = throwErrIfNotDefined(metadata.config.numTrials, "num trials not defined");
+            this.numTrials = throwErrIfNotDefined(metadata.config.numTrials, 'num trials not defined');
             this.maxResponseTime = throwErrIfNotDefined(
                 metadata.config.maxResponseTime,
-                "max response time not defined"
+                'max response time not defined'
             );
         } catch (error) {
-            throw new error("values not defined, cannot start study");
+            throw new Error('values not defined, cannot start study');
         }
 
         this.config = config;
@@ -130,10 +130,7 @@ export class StroopComponent extends AbstractBaseTaskComponent {
 
         // either the stimuli has been defined in config or we generate it here from service
         if (!this.stimuli) {
-            this.stimuli = this.dataGenService.generateStroopStimuli(
-                this.numTrials,
-                this.numCongruent
-            );
+            this.stimuli = this.dataGenService.generateStroopStimuli(this.numTrials, this.numCongruent);
         }
         super.start();
     }
@@ -195,7 +192,7 @@ export class StroopComponent extends AbstractBaseTaskComponent {
         return key === Key.NUMONE || key === Key.NUMTWO || key === Key.NUMTHREE;
     }
 
-    @HostListener("window:keypress", ["$event"])
+    @HostListener('window:keypress', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
         const thisTrial = this.taskData[this.taskData.length - 1];
         thisTrial.submitted = this.timerService.getCurrentTimestamp();
@@ -216,7 +213,7 @@ export class StroopComponent extends AbstractBaseTaskComponent {
                     thisTrial.userAnswer = UserResponse.GREEN;
                     break;
                 default:
-                    throw new Error("invalid user input received");
+                    throw new Error('invalid user input received');
             }
             super.handleRoundInteraction(thisTrial.userAnswer);
         } else if (event === null) {

@@ -1,17 +1,17 @@
-import { Component, HostListener } from "@angular/core";
-import { NBackTaskData } from "src/app/models/TaskData";
-import { SnackbarService } from "../../../../services/snackbar.service";
-import { Key } from "src/app/models/InternalDTOs";
-import { TimerService } from "../../../../services/timer.service";
-import { UserResponse, Feedback } from "../../../../models/InternalDTOs";
-import { StimuliProvidedType } from "src/app/models/enums";
-import { AbstractBaseTaskComponent } from "../base-task";
-import { TaskConfig } from "../task-player/task-player.component";
-import { NBackStimulus } from "src/app/services/data-generation/stimuli-models";
-import { LoaderService } from "src/app/services/loader/loader.service";
-import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import { ComponentName } from "src/app/services/component-factory.service";
-import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
+import { Component, HostListener } from '@angular/core';
+import { NBackTaskData } from 'src/app/models/TaskData';
+import { SnackbarService } from '../../../../services/snackbar.service';
+import { Key } from 'src/app/models/InternalDTOs';
+import { TimerService } from '../../../../services/timer.service';
+import { UserResponse, Feedback } from '../../../../models/InternalDTOs';
+import { StimuliProvidedType } from 'src/app/models/enums';
+import { AbstractBaseTaskComponent } from '../base-task';
+import { TaskConfig } from '../task-player/task-player.component';
+import { NBackStimulus } from 'src/app/services/data-generation/stimuli-models';
+import { LoaderService } from 'src/app/services/loader/loader.service';
+import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
+import { ComponentName } from 'src/app/services/component-factory.service';
+import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 
 interface NBackMetadata {
     component: ComponentName;
@@ -32,13 +32,13 @@ interface NBackMetadata {
 }
 
 export enum NBackCache {
-    TOTAL_SCORE = "nback-total-score",
+    TOTAL_SCORE = 'nback-total-score',
 }
 
 @Component({
-    selector: "app-n-back",
-    templateUrl: "./n-back.component.html",
-    styleUrls: ["./n-back.component.scss"],
+    selector: 'app-n-back',
+    templateUrl: './n-back.component.html',
+    styleUrls: ['./n-back.component.scss'],
 })
 export class NBackComponent extends AbstractBaseTaskComponent {
     /**
@@ -100,16 +100,16 @@ export class NBackComponent extends AbstractBaseTaskComponent {
 
     configure(metadata: NBackMetadata, config: TaskConfig) {
         try {
-            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
+            this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
+            this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
-            this.numTrials = throwErrIfNotDefined(metadata.config.numTrials, "num trials not defined");
+            this.numTrials = throwErrIfNotDefined(metadata.config.numTrials, 'num trials not defined');
             this.maxResponseTime = throwErrIfNotDefined(
                 metadata.config.maxResponseTime,
-                "max response time not defined"
+                'max response time not defined'
             );
         } catch (error) {
-            throw new error("values not defined, cannot start study");
+            throw new Error('values not defined, cannot start study');
         }
 
         this.config = config;
@@ -199,7 +199,7 @@ export class NBackComponent extends AbstractBaseTaskComponent {
         clearTimeout(this.maxResponseTimer);
     }
 
-    @HostListener("window:keydown", ["$event"])
+    @HostListener('window:keydown', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
         this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
 

@@ -1,15 +1,15 @@
-import { Component, HostListener } from "@angular/core";
-import { Color, Key, UserResponse, Feedback } from "../../../../models/InternalDTOs";
-import { TaskSwitchingTaskData } from "../../../../models/TaskData";
-import { TimerService } from "../../../../services/timer.service";
-import { StimuliProvidedType } from "src/app/models/enums";
-import { AbstractBaseTaskComponent } from "../base-task";
-import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
-import { ComponentName } from "src/app/services/component-factory.service";
-import { TaskSwitchingStimulus } from "src/app/services/data-generation/stimuli-models";
-import { TaskConfig } from "../task-player/task-player.component";
-import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import { LoaderService } from "src/app/services/loader/loader.service";
+import { Component, HostListener } from '@angular/core';
+import { Color, Key, UserResponse, Feedback } from '../../../../models/InternalDTOs';
+import { TaskSwitchingTaskData } from '../../../../models/TaskData';
+import { TimerService } from '../../../../services/timer.service';
+import { StimuliProvidedType } from 'src/app/models/enums';
+import { AbstractBaseTaskComponent } from '../base-task';
+import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
+import { ComponentName } from 'src/app/services/component-factory.service';
+import { TaskSwitchingStimulus } from 'src/app/services/data-generation/stimuli-models';
+import { TaskConfig } from '../task-player/task-player.component';
+import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
+import { LoaderService } from 'src/app/services/loader/loader.service';
 
 interface TaskSwitchingMetadata {
     component: ComponentName;
@@ -34,16 +34,16 @@ interface TaskSwitchingMetadata {
 }
 
 export enum TaskSwitchingCache {
-    NUM_CORRECT = "task-switching-num-correct",
-    NUM_TRIALS = "task-switching-num-trials",
-    TOTAL_SCORE = "task-switching-total-score",
-    SHOULD_SKIP = "task-switching-should-skip",
+    NUM_CORRECT = 'task-switching-num-correct',
+    NUM_TRIALS = 'task-switching-num-trials',
+    TOTAL_SCORE = 'task-switching-total-score',
+    SHOULD_SKIP = 'task-switching-should-skip',
 }
 
 @Component({
-    selector: "app-task-switching",
-    templateUrl: "./task-switching.component.html",
-    styleUrls: ["./task-switching.component.scss"],
+    selector: 'app-task-switching',
+    templateUrl: './task-switching.component.html',
+    styleUrls: ['./task-switching.component.scss'],
 })
 export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
     /**
@@ -79,9 +79,9 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
     responseAllowed: boolean = false;
     showFixation: boolean = false;
     showFeedback: boolean = false;
-    color: string = "transparent";
+    color: string = 'transparent';
     digit: number;
-    feedback: string = "";
+    feedback: string = '';
     thresholdForRepeat: number = 0.8; // currently hardcoded, can change this if required in the future
 
     // timers
@@ -101,17 +101,17 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
 
     configure(metadata: TaskSwitchingMetadata, config: TaskConfig) {
         try {
-            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
+            this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
+            this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
-            this.numTrials = throwErrIfNotDefined(metadata.config.numTrials, "num trials not defined");
+            this.numTrials = throwErrIfNotDefined(metadata.config.numTrials, 'num trials not defined');
             this.maxResponseTime = throwErrIfNotDefined(
                 metadata.config.maxResponseTime,
-                "max response time not defined"
+                'max response time not defined'
             );
-            this.probOfShift = throwErrIfNotDefined(metadata.config.probOfShift, "probOfShift not defined");
+            this.probOfShift = throwErrIfNotDefined(metadata.config.probOfShift, 'probOfShift not defined');
         } catch (error) {
-            throw new error("values not defined, cannot start study: " + error);
+            throw new Error('values not defined, cannot start study: ' + error);
         }
 
         this.config = config;
@@ -147,7 +147,7 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
     async beginRound() {
         this.timerService.clearTimer();
         this.color = Color.TRANSPARENT;
-        this.feedback = "";
+        this.feedback = '';
         this.showFeedback = false;
         this.showFixation = true;
         await wait(this.durationFixationPresented);
@@ -207,7 +207,7 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
         clearTimeout(this.maxResponseTimer);
     }
 
-    @HostListener("window:keydown", ["$event"])
+    @HostListener('window:keydown', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
         const thisTrial = this.taskData[this.taskData.length - 1];
         thisTrial.submitted = this.timerService.getCurrentTimestamp();

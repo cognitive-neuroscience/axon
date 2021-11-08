@@ -1,16 +1,16 @@
-import { Component, ElementRef, Renderer2 } from "@angular/core";
-import { MatButton } from "@angular/material/button";
-import { TrailMakingTaskData } from "src/app/models/TaskData";
-import { TimerService } from "../../../../services/timer.service";
-import { StimuliProvidedType } from "src/app/models/enums";
-import { SnackbarService } from "../../../../services/snackbar.service";
-import { AbstractBaseTaskComponent } from "../base-task";
-import { TaskConfig } from "../task-player/task-player.component";
-import { TrailMakingStimulus, TrailMakingTrialType } from "src/app/services/data-generation/stimuli-models";
-import { DataGenerationService } from "src/app/services/data-generation/data-generation.service";
-import { LoaderService } from "src/app/services/loader/loader.service";
-import { ComponentName } from "src/app/services/component-factory.service";
-import { thisOrDefault, throwErrIfNotDefined, wait } from "src/app/common/commonMethods";
+import { Component, ElementRef, Renderer2 } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import { TrailMakingTaskData } from 'src/app/models/TaskData';
+import { TimerService } from '../../../../services/timer.service';
+import { StimuliProvidedType } from 'src/app/models/enums';
+import { SnackbarService } from '../../../../services/snackbar.service';
+import { AbstractBaseTaskComponent } from '../base-task';
+import { TaskConfig } from '../task-player/task-player.component';
+import { TrailMakingStimulus, TrailMakingTrialType } from 'src/app/services/data-generation/stimuli-models';
+import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
+import { LoaderService } from 'src/app/services/loader/loader.service';
+import { ComponentName } from 'src/app/services/component-factory.service';
+import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 
 interface TrailMakingMetadata {
     component: ComponentName;
@@ -28,9 +28,9 @@ interface TrailMakingMetadata {
 }
 
 @Component({
-    selector: "app-trail-making",
-    templateUrl: "./trail-making.component.html",
-    styleUrls: ["./trail-making.component.scss"],
+    selector: 'app-trail-making',
+    templateUrl: './trail-making.component.html',
+    styleUrls: ['./trail-making.component.scss'],
 })
 export class TrailMakingComponent extends AbstractBaseTaskComponent {
     /**
@@ -81,16 +81,16 @@ export class TrailMakingComponent extends AbstractBaseTaskComponent {
 
     configure(metadata: TrailMakingMetadata, config: TaskConfig) {
         try {
-            this.userID = throwErrIfNotDefined(config.userID, "no user ID defined");
-            this.studyId = throwErrIfNotDefined(config.studyID, "no study code defined");
+            this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
+            this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
             this.maxResponseTime = throwErrIfNotDefined(
                 metadata.config.maxResponseTime,
-                "max response time not defined"
+                'max response time not defined'
             );
-            this.trialType = throwErrIfNotDefined(metadata.config.trialType, "no trial type defined");
+            this.trialType = throwErrIfNotDefined(metadata.config.trialType, 'no trial type defined');
         } catch (error) {
-            throw new error("values not defined, cannot start study");
+            throw new Error('values not defined, cannot start study');
         }
 
         this.config = config;
@@ -121,7 +121,7 @@ export class TrailMakingComponent extends AbstractBaseTaskComponent {
         this.maxResponseTimer = this.setMaxResponseTimer(
             this.maxResponseTime,
             this.durationOutOfTimeMessageShown,
-            "Out of time!",
+            'Out of time!',
             () => {
                 this.handleRoundInteraction(null);
             }
@@ -129,16 +129,16 @@ export class TrailMakingComponent extends AbstractBaseTaskComponent {
     }
 
     private flashIncorrectColor(elRef: ElementRef, val: number | string) {
-        this.changeColor(elRef, "red");
+        this.changeColor(elRef, 'red');
         setTimeout(() => {
             if (!this.correctItems.includes(val)) {
-                this.changeColor(elRef, "whitesmoke");
+                this.changeColor(elRef, 'whitesmoke');
             }
         }, this.flashIncorrectDuration);
     }
 
     private changeColor(elRef: ElementRef, color: string) {
-        this.renderer.setStyle(elRef.nativeElement, "background-color", color);
+        this.renderer.setStyle(elRef.nativeElement, 'background-color', color);
     }
 
     private setMaxResponseTimer(delay: number, duration: number, message: string, cbFunc?: () => void) {
@@ -146,7 +146,7 @@ export class TrailMakingComponent extends AbstractBaseTaskComponent {
             if (!this.isDestroyed) {
                 this.showStimulus = false;
                 this.responseAllowed = false;
-                this.snackbarService.openInfoSnackbar(message, "", duration);
+                this.snackbarService.openInfoSnackbar(message, '', duration);
                 await wait(this.durationOutOfTimeMessageShown);
                 if (this.isDestroyed) return;
                 if (cbFunc) cbFunc();
@@ -156,7 +156,7 @@ export class TrailMakingComponent extends AbstractBaseTaskComponent {
 
     // sets the button color to green if it is correct and white otherwise
     getColor(val: number | string) {
-        return this.correctItems.includes(val) ? "green" : "whitesmoke";
+        return this.correctItems.includes(val) ? 'green' : 'whitesmoke';
     }
 
     private cancelAllTimers() {
