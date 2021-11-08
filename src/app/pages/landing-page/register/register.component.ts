@@ -9,22 +9,29 @@ import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { UserService } from 'src/app/services/user.service';
 
-function passwordMatchingValidator(control: AbstractControl): ValidationErrors | null {
-    const password = control.get('password');
-    const confirmPassword = control.get('confirmPassword');
+function fieldsMatchingValidator(
+    firstFieldName: string,
+    secondFieldName: string,
+    validationKey: string,
+    validationErrMsg: string
+) {
+    return function (control: AbstractControl): ValidationErrors | null {
+        const password = control.get(firstFieldName);
+        const confirmPassword = control.get(secondFieldName);
 
-    if (!password || !password.value || !confirmPassword || !confirmPassword.value) return null;
+        if (!password || !password.value || !confirmPassword || !confirmPassword.value) return null;
 
-    if (password.value !== confirmPassword.value) {
-        const err = {
-            passwordMatch: 'Passwords do not match!',
-        };
+        if (password.value !== confirmPassword.value) {
+            const err = {
+                [validationKey]: validationErrMsg,
+            };
 
-        confirmPassword.setErrors(err);
-        return err;
-    } else {
-        return null;
-    }
+            confirmPassword.setErrors(err);
+            return err;
+        } else {
+            return null;
+        }
+    };
 }
 
 @Component({
@@ -49,10 +56,16 @@ export class RegisterComponent {
     registerForm = this.fb.group(
         {
             email: ['', Validators.compose([Validators.email, Validators.required])],
+            confirmEmail: ['', Validators.compose([Validators.email, Validators.required])],
             password: ['', Validators.required],
             confirmPassword: ['', Validators.required],
         },
-        { validators: passwordMatchingValidator }
+        {
+            validators: [
+                fieldsMatchingValidator('password', 'confirmPassword', 'passwordMatchErr', 'Passwords do not match!'),
+                fieldsMatchingValidator('email', 'confirmEmail', 'emailMatchErr', 'Emails do not match!'),
+            ],
+        }
     );
 
     onSubmit() {

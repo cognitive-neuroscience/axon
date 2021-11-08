@@ -1,6 +1,6 @@
-@import "~ng-zorro-antd/ng-zorro-antd.min.css";
-@import "~ng-zorro-antd/style/index.min.css";
-@import "./app/sass/mixins";
+@import '~ng-zorro-antd/ng-zorro-antd.min.css';
+@import '~ng-zorro-antd/style/index.min.css';
+@import './app/sass/mixins';
 
 html,
 body {
@@ -8,7 +8,7 @@ body {
 }
 body {
     margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
     background-color: white;
 }
 

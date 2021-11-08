@@ -88,7 +88,7 @@
                                 ></app-slider>
                             </div>
                         </div>
-                        <div class="w-25 slider-error error-text" style="font-size: 75%">
+                        <div class="w-25 slider-error error-text" style="font-size: 1rem">
                             <span *ngIf="questionnaire.get(question.key)?.hasError('required')">
                                 This is required
                             </span>
@@ -109,6 +109,12 @@
                     </div>
                 </div>
             </ng-container>
+            <div style="color: red; font-size: 1rem; padding: 10px 0" *ngIf="!questionnaire.valid">
+                <span
+                    >There are still invalid/unanswered questions above. Please review your responses above to make sure
+                    you have answered each of the questions.
+                </span>
+            </div>
             <button
                 (click)="onSubmit()"
                 class="w-25 mb-5"
