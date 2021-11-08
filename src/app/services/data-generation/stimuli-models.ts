@@ -1,8 +1,8 @@
-import { Color } from "src/app/models/InternalDTOs";
+import { Color } from 'src/app/models/InternalDTOs';
 
 export interface RatingTaskStimuli {
     activity: string;
-    type: "DoNothing" | "DoSomething";
+    type: 'DoNothing' | 'DoSomething';
     questions: {
         question: string;
         legend: string[]; // automatically low to high endorsement by default
@@ -33,14 +33,12 @@ export class StroopStimulus {
 
 export class SmileyFaceStimulus {
     faceShown: SmileyFaceType;
-    isRewarded: boolean;
-    isRescheduledReward: boolean;
 }
 
 export enum SmileyFaceType {
-    SHORT = "SHORT",
-    LONG = "LONG",
-    NONE = "NONE",
+    SHORT = 'SHORT',
+    LONG = 'LONG',
+    NONE = 'NONE',
 }
 
 export class NBackStimulus {
@@ -58,9 +56,9 @@ export class NBackStimuliSet {
 }
 
 export enum DemandSelectionCounterbalance {
-    SELECTEASYPATCH = "EASIER PATCH",
-    SELECTHARDPATCH = "HARDER PATCH",
-    NONE = "NONE",
+    SELECTEASYPATCH = 'EASIER PATCH',
+    SELECTHARDPATCH = 'HARDER PATCH',
+    NONE = 'NONE',
 }
 
 export class DemandSelectionStimulus {
@@ -111,6 +109,6 @@ export class TrailMakingStimulus {
 }
 
 export enum TrailMakingTrialType {
-    ALPHANUMERIC = "ALPHANUMERIC",
-    NUMERIC = "NUMERIC",
+    ALPHANUMERIC = 'ALPHANUMERIC',
+    NUMERIC = 'NUMERIC',
 }

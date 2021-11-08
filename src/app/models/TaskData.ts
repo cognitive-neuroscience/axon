@@ -3,6 +3,7 @@ import { RatingTaskCounterBalance } from '../pages/tasks/task-playables/everyday
 import { SmileyFaceTaskCounterbalance } from '../pages/tasks/task-playables/smiley-face/smiley-face.component';
 import { Key, UserResponse } from './InternalDTOs';
 import { ParticipantType } from './enums';
+import { SmileyFaceType } from '../services/data-generation/stimuli-models';
 
 export enum TaskNames {
     ODDBALL = 'oddball',
@@ -117,10 +118,9 @@ export class SmileyFaceTaskData extends TaskData {
     userAnswer: string;
     responseTime: number;
     block: number;
-    stimulus: string;
+    stimulus: SmileyFaceType;
     keyPressed: string;
     rewarded: boolean;
-    isRescheduledReward: boolean;
     rewardedMore: SmileyFaceTaskCounterbalance;
     isCorrect: boolean;
     score: number;
