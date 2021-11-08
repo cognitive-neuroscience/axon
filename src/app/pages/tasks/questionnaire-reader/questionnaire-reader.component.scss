@@ -1,4 +1,4 @@
-@import "../../../../app/sass/mixins";
+@import '../../../../app/sass/mixins';
 
 .questionnaire-container {
     padding: 2% 4%;
@@ -47,4 +47,8 @@
 .vertical {
     display: flex;
     flex-direction: column;
+}
+
+.mat-error {
+    font-size: 1rem !important;
 }

@@ -1,10 +1,15 @@
 <div class="w-100 h-100 d-flex justify-content-center align-items-center">
     <div class="text-container">
         <mat-card>
-            <h1 style="color: black">There was a problem with your request.</h1>
-            <span style="color: black"
+            <h1 style="color: #3f51b5">There was a problem with your request.</h1>
+            <span style="color: #3f51b5"
                 >The data or web page you are looking for could not be found, or does not exist.</span
             >
+
+            <div class="button-container">
+                <button (click)="routeToLogin()" color="primary" mat-raised-button>Click here to login</button>
+                <button (click)="routeToRegister()" color="secondary" mat-raised-button>Click here to register</button>
+            </div>
         </mat-card>
     </div>
 </div>
