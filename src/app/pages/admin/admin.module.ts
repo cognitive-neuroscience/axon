@@ -19,6 +19,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreateModifyStudyComponent } from './admin-dashboard/studies/create-modify-study/create-modify-study.component';
 import { ViewInfoDisplaysComponent } from './admin-dashboard/study-components/view-info-displays/view-info-displays.component';
 import { ViewComponentsTableComponent } from './admin-dashboard/study-components/shared/view-components-table/view-components-table.component';
+import { ViewConsentsComponent } from './admin-dashboard/study-components/view-consents/view-consents.component';
 
 @NgModule({
     declarations: [
@@ -35,6 +36,7 @@ import { ViewComponentsTableComponent } from './admin-dashboard/study-components
         DataTableComponent,
         ViewInfoDisplaysComponent,
         ViewComponentsTableComponent,
+        ViewConsentsComponent,
     ],
     imports: [
         CommonModule,
