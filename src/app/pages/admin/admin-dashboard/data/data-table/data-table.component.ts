@@ -1,9 +1,9 @@
-import { animate, state, style, transition, trigger } from "@angular/animations";
-import { Component, Input, OnInit, AfterViewInit, ViewChild } from "@angular/core";
-import { MatPaginator } from "@angular/material/paginator";
-import { MatTableDataSource } from "@angular/material/table";
-import { ExcelService } from "../../../../../services/excel.service";
-import { LoaderService } from "../../../../../services/loader/loader.service";
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Component, Input, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { ExcelService } from '../../../../../services/excel.service';
+import { LoaderService } from '../../../../../services/loader/loader.service';
 
 export class DataTableFormat {
     fields: {
@@ -15,21 +15,22 @@ export class DataTableFormat {
 }
 
 @Component({
-    selector: "app-data-table",
-    templateUrl: "./data-table.component.html",
-    styleUrls: ["./data-table.component.scss"],
+    selector: 'app-data-table',
+    templateUrl: './data-table.component.html',
+    styleUrls: ['./data-table.component.scss'],
     animations: [
-        trigger("detailExpand", [
-            state("collapsed", style({ height: "0px", minHeight: "0" })),
-            state("expanded", style({ height: "*" })),
-            transition("expanded <=> collapsed", animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")),
+        trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0' })),
+            state('expanded', style({ height: '*' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
         ]),
     ],
 })
 export class DataTableComponent implements OnInit, AfterViewInit {
-    @ViewChild("paginator") paginator: MatPaginator;
+    @ViewChild('paginator') paginator: MatPaginator;
 
-    expandedElement: DataTableComponent | null;
+    // clicking a row sets this variable to be the current data to be expanded (or resets to null)
+    expandedElement: DataTableFormat | null;
 
     private _tableData: DataTableFormat[];
     dataSource: MatTableDataSource<DataTableFormat>;
@@ -40,7 +41,7 @@ export class DataTableComponent implements OnInit, AfterViewInit {
         }
     }
 
-    @Input() fileName: string = "";
+    @Input() fileName: string = '';
 
     get tableData(): DataTableFormat[] {
         return this._tableData;
@@ -48,7 +49,7 @@ export class DataTableComponent implements OnInit, AfterViewInit {
 
     get columnsToDisplay(): string[] {
         if (this.isValid()) {
-            return this._tableData[0] ? Object.keys(this._tableData[0].fields) : [];
+            return this.tableData[0] ? Object.keys(this.tableData[0].fields) : [];
         } else {
             return [];
         }
@@ -67,7 +68,7 @@ export class DataTableComponent implements OnInit, AfterViewInit {
     }
 
     isValid(): boolean {
-        return !!this._tableData && this._tableData.length > 0;
+        return !!this.tableData && this.tableData.length > 0;
     }
 
     constructor(private excelService: ExcelService, private loaderService: LoaderService) {}

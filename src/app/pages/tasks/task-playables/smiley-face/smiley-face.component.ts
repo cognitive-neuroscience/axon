@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
+import { getRandomNumber, thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { Feedback, Key, UserResponse } from 'src/app/models/InternalDTOs';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { SmileyFaceTaskData } from 'src/app/models/TaskData';
@@ -26,8 +26,8 @@ interface SmileyFaceMetadata {
         durationNoFacePresented: number;
         numShortFaces: number;
         numLongFaces: number;
-        numFacesMoreRewarded: number;
-        numFacesLessRewarded: number;
+        facesMoreRewardedPercentage: number;
+        facesLessRewardedPercentage: number;
         showHint: boolean;
         stimuliConfig: {
             type: StimuliProvidedType;
@@ -55,9 +55,9 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     /**
      * Task summary:
      * This task involves the participant seeing one of two possible faces: a face with a short mouth, and a face with a
-     * longer mouth. The participant presses "Z" if they see a short face, and "M" if they see a long face. Participants always
-     * earn points for a correct answer but only sometimes do they see that they have been rewarded.
-     * This task is counterbalanced by which face type is rewarded more.
+     * longer mouth. The participant presses "Z" if they see a short face, and "M" if they see a long face. If participants
+     * get the answer correct for the high reward condition, then there is a X% chance they will be rewarded. For the low
+     * reward condition, there is a Y% chance of being rewarded.
      */
 
     // config variables variables
@@ -70,8 +70,8 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     private durationStimulusPresented: number;
     private numShortFaces: number;
     private numLongFaces: number;
-    private numFacesMoreRewarded: number;
-    private numFacesLessRewarded: number;
+    private facesMoreRewardedPercentage: number;
+    private facesLessRewardedPercentage: number;
     showHint: boolean;
 
     // high level variables
@@ -101,6 +101,10 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         return this.stimuli[this.currentStimuliIndex];
     }
 
+    get currentTrial(): SmileyFaceTaskData {
+        return this.taskData[this.taskData.length - 1];
+    }
+
     constructor(
         protected snackbarService: SnackbarService,
         protected timerService: TimerService,
@@ -122,12 +126,12 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
             );
             this.numShortFaces = throwErrIfNotDefined(metadata.config.numShortFaces, 'num short faces not defined');
             this.numLongFaces = throwErrIfNotDefined(metadata.config.numLongFaces, 'num long faces not defined');
-            this.numFacesLessRewarded = throwErrIfNotDefined(
-                metadata.config.numFacesLessRewarded,
+            this.facesMoreRewardedPercentage = throwErrIfNotDefined(
+                metadata.config.facesMoreRewardedPercentage,
                 'num faces less rewarded not defined'
             );
-            this.numFacesMoreRewarded = throwErrIfNotDefined(
-                metadata.config.numFacesMoreRewarded,
+            this.facesLessRewardedPercentage = throwErrIfNotDefined(
+                metadata.config.facesLessRewardedPercentage,
                 'num faces more rewarded not defined'
             );
         } catch (error) {
@@ -168,18 +172,8 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
                 if (!this.stimuli) {
                     this.stimuli =
                         this.counterbalance === SmileyFaceTaskCounterbalance.SHORT_FACE_REWARDED_MORE
-                            ? this.dataGenService.generateSmileyFaceStimuli(
-                                  this.numShortFaces,
-                                  this.numFacesMoreRewarded,
-                                  this.numLongFaces,
-                                  this.numFacesLessRewarded
-                              )
-                            : this.dataGenService.generateSmileyFaceStimuli(
-                                  this.numShortFaces,
-                                  this.numFacesLessRewarded,
-                                  this.numLongFaces,
-                                  this.numFacesMoreRewarded
-                              );
+                            ? this.dataGenService.generateSmileyFaceStimuli(this.numShortFaces, this.numLongFaces)
+                            : this.dataGenService.generateSmileyFaceStimuli(this.numShortFaces, this.numLongFaces);
                 }
                 super.start();
             });
@@ -200,13 +194,12 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
             block: this.blockNum,
             stimulus: this.currentStimulus.faceShown,
             keyPressed: UserResponse.NA,
-            rewarded: this.currentStimulus.isRewarded, // this will be modified if reward is postponed (user is incorrect)
+            rewarded: false,
             trial: ++this.trialNum,
             userID: this.userID,
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
             studyId: this.studyId,
-            isRescheduledReward: this.currentStimulus.isRescheduledReward,
             rewardedMore: this.counterbalance,
         });
 
@@ -276,25 +269,24 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
 
     @HostListener('window:keypress', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
-        const thisTrial = this.taskData[this.taskData.length - 1];
-        thisTrial.submitted = this.timerService.getCurrentTimestamp();
+        this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
         if (this.responseAllowed && this.isValidKey(event.key)) {
             this.cancelAllTimers();
             this.responseAllowed = false;
-            thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
-            thisTrial.userAnswer = event.key === Key.Z ? UserResponse.SHORT : UserResponse.LONG;
-            thisTrial.keyPressed = event.key === Key.Z ? Key.Z : Key.M;
+            this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
+            this.currentTrial.userAnswer = event.key === Key.Z ? UserResponse.SHORT : UserResponse.LONG;
+            this.currentTrial.keyPressed = event.key === Key.Z ? Key.Z : Key.M;
 
             super.handleRoundInteraction(event.key);
         } else if (event === null) {
             this.cancelAllTimers();
             // max time out
             this.responseAllowed = false;
-            thisTrial.responseTime = this.maxResponseTime;
-            thisTrial.userAnswer = UserResponse.NA;
-            thisTrial.keyPressed = Key.NONE;
-            thisTrial.score = 0;
-            thisTrial.isCorrect = false;
+            this.currentTrial.responseTime = this.maxResponseTime;
+            this.currentTrial.userAnswer = UserResponse.NA;
+            this.currentTrial.keyPressed = Key.NONE;
+            this.currentTrial.score = 0;
+            this.currentTrial.isCorrect = false;
 
             super.handleRoundInteraction(null);
         }
@@ -306,28 +298,29 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         this.responseAllowed = false;
         this.showImage(this.blobs[1]);
 
-        const thisTrial = this.taskData[this.taskData.length - 1];
+        switch (this.currentTrial.userAnswer) {
+            case this.currentTrial.actualAnswer:
+                this.currentTrial.isCorrect = true;
 
-        switch (thisTrial.userAnswer) {
-            case thisTrial.actualAnswer:
-                thisTrial.isCorrect = true;
-                thisTrial.score = this.currentStimulus.isRewarded ? 50 : 0;
-                this.scoreForSpecificTrial = this.currentStimulus.isRewarded ? 50 : 0;
+                const shouldReward = this.shouldReward(this.currentTrial);
+                if (shouldReward) {
+                    this.currentTrial.rewarded = shouldReward;
+                    this.currentTrial.score = 50;
+                }
+                this.scoreForSpecificTrial = this.currentTrial.score;
                 break;
             case UserResponse.NA:
                 this.feedback = Feedback.TOOSLOW;
-                if (this.currentStimulus.isRewarded) this.postponeReward();
                 this.scoreForSpecificTrial = 0;
                 break;
             default:
-                thisTrial.isCorrect = false;
-                if (this.currentStimulus.isRewarded) this.postponeReward();
-                thisTrial.score = 0;
+                this.currentTrial.isCorrect = false;
+                this.currentTrial.score = 0;
                 this.scoreForSpecificTrial = 0;
                 break;
         }
 
-        if ((this.currentStimulus.isRewarded && thisTrial.isCorrect) || this.feedback === Feedback.TOOSLOW) {
+        if (this.currentTrial.rewarded || this.feedback === Feedback.TOOSLOW) {
             this.showFeedback = true;
             await wait(this.durationFeedbackPresented);
             if (this.isDestroyed) return;
@@ -338,22 +331,16 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         super.completeRound();
     }
 
-    private postponeReward(): void {
-        const trialWhereUserWasIncorrect = this.currentStimulus;
-
-        const thisTrial = this.taskData[this.taskData.length - 1];
-        thisTrial.rewarded = false;
-
-        // iterate through list until you find the next stimulus of the same type that is unrewarded and reward that.
-        // if none are found, we complete the iteration without assigning anything as we either have no more trials of that type,
-        // or all are rewarded
-        for (let i = this.currentStimuliIndex + 1; i < this.stimuli.length; i++) {
-            const trial = this.stimuli[i];
-            if (trialWhereUserWasIncorrect.faceShown === trial.faceShown && !trial.isRewarded) {
-                trial.isRewarded = true;
-                trial.isRescheduledReward = true;
-                return;
-            }
+    // this function is only called if the user was correct
+    private shouldReward(trial: SmileyFaceTaskData): boolean {
+        if (this.counterbalance === SmileyFaceTaskCounterbalance.SHORT_FACE_REWARDED_MORE) {
+            return trial.stimulus === SmileyFaceType.SHORT
+                ? getRandomNumber(0, 100) < this.facesMoreRewardedPercentage
+                : getRandomNumber(0, 100) < this.facesLessRewardedPercentage;
+        } else {
+            return trial.stimulus === SmileyFaceType.SHORT
+                ? getRandomNumber(0, 100) < this.facesLessRewardedPercentage
+                : getRandomNumber(0, 100) < this.facesMoreRewardedPercentage;
         }
     }
 
