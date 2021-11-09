@@ -1,0 +1,6 @@
+<div>
+    <app-view-components-table
+        [data]="consentsForTable | async"
+        (rowRun)="showConsent($event)"
+    ></app-view-components-table>
+</div>
