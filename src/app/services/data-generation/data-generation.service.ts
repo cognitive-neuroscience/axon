@@ -25,12 +25,15 @@ import {
     NBackStimulus,
     OddballStimulus,
     RatingTaskStimuli,
+    SARTStimulus,
+    SARTStimuliSetType,
     SmileyFaceStimulus,
     SmileyFaceType,
     StroopStimulus,
     TaskSwitchingStimulus,
     TrailMakingStimulus,
     TrailMakingTrialType,
+    SARTTrialType,
 } from './stimuli-models';
 import { NBackSet } from './raw-data/nback-data-list';
 import { Color } from 'src/app/models/InternalDTOs';
@@ -398,5 +401,39 @@ export class DataGenerationService {
                 ? TrailMakingSet.alphanumeric.actual
                 : TrailMakingSet.numeric.actual;
         }
+    }
+
+    generateSARTStimuli(trialType: SARTStimuliSetType, trialLength: number, nogoTrialNum?: number): SARTStimulus[] {
+        const fontSizeOptions = [48, 72, 95, 100, 120];
+        const stimuli: SARTStimulus[] = new Array(trialLength);
+        const nogoStimulus = 3;
+
+        if (trialType === SARTStimuliSetType.ASCENDING) {
+            for (let i = 0; i < trialLength; i++) {
+                stimuli[i] = {
+                    digit: (i % 9) + 1,
+                    fontSize: fontSizeOptions[getRandomNumber(0, fontSizeOptions.length)],
+                    trialType: (i % 9) + 1 === nogoStimulus ? SARTTrialType.NOGO : SARTTrialType.GO,
+                };
+            }
+        } else {
+            const nogoIndices = generateRandomNonrepeatingNumberList(nogoTrialNum || 25, 0, trialLength);
+            for (let i = 0; i < trialLength; i++) {
+                const isNoGo = nogoIndices.includes(i);
+                let generatedDigit;
+                if (isNoGo) {
+                    generatedDigit = nogoStimulus;
+                } else {
+                    generatedDigit = getRandomNumber(0, 10);
+                    while (generatedDigit === 3) generatedDigit = getRandomNumber(0, 10);
+                }
+                stimuli[i] = {
+                    digit: generatedDigit,
+                    fontSize: fontSizeOptions[getRandomNumber(0, fontSizeOptions.length)],
+                    trialType: isNoGo ? SARTTrialType.NOGO : SARTTrialType.GO,
+                };
+            }
+        }
+        return stimuli;
     }
 }

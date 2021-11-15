@@ -54,8 +54,8 @@ export class LoginComponent implements OnDestroy {
                     this.subscriptions.push(
                         this.userService.userAsync.subscribe(
                             (user) => {
+                                this.loaderService.hideLoader();
                                 if (user !== null) {
-                                    this.loaderService.hideLoader();
                                     this.snackbarService.openSuccessSnackbar(this.LOGIN_SUCCESS_STR);
                                     this.handleNavigate(response.role);
                                 }
@@ -69,6 +69,8 @@ export class LoginComponent implements OnDestroy {
                     this.userService.updateUser();
                 },
                 (error: HttpErrorResponse) => {
+                    console.log('here');
+
                     this.loaderService.hideLoader();
                     this.snackbarService.openErrorSnackbar(error.message);
                 }
