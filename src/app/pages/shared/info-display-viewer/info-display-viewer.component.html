@@ -5,9 +5,13 @@
     </h1>
 
     <ng-container *ngFor="let section of sections">
-        <div class="my-5">
+        <div class="my-4">
             <h2 *ngIf="section.header" class="title-text" [innerHTML]="section.header"></h2>
-            <p *ngIf="section.textContent" class="sub-text" [innerHTML]="section.textContent"></p>
+            <p
+                *ngIf="section.textContent"
+                class="sub-text {{ section.indent ? 'indent-' + section.indent : '' }}"
+                [innerHTML]="section.textContent"
+            ></p>
         </div>
     </ng-container>
 </div>
