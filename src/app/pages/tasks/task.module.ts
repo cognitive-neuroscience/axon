@@ -34,6 +34,7 @@ import { ConfirmDoneDialogComponent } from "./embedded-page/confirm-done-dialog/
 import { ConsentPageComponent } from "./consent/consent-page/consent-page.component";
 import { SharedModule } from "../shared/shared.module";
 import { InfoDisplayComponent } from "./info-display/info-display.component";
+import { SartComponent } from './task-playables/sart/sart.component';
 
 @NgModule({
     declarations: [
@@ -75,6 +76,7 @@ import { InfoDisplayComponent } from "./info-display/info-display.component";
         IntroDialogComponent,
         ConfirmDoneDialogComponent,
         ConsentPageComponent,
+        SartComponent,
     ],
     imports: [CommonModule, MaterialModule, NgZorroModule, FormsModule, ReactiveFormsModule, SharedModule],
     exports: [EmbeddedPageComponent],

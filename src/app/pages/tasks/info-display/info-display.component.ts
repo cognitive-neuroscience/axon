@@ -31,7 +31,7 @@ export interface InfoDisplayNavigationConfig {
     templateUrl: './info-display.component.html',
     styleUrls: ['./info-display.component.scss'],
 })
-export class InfoDisplayComponent implements OnInit, OnDestroy, AbstractBaseReaderComponent {
+export class InfoDisplayComponent implements AbstractBaseReaderComponent {
     readerMetadata: InfoDisplayNavigationConfig;
 
     get shouldShowHomeButton(): boolean {
@@ -39,7 +39,7 @@ export class InfoDisplayComponent implements OnInit, OnDestroy, AbstractBaseRead
     }
 
     get shouldShowContinueButton(): boolean {
-        return this.readerMetadata?.metadata?.buttons?.displayHomeButton;
+        return this.readerMetadata?.metadata?.buttons?.displayContinueButton;
     }
 
     get title(): string {
@@ -71,11 +71,18 @@ export class InfoDisplayComponent implements OnInit, OnDestroy, AbstractBaseRead
         if (arg === 'home') {
             this.router.navigate([ParticipantRouteNames.DASHBOARD_BASEROUTE]);
         } else {
-            this.taskManager.next();
+            if (this.userService.isCrowdsourcedUser) {
+                this.taskManager.next();
+            } else {
+                this.taskManager.setTaskAsComplete().subscribe(
+                    (ok) => {
+                        ok ? this.taskManager.next() : this.taskManager.handleErr();
+                    },
+                    (err) => {
+                        this.taskManager.handleErr();
+                    }
+                );
+            }
         }
     }
-
-    ngOnInit(): void {}
-
-    ngOnDestroy(): void {}
 }

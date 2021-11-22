@@ -1,20 +1,20 @@
-import { Injectable } from "@angular/core";
-import { HttpClient, HttpResponse } from "@angular/common/http";
-import { environment } from "../../environments/environment";
-import { BehaviorSubject, Observable } from "rxjs";
-import { map, take } from "rxjs/operators";
-import { CrowdsourcedUser, StudyUser, User } from "../models/Login";
-import { Role } from "../models/enums";
-import { TimerService } from "./timer.service";
-import { CanClear } from "./clearance.service";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { CrowdsourcedUser, StudyUser, User } from '../models/Login';
+import { Role } from '../models/enums';
+import { TimerService } from './timer.service';
+import { CanClear } from './clearance.service';
 
 @Injectable({
-    providedIn: "root",
+    providedIn: 'root',
 })
 export class UserService implements CanClear {
-    private readonly USERS_RESOURCE_PATH = "/users";
-    private readonly CROWDSOURCED_USERS_RESOURCE_PATH = "/crowdsourcedusers";
-    private readonly STUDY_USERS_RESOURCE_PATH = "/studyusers";
+    private readonly USERS_RESOURCE_PATH = '/users';
+    private readonly CROWDSOURCED_USERS_RESOURCE_PATH = '/crowdsourcedusers';
+    private readonly STUDY_USERS_RESOURCE_PATH = '/studyusers';
     isCrowdsourcedUser: boolean = false;
     crowdsourcedUserStudyId: number;
 
@@ -63,7 +63,7 @@ export class UserService implements CanClear {
 
     deleteGuest(guest: User): Observable<HttpResponse<any>> {
         return this.http.delete(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/${guest.id}`, {
-            observe: "response",
+            observe: 'response',
         });
     }
 
@@ -94,6 +94,7 @@ export class UserService implements CanClear {
                         this._userBehaviorSubject.next(user);
                     },
                     (err) => {
+                        this._userBehaviorSubject.next(null);
                         throw new Error(err);
                     }
                 );
@@ -119,7 +120,7 @@ export class UserService implements CanClear {
     markCompletion(studyId: number): Observable<string> {
         return this.http
             .patch(`${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}/${studyId}`, {
-                observe: "response",
+                observe: 'response',
             })
             .pipe(map((res) => res as string));
     }
@@ -127,7 +128,7 @@ export class UserService implements CanClear {
     updateStudyUser(studyUser: StudyUser): Observable<boolean> {
         return this.http
             .patch(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}`, studyUser, {
-                observe: "response",
+                observe: 'response',
             })
             .pipe(map((res) => res.ok));
     }
@@ -137,10 +138,10 @@ export class UserService implements CanClear {
             email: email,
             password: password,
         };
-        if (role) obj["role"] = role;
+        if (role) obj['role'] = role;
 
         return this.http.post<HttpResponse<any>>(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}`, obj, {
-            observe: "response",
+            observe: 'response',
         });
     }
 
@@ -158,7 +159,7 @@ export class UserService implements CanClear {
                 temporaryPassword,
                 newPassword,
             },
-            { observe: "response" }
+            { observe: 'response' }
         );
     }
 
@@ -167,7 +168,7 @@ export class UserService implements CanClear {
         const studyUser: StudyUser = {
             userId: user.id,
             studyId: studyId,
-            completionCode: "",
+            completionCode: '',
             registerDate: this.timerService.getCurrentTimestamp(),
             dueDate: {
                 valid: false,
@@ -189,11 +190,11 @@ export class UserService implements CanClear {
             participantId: participantId,
             studyId: studyID,
             registerDate: this.timerService.getCurrentTimestamp(),
-            completionCode: "",
+            completionCode: '',
         };
 
         return this.http.post(`${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}`, crowdsourcedUser, {
-            observe: "response",
+            observe: 'response',
         });
     }
 

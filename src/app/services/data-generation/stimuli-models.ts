@@ -112,3 +112,19 @@ export enum TrailMakingTrialType {
     ALPHANUMERIC = 'ALPHANUMERIC',
     NUMERIC = 'NUMERIC',
 }
+
+export class SARTStimulus {
+    digit: number;
+    fontSize: number;
+    trialType: SARTTrialType;
+}
+
+export enum SARTTrialType {
+    GO = 'GO',
+    NOGO = 'NOGO',
+}
+
+export enum SARTStimuliSetType {
+    ASCENDING = 'ascending',
+    RANDOM = 'random',
+}

@@ -73,7 +73,9 @@ export class TaskManagerService implements CanClear {
             .subscribe(
                 (task: Task) => {
                     if (task === null) {
-                        this.start(this.currentStudyTask);
+                        // account holders already have to agree to the consent before beginning the study
+                        // so they have already seen it
+                        this.startAfterConsent();
                     } else {
                         // crowdsourced user, always show consent in the beginning
                         this.showConsent(task);
@@ -96,10 +98,6 @@ export class TaskManagerService implements CanClear {
 
     startAfterConsent() {
         this._routeToTask(this.currentStudyTask);
-    }
-
-    private start(studyTask: StudyTask) {
-        this._routeToTask(studyTask);
     }
 
     handleErr(): void {
@@ -183,7 +181,7 @@ export class TaskManagerService implements CanClear {
         this.handleNext();
     }
 
-    // only for account holders because they're current task index is saved
+    // only for account holders because their current task index is saved in the db
     setTaskAsComplete(): Observable<boolean> {
         return this._userService.studyUsers.pipe(
             map((studyUsers) => studyUsers.find((studyUser) => studyUser.studyId === this.study.id)),
@@ -202,14 +200,18 @@ export class TaskManagerService implements CanClear {
             this._routeToTask(this.currentStudyTask);
             return;
         } else {
-            this._userService.markCompletion(this.study.id).subscribe(
-                (completionCode: string) => {
-                    this._routeToFinalPage(completionCode);
-                },
-                (err) => {
-                    this.handleErr();
-                }
-            );
+            if (this._userService.isCrowdsourcedUser) {
+                this._userService.markCompletion(this.study.id).subscribe(
+                    (completionCode: string) => {
+                        this._routeToFinalPage(completionCode);
+                    },
+                    (err) => {
+                        this.handleErr();
+                    }
+                );
+            } else {
+                this._routeToFinalPage(null);
+            }
         }
     }
 

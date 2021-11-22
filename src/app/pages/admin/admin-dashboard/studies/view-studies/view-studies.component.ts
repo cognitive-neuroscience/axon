@@ -23,11 +23,11 @@ import { Task } from 'src/app/models/Task';
 export class ViewStudiesComponent implements OnInit, OnDestroy {
     CROWDSOURCE_LINK: string = environment.production
         ? 'https://psharplab.campus.mcgill.ca/#/crowdsource-participant?studyid='
-        : 'http://localhost:4200/#/crowdsource-participant?studyid=';
+        : 'https://localhost:4200/#/crowdsource-participant?studyid=';
 
     ACCOUNT_LINK: string = environment.production
         ? 'https://psharplab.campus.mcgill.ca/#/studies/'
-        : 'http://localhost:4200/#/studies/';
+        : 'https://localhost:4200/#/studies/';
 
     subscriptions: Subscription[] = [];
 
