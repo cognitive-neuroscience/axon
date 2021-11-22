@@ -424,8 +424,8 @@ export class DataGenerationService {
                 if (isNoGo) {
                     generatedDigit = nogoStimulus;
                 } else {
-                    generatedDigit = getRandomNumber(0, 10);
-                    while (generatedDigit === 3) generatedDigit = getRandomNumber(0, 10);
+                    generatedDigit = getRandomNumber(1, 10);
+                    while (generatedDigit === 3) generatedDigit = getRandomNumber(1, 10);
                 }
                 stimuli[i] = {
                     digit: generatedDigit,

@@ -91,6 +91,10 @@ describe('Data Generation Service', () => {
             const generatedSARTStimuli = service.generateSARTStimuli(SARTStimuliSetType.RANDOM, 225, 25);
             const nogoStimuliNum = generatedSARTStimuli.filter((stimulus) => stimulus.digit === 3);
             expect(nogoStimuliNum.length).toBe(25);
+
+            const numZeros = generatedSARTStimuli.filter((stimulus) => stimulus.digit === 0);
+            expect(numZeros.length).toBe(0);
+
             generatedSARTStimuli.forEach((stimulus) => {
                 stimulus.digit === 3
                     ? expect(stimulus.trialType).toBe(SARTTrialType.NOGO)

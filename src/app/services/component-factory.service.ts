@@ -37,6 +37,23 @@ export enum ComponentName {
 
 export const GenericComponentsList = [ComponentName.DISPLAY_COMPONENT, ComponentName.SELECT_OPTION_COMPONENT];
 
+const ComponentMap = {
+    [ComponentName.DISPLAY_COMPONENT]: TaskDisplayComponent,
+    [ComponentName.RATING_COMPONMENT]: RaterComponent,
+    [ComponentName.CHOICE_COMPONENT]: ChoicerComponent,
+    [ComponentName.ODDBALL_COMPONENT]: OddballComponent,
+    [ComponentName.STROOP_COMPONENT]: StroopComponent,
+    [ComponentName.SMILEY_FACE_COMPONENT]: SmileyFaceComponent,
+    [ComponentName.NBACK_COMPONENT]: NBackComponent,
+    [ComponentName.DEMAND_SELECTION_COMPONENT]: DemandSelectionComponent,
+    [ComponentName.TASK_SWITCHING_COMPONENT]: TaskSwitchingComponent,
+    [ComponentName.DIGIT_SPAN_COMPONENT]: DigitSpanComponent,
+    [ComponentName.SELECT_OPTION_COMPONENT]: SelectOptionComponent,
+    [ComponentName.FINGER_TAPPING_COMPONENT]: FingerTappingTaskComponent,
+    [ComponentName.TRAIL_MAKING_COMPONENT]: TrailMakingComponent,
+    [ComponentName.SART_COMPONENT]: SartComponent,
+};
+
 @Injectable({
     providedIn: 'root',
 })
@@ -48,38 +65,10 @@ export class ComponentFactoryService {
     }
 
     private getComponentByName(componentMapping: ComponentName): ComponentRef<Playable> {
-        switch (componentMapping) {
-            case ComponentName.DISPLAY_COMPONENT:
-                return this.buildComponent(TaskDisplayComponent);
-            case ComponentName.RATING_COMPONMENT:
-                return this.buildComponent(RaterComponent);
-            case ComponentName.CHOICE_COMPONENT:
-                return this.buildComponent(ChoicerComponent);
-            case ComponentName.ODDBALL_COMPONENT:
-                return this.buildComponent(OddballComponent);
-            case ComponentName.STROOP_COMPONENT:
-                return this.buildComponent(StroopComponent);
-            case ComponentName.SMILEY_FACE_COMPONENT:
-                return this.buildComponent(SmileyFaceComponent);
-            case ComponentName.NBACK_COMPONENT:
-                return this.buildComponent(NBackComponent);
-            case ComponentName.DEMAND_SELECTION_COMPONENT:
-                return this.buildComponent(DemandSelectionComponent);
-            case ComponentName.TASK_SWITCHING_COMPONENT:
-                return this.buildComponent(TaskSwitchingComponent);
-            case ComponentName.DIGIT_SPAN_COMPONENT:
-                return this.buildComponent(DigitSpanComponent);
-            case ComponentName.SELECT_OPTION_COMPONENT:
-                return this.buildComponent(SelectOptionComponent);
-            case ComponentName.FINGER_TAPPING_COMPONENT:
-                return this.buildComponent(FingerTappingTaskComponent);
-            case ComponentName.TRAIL_MAKING_COMPONENT:
-                return this.buildComponent(TrailMakingComponent);
-            case ComponentName.SART_COMPONENT:
-                return this.buildComponent(SartComponent);
-            default:
-                throw new Error("Component doesn't exist: " + componentMapping);
-        }
+        const component = ComponentMap[componentMapping];
+        if (component === undefined) throw new Error("Component doesn't exist: " + componentMapping);
+
+        return this.buildComponent(component);
     }
 
     private buildComponent(component: any): ComponentRef<any> {

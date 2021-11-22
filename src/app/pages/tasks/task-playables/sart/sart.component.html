@@ -1,1 +1,21 @@
-<p>sart works!</p>
+<div class="container-fluid wrapper task-text flex-column-center">
+    <div class="full-box flex-column-center">
+        <div *ngIf="showStimulus">
+            <div class="sart-font" [style.font-size]="currentStimulus.fontSize + 'px'">
+                {{ currentStimulus.digit }}
+            </div>
+        </div>
+
+        <div *ngIf="showResponseCue">
+            <img
+                class="response-cue"
+                src="/assets/images/stimuli/SART/SART_Task_Mask_Response_Cue.png"
+                alt="SART Response Cue"
+            />
+        </div>
+
+        <div class="feedback" *ngIf="showFeedback" align="center">
+            <span>{{ feedback }}</span>
+        </div>
+    </div>
+</div>

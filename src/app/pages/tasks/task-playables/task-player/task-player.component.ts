@@ -1,21 +1,21 @@
-import { Component, OnDestroy, ViewContainerRef } from "@angular/core";
-import { Router } from "@angular/router";
-import { Observable, of, Subscription } from "rxjs";
-import { map, mergeMap, take } from "rxjs/operators";
-import { getRandomNumber } from "src/app/common/commonMethods";
+import { Component, OnDestroy, ViewContainerRef } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable, of, Subscription } from 'rxjs';
+import { map, mergeMap, take } from 'rxjs/operators';
+import { getRandomNumber } from 'src/app/common/commonMethods';
 import {
     ComponentFactoryService,
     ComponentName,
     GenericComponentsList,
-} from "src/app/services/component-factory.service";
-import { SnackbarService } from "src/app/services/snackbar.service";
-import { TaskManagerService } from "src/app/services/task-manager.service";
-import { ParticipantDataService } from "src/app/services/study-data.service";
-import { Navigation } from "../../shared/navigation-buttons/navigation-buttons.component";
-import { IOnComplete } from "../playable";
-import { UserService } from "src/app/services/user.service";
-import { AdminRouteNames, Role } from "src/app/models/enums";
-import { TaskData } from "src/app/models/TaskData";
+} from 'src/app/services/component-factory.service';
+import { SnackbarService } from 'src/app/services/snackbar.service';
+import { TaskManagerService } from 'src/app/services/task-manager.service';
+import { ParticipantDataService } from 'src/app/services/study-data.service';
+import { Navigation } from '../../shared/navigation-buttons/navigation-buttons.component';
+import { IOnComplete } from '../playable';
+import { UserService } from 'src/app/services/user.service';
+import { AdminRouteNames, Role } from 'src/app/models/enums';
+import { TaskData } from 'src/app/models/TaskData';
 
 export interface CounterBalanceGroup {
     [key: number]: any;
@@ -67,13 +67,13 @@ export class TaskConfig {
 
 export class TaskPlayerNavigationConfig {
     metadata: TaskMetadata;
-    mode: "test" | "actual";
+    mode: 'test' | 'actual';
 }
 
 @Component({
-    selector: "app-task-player",
-    templateUrl: "./task-player.component.html",
-    styleUrls: ["./task-player.component.scss"],
+    selector: 'app-task-player',
+    templateUrl: './task-player.component.html',
+    styleUrls: ['./task-player.component.scss'],
 })
 export class TaskPlayerComponent implements OnDestroy {
     constructor(
@@ -97,16 +97,16 @@ export class TaskPlayerComponent implements OnDestroy {
     index = 0;
     taskData: any[] = [];
     steps: ComponentMetadata[] = [];
-    mode: "test" | "actual" = "test";
+    mode: 'test' | 'actual' = 'test';
     subscription: Subscription;
 
     // metadata config
     state = new TaskConfig(null, null, {}, null); // this state will be shared with each step in the task
 
-    handleTaskVariablesAndPlayTask(taskMetadataConfig: TaskMetadata, mode: "test" | "actual") {
+    handleTaskVariablesAndPlayTask(taskMetadataConfig: TaskMetadata, mode: 'test' | 'actual') {
         this.mode = mode;
-        if (mode === "test") {
-            this.state.userID = "TEST";
+        if (mode === 'test') {
+            this.state.userID = 'TEST';
             this.state.studyID = 0;
         } else {
             this.state.userID = this.userService.isCrowdsourcedUser
@@ -178,7 +178,7 @@ export class TaskPlayerComponent implements OnDestroy {
 
         const shouldSetTaskAsComplete = !this.userService.isCrowdsourcedUser && this.hasCompletedAllBlocks();
 
-        if (onComplete.taskData && this.mode === "actual") {
+        if (onComplete.taskData && this.mode === 'actual') {
             this.handleUploadData(onComplete.taskData)
                 .pipe(mergeMap((ok) => (ok && shouldSetTaskAsComplete ? this.taskManager.setTaskAsComplete() : of(ok))))
                 .subscribe(
@@ -205,7 +205,8 @@ export class TaskPlayerComponent implements OnDestroy {
             const componentName = this.steps[i].component;
             if (!GenericComponentsList.includes(componentName)) {
                 // GenericComponentsList contains a list of components that are used to display generic info and
-                // aren't related to implementation of a particular task. If our ith component name is not generic,
+                // aren't related to implementation of a particular task.
+                // We check that the next steps have component names that are not generic. If any exist,
                 // that means that it is task specific and we still have other blocks to go. Otherwise we have finished
                 // the last block.
                 // TODO: add a test case for this
@@ -233,7 +234,7 @@ export class TaskPlayerComponent implements OnDestroy {
         if (this.userService.user.role === Role.ADMIN) {
             this.reset();
             this.router.navigate([`${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.COMPONENTS_SUBROUTE}`]);
-            this.snackbarService.openInfoSnackbar("Task completed");
+            this.snackbarService.openInfoSnackbar('Task completed');
         } else {
             this.taskManager.next();
         }
