@@ -1,71 +1,52 @@
 <div>
-    <div class="mb-4 temp-intro" style="color: #3f51b5">
-        <span><b>Welcome!</b></span>
-        <br />
-        <br />
-        <span>
-            <b>
-                You will be playing a series of brain games to help us better understand the thinking and memory changes
-                experienced by people with Parkinson’s disease.
-            </b>
-        </span>
-        <br />
-        <span>
-            <b> Time to complete the games is about 1.5 hours. </b>
-        </span>
-        <br />
-        <br />
-        <span>
-            <b>
-                You can do this all in one sitting or leave (by closing the window) and come back another day. Please
-                aim to do all the games over the course of one week. The bar below will show your progress.
-            </b>
-        </span>
-        <br />
-        <span>
-            <b>
-                You can take breaks, but try to take them only BETWEEN games. You must first read the consent form by
-                clicking the button below.
-            </b>
-        </span>
-        <br />
-        <br />
-        <span style="color: red">
-            <b>
-                Once you finish a game, please make sure to click "NEXT" until you reach the
-                <span style="text-decoration: underline"> start of the next game </span>. If you do not do this, you
-                will have to restart the task.
-            </b>
-        </span>
+    <div class="mb-4 intro">
+        <p>{{ 'participant-studies-page.greeting' | translate }}</p>
+
+        <p>{{ 'participant-studies-page.introduction' | translate }}</p>
+
+        <p>{{ 'participant-studies-page.descriptor' | translate }}</p>
+
+        <p>{{ 'participant-studies-page.instruction' | translate }}</p>
+
+        <p>{{ 'participant-studies-page.progress-descriptor' | translate }}</p>
+
+        <p class="error-text">{{ 'participant-studies-page.warning' | translate }}</p>
+        <hr />
     </div>
-    <h1 class="mb-3 font-weight-bold">Your Studies</h1>
+
+    <h1 class="font-weight-bold">{{ 'participant-studies-page.title' | translate }}</h1>
 
     <div>
         <div
             *ngFor="let studyUser of studyUsers | async"
             class="participant-study {{ studyIsDone(studyUser) ? 'complete' : '' }}"
         >
-            <h1 class="{{ studyIsDone(studyUser) ? 'complete' : '' }}">
+            <h2 class="{{ studyIsDone(studyUser) ? 'complete' : '' }}">
                 {{ studyUser.study.externalName }}
-            </h1>
+            </h2>
 
             <section class="progress-bar-section">
                 <div class="progress-status-container">
                     <ng-container *ngIf="!studyIsDone(studyUser)">
-                        <h1 class="progress-status incomplete">{{ getProgress(studyUser) }}% completed</h1>
+                        <h2 class="progress-status incomplete">
+                            {{ getProgress(studyUser) }}%
+                            {{ 'participant-studies-page.progress-message.status' | translate }}
+                        </h2>
                         <mat-icon
                             class="progress-icon incomplete"
-                            matTooltip="study in progress"
+                            matTooltip="{{ 'participant-studies-page.progress-message.in-progress' | translate }}"
                             matTooltipPosition="after"
                             #tooltip="matTooltip"
                             >pending_actions</mat-icon
                         >
                     </ng-container>
                     <ng-container *ngIf="studyIsDone(studyUser)">
-                        <h1 class="progress-status complete">Study Complete</h1>
+                        <h2 class="progress-status complete">
+                            {{ 'participant-studies-page.progress-message.complete' | translate }}
+                        </h2>
                         <mat-icon
                             class="progress-icon complete"
-                            matTooltip="study is complete"
+                            matTooltip="{{ 'participant-studies-page.progress-message.complete' | translate }}"
                             matTooltipPosition="after"
                             #tooltip="matTooltip"
                             >check_circle</mat-icon
@@ -73,14 +54,14 @@
                     </ng-container>
                 </div>
                 <mat-progress-bar color="primary" [value]="getProgress(studyUser)"></mat-progress-bar>
-                <span *ngIf="!studyUser.hasAcceptedConsent" class="error-text my-3 d-block"
-                    >You must read and accept the consent form below before starting the study</span
-                >
+                <span *ngIf="!studyUser.hasAcceptedConsent" class="error-text my-3 d-block">{{
+                    'participant-studies-page.consent-warning' | translate
+                }}</span>
             </section>
 
             <div class="button-container">
                 <button (click)="openConsentDialog(studyUser)" class="w-25" mat-raised-button color="accent">
-                    View Consent
+                    {{ 'participant-studies-page.buttons.view-consent' | translate }}
                 </button>
                 <button
                     (click)="startOrContinueStudy(studyUser)"
@@ -89,7 +70,7 @@
                     mat-raised-button
                     color="primary"
                 >
-                    {{ getButtonText(studyUser) }}
+                    {{ getButtonText(studyUser) | translate }}
                 </button>
             </div>
         </div>

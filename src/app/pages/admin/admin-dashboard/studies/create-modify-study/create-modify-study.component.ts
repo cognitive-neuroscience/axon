@@ -128,7 +128,7 @@ export class CreateModifyStudyComponent implements OnInit {
         this.selectedTasks = [];
         this.studyForm = this.fb.group({
             externalName: ['', Validators.compose([Validators.required, Validators.maxLength(255)])],
-            internalName: ['', Validators.compose([Validators.maxLength(255)])],
+            internalName: ['', Validators.compose([Validators.required, Validators.maxLength(255)])],
             description: ['', Validators.maxLength(500)],
             consent: ['', Validators.required],
         });

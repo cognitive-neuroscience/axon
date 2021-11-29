@@ -1,12 +1,12 @@
 .participant-study {
     background: white;
-    border: 2px solid lightgray;
+    border: 4px solid lightgray;
     margin-bottom: 2%;
     padding: 20px 40px;
     border-radius: 8px;
 
     &.complete {
-        border: 5px solid green;
+        border: 4px solid green;
     }
 
     .button-container {
@@ -23,9 +23,10 @@
     background: #a8eaa4;
 }
 
-.temp-intro {
-    font-size: 1.5rem;
+.intro {
+    font-size: 1rem;
     line-height: normal;
+    color: #3f51b5;
 }
 
 .progress-label {

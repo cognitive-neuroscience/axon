@@ -23,13 +23,15 @@
                 <mat-error *ngIf="studyForm.get('externalName')?.hasError('maxlength')">Max 255 characters</mat-error>
             </mat-form-field>
             <mat-form-field class="w-50 d-block">
-                <mat-label>Internal Study Name (optional)</mat-label>
+                <mat-label>Internal Study Name</mat-label>
                 <input
                     formControlName="internalName"
                     matInput
+                    required
                     type="text"
                     placeholder="My study - participants can't see this"
                 />
+                <mat-error *ngIf="studyForm.get('internalName')?.hasError('required')">This is required</mat-error>
                 <mat-error *ngIf="studyForm.get('internalName')?.hasError('maxlength')">Max 255 characters</mat-error>
             </mat-form-field>
             <mat-form-field class="w-50 d-block">
@@ -44,6 +46,7 @@
                         consentForm.name
                     }}</mat-option>
                 </mat-select>
+                <mat-error *ngIf="studyForm.get('consent')?.hasError('required')">This is required</mat-error>
             </mat-form-field>
 
             <hr />

@@ -6,7 +6,7 @@ import { LoginComponent } from './pages/landing-page/login/login.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './modules/material/material.module';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CrowdSourceLoginComponent } from './pages/landing-page/crowdsource-login/crowdsource-login.component';
 import { ConfirmationComponent } from './services/confirmation/confirmation.component';
 import { LoaderComponent } from './services/loader/loader.component';
@@ -22,6 +22,12 @@ import { ResetPasswordLoginComponent } from './pages/landing-page/forgot-passwor
 import { StudyBackgroundComponent } from './pages/landing-page/study-background/study-background.component';
 import { SharedModule } from './pages/shared/shared.module';
 import { NotFoundComponent } from './pages/landing-page/not-found/not-found.component';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+    return new TranslateHttpLoader(http, '../assets/translate/', '.json');
+}
 
 @NgModule({
     declarations: [
@@ -49,6 +55,13 @@ import { NotFoundComponent } from './pages/landing-page/not-found/not-found.comp
         ReactiveFormsModule,
         HttpClientModule,
         SharedModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient],
+            },
+        }),
 
         /**
          * this import must be last as it contains the wild card routes to catch everything.
