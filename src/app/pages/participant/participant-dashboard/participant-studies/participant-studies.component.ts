@@ -58,9 +58,9 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
 
     getProgress(studyUser: StudyUser): number {
         if (studyUser.study) {
-            studyUser.currentTaskIndex === 0
+            return studyUser.currentTaskIndex === 0
                 ? 0
-                : +((studyUser.currentTaskIndex / studyUser.study.tasks.length) * 100).toFixed(0);
+                : Math.ceil((studyUser.currentTaskIndex / studyUser.study.tasks.length) * 100);
         } else {
             return 0;
         }
