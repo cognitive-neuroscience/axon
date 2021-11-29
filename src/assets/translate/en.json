@@ -1,0 +1,32 @@
+{
+    "participant-studies-page": {
+        "greeting": "Welcome!",
+        "introduction": "This is the online research platform run by Dr. Sharp at McGill University.",
+        "descriptor": "Below you will find the study (or studies) for which you have registered.",
+        "instruction": "Click the red button to view the consent form. Once you provide consent, you will be able to click the blue button to start (or continue) the study.",
+        "progress-descriptor": "The progress bar will tell you how far along you are.",
+        "warning": "Once you finish a game, please make sure to click \"NEXT\" until you reach the start of the next game. If you do not do this, you will have to restart the task.",
+        "progress-status": "completed",
+        "title": "Your Studies",
+        "consent-warning": "You must read and accept the consent form below before starting the study",
+        "progress-message": {
+            "complete": "study complete",
+            "status": "completed",
+            "in-progress": "study in progress"
+        },
+        "buttons": {
+            "start-study": "Start study",
+            "continue-study": "Continue study",
+            "view-consent": "View consent",
+            "study-not-started": "Sharplab has not started this study",
+            "study-completed": "You have completed this study"
+        }
+    },
+    "navbar": {
+        "studies": "Studies",
+        "tooltip": {
+            "logout": "logout"
+        },
+        "title": "Dashboard"
+    }
+}

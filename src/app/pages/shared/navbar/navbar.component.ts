@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames } from 'src/app/models/enums';
@@ -37,7 +38,8 @@ export class NavbarComponent implements OnInit {
         private userService: UserService,
         private authService: AuthService,
         private loaderService: LoaderService,
-        private snackbarService: SnackbarService
+        private snackbarService: SnackbarService,
+        private translateService: TranslateService
     ) {
         this.user = new Observable();
     }
@@ -45,6 +47,14 @@ export class NavbarComponent implements OnInit {
     ngOnInit(): void {
         this.user = this.userService.userAsync;
         if (!this.userService.userHasValue) this.userService.updateUser();
+    }
+
+    handleLanguageSwitch() {
+        this.currentLang === 'fr' ? this.translateService.use('en') : this.translateService.use('fr');
+    }
+
+    get currentLang(): string {
+        return this.translateService.currentLang;
     }
 
     logout() {

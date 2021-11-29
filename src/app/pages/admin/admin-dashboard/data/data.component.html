@@ -29,11 +29,8 @@
             {{ studyTask.taskOrder }} : {{ studyTask.task.name }}
         </button>
         <hr />
-        <button (click)="getCrowdsourceUsersForStudy(study)" mat-menu-item>
-            Registered Participants (Crowdsourced)
-        </button>
-        <button (click)="getStudyUsersForStudy(study)" mat-menu-item>Registered Participants (With accounts)</button>
-        <button (click)="getFeedbackForStudy(study)" mat-menu-item>Feedback Questionnaire</button>
+        <button (click)="getCrowdsourceUsersForStudy(study)" mat-menu-item>Crowdsourced Participants</button>
+        <button (click)="getStudyUsersForStudy(study)" mat-menu-item>Accountholding Participants</button>
     </mat-menu>
 
     <app-data-table *ngIf="isAdmin | async" [fileName]="fileName" [tableData]="tableData"></app-data-table>

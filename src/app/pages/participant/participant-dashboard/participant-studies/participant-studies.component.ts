@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable, of, Subscription } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { wait } from 'src/app/common/commonMethods';
 import { StudyUser } from 'src/app/models/Login';
 import { ConsentNavigationConfig } from 'src/app/pages/shared/consent-component/consent-reader.component';
@@ -20,8 +21,6 @@ declare function setFullScreen(): any;
     styleUrls: ['./participant-studies.component.scss'],
 })
 export class ParticipantStudiesComponent implements OnInit, OnDestroy {
-    studyUsers: Observable<StudyUser[]>;
-
     subscriptions: Subscription[] = [];
 
     constructor(
@@ -30,12 +29,31 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
         private taskService: TaskService,
         private snackbar: SnackbarService,
         private taskManager: TaskManagerService,
-        private loaderService: LoaderService
+        private loaderService: LoaderService,
+        private translateService: TranslateService
     ) {}
 
     ngOnInit(): void {
-        this.studyUsers = this.userService.studyUsers;
+        this._studyUsers = this.userService.studyUsers;
         if (!this.userService.hasStudyUsers) this.userService.updateStudyUsers();
+
+        this.translateService.setDefaultLang('en');
+    }
+
+    private _studyUsers: Observable<StudyUser[]>;
+
+    get studyUsers(): Observable<StudyUser[]> {
+        return this._studyUsers.pipe(
+            map((studyUsers) =>
+                studyUsers
+                    ? studyUsers.sort((a, b) => {
+                          const dateA = Date.parse(a.registerDate);
+                          const dateB = Date.parse(b.registerDate);
+                          return dateB - dateA;
+                      })
+                    : []
+            )
+        );
     }
 
     getProgress(studyUser: StudyUser): number {
@@ -56,13 +74,13 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
 
     getButtonText(studyUser: StudyUser): string {
         if (!studyUser.study.started) {
-            return 'Sharplab has not started this study';
+            return 'participant-studies-page.buttons.study-not-started';
         } else if (studyUser.currentTaskIndex === 0) {
-            return 'Start study';
+            return 'participant-studies-page.buttons.start-study';
         } else if (studyUser.currentTaskIndex === studyUser.study.tasks.length) {
-            return 'You have completed this study';
+            return 'participant-studies-page.buttons.study-completed';
         } else {
-            return 'Continue study';
+            return 'participant-studies-page.buttons.continue-study';
         }
     }
 
@@ -95,10 +113,6 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
                     this.snackbar.openErrorSnackbar(err.message);
                 }
             );
-    }
-
-    openFeedbackDialog(studyUser: StudyUser) {
-        this.dialog.open(FeedbackQuestionnaireComponent, { width: '60%', height: '70%', data: studyUser });
     }
 
     async startOrContinueStudy(studyUser: StudyUser) {
