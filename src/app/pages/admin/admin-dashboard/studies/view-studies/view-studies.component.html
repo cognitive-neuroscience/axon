@@ -33,7 +33,7 @@
                         </mat-slide-toggle>
                         <div [class.study-inactive]="!study.started">
                             <mat-icon class="icons started" *ngIf="study.started">run_circle</mat-icon>
-                            <mat-icon class="icons stopped" *ngIf="!study.started">stop_circle</mat-icon>
+                            <mat-icon class="icons stopped" *ngIf="!study.started">pause_circle</mat-icon>
                         </div>
                     </div>
                 </div>
@@ -88,7 +88,7 @@
                     </div>
                     <div>
                         <span class="internal-name">{{
-                            (taskNameFromId(study.consent) | async)?.name || "could not find name"
+                            (taskNameFromId(study.consent) | async)?.name || 'could not find name'
                         }}</span>
                     </div>
 

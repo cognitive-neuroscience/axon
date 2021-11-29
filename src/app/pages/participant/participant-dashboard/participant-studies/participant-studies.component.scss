@@ -1,13 +1,12 @@
 .participant-study {
     background: white;
-    border: 1px solid lightgray;
-    padding: 20px;
+    border: 2px solid lightgray;
     margin-bottom: 2%;
+    padding: 20px 40px;
     border-radius: 8px;
 
-    .progress-bar-container {
-        padding: 20px 0;
-        border-radius: 3px;
+    &.complete {
+        border: 5px solid green;
     }
 
     .button-container {
@@ -27,4 +26,39 @@
 .temp-intro {
     font-size: 1.5rem;
     line-height: normal;
+}
+
+.progress-label {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.progress-bar-section {
+    margin-bottom: 2rem;
+
+    .progress-status-container {
+        display: flex;
+        height: 2rem;
+        margin-bottom: 1.5rem;
+
+        .progress-status {
+            font-weight: bold;
+            margin: auto 0;
+        }
+
+        .progress-icon {
+            font-size: 2rem;
+            width: 2rem;
+            height: 2rem;
+            margin-left: 0.5rem;
+        }
+    }
+}
+
+.incomplete {
+    color: gray;
+}
+
+.complete {
+    color: green;
 }

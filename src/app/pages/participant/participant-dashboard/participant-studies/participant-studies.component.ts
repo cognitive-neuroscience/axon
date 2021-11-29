@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, of, Subscription } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { wait } from 'src/app/common/commonMethods';
 import { StudyUser } from 'src/app/models/Login';
 import { ConsentNavigationConfig } from 'src/app/pages/shared/consent-component/consent-reader.component';
@@ -20,8 +20,6 @@ declare function setFullScreen(): any;
     styleUrls: ['./participant-studies.component.scss'],
 })
 export class ParticipantStudiesComponent implements OnInit, OnDestroy {
-    studyUsers: Observable<StudyUser[]>;
-
     subscriptions: Subscription[] = [];
 
     constructor(
@@ -34,8 +32,24 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        this.studyUsers = this.userService.studyUsers;
+        this._studyUsers = this.userService.studyUsers;
         if (!this.userService.hasStudyUsers) this.userService.updateStudyUsers();
+    }
+
+    private _studyUsers: Observable<StudyUser[]>;
+
+    get studyUsers(): Observable<StudyUser[]> {
+        return this._studyUsers.pipe(
+            map((studyUsers) =>
+                studyUsers
+                    ? studyUsers.sort((a, b) => {
+                          const dateA = Date.parse(a.registerDate);
+                          const dateB = Date.parse(b.registerDate);
+                          return dateB - dateA;
+                      })
+                    : []
+            )
+        );
     }
 
     getProgress(studyUser: StudyUser): number {

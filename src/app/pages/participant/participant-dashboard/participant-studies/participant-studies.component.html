@@ -38,25 +38,44 @@
             </b>
         </span>
     </div>
-    <h2 class="mb-3">Your Studies</h2>
+    <h1 class="mb-3 font-weight-bold">Your Studies</h1>
 
     <div>
         <div
             *ngFor="let studyUser of studyUsers | async"
-            class="participant-study mat-elevation-z3 {{ studyIsDone(studyUser) ? 'study-complete' : '' }}"
+            class="participant-study {{ studyIsDone(studyUser) ? 'complete' : '' }}"
         >
-            <h1>
-                <b>{{ studyUser.study.externalName }}</b>
+            <h1 class="{{ studyIsDone(studyUser) ? 'complete' : '' }}">
+                {{ studyUser.study.externalName }}
             </h1>
 
-            <section>
-                <div class="progress-bar-container my-3">
-                    <label>Progress:</label>
-                    <mat-progress-bar [value]="getProgress(studyUser)"></mat-progress-bar>
-                    <span *ngIf="!studyUser.hasAcceptedConsent" class="error-text mt-3 d-block"
-                        >You must read and accept the consent form below before starting the study</span
-                    >
+            <section class="progress-bar-section">
+                <div class="progress-status-container">
+                    <ng-container *ngIf="!studyIsDone(studyUser)">
+                        <h1 class="progress-status incomplete">{{ getProgress(studyUser) }}% completed</h1>
+                        <mat-icon
+                            class="progress-icon incomplete"
+                            matTooltip="study in progress"
+                            matTooltipPosition="after"
+                            #tooltip="matTooltip"
+                            >pending_actions</mat-icon
+                        >
+                    </ng-container>
+                    <ng-container *ngIf="studyIsDone(studyUser)">
+                        <h1 class="progress-status complete">Study Complete</h1>
+                        <mat-icon
+                            class="progress-icon complete"
+                            matTooltip="study is complete"
+                            matTooltipPosition="after"
+                            #tooltip="matTooltip"
+                            >check_circle</mat-icon
+                        >
+                    </ng-container>
                 </div>
+                <mat-progress-bar color="primary" [value]="getProgress(studyUser)"></mat-progress-bar>
+                <span *ngIf="!studyUser.hasAcceptedConsent" class="error-text my-3 d-block"
+                    >You must read and accept the consent form below before starting the study</span
+                >
             </section>
 
             <div class="button-container">
@@ -71,15 +90,6 @@
                     color="primary"
                 >
                     {{ getButtonText(studyUser) }}
-                </button>
-                <button
-                    (click)="openFeedbackDialog(studyUser)"
-                    *ngIf="studyIsDone(studyUser) || !studyUser.study.started"
-                    class="w-25"
-                    mat-raised-button
-                    color="primary"
-                >
-                    Submit Feedback
                 </button>
             </div>
         </div>
