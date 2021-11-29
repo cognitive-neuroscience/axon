@@ -83,7 +83,7 @@ export class UserService implements CanClear {
                         this._userBehaviorSubject.next(user);
                     },
                     (err) => {
-                        throw new Error(err);
+                        throw new Error(err.message);
                     }
                 );
         } else {
@@ -95,7 +95,7 @@ export class UserService implements CanClear {
                     },
                     (err) => {
                         this._userBehaviorSubject.next(null);
-                        throw new Error(err);
+                        throw new Error(err.message);
                     }
                 );
         }

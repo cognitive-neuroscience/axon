@@ -69,8 +69,6 @@ export class LoginComponent implements OnDestroy {
                     this.userService.updateUser();
                 },
                 (error: HttpErrorResponse) => {
-                    console.log('here');
-
                     this.loaderService.hideLoader();
                     this.snackbarService.openErrorSnackbar(error.message);
                 }
