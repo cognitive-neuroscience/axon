@@ -1,17 +1,17 @@
-import { Component, OnDestroy } from "@angular/core";
-import { Subject } from "rxjs";
-import { thisOrDefault } from "src/app/common/commonMethods";
-import { ComponentName } from "src/app/services/component-factory.service";
-import { Navigation } from "../navigation-buttons/navigation-buttons.component";
-import { Playable } from "../../task-playables/playable";
-import { TaskConfig } from "../../task-playables/task-player/task-player.component";
+import { Component, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { thisOrDefault } from 'src/app/common/commonMethods';
+import { ComponentName } from 'src/app/services/component-factory.service';
+import { Navigation } from '../navigation-buttons/navigation-buttons.component';
+import { Playable } from '../../task-playables/playable';
+import { TaskConfig } from '../../task-playables/task-player/task-player.component';
 
 export interface DisplaySection {
-    sectionType: "text" | "image-horizontal" | "image-square" | "image-small";
+    sectionType: 'text' | 'image-horizontal' | 'image-square' | 'image-small';
     imagePath?: string;
-    imageAlignment?: "left" | "center" | "right";
+    imageAlignment?: 'left' | 'center' | 'right';
     textContent?: string;
-    injection: "counterbalance" | "counterbalance-alternative" | "cached-string";
+    injection: 'counterbalance' | 'counterbalance-alternative' | 'cached-string';
     cacheKey: string;
 }
 
@@ -45,20 +45,20 @@ export interface TaskDisplayComponentMetadata {
  */
 
 @Component({
-    selector: "app-task-display",
-    templateUrl: "./task-display.component.html",
-    styleUrls: ["./task-display.component.scss"],
+    selector: 'app-task-display',
+    templateUrl: './task-display.component.html',
+    styleUrls: ['./task-display.component.scss'],
 })
 export class TaskDisplayComponent implements OnDestroy, Playable {
     // metadata variables
-    title: string = "";
-    subtitle: string = "";
+    title: string = '';
+    subtitle: string = '';
     displaySections: DisplaySection[] = [];
     buttonConfig: ButtonConfig = null;
     private canSkipTimer: boolean;
     private skipAvailableAfterXSeconds: number; // option to skip timer available after x seconds. canSkipTimer must be set to true
     skippable: boolean = false; // whether or not we can skip this entire component (not related to timer config)
-    cacheKey: string = "";
+    cacheKey: string = '';
 
     // config variables
     config: TaskConfig;
@@ -96,13 +96,13 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
 
     injectString(section: DisplaySection, text: string): string {
         switch (section.injection) {
-            case "cached-string":
-                const cachedVar = thisOrDefault(this.config.getCacheValue(section.cacheKey), "");
-                return text.replace("???", cachedVar);
-            case "counterbalance":
-                return text.replace("???", this.counterbalanceStr);
-            case "counterbalance-alternative":
-                return text.replace("???", this.counterbalanceAltStr);
+            case 'cached-string':
+                const cachedVar = thisOrDefault(this.config.getCacheValue(section.cacheKey), '');
+                return text.replace('???', cachedVar);
+            case 'counterbalance':
+                return text.replace('???', this.counterbalanceStr);
+            case 'counterbalance-alternative':
+                return text.replace('???', this.counterbalanceAltStr);
             default:
                 return text;
         }
@@ -112,10 +112,10 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
         this.config = config;
 
         this.skippable = thisOrDefault(metadata.skippable, false);
-        this.cacheKey = thisOrDefault(metadata.skippableCacheKey, "");
+        this.cacheKey = thisOrDefault(metadata.skippableCacheKey, '');
 
-        this.title = thisOrDefault(metadata.content.title, "");
-        this.subtitle = thisOrDefault(metadata.content.subtitle, "");
+        this.title = thisOrDefault(metadata.content.title, '');
+        this.subtitle = thisOrDefault(metadata.content.subtitle, '');
         this.displaySections = thisOrDefault(metadata.content.sections, []);
         this.timerMode = thisOrDefault(!!metadata.content.timerConfig, false);
         this.buttonConfig = thisOrDefault(metadata.content.buttons, {
@@ -125,22 +125,17 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
         });
 
         // search the display sections to see if counterbalance needs to be injected
-        if (!!metadata.content.sections.find((section) => section.injection === "counterbalance")) {
+        if (!!metadata.content.sections.find((section) => section.injection === 'counterbalance')) {
             this.counterbalanceStr = config.counterBalanceGroups[config.counterbalanceNumber];
         }
 
         // search the display sections to see if counterbalance alt needs to be injected
-        if (!!metadata.content.sections.find((section) => section.injection === "counterbalance-alternative")) {
+        if (!!metadata.content.sections.find((section) => section.injection === 'counterbalance-alternative')) {
             // 3 - 1 == 2, and 3 - 2 == 1. This gives us the value that is not the counterbalance target value
             this.counterbalanceAltStr = config.counterBalanceGroups[3 - config.counterbalanceNumber];
         }
 
         if (this.timerMode) {
-            this.buttonConfig = {
-                isStart: false,
-                previousDisabled: true,
-                nextDisabled: false,
-            };
             this.timerCountDown = thisOrDefault(metadata.content.timerConfig.countDown, false);
             this.showTimer = thisOrDefault(metadata.content.timerConfig.showTimer, false);
             this.canSkipTimer = thisOrDefault(metadata.content.timerConfig.canSkipTimer, false);
