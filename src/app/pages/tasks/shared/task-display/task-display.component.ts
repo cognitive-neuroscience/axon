@@ -5,12 +5,18 @@ import { ComponentName } from 'src/app/services/component-factory.service';
 import { Navigation } from '../navigation-buttons/navigation-buttons.component';
 import { Playable } from '../../task-playables/playable';
 import { TaskConfig } from '../../task-playables/task-player/task-player.component';
+import { TranslateService } from '@ngx-translate/core';
+
+interface ITranslationText {
+    en: string;
+    fr: string;
+}
 
 export interface DisplaySection {
     sectionType: 'text' | 'image-horizontal' | 'image-square' | 'image-small';
     imagePath?: string;
     imageAlignment?: 'left' | 'center' | 'right';
-    textContent?: string;
+    textContent?: string | ITranslationText;
     injection: 'counterbalance' | 'counterbalance-alternative' | 'cached-string';
     cacheKey: string;
 }
@@ -24,9 +30,9 @@ export interface ButtonConfig {
 export interface TaskDisplayComponentMetadata {
     component: ComponentName;
     skippable?: boolean;
-    skippableCacheKey: string;
+    skippableCacheKey: string; // name of variable storing the boolean indicating whether to skip
     content: {
-        title?: string;
+        title?: string | ITranslationText;
         timerConfig?: {
             timer: number;
             showTimer: boolean;
@@ -78,7 +84,7 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
     // inherited
     onComplete = new Subject<{ navigation: Navigation }>();
 
-    constructor() {}
+    constructor(private translateService: TranslateService) {}
 
     ngOnDestroy() {
         clearInterval(this.interval);
@@ -94,7 +100,9 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
         this.handleComplete(nav);
     }
 
-    injectString(section: DisplaySection, text: string): string {
+    injectString(section: DisplaySection): string {
+        const text = this.getLangText(section.textContent);
+
         switch (section.injection) {
             case 'cached-string':
                 const cachedVar = thisOrDefault(this.config.getCacheValue(section.cacheKey), '');
@@ -108,13 +116,37 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
         }
     }
 
+    private getTitle(titleObj: ITranslationText | string): string {
+        return this.getLangText(titleObj);
+    }
+
+    private getLangText(textObj: ITranslationText | string): string {
+        let lang = this.translateService.currentLang;
+        if (!lang) lang = 'en';
+
+        if (!textObj) {
+            // textObj is falsy
+            return '';
+        } else if (typeof textObj === 'string') {
+            // for backwards compatibility sake, textObj is just a plain string with no translation
+            return textObj;
+        } else if (!textObj[lang]) {
+            // no translation for the given language
+            const hasEnglish = !textObj['en'];
+            // also no translation for english
+            if (!hasEnglish) return '';
+        } else {
+            return textObj[lang];
+        }
+    }
+
     configure(metadata: TaskDisplayComponentMetadata, config: TaskConfig): void {
         this.config = config;
 
         this.skippable = thisOrDefault(metadata.skippable, false);
         this.cacheKey = thisOrDefault(metadata.skippableCacheKey, '');
 
-        this.title = thisOrDefault(metadata.content.title, '');
+        this.title = this.getTitle(metadata.content.title);
         this.subtitle = thisOrDefault(metadata.content.subtitle, '');
         this.displaySections = thisOrDefault(metadata.content.sections, []);
         this.timerMode = thisOrDefault(!!metadata.content.timerConfig, false);

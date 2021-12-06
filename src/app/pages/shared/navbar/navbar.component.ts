@@ -45,6 +45,7 @@ export class NavbarComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.translateService.setDefaultLang('en');
         this.user = this.userService.userAsync;
         if (!this.userService.userHasValue) this.userService.updateUser();
     }

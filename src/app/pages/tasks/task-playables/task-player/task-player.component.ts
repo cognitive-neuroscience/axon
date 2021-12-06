@@ -73,7 +73,6 @@ export class TaskPlayerNavigationConfig {
 @Component({
     selector: 'app-task-player',
     templateUrl: './task-player.component.html',
-    styleUrls: ['./task-player.component.scss'],
 })
 export class TaskPlayerComponent implements OnDestroy {
     constructor(

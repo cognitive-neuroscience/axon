@@ -11,7 +11,6 @@ import { SnackbarService } from 'src/app/services/snackbar.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
 import { TaskService } from 'src/app/services/task.service';
 import { UserService } from 'src/app/services/user.service';
-import { FeedbackQuestionnaireComponent } from '../../final-page/feedback-questionnaire/feedback-questionnaire.component';
 import { ConsentDialogComponent } from './consent-dialog/consent-dialog.component';
 declare function setFullScreen(): any;
 
@@ -29,15 +28,12 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
         private taskService: TaskService,
         private snackbar: SnackbarService,
         private taskManager: TaskManagerService,
-        private loaderService: LoaderService,
-        private translateService: TranslateService
+        private loaderService: LoaderService
     ) {}
 
     ngOnInit(): void {
         this._studyUsers = this.userService.studyUsers;
         if (!this.userService.hasStudyUsers) this.userService.updateStudyUsers();
-
-        this.translateService.setDefaultLang('en');
     }
 
     private _studyUsers: Observable<StudyUser[]>;
