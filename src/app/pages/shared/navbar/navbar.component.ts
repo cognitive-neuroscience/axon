@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames } from 'src/app/models/enums';
+import { map, mergeMap } from 'rxjs/operators';
+import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames, SupportedLangs } from 'src/app/models/enums';
 import { User } from 'src/app/models/Login';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
@@ -24,14 +24,14 @@ export class NavbarComponent implements OnInit {
     PARTICIPANT_PROFILE_ROUTE = `/${ParticipantRouteNames.DASHBOARD_BASEROUTE}/${ParticipantRouteNames.PROFILE_SUBROUTE}`;
 
     get showAdminDashboard(): Observable<boolean> {
-        return this.user.pipe(map((user) => (user ? user.role === Role.ADMIN || user.role === Role.GUEST : false)));
+        return this.userService.userAsync.pipe(
+            map((user) => (user ? user.role === Role.ADMIN || user.role === Role.GUEST : false))
+        );
     }
 
     get isAdmin(): Observable<boolean> {
         return this.userService.userIsAdmin;
     }
-
-    user: Observable<User>;
 
     constructor(
         private router: Router,
@@ -40,18 +40,26 @@ export class NavbarComponent implements OnInit {
         private loaderService: LoaderService,
         private snackbarService: SnackbarService,
         private translateService: TranslateService
-    ) {
-        this.user = new Observable();
-    }
+    ) {}
 
-    ngOnInit(): void {
-        this.translateService.setDefaultLang('en');
-        this.user = this.userService.userAsync;
-        if (!this.userService.userHasValue) this.userService.updateUser();
-    }
+    ngOnInit(): void {}
 
     handleLanguageSwitch() {
-        this.currentLang === 'fr' ? this.translateService.use('en') : this.translateService.use('fr');
+        const newLang = this.currentLang === SupportedLangs.FR ? SupportedLangs.EN : SupportedLangs.FR;
+        this.userService
+            .updateUserDetails({
+                ...this.userService.user,
+                lang: newLang,
+            })
+            .subscribe(
+                (res) => {
+                    this.userService.updateUser();
+                    this.translateService.use(newLang);
+                },
+                (err) => {
+                    this.snackbarService.openErrorSnackbar('There was an error changing the language');
+                }
+            );
     }
 
     get currentLang(): string {

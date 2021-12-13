@@ -52,11 +52,19 @@ export enum Color {
     TRANSPARENT = 'transparent',
 }
 
+// to be deprecated when we shift everything over to translated
 export enum Feedback {
     CORRECT = 'Correct',
     INCORRECT = 'Incorrect',
     TOOSLOW = 'Too slow',
     NORESPONSE = 'No response',
+}
+
+export enum TranslatedFeedback {
+    CORRECT = 'correct',
+    INCORRECT = 'incorrect',
+    TOOSLOW = 'too-slow',
+    NORESPONSE = 'no-response',
 }
 
 // an enum representing the semantic answer given by the user that gets uploaded to the database

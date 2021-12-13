@@ -1,17 +1,17 @@
 <div *ngIf="studyLoaded" class="container-fluid wrapper task-text flex-column-center">
     <div class="full-box flex-column-center">
-        <div *ngIf="showStimulus">
+        <ng-container *ngIf="showStimulus">
             <img *ngIf="stimulusShown" class="stimulus" [src]="stimulusShown" alt="Stimulus" />
-        </div>
+        </ng-container>
 
-        <div *ngIf="showFixation">
+        <ng-container *ngIf="showFixation">
             <i class="material-icons" style="font-size: 60px">add</i>
-        </div>
+        </ng-container>
 
-        <div *ngIf="showFeedback">
+        <ng-container *ngIf="showFeedback">
             <div class="feedback">
-                {{ feedback }}
+                {{ feedback | translate }}
             </div>
-        </div>
+        </ng-container>
     </div>
 </div>

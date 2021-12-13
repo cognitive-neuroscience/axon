@@ -1,9 +1,9 @@
 import { Component, HostListener } from '@angular/core';
 import { NBackTaskData } from 'src/app/models/TaskData';
 import { SnackbarService } from '../../../../services/snackbar.service';
-import { Key } from 'src/app/models/InternalDTOs';
+import { Key, TranslatedFeedback } from 'src/app/models/InternalDTOs';
 import { TimerService } from '../../../../services/timer.service';
-import { UserResponse, Feedback } from '../../../../models/InternalDTOs';
+import { UserResponse } from '../../../../models/InternalDTOs';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { TaskConfig } from '../task-player/task-player.component';
@@ -12,6 +12,7 @@ import { LoaderService } from 'src/app/services/loader/loader.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
+import { TranslateService } from '@ngx-translate/core';
 
 interface NBackMetadata {
     component: ComponentName;
@@ -66,7 +67,7 @@ export class NBackComponent extends AbstractBaseTaskComponent {
     currentStimuliIndex: number; // index of the stimuli we are on
 
     // local state variables
-    feedback: Feedback;
+    feedback: string;
     showStimulus: boolean = false;
     text: string;
     color: string;
@@ -93,7 +94,8 @@ export class NBackComponent extends AbstractBaseTaskComponent {
         protected snackbarService: SnackbarService,
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
-        protected loaderService: LoaderService
+        protected loaderService: LoaderService,
+        protected translateService: TranslateService
     ) {
         super(loaderService);
     }
@@ -224,24 +226,25 @@ export class NBackComponent extends AbstractBaseTaskComponent {
         this.showStimulus = false;
         this.showFixation = false;
         this.responseAllowed = false;
+        const prefix = `tasks.feedback.`;
 
         switch (this.currentTrial.userAnswer) {
             case this.currentTrial.actualAnswer:
-                this.feedback = Feedback.CORRECT;
+                this.feedback = `${prefix}${TranslatedFeedback.CORRECT}`;
                 this.currentTrial.isCorrect = true;
                 this.currentTrial.score = 10;
                 break;
             case UserResponse.NA:
-                this.feedback = Feedback.TOOSLOW;
+                this.feedback = `${prefix}${TranslatedFeedback.TOOSLOW}`;
                 break;
             default:
-                this.feedback = Feedback.INCORRECT;
+                this.feedback = `${prefix}${TranslatedFeedback.INCORRECT}`;
                 this.currentTrial.isCorrect = false;
                 this.currentTrial.score = 0;
                 break;
         }
 
-        if (this.showFeedbackAfterEachTrial || this.feedback === Feedback.TOOSLOW) {
+        if (this.showFeedbackAfterEachTrial || this.feedback === `${prefix}${TranslatedFeedback.TOOSLOW}`) {
             this.showFeedback = true;
             await wait(this.durationOfFeedback);
             if (this.isDestroyed) return;

@@ -11,6 +11,7 @@ import { MaterialModule } from 'src/app/modules/material/material.module';
 import { FinalPageComponent } from './final-page/final-page.component';
 import { ConsentDialogComponent } from './participant-dashboard/participant-studies/consent-dialog/consent-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { LanguageDialogComponent } from './participant-dashboard/language-dialog/language-dialog.component';
 
 @NgModule({
     declarations: [
@@ -19,6 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
         FinalPageComponent,
         FeedbackQuestionnaireComponent,
         ConsentDialogComponent,
+        LanguageDialogComponent,
     ],
     imports: [
         CommonModule,

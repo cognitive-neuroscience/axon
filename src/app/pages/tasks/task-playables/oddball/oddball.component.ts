@@ -1,8 +1,9 @@
 import { Component, HostListener } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { take } from 'rxjs/operators';
 import { getRandomNumber, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { StimuliProvidedType } from 'src/app/models/enums';
-import { Feedback, Key, UserResponse } from 'src/app/models/InternalDTOs';
+import { Feedback, Key, TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
 import { OddballTaskData } from 'src/app/models/TaskData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
@@ -83,7 +84,7 @@ export class OddballComponent extends AbstractBaseTaskComponent {
     studyLoaded: boolean = false; // because we make an initial async call. We don't want to show stuff until this has been completed
     stimulusShown: string | ArrayBuffer = null;
     blockNum: number = 0;
-    feedback: Feedback;
+    feedback: string;
     showStimulus: boolean = false;
     showFeedback: boolean = false;
     showFixation: boolean = false;
@@ -103,7 +104,8 @@ export class OddballComponent extends AbstractBaseTaskComponent {
         protected snackbarService: SnackbarService,
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
-        protected loaderService: LoaderService
+        protected loaderService: LoaderService,
+        protected translateService: TranslateService
     ) {
         super(loaderService);
     }
@@ -263,24 +265,25 @@ export class OddballComponent extends AbstractBaseTaskComponent {
         this.responseAllowed = false;
 
         const thisTrial = this.taskData[this.taskData.length - 1];
+        const prefix = 'tasks.feedback.';
 
         switch (thisTrial.userAnswer) {
             case thisTrial.actualAnswer:
-                this.feedback = Feedback.CORRECT;
+                this.feedback = `${prefix}${TranslatedFeedback.CORRECT}`;
                 thisTrial.isCorrect = true;
                 thisTrial.score = 10;
                 break;
             case UserResponse.NA:
-                this.feedback = Feedback.TOOSLOW;
+                this.feedback = `${prefix}${TranslatedFeedback.TOOSLOW}`;
                 break;
             default:
-                this.feedback = Feedback.INCORRECT;
+                this.feedback = `${prefix}${TranslatedFeedback.INCORRECT}`;
                 thisTrial.isCorrect = false;
                 thisTrial.score = 0;
                 break;
         }
 
-        if (this.showFeedbackAfterEachTrial || this.feedback === Feedback.TOOSLOW) {
+        if (this.showFeedbackAfterEachTrial || this.feedback === `${prefix}${TranslatedFeedback.TOOSLOW}`) {
             this.showFeedback = true;
             await wait(this.durationOfFeedback);
             if (this.isDestroyed) return;

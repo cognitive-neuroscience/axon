@@ -28,5 +28,12 @@
             "logout": "logout"
         },
         "title": "Dashboard"
+    },
+    "tasks": {
+        "feedback": {
+            "correct": "Correct",
+            "incorrect": "Incorrect",
+            "too-slow": "Too Slow"
+        }
     }
 }
