@@ -7,9 +7,10 @@ import { SnackbarService } from 'src/app/services/snackbar.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames } from 'src/app/models/enums';
-import { take } from 'rxjs/operators';
+import { catchError, map, mergeMap, take } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user.service';
 import { ClearanceService } from 'src/app/services/clearance.service';
+import { User } from 'src/app/models/Login';
 
 @Component({
     selector: 'app-login',
@@ -48,29 +49,22 @@ export class LoginComponent implements OnDestroy {
 
         this.authService
             .login(email, password)
-            .pipe(take(1))
+            .pipe(
+                mergeMap(() => this.userService.updateUserAsync()),
+                catchError((err) => {
+                    throw err;
+                }),
+                take(1)
+            )
             .subscribe(
-                (response) => {
-                    this.subscriptions.push(
-                        this.userService.userAsync.subscribe(
-                            (user) => {
-                                this.loaderService.hideLoader();
-                                if (user !== null) {
-                                    this.snackbarService.openSuccessSnackbar(this.LOGIN_SUCCESS_STR);
-                                    this.handleNavigate(response.role);
-                                }
-                            },
-                            (err) => {
-                                this.loaderService.hideLoader();
-                                this.snackbarService.openErrorSnackbar(err.message);
-                            }
-                        )
-                    );
-                    this.userService.updateUser();
-                },
-                (error: HttpErrorResponse) => {
+                (res) => {
                     this.loaderService.hideLoader();
-                    this.snackbarService.openErrorSnackbar(error.message);
+                    this.snackbarService.openSuccessSnackbar(this.LOGIN_SUCCESS_STR);
+                    this.handleNavigate(res.role);
+                },
+                (err) => {
+                    this.loaderService.hideLoader();
+                    this.snackbarService.openErrorSnackbar(err.message);
                 }
             );
     }

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';

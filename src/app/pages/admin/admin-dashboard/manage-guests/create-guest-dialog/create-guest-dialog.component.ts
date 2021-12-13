@@ -1,17 +1,17 @@
-import { Component, OnInit } from "@angular/core";
-import { MatDialogRef } from "@angular/material/dialog";
-import { Role } from "src/app/models/enums";
-import { User } from "src/app/models/Login";
+import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { Role, SupportedLangs } from 'src/app/models/enums';
+import { User } from 'src/app/models/Login';
 
 @Component({
-    selector: "app-create-guest-dialog",
-    templateUrl: "./create-guest-dialog.component.html",
-    styleUrls: ["./create-guest-dialog.component.scss"],
+    selector: 'app-create-guest-dialog',
+    templateUrl: './create-guest-dialog.component.html',
+    styleUrls: ['./create-guest-dialog.component.scss'],
 })
 export class CreateGuestDialogComponent implements OnInit {
     constructor(private dialogRef: MatDialogRef<CreateGuestDialogComponent>) {}
 
-    newUserEmail: string = "";
+    newUserEmail: string = '';
 
     ngOnInit(): void {}
 
@@ -32,6 +32,7 @@ export class CreateGuestDialogComponent implements OnInit {
             email: this.newUserEmail,
             role: Role.GUEST,
             changePasswordRequired: false,
+            lang: SupportedLangs.NONE,
         };
         this.dialogRef.close(user);
     }

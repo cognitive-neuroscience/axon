@@ -4,10 +4,13 @@
 
 .title-text {
     color: #3f51b5;
+    font-size: 1.25rem;
 }
 
 .sub-text {
     color: #464646;
+    font-size: 1.25rem;
+    line-height: normal;
 
     &.indent-1 {
         margin-left: 3rem;

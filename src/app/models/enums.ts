@@ -72,3 +72,9 @@ export enum ParticipantType {
     CROWDSOURCED = 'CROWDSOURCED',
     ACCOUNTHOLDER = 'ACCOUNTHOLDER',
 }
+
+export enum SupportedLangs {
+    EN = 'en',
+    FR = 'fr',
+    NONE = '',
+}

@@ -1,5 +1,5 @@
-import { Role } from "./enums";
-import { Study } from "./Study";
+import { Role, SupportedLangs } from './enums';
+import { Study } from './Study';
 
 export class User {
     id: number;
@@ -8,6 +8,7 @@ export class User {
     role: Role;
     createdAt: string;
     changePasswordRequired: boolean;
+    lang: SupportedLangs;
 }
 
 export class CrowdsourcedUser {
@@ -31,4 +32,5 @@ export class StudyUser {
     currentTaskIndex: number;
     hasAcceptedConsent: boolean;
     study?: Study;
+    lang: SupportedLangs;
 }

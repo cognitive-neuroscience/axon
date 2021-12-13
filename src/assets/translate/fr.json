@@ -1,13 +1,13 @@
 {
     "participant-studies-page": {
         "greeting": "Bienvenue!",
-        "introduction": "Ceci est la plateforme de recherche en ligne gérée par la Dre Sharp de l'Université de McGill.",
-        "descriptor": "Vous trouverez ci-dessous les étude(s) pour auxquelles vous vous êtes inscrit.e.s.",
-        "instruction": "Cliquez sur le bouton rouge pour visualiser le formulaire de consentement. Une fois que vous aurez consenti, vous pourrez cliquer sur le bouton bleu pour démarrer (ou continuer) l'étude.",
+        "introduction": "Ceci est la plateforme de recherche en ligne gérée par Dre Sharp, neurologue à l'Université McGill.",
+        "descriptor": "Vous trouverez ci-dessous les étude(s) auxquelles vous êtes inscrit.e.s.",
+        "instruction": "Cliquez sur le bouton rouge pour visualiser le formulaire de consentement. Une fois que vous aurez consenti, vous pourrez cliquer sur le bouton bleu pour démarrer l'étude.",
         "progress-descriptor": "La barre de progression vous indiquera où vous en êtes.",
-        "warning": "Une fois que vous avez terminé un jeu ou questionnaire, assurez-vous de cliquer sur \"NEXT\" pour vous rendre au début de la partie suivante. Sinon les données pourraient être perdues. ",
+        "warning": "Vous pouvez prendre des pauses en fermant la fenêtre pour quitter le site, mais attendez la fin du jeu ou du questionnaire, et assurez-vous de cliquer sur \"NEXT\" pour vous rendre jusqu'au début de la partie suivante avant de quitter. Sinon, les données pourraient être perdues.",
         "title": "Vos Études",
-        "consent-warning": "Vous devrez lire et accepter le formulaire de consentement ci-dessous avant de commencer l’étude",
+        "consent-warning": "Vous devrez lire et accepter le formulaire de consentement ci-dessous avant de commencer l'étude",
         "progress-message": {
             "complete": "étude complète",
             "status": "complété",
@@ -17,7 +17,7 @@
             "start-study": "Commencer étude",
             "continue-study": "Continuer étude",
             "view-consent": "Formulaire de consentement",
-            "study-not-started": "Sharplab n’a pas commencé cette étude",
+            "study-not-started": "Sharplab n'a pas commencé cette étude",
             "study-completed": "Vous avez complété cette étude"
         }
     },
@@ -27,5 +27,12 @@
             "logout": "déconnecter"
         },
         "title": "Tableau de bord"
+    },
+    "tasks": {
+        "feedback": {
+            "correct": "Correct",
+            "incorrect": "Incorrect",
+            "too-slow": "Trop lent"
+        }
     }
 }

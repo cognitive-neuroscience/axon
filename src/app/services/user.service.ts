@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map, take, tap } from 'rxjs/operators';
 import { CrowdsourcedUser, StudyUser, User } from '../models/Login';
-import { Role } from '../models/enums';
+import { Role, SupportedLangs } from '../models/enums';
 import { TimerService } from './timer.service';
 import { CanClear } from './clearance.service';
 
@@ -67,6 +67,32 @@ export class UserService implements CanClear {
         });
     }
 
+    updateUserAsync(): Observable<User> {
+        if (this.isCrowdsourcedUser) {
+            return this._getCrowdsourcedUser(this.crowdsourcedUserStudyId).pipe(
+                map((crowdsourcedUser) => ({
+                    id: 0,
+                    email: crowdsourcedUser.participantId,
+                    role: Role.PARTICIPANT,
+                    createdAt: crowdsourcedUser.registerDate,
+                    changePasswordRequired: false,
+                    lang: SupportedLangs.NONE,
+                })),
+                tap((user: User) => {
+                    this._userBehaviorSubject.next(user);
+                }),
+                take(1)
+            );
+        } else {
+            return this._getUser().pipe(
+                tap((user: User) => {
+                    this._userBehaviorSubject.next(user);
+                }),
+                take(1)
+            );
+        }
+    }
+
     updateUser(): void {
         if (this.isCrowdsourcedUser) {
             this._getCrowdsourcedUser(this.crowdsourcedUserStudyId)
@@ -79,6 +105,7 @@ export class UserService implements CanClear {
                             role: Role.PARTICIPANT,
                             createdAt: crowdsourcedUser.registerDate,
                             changePasswordRequired: false,
+                            lang: SupportedLangs.NONE,
                         };
                         this._userBehaviorSubject.next(user);
                     },
@@ -145,6 +172,10 @@ export class UserService implements CanClear {
         });
     }
 
+    updateUserDetails(user: User): Observable<HttpResponse<any>> {
+        return this.http.patch<any>(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/${user.id}`, user);
+    }
+
     getCrowdsourcedUsersByStudyId(studyId: number): Observable<CrowdsourcedUser[]> {
         return this.http.get<CrowdsourcedUser[]>(
             `${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}/${studyId}`
@@ -176,6 +207,7 @@ export class UserService implements CanClear {
             }, // nullable time
             currentTaskIndex: 0,
             hasAcceptedConsent: false,
+            lang: user.lang,
         };
 
         return this.http.post(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}`, studyUser);

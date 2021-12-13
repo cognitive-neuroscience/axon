@@ -34,11 +34,11 @@
                 color="basic"
                 >{{ 'navbar.studies' | translate }}</a
             >
-            <a (click)="handleLanguageSwitch()" class="menu-item" mat-button>{{
-                currentLang === 'fr' ? 'English' : 'Française'
-            }}</a>
-            <!-- <a class="menu-item" routerLinkActive="active" [routerLink]="'/TBD'" mat-button color="basic">Profile</a> -->
+            <!-- <a class="menu-item" routerLinkActive="active" [routerLink]="'/TBD'" mat-button color="basic">Settings</a> -->
         </ng-container>
+        <a (click)="handleLanguageSwitch()" class="menu-item" mat-button>{{
+            currentLang === 'fr' ? 'Switch to English' : 'Passer au Français'
+        }}</a>
         <a
             class="menu-item"
             (click)="logout()"
