@@ -207,6 +207,7 @@ export class UserService implements CanClear {
             }, // nullable time
             currentTaskIndex: 0,
             hasAcceptedConsent: false,
+            lang: user.lang,
         };
 
         return this.http.post(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}`, studyUser);

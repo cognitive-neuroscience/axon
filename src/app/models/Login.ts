@@ -32,4 +32,5 @@ export class StudyUser {
     currentTaskIndex: number;
     hasAcceptedConsent: boolean;
     study?: Study;
+    lang: SupportedLangs;
 }
