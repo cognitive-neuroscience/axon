@@ -1,5 +1,8 @@
 // generates a list of length <size> of non repeating random numbers
 
+import { SupportedLangs } from '../models/enums';
+import { ITranslationText } from '../models/InternalDTOs';
+
 // random numbers generated are lowerbound inclusive and upperbound exclusive: [lowerbound, upperbound)
 export function generateRandomNonrepeatingNumberList(size: number, lowerBound: number, upperBound: number): number[] {
     if (size > upperBound - lowerBound) throw new Error('Size cannot be greater than the bounds');
@@ -93,4 +96,23 @@ export function throwErrIfNotDefined(value: any, errStr: string): any {
 
 export function objIsEmpty(arg: any): boolean {
     return Object.keys(arg).length === 0;
+}
+
+export function getTextForLang(currLang: SupportedLangs, textObj: ITranslationText | string): string {
+    if (!currLang) currLang = SupportedLangs.EN;
+
+    if (!textObj) {
+        // textObj is falsy
+        return '';
+    } else if (typeof textObj === 'string') {
+        // for backwards compatibility sake, textObj is just a plain string with no translation
+        return textObj;
+    } else if (!textObj[currLang]) {
+        // no translation for the given language
+        const hasEnglish = !textObj[SupportedLangs.EN];
+        // also no translation for english
+        if (!hasEnglish) return '';
+    } else {
+        return textObj[currLang];
+    }
 }

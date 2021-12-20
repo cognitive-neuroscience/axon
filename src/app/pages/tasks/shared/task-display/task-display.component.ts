@@ -1,16 +1,13 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import { thisOrDefault } from 'src/app/common/commonMethods';
+import { getTextForLang, thisOrDefault } from 'src/app/common/commonMethods';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { Navigation } from '../navigation-buttons/navigation-buttons.component';
 import { Playable } from '../../task-playables/playable';
 import { TaskConfig } from '../../task-playables/task-player/task-player.component';
 import { TranslateService } from '@ngx-translate/core';
-
-interface ITranslationText {
-    en: string;
-    fr: string;
-}
+import { ITranslationText } from 'src/app/models/InternalDTOs';
+import { SupportedLangs } from 'src/app/models/enums';
 
 export interface DisplaySection {
     sectionType: 'text' | 'image-horizontal' | 'image-square' | 'image-small';
@@ -101,7 +98,7 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
     }
 
     injectString(section: DisplaySection): string {
-        const text = this.getLangText(section.textContent);
+        const text = getTextForLang(this.translateService.currentLang as SupportedLangs, section.textContent);
 
         switch (section.injection) {
             case 'cached-string':
@@ -117,10 +114,10 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
     }
 
     private getTitle(titleObj: ITranslationText | string): string {
-        return this.getLangText(titleObj);
+        return getTextForLang(this.translateService.currentLang as SupportedLangs, titleObj);
     }
 
-    private getLangText(textObj: ITranslationText | string): string {
+    prigetTextForLang(textObj: ITranslationText | string): string {
         let lang = this.translateService.currentLang;
         if (!lang) lang = 'en';
 

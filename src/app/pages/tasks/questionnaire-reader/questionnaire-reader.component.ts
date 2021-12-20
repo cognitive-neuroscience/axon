@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { NzMarks } from 'ng-zorro-antd/slider';
 import { of } from 'rxjs';
 import { mergeMap, take } from 'rxjs/operators';
+import { getTextForLang } from 'src/app/common/commonMethods';
+import { SupportedLangs } from 'src/app/models/enums';
 import { ParticipantDataService } from 'src/app/services/study-data.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
 import { UserService } from 'src/app/services/user.service';
@@ -63,18 +66,23 @@ export class QuestionnaireReaderComponent implements AbstractBaseReaderComponent
     }
 
     get title(): string {
-        return this.isValid ? this.readerMetadata.metadata.title : '';
+        return this.handleText(this.readerMetadata.metadata.title);
     }
 
     get questions(): Question[] {
         return this.isValid ? this.readerMetadata.metadata.questions : [];
     }
 
+    handleText(text: string): string {
+        return getTextForLang(this.translateService.currentLang as SupportedLangs, text);
+    }
+
     constructor(
         private taskManager: TaskManagerService,
         private participantDataService: ParticipantDataService,
         private userService: UserService,
-        private router: Router
+        private router: Router,
+        private translateService: TranslateService
     ) {
         const state = this.router.getCurrentNavigation().extras.state as QuestionnaireNavigationConfig;
 

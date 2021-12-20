@@ -88,3 +88,8 @@ export enum UserResponse {
     GO = 'GO',
     NOGO = 'NOGO',
 }
+
+export interface ITranslationText {
+    en: string;
+    fr: string;
+}
