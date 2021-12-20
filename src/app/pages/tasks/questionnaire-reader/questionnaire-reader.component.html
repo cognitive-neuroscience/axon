@@ -1,6 +1,6 @@
 <div *ngIf="isValid" class="questionnaire-container">
     <h1 class="mat-h1 my-3 title-text">
-        <b>{{ title }}</b>
+        <b>{{ handleText(title) }}</b>
         <hr />
     </h1>
     <div *ngIf="isValid">
@@ -8,15 +8,19 @@
             <ng-container *ngFor="let question of questions">
                 <div [ngSwitch]="question.questionType">
                     <div class="my-5" *ngSwitchCase="'multipleChoiceSelect'">
-                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="question.title"></h2>
-                        <p *ngIf="question.textContent" class="sub-text" [innerHTML]="question.textContent"></p>
+                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
+                        <p
+                            *ngIf="question.textContent"
+                            class="sub-text"
+                            [innerHTML]="handleText(question.textContent)"
+                        ></p>
                         <mat-form-field class="w-50">
-                            <mat-label>{{ question.label }}</mat-label>
+                            <mat-label>{{ handleText(question.label) }}</mat-label>
                             <mat-select [formControlName]="question.key" [multiple]="question.allowMultipleSelections">
                                 <mat-option
                                     *ngFor="let option of question.multipleChoiceOptions"
                                     [value]="option.value"
-                                    >{{ option.label }}</mat-option
+                                    >{{ handleText(option.label) }}</mat-option
                                 >
                             </mat-select>
                             <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')"
@@ -26,8 +30,12 @@
                     </div>
 
                     <div class="my-5" *ngSwitchCase="'radiobuttons'">
-                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="question.title"></h2>
-                        <p *ngIf="question.textContent" class="sub-text" [innerHTML]="question.textContent"></p>
+                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
+                        <p
+                            *ngIf="question.textContent"
+                            class="sub-text"
+                            [innerHTML]="handleText(question.textContent)"
+                        ></p>
                         <br />
                         <mat-radio-group
                             class="{{ question.radiobuttonPresentation }}"
@@ -38,16 +46,20 @@
                                 class="{{ question.radiobuttonPresentation === 'horizontal' ? 'label-above' : '' }}"
                                 [value]="radiobutton.value"
                             >
-                                {{ radiobutton.label }}
+                                {{ handleText(radiobutton.label) }}
                             </mat-radio-button>
                         </mat-radio-group>
                     </div>
 
                     <div class="my-5" *ngSwitchCase="'freeTextResponse'">
-                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="question.title"></h2>
-                        <p *ngIf="question.textContent" class="sub-text" [innerHTML]="question.textContent"></p>
+                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
+                        <p
+                            *ngIf="question.textContent"
+                            class="sub-text"
+                            [innerHTML]="handleText(question.textContent)"
+                        ></p>
                         <mat-form-field class="w-50 d-block">
-                            <mat-label>{{ question.label }}</mat-label>
+                            <mat-label>{{ handleText(question.label) }}</mat-label>
                             <textarea rows="4" [formControlName]="question.key" matInput type="text"></textarea>
                             <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')"
                                 >This is required</mat-error
@@ -56,10 +68,14 @@
                     </div>
 
                     <div class="my-5" *ngSwitchCase="'input'">
-                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="question.title"></h2>
-                        <p *ngIf="question.textContent" class="sub-text" [innerHTML]="question.textContent"></p>
+                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
+                        <p
+                            *ngIf="question.textContent"
+                            class="sub-text"
+                            [innerHTML]="handleText(question.textContent)"
+                        ></p>
                         <mat-form-field class="w-50 d-block">
-                            <mat-label>{{ question.label }}</mat-label>
+                            <mat-label>{{ handleText(question.label) }}</mat-label>
                             <input
                                 matInput
                                 [formControlName]="question.key"
@@ -79,8 +95,12 @@
 
                     <div class="slider-container" *ngSwitchCase="'slider'">
                         <div class="w-75">
-                            <h2 *ngIf="question.title" class="title-text" [innerHTML]="question.title"></h2>
-                            <p *ngIf="question.textContent" class="sub-text" [innerHTML]="question.textContent"></p>
+                            <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
+                            <p
+                                *ngIf="question.textContent"
+                                class="sub-text"
+                                [innerHTML]="handleText(question.textContent)"
+                            ></p>
                             <div class="w-75 d-block">
                                 <app-slider
                                     [marks]="getSliderMarks(question.legend)"
@@ -96,8 +116,12 @@
                     </div>
 
                     <div class="my-5" *ngSwitchCase="'displayText'">
-                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="question.title"></h2>
-                        <p *ngIf="question.textContent" class="sub-text" [innerHTML]="question.textContent"></p>
+                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
+                        <p
+                            *ngIf="question.textContent"
+                            class="sub-text"
+                            [innerHTML]="handleText(question.textContent)"
+                        ></p>
                     </div>
 
                     <div class="my-5" *ngSwitchCase="'divider'">
