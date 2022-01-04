@@ -1,42 +1,47 @@
-<div *ngIf="readerMetadata && readerMetadata.metadata" class="container-fluid scrollable p-5">
+<div *ngIf="readerMetadata && readerMetadata.metadata" class="scrollable p-5 consent-container">
     <div class="image">
-        <img [src]="readerMetadata.metadata?.img" alt="Organizations" />
+        <img [src]="imgPath" alt="Organizations" />
     </div>
 
     <div class="title my-4">
         <h2 class="mat-h2">
-            <b>{{ readerMetadata.metadata?.title }}</b>
+            <b>{{ title }}</b>
         </h2>
     </div>
 
     <div class="summary">
-        <ng-container *ngFor="let block of readerMetadata.metadata?.summary">
+        <ng-container *ngFor="let block of readerMetadata.metadata.summary">
             <p>
-                <b>{{ block.caption }}&nbsp;</b>
-                <span class="my-1" *ngFor="let wordBlock of block.words">{{ wordBlock }}</span>
+                <b>{{ getTextForLang(block.caption) }}&nbsp;</b>
+                <span class="my-1" *ngFor="let wordBlock of block.words">{{ getTextForLang(wordBlock) }}</span>
             </p>
         </ng-container>
     </div>
 
     <div class="secondTitle">
         <p>
-            <b>{{ readerMetadata.metadata?.secondTitle }}</b>
+            <b>{{ secondTitle }}</b>
         </p>
     </div>
 
     <div class="body">
         <div class="my-4" *ngFor="let block of readerMetadata.metadata?.body">
             <h4>
-                <b>{{ block.caption }}</b>
+                <b>{{ getTextForLang(block.caption) }}</b>
             </h4>
             <ng-container *ngFor="let wordblock of block.words">
-                <p class="my-1" [innerHTML]="wordblock"></p>
+                <p
+                    class="{{ wordblock.indent ? 'indent-' + wordblock.indent : '' }} {{
+                        wordblock.en === '' && wordblock.fr === '' ? 'my-4' : 'my-1'
+                    }}"
+                    [innerHTML]="getTextForLang(wordblock)"
+                ></p>
             </ng-container>
         </div>
     </div>
 
     <div class="endMessage my-4">
-        <span>{{ readerMetadata.metadata?.endMessage }}</span>
+        <span>{{ endMessage }}</span>
     </div>
 
     <div align="center" class="bottom-button-bar">
@@ -45,8 +50,8 @@
                 <button mat-raised-button color="warn" (click)="onSubmit(false)">
                     {{
                         readerMetadata.metadata?.buttons.reject.text
-                            ? readerMetadata.metadata?.buttons.reject.text
-                            : "DECLINE"
+                            ? getTextForLang(readerMetadata.metadata?.buttons.reject.text)
+                            : 'DECLINE'
                     }}
                     &nbsp;
                     <mat-icon> clear </mat-icon>
@@ -56,8 +61,8 @@
                 <button mat-raised-button color="primary" (click)="onSubmit(true)">
                     {{
                         readerMetadata.metadata?.buttons.accept.text
-                            ? readerMetadata.metadata?.buttons.accept.text
-                            : "ACCEPT"
+                            ? getTextForLang(readerMetadata.metadata?.buttons.accept.text)
+                            : 'ACCEPT'
                     }}
                     &nbsp;
                     <mat-icon> check </mat-icon>

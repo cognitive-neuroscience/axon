@@ -63,7 +63,7 @@ export class ParticipantDashboardComponent implements OnInit {
                 (err) => {
                     console.log(err);
 
-                    console.warn('user has already registered for this study');
+                    console.warn('user may have registered for this study already');
                     this.sessionStorageService.clearSessionStorage();
                 }
             );

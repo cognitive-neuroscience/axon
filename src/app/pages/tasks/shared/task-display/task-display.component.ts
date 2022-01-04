@@ -117,7 +117,7 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
         return getTextForLang(this.translateService.currentLang as SupportedLangs, titleObj);
     }
 
-    prigetTextForLang(textObj: ITranslationText | string): string {
+    getTextForLang(textObj: ITranslationText | string): string {
         let lang = this.translateService.currentLang;
         if (!lang) lang = 'en';
 
