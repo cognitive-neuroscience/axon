@@ -65,7 +65,7 @@ export class ResetPasswordLoginComponent implements OnInit {
             },
             (err) => {
                 this.loaderService.hideLoader();
-                this.snackbarService.openErrorSnackbar(err);
+                this.snackbarService.openErrorSnackbar(err.message);
             }
         );
     }
