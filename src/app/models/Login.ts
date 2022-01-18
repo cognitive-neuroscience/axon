@@ -16,6 +16,7 @@ export class CrowdsourcedUser {
     studyId: number;
     registerDate: string;
     completionCode: string;
+    lang: SupportedLangs;
 }
 
 export class NullTime {
