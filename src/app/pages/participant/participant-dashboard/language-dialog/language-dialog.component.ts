@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-language-dialog',

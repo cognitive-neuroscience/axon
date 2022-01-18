@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map, mergeMap, take } from 'rxjs/operators';
 import { SupportedLangs } from 'src/app/models/enums';
+import { User } from 'src/app/models/Login';
 import { SessionStorageService } from 'src/app/services/sessionStorage.service';
 import { UserService } from 'src/app/services/user.service';
 import { LanguageDialogComponent } from './language-dialog/language-dialog.component';
@@ -22,14 +23,14 @@ export class ParticipantDashboardComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        let studyId: number;
-        studyId = parseInt(this.sessionStorageService.getStudyIdFromSessionStorage());
-
+        const studyId = parseInt(this.sessionStorageService.getStudyIdFromSessionStorage());
         const userHasValueObs = this.userService.userHasValue ? of(null) : this.userService.updateUserAsync();
 
         userHasValueObs
             .pipe(
                 mergeMap((res) => {
+                    // present the user with the choice of lang, save the preference in the db and locally
+                    // Otherwise just use the one that is set if it exists
                     if (this.userService.user.lang === SupportedLangs.NONE) {
                         return this.openLanguageDialog().pipe(
                             mergeMap((lang) => {
@@ -45,13 +46,11 @@ export class ParticipantDashboardComponent implements OnInit {
                     this.translateService.use(this.userService.user.lang);
                     return of(null);
                 }),
-                mergeMap((res) => {
+                mergeMap((_: User | null) => {
+                    // register the participant for the given study saved in session storage if it exists
                     return studyId
                         ? this.userService.registerParticipantForStudy(this.userService.user, studyId)
                         : of(null);
-                }),
-                catchError((err) => {
-                    throw err;
                 }),
                 take(1)
             )

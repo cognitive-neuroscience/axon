@@ -217,17 +217,19 @@ export class UserService implements CanClear {
         return this.http.get<StudyUser[]>(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}/${studyId}`);
     }
 
-    registerCrowdsourcedUser(participantId: string, studyID: number): Observable<HttpResponse<any>> {
+    registerCrowdsourcedUser(participantId: string, studyId: number, lang: SupportedLangs) {
         const crowdsourcedUser: CrowdsourcedUser = {
-            participantId: participantId,
-            studyId: studyID,
+            participantId,
+            studyId,
             registerDate: this.timerService.getCurrentTimestamp(),
             completionCode: '',
+            lang,
         };
 
-        return this.http.post(`${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}`, crowdsourcedUser, {
-            observe: 'response',
-        });
+        return this.http.post<CrowdsourcedUser>(
+            `${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}`,
+            crowdsourcedUser
+        );
     }
 
     private _getGuests() {
