@@ -11,11 +11,6 @@ export interface InfoDisplayMetadata extends InfoDisplayViewerMetadata {
     buttons?: InfoDisplayButtonConfig;
 }
 
-export interface InfoDisplaySection {
-    header: string;
-    textContent: string;
-}
-
 export interface InfoDisplayButtonConfig {
     displayContinueButton: boolean;
     displayHomeButton: boolean;
@@ -44,10 +39,6 @@ export class InfoDisplayComponent implements AbstractBaseReaderComponent {
 
     get title(): string {
         return this.readerMetadata?.metadata?.title || '';
-    }
-
-    get sections(): InfoDisplaySection[] {
-        return this.readerMetadata?.metadata?.sections || [];
     }
 
     constructor(private taskManager: TaskManagerService, private router: Router, private userService: UserService) {
