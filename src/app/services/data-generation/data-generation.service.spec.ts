@@ -1,26 +1,29 @@
 import { TestBed } from '@angular/core/testing';
+import * as commonMethodModule from 'src/app/common/commonMethods';
 import { ImageService } from '../image.service';
 import { DataGenerationService } from './data-generation.service';
+import { getFaceNameAssociationStimuli } from './raw-data/face-name-association';
 import {
+    FaceNameAssociationTaskTrialtype,
     SARTStimuliSetType,
     SARTTrialType,
-    SmileyFaceStimulus,
     SmileyFaceType,
     StroopStimulus,
 } from './stimuli-models';
 
 describe('Data Generation Service', () => {
     let service: DataGenerationService;
-    let fakeImageService: jasmine.SpyObj<ImageService>;
-    beforeEach(() => {
-        const spy = jasmine.createSpyObj('ImageService', ['loadImagesAsBlobs']);
+    let mockImagesAsBlobsFunc = jest.fn();
 
+    beforeEach(() => {
+        const mockImageService = {
+            loadImagesAsBlobs: mockImagesAsBlobsFunc,
+        };
         TestBed.configureTestingModule({
-            providers: [DataGenerationService, { provide: ImageService, useValue: spy }],
+            providers: [DataGenerationService, { provide: ImageService, useValue: mockImageService }],
         });
 
         service = TestBed.inject(DataGenerationService);
-        fakeImageService = TestBed.inject(ImageService) as jasmine.SpyObj<ImageService>;
     });
 
     it('should be instantiated', () => {
@@ -100,6 +103,35 @@ describe('Data Generation Service', () => {
                     ? expect(stimulus.trialType).toBe(SARTTrialType.NOGO)
                     : expect(stimulus.trialType).toBe(SARTTrialType.GO);
             });
+        });
+    });
+
+    describe('FaceName Association Stimuli', () => {
+        it('should have equivalent person and correctPerson names', () => {
+            const generatedStimuli = getFaceNameAssociationStimuli('learning-phase');
+            generatedStimuli.forEach((stimulus) => {
+                expect(stimulus.personName).toEqual(stimulus.correctPersonName);
+            });
+        });
+
+        it('should return the same data for intact trial type', () => {
+            const stimuli = getFaceNameAssociationStimuli('learning-phase');
+            jest.spyOn(commonMethodModule, 'shuffle').mockReturnValue(stimuli);
+
+            const generatedStimuli = service.generateFaceNameAssociationTaskStimuli(
+                FaceNameAssociationTaskTrialtype.INTACT
+            );
+            expect(generatedStimuli).toEqual(stimuli);
+        });
+
+        it('should generate the correct stimuli for recombined trial type', () => {
+            const stimuli = getFaceNameAssociationStimuli('learning-phase');
+            jest.spyOn(commonMethodModule, 'shuffle').mockReturnValue(stimuli);
+
+            const generatedStimuli = service.generateFaceNameAssociationTaskStimuli(
+                FaceNameAssociationTaskTrialtype.RECOMBINED
+            );
+            expect(generatedStimuli).toEqual(stimuli);
         });
     });
 });

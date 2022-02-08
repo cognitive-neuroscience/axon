@@ -1,0 +1,21 @@
+<div class="wrapper task-text flex-column-center">
+    <div class="full-box flex-column-center" style="justify-content: space-around">
+        <ng-container *ngIf="showStimulus">
+            <img *ngIf="stimulusShown" class="stimulus" [src]="stimulusShown" alt="Stimulus" />
+        </ng-container>
+
+        <ng-container *ngIf="showStimulus && stimulusShown">
+            <div class="name">
+                {{ currentName }}
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="allowResponse">
+            <div class="name">Is this {{ currentName }}?</div>
+            <div class="response-button-container">
+                <button class="response-button" mat-raised-button color="primary">Yes</button>
+                <button class="response-button" mat-raised-button color="warn">No</button>
+            </div>
+        </ng-container>
+    </div>
+</div>

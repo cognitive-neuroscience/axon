@@ -128,3 +128,16 @@ export enum SARTStimuliSetType {
     ASCENDING = 'ascending',
     RANDOM = 'random',
 }
+
+export class FaceNameAssociationStimulus {
+    personName: string;
+    correctPersonName: string;
+    imageName: string;
+    isFemale: boolean;
+    trialType: FaceNameAssociationTaskTrialtype;
+}
+
+export enum FaceNameAssociationTaskTrialtype {
+    RECOMBINED = 'RECOMBINED',
+    INTACT = 'INTACT',
+}

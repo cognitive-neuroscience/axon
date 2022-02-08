@@ -1,7 +1,7 @@
 import { Component, OnDestroy, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
-import { map, mergeMap, take } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { getRandomNumber } from 'src/app/common/commonMethods';
 import {
     ComponentFactoryService,
@@ -84,7 +84,7 @@ export class TaskPlayerComponent implements OnDestroy {
         private router: Router,
         private snackbarService: SnackbarService
     ) {
-        const navigationConfig = this.router.getCurrentNavigation().extras.state as TaskPlayerNavigationConfig;
+        const navigationConfig = this.router.getCurrentNavigation()?.extras?.state as TaskPlayerNavigationConfig;
         if (navigationConfig) {
             this.handleTaskVariablesAndPlayTask(navigationConfig.metadata, navigationConfig.mode);
         } else {
@@ -190,7 +190,7 @@ export class TaskPlayerComponent implements OnDestroy {
                             this.taskManager.handleErr();
                         }
                     },
-                    (err) => {
+                    (_err) => {
                         this.taskManager.handleErr();
                     }
                 );

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, VirtualTimeScheduler } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Study } from '../models/Study';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { map, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { CanClear } from './clearance.service';
 
 @Injectable({

@@ -5,7 +5,7 @@ import { TaskData } from 'src/app/models/TaskData';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { Navigation } from '../shared/navigation-buttons/navigation-buttons.component';
 import { Playable, IOnComplete } from './playable';
-import { TaskConfig } from './task-player/task-player.component';
+import { ComponentMetadata, TaskConfig } from './task-player/task-player.component';
 declare function setFullScreen(): any;
 
 @Component({ template: '' })
@@ -31,7 +31,7 @@ export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
     }
 
     // task lifecycle part 1: configure metadata and any higher level task configs
-    abstract configure(metadata: any, config?: any);
+    abstract configure(metadata: ComponentMetadata, config?: TaskConfig);
 
     // task lifecycle part 2: setup anything needed by the task and begin the round
     start() {
@@ -42,7 +42,7 @@ export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
     abstract beginRound();
 
     // task lifecycle part 4: handle the user interaction or event that causes the round to move on
-    handleRoundInteraction(any) {
+    handleRoundInteraction(_any: any) {
         this.completeRound();
     }
 

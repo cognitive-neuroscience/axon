@@ -1,16 +1,15 @@
-import { Injectable } from "@angular/core";
-import { SessionStorageService } from "./sessionStorage.service";
-import { StudyService } from "./study.service";
-import { TaskManagerService } from "./task-manager.service";
-import { TaskService } from "./task.service";
-import { UserService } from "./user.service";
+import { Injectable } from '@angular/core';
+import { StudyService } from './study.service';
+import { TaskManagerService } from './task-manager.service';
+import { TaskService } from './task.service';
+import { UserService } from './user.service';
 
 export interface CanClear {
     clearService: () => void;
 }
 
 @Injectable({
-    providedIn: "root",
+    providedIn: 'root',
 })
 export class ClearanceService {
     /**

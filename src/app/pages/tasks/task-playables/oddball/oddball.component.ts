@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { take } from 'rxjs/operators';
 import { getRandomNumber, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { StimuliProvidedType } from 'src/app/models/enums';
-import { Feedback, Key, TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
+import { Key, TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
 import { OddballTaskData } from 'src/app/models/TaskData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
@@ -62,7 +62,7 @@ export class OddballComponent extends AbstractBaseTaskComponent {
      * correct counterbalanced key for the target stimulus and theo ther key for all other stimuli.
      */
 
-    // config variables variables
+    // config variables
     isPractice: boolean = false;
     private maxResponseTime: number;
     private interTrialDelay: number; // In milliseconds
