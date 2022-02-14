@@ -165,6 +165,7 @@ export class FaceNameAssociationTaskData extends TaskData {
     userAnswer: UserResponse;
     actualAnswer: UserResponse;
     isCorrect: boolean;
+    responseTime: number;
 }
 
 export class ParticipantData {

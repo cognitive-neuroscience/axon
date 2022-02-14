@@ -20,6 +20,9 @@ export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
     onComplete: Subject<IOnComplete> = new Subject();
     isDestroyed = false;
 
+    // constants
+    TRANSLATION_PREFIX = `tasks.feedback.`;
+
     // task lifecycle part 0: show loader for 2 seconds (as fixation) and then move onto the task
     constructor(protected loaderService: LoaderService) {
         loaderService.showLoader();

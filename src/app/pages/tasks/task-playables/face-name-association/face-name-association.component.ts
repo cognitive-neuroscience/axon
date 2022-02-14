@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
+import { Component, OnDestroy } from '@angular/core';
+import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { StimuliProvidedType } from 'src/app/models/enums';
-import { UserResponse } from 'src/app/models/InternalDTOs';
-import { FaceNameAssociationTaskData } from 'src/app/models/TaskData';
+import { Feedback, TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
+import { FaceNameAssociationTaskData, TaskSwitchingTaskData } from 'src/app/models/TaskData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import {
     FaceNameAssociationStimulus,
@@ -46,12 +46,13 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
      */
 
     // config variables
-    isPractice: boolean = false;
-    private phase: 'learning-phase' | 'test-phase' = 'learning-phase';
+    isPractice: boolean = true;
+    phase: 'learning-phase' | 'test-phase' = 'learning-phase';
     private maxResponseTime = 10000;
     private stimulusSet = 1;
     private interTrialDelay = 500;
     private durationStimulusPresented = 3000;
+    private durationOfFeedback = 1000;
 
     // high level variables
     taskData: FaceNameAssociationTaskData[];
@@ -65,13 +66,21 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
     allowResponse = false;
     stimulusShown: string | ArrayBuffer = null;
     blobs: { [key: string]: Blob } = {};
+    feedback: string = '';
+    showFeedback: boolean = false;
+
+    YES = UserResponse.YES;
+    NO = UserResponse.NO;
 
     // timers
     maxResponseTimer: any;
-    stimulusPresentedTimer: any;
 
     get currentStimulus(): FaceNameAssociationStimulus {
         return this.stimuli[this.currentStimuliIndex];
+    }
+
+    get currentTrial(): FaceNameAssociationTaskData {
+        return this.taskData[this.taskData.length - 1];
     }
 
     constructor(
@@ -102,7 +111,7 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
         } catch (error) {
             throw new Error('values not defined, cannot start study');
         }
-        this.isPractice = metadata.config.isPractice || true;
+        this.isPractice = metadata.config.isPractice;
         this.stimulusSet = metadata.config.stimulusSet || 1;
         this.interTrialDelay = metadata.config.interTrialDelay || 500;
         this.durationStimulusPresented = metadata.config.durationStimulusPresented || 3000;
@@ -118,7 +127,6 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
 
         if (!this.stimuli) {
             this.stimuli = this.dataGenService.generateFaceNameAssociationTaskStimuli(this.phase);
-
             const fileNames = this.stimuli.map((x) => `/assets/images/stimuli/facenameassociation/${x.imageName}.png`);
             this.imageService.loadImagesAsBlobs(fileNames).subscribe((res) => {
                 res.forEach((blob, index) => {
@@ -129,6 +137,14 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
             });
         } else {
             super.start();
+        }
+    }
+
+    private getActualAnswer(stimulus: FaceNameAssociationStimulus): UserResponse {
+        if (this.phase === 'learning-phase') {
+            return UserResponse.NA;
+        } else {
+            return stimulus.personName === stimulus.correctPersonName ? UserResponse.YES : UserResponse.NO;
         }
     }
 
@@ -143,42 +159,140 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
             userID: this.userID,
             studyId: this.studyId,
             isPractice: this.isPractice,
-            trial: this.trialNum,
+            trial: ++this.trialNum,
             phase: this.phase,
             imagePresented: this.currentStimulus.imageName,
             namePresented: this.currentStimulus.personName,
             actualName: this.currentStimulus.correctPersonName,
             stimulusSet: this.stimulusSet,
             maleFemale: this.currentStimulus.isFemale ? 'female' : 'male',
-            trialType: FaceNameAssociationTaskTrialtype.INTACT,
+            trialType:
+                this.currentStimulus.personName === this.currentStimulus.correctPersonName
+                    ? FaceNameAssociationTaskTrialtype.INTACT
+                    : FaceNameAssociationTaskTrialtype.RECOMBINED,
             userAnswer: UserResponse.NA,
             isCorrect: false,
-            actualAnswer: UserResponse.NA,
+            actualAnswer: this.getActualAnswer(this.currentStimulus),
+            responseTime: 0,
             submitted: this.timerService.getCurrentTimestamp(),
         });
 
-        this.setStimuliUI();
-        console.log('set stimulus');
-
-        this.showStimulus = true;
-        await wait(this.durationStimulusPresented);
-        this.showStimulus = false;
+        if (this.phase === 'learning-phase') {
+            this.setStimuliUI();
+            this.showStimulus = true;
+            await wait(this.durationStimulusPresented);
+            this.showStimulus = false;
+            this.handleRoundInteraction(null);
+        } else {
+            this.setStimuliUI();
+            this.showStimulus = true;
+            this.timerService.startTimer();
+            this.allowResponse = true;
+            this.setMaxResponseTimer(this.maxResponseTime, () => {
+                this.handleRoundInteraction(null);
+                this.allowResponse = false;
+            });
+        }
     }
 
-    private setStimuliUI() {
+    private async setStimuliUI() {
         this.currentName = this.currentStimulus.personName;
-        this.showImage(this.blobs[this.currentStimulus.imageName]);
+        await this.showImage(this.blobs[this.currentStimulus.imageName]);
     }
 
-    completeRound(): void {}
+    private setMaxResponseTimer(delay: number, cbFunc?: () => void) {
+        this.maxResponseTimer = window.setTimeout(() => {
+            if (cbFunc) cbFunc();
+        }, delay);
+    }
 
-    ngOnInit(): void {}
+    private cancelAllTimers() {
+        clearTimeout(this.maxResponseTimer);
+    }
 
-    private showImage(blob: Blob) {
-        const fr = new FileReader();
-        fr.addEventListener('load', () => {
-            this.stimulusShown = fr.result;
+    private isValidResponse(response: UserResponse): boolean {
+        return response === UserResponse.YES || response === UserResponse.NO;
+    }
+
+    handleRoundInteraction(response: UserResponse | null): void {
+        this.showStimulus = false;
+        this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
+        this.cancelAllTimers();
+
+        /**
+         * Either we have reached our max response time or we are in the
+         * learning phase
+         */
+        if (response === null) {
+            if (this.phase === 'test-phase') {
+                this.currentTrial.responseTime = this.maxResponseTime;
+            }
+            this.currentTrial.userAnswer = UserResponse.NA;
+            this.currentTrial.isCorrect = false;
+            super.handleRoundInteraction(null);
+        } else if (this.isValidResponse(response)) {
+            this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
+            this.currentTrial.userAnswer = response;
+            super.handleRoundInteraction(response);
+        }
+    }
+
+    async completeRound() {
+        this.showStimulus = false;
+        this.feedback = '';
+        this.showFeedback = false;
+        this.allowResponse = false;
+
+        switch (this.currentTrial.userAnswer) {
+            case this.currentTrial.actualAnswer:
+                this.currentTrial.isCorrect = true;
+                break;
+            case UserResponse.NA:
+                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}`;
+                break;
+            default:
+                this.currentTrial.isCorrect = false;
+                break;
+        }
+
+        if (
+            this.phase === 'test-phase' &&
+            this.feedback === `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}`
+        ) {
+            this.showFeedback = true;
+            await wait(this.durationOfFeedback);
+            if (this.isDestroyed) return;
+            this.showFeedback = false;
+        }
+        super.completeRound();
+    }
+
+    async decideToRepeat() {
+        // we have reached past the final activity
+        const finishedLastStimulus = this.currentStimuliIndex >= this.stimuli.length - 1;
+
+        if (finishedLastStimulus) {
+            super.decideToRepeat();
+            return;
+        } else {
+            this.currentStimuliIndex++;
+            await wait(this.interTrialDelay);
+            if (this.isDestroyed) return;
+            this.beginRound();
+            return;
+        }
+    }
+
+    private showImage(blob: Blob): Promise<void> {
+        return new Promise((resolve) => {
+            const fr = new FileReader();
+            const handler = () => {
+                this.stimulusShown = fr.result;
+                fr.removeEventListener('load', handler);
+                resolve();
+            };
+            fr.addEventListener('load', handler);
+            fr.readAsDataURL(blob);
         });
-        fr.readAsDataURL(blob);
     }
 }
