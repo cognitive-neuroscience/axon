@@ -35,7 +35,7 @@ export class SendResetPasswordComponent implements OnInit {
                         this.snackbarService.openErrorSnackbar(`there was an error sending an email to ${this.email}`);
                     }
                 },
-                (err) => {
+                (_err) => {
                     this.loaderService.hideLoader();
                     this.snackbarService.openErrorSnackbar(`there was an error sending an email to ${this.email}`);
                 }

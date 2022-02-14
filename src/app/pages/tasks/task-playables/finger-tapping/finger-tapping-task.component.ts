@@ -44,7 +44,7 @@ export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
      * This task is counterbalanced by hand.
      */
 
-    // config variables variables
+    // config variables
     isPractice: boolean = false;
     private maxResponseTime: number;
     private durationFixationPresented: number;

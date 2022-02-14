@@ -42,16 +42,16 @@ export class InfoDisplayComponent implements AbstractBaseReaderComponent {
     }
 
     constructor(private taskManager: TaskManagerService, private router: Router, private userService: UserService) {
-        const state = this.router.getCurrentNavigation().extras.state as InfoDisplayNavigationConfig;
+        const state = this.router.getCurrentNavigation()?.extras?.state as InfoDisplayNavigationConfig;
 
         if (state) {
             this.readerMetadata = state;
-            const incrementIndex = this.readerMetadata.metadata?.shouldIncrementIndex;
+            const incrementIndex = this.readerMetadata?.metadata?.shouldIncrementIndex;
 
             // crowdsourced users cannot take breaks as they do not have accounts and so cannot sign back in.
             // this is a safety check: realistically, crowdsourced users will not be shown info display slides
             if (!this.userService.isCrowdsourcedUser && incrementIndex) {
-                this.taskManager.setTaskAsComplete().subscribe((res) => {});
+                this.taskManager.setTaskAsComplete().subscribe((_res) => {});
             }
         } else {
             this.taskManager.handleErr();
@@ -69,7 +69,7 @@ export class InfoDisplayComponent implements AbstractBaseReaderComponent {
                     (ok) => {
                         ok ? this.taskManager.next() : this.taskManager.handleErr();
                     },
-                    (err) => {
+                    (_err) => {
                         this.taskManager.handleErr();
                     }
                 );

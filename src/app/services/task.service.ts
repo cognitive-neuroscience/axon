@@ -2,10 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Task } from '../models/Task';
-import { AuthService } from './auth.service';
 import { environment } from 'src/environments/environment';
 import { take } from 'rxjs/operators';
-import { TaskNames } from '../models/TaskData';
 import { CanClear } from './clearance.service';
 
 @Injectable({

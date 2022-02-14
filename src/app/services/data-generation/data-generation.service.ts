@@ -34,12 +34,15 @@ import {
     TrailMakingStimulus,
     TrailMakingTrialType,
     SARTTrialType,
+    FaceNameAssociationStimulus,
+    FaceNameAssociationTaskTrialtype,
 } from './stimuli-models';
 import { NBackSet } from './raw-data/nback-data-list';
 import { Color } from 'src/app/models/InternalDTOs';
 import { DemandSelectionImageNames } from './raw-data/demand-selection-image-list';
 import { DigitSpanStimuli } from './raw-data/digit-span-list';
 import { TrailMakingSet } from './raw-data/trail-making-list';
+import { getFaceNameAssociationStimuli } from './raw-data/face-name-association';
 
 @Injectable({
     providedIn: 'root',
@@ -435,5 +438,13 @@ export class DataGenerationService {
             }
         }
         return stimuli;
+    }
+
+    generateFaceNameAssociationTaskStimuli(phase: 'learning-phase' | 'test-phase'): FaceNameAssociationStimulus[] {
+        if (phase === 'learning-phase') {
+            return shuffle(getFaceNameAssociationStimuli('learning-phase'));
+        } else {
+            return shuffle(getFaceNameAssociationStimuli('test-phase'));
+        }
     }
 }

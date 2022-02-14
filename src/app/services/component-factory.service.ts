@@ -14,6 +14,7 @@ import { SelectOptionComponent } from '../pages/tasks/shared/select-option/selec
 import { FingerTappingTaskComponent } from '../pages/tasks/task-playables/finger-tapping/finger-tapping-task.component';
 import { TrailMakingComponent } from '../pages/tasks/task-playables/trail-making/trail-making.component';
 import { SartComponent } from '../pages/tasks/task-playables/sart/sart.component';
+import { FaceNameAssociationComponent } from '../pages/tasks/task-playables/face-name-association/face-name-association.component';
 
 export enum ComponentName {
     // Generic components
@@ -33,6 +34,7 @@ export enum ComponentName {
     FINGER_TAPPING_COMPONENT = 'FINGERTAPPINGCOMPONENT',
     TRAIL_MAKING_COMPONENT = 'TRAILMAKINGCOMPONENT',
     SART_COMPONENT = 'SARTCOMPONENT',
+    FACE_NAME_ASSOCIATION_COMPONENT = 'FACENAMEASSOCIATIONCOMPONENT',
 }
 
 export const GenericComponentsList = [ComponentName.DISPLAY_COMPONENT, ComponentName.SELECT_OPTION_COMPONENT];
@@ -52,6 +54,7 @@ const ComponentMap = {
     [ComponentName.FINGER_TAPPING_COMPONENT]: FingerTappingTaskComponent,
     [ComponentName.TRAIL_MAKING_COMPONENT]: TrailMakingComponent,
     [ComponentName.SART_COMPONENT]: SartComponent,
+    [ComponentName.FACE_NAME_ASSOCIATION_COMPONENT]: FaceNameAssociationComponent,
 };
 
 @Injectable({

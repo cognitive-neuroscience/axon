@@ -1,0 +1,31 @@
+<div class="wrapper task-text flex-column-center">
+    <div class="full-box flex-column-center" style="justify-content: space-around">
+        <ng-container *ngIf="showStimulus">
+            <img *ngIf="stimulusShown" class="stimulus" [src]="stimulusShown" alt="Stimulus" />
+        </ng-container>
+
+        <ng-container *ngIf="showStimulus && stimulusShown && phase !== 'test-phase'">
+            <div class="name">
+                {{ currentName }}
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="allowResponse && stimulusShown">
+            <div class="name">Is this {{ currentName }}?</div>
+            <div class="response-button-container">
+                <button (click)="handleRoundInteraction(YES)" class="response-button" mat-raised-button color="primary">
+                    Yes
+                </button>
+                <button (click)="handleRoundInteraction(NO)" class="response-button" mat-raised-button color="warn">
+                    No
+                </button>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="showFeedback">
+            <div class="feedback">
+                {{ feedback | translate }}
+            </div>
+        </ng-container>
+    </div>
+</div>

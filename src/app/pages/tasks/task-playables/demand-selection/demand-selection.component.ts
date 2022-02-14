@@ -223,7 +223,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
     }
 
     // 2. mouse hovers over the bullseye so we hide it and show the patches
-    onHoverFixation(event) {
+    onHoverFixation(_event) {
         this.clearHelpMessage();
         this.timerService.startTimer();
         this.showFixation = false;
@@ -238,7 +238,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
     }
 
     // 3. mouse hovers over a patch so we show the numbers and accept responses
-    onHoverPatch(event, patch: 'firstPatch' | 'secondPatch') {
+    onHoverPatch(_event, patch: 'firstPatch' | 'secondPatch') {
         this.clearHelpMessage();
         this.showDigit = true;
         let actualAnswer: UserResponse;

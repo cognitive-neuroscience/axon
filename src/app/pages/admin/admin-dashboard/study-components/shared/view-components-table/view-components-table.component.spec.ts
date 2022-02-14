@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MaterialModule } from 'src/app/modules/material/material.module';
 
 import { ViewComponentsTableComponent } from './view-components-table.component';
 
@@ -9,6 +10,7 @@ describe('ViewComponentsTableComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [ViewComponentsTableComponent],
+            imports: [MaterialModule],
         }).compileComponents();
     });
 

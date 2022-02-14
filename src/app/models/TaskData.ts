@@ -3,7 +3,12 @@ import { RatingTaskCounterBalance } from '../pages/tasks/task-playables/everyday
 import { SmileyFaceTaskCounterbalance } from '../pages/tasks/task-playables/smiley-face/smiley-face.component';
 import { Key, UserResponse } from './InternalDTOs';
 import { ParticipantType } from './enums';
-import { SARTStimuliSetType, SARTTrialType, SmileyFaceType } from '../services/data-generation/stimuli-models';
+import {
+    FaceNameAssociationTaskTrialtype,
+    SARTStimuliSetType,
+    SARTTrialType,
+    SmileyFaceType,
+} from '../services/data-generation/stimuli-models';
 
 export enum TaskNames {
     ODDBALL = 'oddball',
@@ -146,6 +151,21 @@ export class SARTTaskData extends TaskData {
     actualAnswer: SARTTrialType;
     responseTime: number;
     isCorrect: boolean;
+}
+
+export class FaceNameAssociationTaskData extends TaskData {
+    isPractice: boolean;
+    phase: 'learning-phase' | 'test-phase';
+    imagePresented: string;
+    namePresented: string;
+    actualName: string;
+    stimulusSet: number;
+    maleFemale: 'male' | 'female';
+    trialType: FaceNameAssociationTaskTrialtype;
+    userAnswer: UserResponse;
+    actualAnswer: UserResponse;
+    isCorrect: boolean;
+    responseTime: number;
 }
 
 export class ParticipantData {
