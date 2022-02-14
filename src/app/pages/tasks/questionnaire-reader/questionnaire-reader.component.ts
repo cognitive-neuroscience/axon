@@ -84,7 +84,7 @@ export class QuestionnaireReaderComponent implements AbstractBaseReaderComponent
         private router: Router,
         private translateService: TranslateService
     ) {
-        const state = this.router.getCurrentNavigation().extras.state as QuestionnaireNavigationConfig;
+        const state = this.router.getCurrentNavigation()?.extras?.state as QuestionnaireNavigationConfig;
 
         if (state) {
             this.readerMetadata = state;
@@ -202,7 +202,7 @@ export class QuestionnaireReaderComponent implements AbstractBaseReaderComponent
                         this.taskManager.handleErr();
                     }
                 },
-                (err) => {
+                (_err) => {
                     this.taskManager.handleErr();
                 }
             );

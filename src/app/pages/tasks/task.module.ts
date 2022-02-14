@@ -36,6 +36,7 @@ import { SharedModule } from '../shared/shared.module';
 import { InfoDisplayComponent } from './info-display/info-display.component';
 import { SartComponent } from './task-playables/sart/sart.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { FaceNameAssociationComponent } from './task-playables/face-name-association/face-name-association.component';
 
 @NgModule({
     declarations: [
@@ -78,6 +79,7 @@ import { TranslateModule } from '@ngx-translate/core';
         ConfirmDoneDialogComponent,
         ConsentPageComponent,
         SartComponent,
+        FaceNameAssociationComponent,
     ],
     imports: [
         CommonModule,

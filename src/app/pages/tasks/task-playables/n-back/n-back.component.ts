@@ -226,25 +226,27 @@ export class NBackComponent extends AbstractBaseTaskComponent {
         this.showStimulus = false;
         this.showFixation = false;
         this.responseAllowed = false;
-        const prefix = `tasks.feedback.`;
 
         switch (this.currentTrial.userAnswer) {
             case this.currentTrial.actualAnswer:
-                this.feedback = `${prefix}${TranslatedFeedback.CORRECT}`;
+                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.CORRECT}`;
                 this.currentTrial.isCorrect = true;
                 this.currentTrial.score = 10;
                 break;
             case UserResponse.NA:
-                this.feedback = `${prefix}${TranslatedFeedback.TOOSLOW}`;
+                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}`;
                 break;
             default:
-                this.feedback = `${prefix}${TranslatedFeedback.INCORRECT}`;
+                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.INCORRECT}`;
                 this.currentTrial.isCorrect = false;
                 this.currentTrial.score = 0;
                 break;
         }
 
-        if (this.showFeedbackAfterEachTrial || this.feedback === `${prefix}${TranslatedFeedback.TOOSLOW}`) {
+        if (
+            this.showFeedbackAfterEachTrial ||
+            this.feedback === `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}`
+        ) {
             this.showFeedback = true;
             await wait(this.durationOfFeedback);
             if (this.isDestroyed) return;

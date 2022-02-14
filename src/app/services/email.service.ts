@@ -1,14 +1,14 @@
-import { HttpClient, HttpResponse } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
-import { map, take, tap } from "rxjs/operators";
-import { environment } from "src/environments/environment";
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
-    providedIn: "root",
+    providedIn: 'root',
 })
 export class EmailService {
-    private readonly RESOURCE_PATH = "/email";
+    private readonly RESOURCE_PATH = '/email';
 
     constructor(private http: HttpClient) {}
 
@@ -17,7 +17,7 @@ export class EmailService {
             .post<HttpResponse<any>>(
                 `${environment.apiBaseURL}${this.RESOURCE_PATH}`,
                 { email: email },
-                { observe: "response" }
+                { observe: 'response' }
             )
             .pipe(
                 map((res) => res.ok),

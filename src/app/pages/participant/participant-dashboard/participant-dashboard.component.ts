@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
-import { catchError, map, mergeMap, take } from 'rxjs/operators';
+import { mergeMap, take } from 'rxjs/operators';
 import { SupportedLangs } from 'src/app/models/enums';
 import { User } from 'src/app/models/Login';
 import { SessionStorageService } from 'src/app/services/sessionStorage.service';
@@ -28,7 +28,7 @@ export class ParticipantDashboardComponent implements OnInit {
 
         userHasValueObs
             .pipe(
-                mergeMap((res) => {
+                mergeMap((_res) => {
                     // present the user with the choice of lang, save the preference in the db and locally
                     // Otherwise just use the one that is set if it exists
                     if (this.userService.user.lang === SupportedLangs.NONE) {
@@ -40,7 +40,7 @@ export class ParticipantDashboardComponent implements OnInit {
                                     lang: lang,
                                 });
                             }),
-                            mergeMap((res) => this.userService.updateUserAsync())
+                            mergeMap((_res) => this.userService.updateUserAsync())
                         );
                     }
                     this.translateService.use(this.userService.user.lang);
@@ -55,7 +55,7 @@ export class ParticipantDashboardComponent implements OnInit {
                 take(1)
             )
             .subscribe(
-                (res) => {
+                (_res) => {
                     this.sessionStorageService.clearSessionStorage();
                     this.userService.updateStudyUsers();
                 },

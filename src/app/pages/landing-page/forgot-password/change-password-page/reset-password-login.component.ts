@@ -58,7 +58,7 @@ export class ResetPasswordLoginComponent implements OnInit {
         this.loaderService.showLoader();
 
         this.userService.changePassword(email, temporaryPassword, password).subscribe(
-            (res) => {
+            (_res) => {
                 this.loaderService.hideLoader();
                 this.snackbarService.openSuccessSnackbar('password successfully changed, please log in');
                 this.router.navigate([`${RouteNames.LANDINGPAGE_LOGIN_BASEROUTE}`]);

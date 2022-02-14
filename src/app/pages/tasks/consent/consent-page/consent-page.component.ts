@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { take } from 'rxjs/operators';
-import { AdminRouteNames, ParticipantRouteNames, RouteNames } from 'src/app/models/enums';
+import { AdminRouteNames, ParticipantRouteNames } from 'src/app/models/enums';
 import { ConsentNavigationConfig } from 'src/app/pages/shared/consent-component/consent-reader.component';
 import { ConfirmationService } from 'src/app/services/confirmation/confirmation.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
@@ -18,7 +18,7 @@ export class ConsentPageComponent implements OnInit {
         private taskManager: TaskManagerService,
         private router: Router
     ) {
-        const params = this.router.getCurrentNavigation().extras.state as ConsentNavigationConfig;
+        const params = this.router.getCurrentNavigation()?.extras?.state as ConsentNavigationConfig;
         this.data = params;
     }
 

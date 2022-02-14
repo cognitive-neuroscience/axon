@@ -81,7 +81,7 @@ export class TaskManagerService implements CanClear {
                         this.showConsent(task);
                     }
                 },
-                (err) => {
+                (_err) => {
                     this.handleErr();
                 }
             );
@@ -205,7 +205,7 @@ export class TaskManagerService implements CanClear {
                     (completionCode: string) => {
                         this._routeToFinalPage(completionCode);
                     },
-                    (err) => {
+                    (_err) => {
                         this.handleErr();
                     }
                 );

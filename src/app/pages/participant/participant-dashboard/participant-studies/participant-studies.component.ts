@@ -101,7 +101,7 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
                 })
             )
             .subscribe(
-                (res) => {
+                (_res) => {
                     this.userService.updateStudyUsers();
                 },
                 (err) => {

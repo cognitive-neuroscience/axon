@@ -53,7 +53,7 @@ export class StudyBackgroundComponent implements OnInit, OnDestroy {
                                     Object.keys(task.body.config).length === 0 ? null : task.body.config;
                             }
                         },
-                        (err) => {
+                        (_err) => {
                             this.loader.hideLoader();
                             this.router.navigate([`${RouteNames.LANDINGPAGE_NOTFOUND}`]);
                         }
