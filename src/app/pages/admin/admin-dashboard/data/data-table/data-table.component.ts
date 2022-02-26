@@ -34,10 +34,23 @@ export class DataTableComponent implements OnInit, AfterViewInit {
 
     private _tableData: DataTableFormat[];
     dataSource: MatTableDataSource<DataTableFormat>;
+
+    private _columns: string[];
+
     @Input() set tableData(jsonInput: DataTableFormat[]) {
         if (jsonInput) {
             this.dataSource.data = jsonInput;
             this._tableData = jsonInput;
+
+            const set = new Set<string>();
+
+            jsonInput.forEach((item) => {
+                for (const prop in item.fields) {
+                    set.add(prop);
+                }
+            });
+
+            this._columns = [...set];
         }
     }
 
@@ -48,11 +61,7 @@ export class DataTableComponent implements OnInit, AfterViewInit {
     }
 
     get columnsToDisplay(): string[] {
-        if (this.isValid()) {
-            return this.tableData[0] ? Object.keys(this.tableData[0].fields) : [];
-        } else {
-            return [];
-        }
+        return this.isValid() ? this._columns : [];
     }
 
     expandableColumnsToDisplay(expandable: { [key: string]: any }[]): string[] {
