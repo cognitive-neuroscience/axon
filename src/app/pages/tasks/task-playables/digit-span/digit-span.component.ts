@@ -332,4 +332,8 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
             return;
         }
     }
+
+    ngOnDestroy(): void {
+        super.ngOnDestroy();
+    }
 }
