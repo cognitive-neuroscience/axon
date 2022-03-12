@@ -173,20 +173,27 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
         this.showKeypad = true;
         this.responseAllowed = true;
 
-        this.showHelpMessage('Please enter your response', this.delayToShowHelpMessage, this.durationHelpMessageShown);
+        this.setTimer(this.delayToShowHelpMessage, () => {
+            if (this.isDestroyed) return;
+            this.snackbarService.openInfoSnackbar(
+                'Please enter your response',
+                undefined,
+                this.durationHelpMessageShown
+            );
+        });
 
         this.setTimer(this.maxResponseTime, async () => {
-            if (!this.isDestroyed) {
-                this.responseAllowed = false;
-                this.showStimulus = false;
-                this.showKeypad = false;
-                const message = 'Please do your best to provide your answer in the time allotted for the next trial.';
-                this.snackbarService.openInfoSnackbar(message, undefined, this.durationHelpMessageShown);
-                await wait(this.durationHelpMessageShown);
-                if (this.isDestroyed) return;
+            if (this.isDestroyed) return;
 
-                this.handleRoundInteraction(null);
-            }
+            this.responseAllowed = false;
+            this.showStimulus = false;
+            this.showKeypad = false;
+            const message = 'Please do your best to provide your answer in the time allotted for the next trial.';
+            this.snackbarService.openInfoSnackbar(message, undefined, this.durationHelpMessageShown, 'center');
+            await wait(this.durationHelpMessageShown);
+            if (this.isDestroyed) return;
+
+            this.handleRoundInteraction(null);
         });
     }
 
@@ -217,12 +224,6 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
         let str = '';
         arr.forEach((x) => (str = `${str}${x} `));
         return str.slice(0, str.length - 1);
-    }
-
-    private showHelpMessage(helpMessage: string, delay: number, duration: number) {
-        this.snackbarTimeout = window.setTimeout(() => {
-            if (!this.isDestroyed) this.snackbarService.openInfoSnackbar(helpMessage, undefined, duration, 'center');
-        }, delay);
     }
 
     private setTimer(delay: number, cbFunc?: () => void) {
@@ -330,15 +331,5 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
             this.beginRound();
             return;
         }
-    }
-
-    // maxResponseTime: number = 30000; // 30 seconds
-    // durationOfFeedback: number = 1000; // In milliseconds
-    // interTrialDelay: number = 1000; // In milliseconds
-    // delayToShowHelpMessage: number = 20000;
-    // durationHelpMessageShown: number = 4000;
-
-    ngOnDestroy() {
-        this.cancelAllTimers();
     }
 }
