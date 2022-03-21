@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -57,9 +57,10 @@ export class QuestionnaireNavigationConfig {
     templateUrl: './questionnaire-reader.component.html',
     styleUrls: ['./questionnaire-reader.component.scss'],
 })
-export class QuestionnaireReaderComponent implements AbstractBaseReaderComponent {
+export class QuestionnaireReaderComponent implements AbstractBaseReaderComponent, OnInit {
     readerMetadata: QuestionnaireNavigationConfig;
     questionnaire: FormGroup;
+    wasClicked = false;
 
     get isValid(): boolean {
         return this.readerMetadata?.metadata?.questions?.length > 0;
@@ -71,6 +72,10 @@ export class QuestionnaireReaderComponent implements AbstractBaseReaderComponent
 
     get questions(): Question[] {
         return this.isValid ? this.readerMetadata.metadata.questions : [];
+    }
+
+    ngOnInit(): void {
+        this.wasClicked = false;
     }
 
     handleText(text: string): string {
@@ -165,46 +170,51 @@ export class QuestionnaireReaderComponent implements AbstractBaseReaderComponent
     }
 
     onSubmit() {
-        const questionaireResponse = {};
-        Object.keys(this.questionnaire.controls).forEach((key) => {
-            const value = this.questionnaire.controls[key].value;
-            const isArray = Array.isArray(this.questionnaire.controls[key].value);
-            const reducer = (acc: string, currVal: string, currIndex: number) =>
-                currIndex === 0 ? currVal : `${acc}, ${currVal}`;
+        if (!this.wasClicked) {
+            this.wasClicked = true;
+            const questionaireResponse = {};
+            Object.keys(this.questionnaire.controls).forEach((key) => {
+                const value = this.questionnaire.controls[key].value;
+                const isArray = Array.isArray(this.questionnaire.controls[key].value);
+                const reducer = (acc: string, currVal: string, currIndex: number) =>
+                    currIndex === 0 ? currVal : `${acc}, ${currVal}`;
 
-            questionaireResponse[key] = isArray ? (value as string[]).reduce(reducer, '') : value;
-        });
+                questionaireResponse[key] = isArray ? (value as string[]).reduce(reducer, '') : value;
+            });
 
-        this.participantDataService
-            .uploadTaskData(
-                this.userService.isCrowdsourcedUser
-                    ? this.userService.user?.email
-                    : this.userService.user?.id.toString(),
-                this.taskManager.currentStudyTask.studyId,
-                this.taskManager.currentStudyTask.taskOrder,
-                this.userService.isCrowdsourcedUser,
-                [questionaireResponse]
-            )
-            .pipe(
-                mergeMap((res) => {
-                    if (res.ok) {
-                        return this.userService.isCrowdsourcedUser ? of(true) : this.taskManager.setTaskAsComplete();
-                    }
-                    return of(false);
-                }),
-                take(1)
-            )
-            .subscribe(
-                (res) => {
-                    if (res) {
-                        this.taskManager.next();
-                    } else {
+            this.participantDataService
+                .uploadTaskData(
+                    this.userService.isCrowdsourcedUser
+                        ? this.userService.user?.email
+                        : this.userService.user?.id.toString(),
+                    this.taskManager.currentStudyTask.studyId,
+                    this.taskManager.currentStudyTask.taskOrder,
+                    this.userService.isCrowdsourcedUser,
+                    [questionaireResponse]
+                )
+                .pipe(
+                    mergeMap((res) => {
+                        if (res.ok) {
+                            return this.userService.isCrowdsourcedUser
+                                ? of(true)
+                                : this.taskManager.setTaskAsComplete();
+                        }
+                        return of(false);
+                    }),
+                    take(1)
+                )
+                .subscribe(
+                    (res) => {
+                        if (res) {
+                            this.taskManager.next();
+                        } else {
+                            this.taskManager.handleErr();
+                        }
+                    },
+                    (_err) => {
                         this.taskManager.handleErr();
                     }
-                },
-                (_err) => {
-                    this.taskManager.handleErr();
-                }
-            );
+                );
+        }
     }
 }

@@ -142,7 +142,7 @@
             <button
                 (click)="onSubmit()"
                 class="w-25 mb-5"
-                [disabled]="!questionnaire.valid || readerMetadata.mode === 'test'"
+                [disabled]="!questionnaire.valid || readerMetadata.mode === 'test' || wasClicked"
                 color="primary"
                 mat-raised-button
             >
