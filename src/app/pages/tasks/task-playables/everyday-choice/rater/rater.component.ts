@@ -5,7 +5,7 @@ import { throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { RatingTaskStimuli } from 'src/app/services/data-generation/stimuli-models';
 import { AbstractBaseTaskComponent } from '../../base-task';
-import { TaskConfig } from '../../task-player/task-player.component';
+import { TaskPlayerState } from '../../task-player/task-player.component';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { NzMarks } from 'ng-zorro-antd/slider';
 import { ComponentName } from 'src/app/services/component-factory.service';
@@ -19,8 +19,8 @@ export enum RatingTaskCounterBalance {
 }
 
 export interface RaterTaskMetadata {
-    component: ComponentName;
-    config: {
+    componentName: ComponentName;
+    componentConfig: {
         isPractice: boolean;
         maxResponseTime: number;
         interTrialDelay: number;
@@ -91,7 +91,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         return this.stimuli[this.currentStimuliIndex];
     }
 
-    configure(metadata: RaterTaskMetadata, config: TaskConfig) {
+    configure(metadata: RaterTaskMetadata, config: TaskPlayerState) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
             this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
@@ -100,20 +100,20 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         }
 
         this.config = config;
-        this.isPractice = metadata.config.isPractice || false;
-        this.maxResponseTime = metadata.config.maxResponseTime || undefined;
-        this.interTrialDelay = metadata.config.interTrialDelay || 0;
-        this.interActivityDelay = metadata.config.interActivityDelay || 0;
-        this.delayToShowHelpMessage = metadata.config.delayToShowHelpMessage || undefined;
-        this.durationHelpMessageShown = metadata.config.durationHelpMessageShown || undefined;
-        this.delayToShowRatingSlider = metadata.config.delayToShowRatingSlider || 0;
-        this.durationOutOftimeMessageShown = metadata.config.durationOutOftimeMessageShown || undefined;
-        this.numDoSomethingActivities = metadata.config.numDoSomethingActivities;
+        this.isPractice = metadata.componentConfig.isPractice || false;
+        this.maxResponseTime = metadata.componentConfig.maxResponseTime || undefined;
+        this.interTrialDelay = metadata.componentConfig.interTrialDelay || 0;
+        this.interActivityDelay = metadata.componentConfig.interActivityDelay || 0;
+        this.delayToShowHelpMessage = metadata.componentConfig.delayToShowHelpMessage || undefined;
+        this.durationHelpMessageShown = metadata.componentConfig.durationHelpMessageShown || undefined;
+        this.delayToShowRatingSlider = metadata.componentConfig.delayToShowRatingSlider || 0;
+        this.durationOutOftimeMessageShown = metadata.componentConfig.durationOutOftimeMessageShown || undefined;
+        this.numDoSomethingActivities = metadata.componentConfig.numDoSomethingActivities;
 
         this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as RatingTaskCounterBalance;
 
-        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
-            this.stimuli = metadata.config.stimuliConfig.stimuli;
+        if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
     }
 
     constructor(

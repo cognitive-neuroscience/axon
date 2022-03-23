@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { NzMarks } from 'ng-zorro-antd/slider';
-import { of } from 'rxjs';
-import { mergeMap, take } from 'rxjs/operators';
-import { getTextForLang } from 'src/app/common/commonMethods';
+import { getTextForLang, throwErrIfNotDefined } from 'src/app/common/commonMethods';
 import { SupportedLangs } from 'src/app/models/enums';
-import { ParticipantDataService } from 'src/app/services/study-data.service';
+import { ComponentName } from 'src/app/services/component-factory.service';
+import { LoaderService } from 'src/app/services/loader/loader.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
-import { UserService } from 'src/app/services/user.service';
-import { AbstractBaseReaderComponent } from '../shared/base-reader';
+import { TaskPlayerState } from '../task-player/task-player.component';
+import { Playable, IOnComplete } from '../playable';
+import { Subject } from 'rxjs';
+import { Navigation } from '../../shared/navigation-buttons/navigation-buttons.component';
 
 class Question {
     questionType:
@@ -42,73 +42,68 @@ class Question {
     }[];
 }
 
-class QuestionnaireMetadata {
-    title: string;
-    questions: Question[];
-}
-
-export class QuestionnaireNavigationConfig {
-    metadata: QuestionnaireMetadata;
-    mode: 'test' | 'actual';
+interface QuestionnaireMetadata {
+    componentName: ComponentName;
+    componentConfig: {
+        title: string;
+        questions: Question[];
+    };
 }
 
 @Component({
-    selector: 'app-questionnaire-reader',
-    templateUrl: './questionnaire-reader.component.html',
-    styleUrls: ['./questionnaire-reader.component.scss'],
+    selector: 'app-questionnaire',
+    templateUrl: './questionnaire.component.html',
+    styleUrls: ['./questionnaire.component.scss'],
 })
-export class QuestionnaireReaderComponent implements AbstractBaseReaderComponent, OnInit {
-    readerMetadata: QuestionnaireNavigationConfig;
+export class QuestionnaireComponent implements Playable, OnDestroy {
+    metadata: QuestionnaireMetadata;
     questionnaire: FormGroup;
     wasClicked = false;
+    isVisible = false;
+    taskData: any[];
 
-    get isValid(): boolean {
-        return this.readerMetadata?.metadata?.questions?.length > 0;
+    constructor(
+        protected loaderService: LoaderService,
+        private translateService: TranslateService,
+        private taskManager: TaskManagerService
+    ) {}
+
+    onComplete: Subject<IOnComplete> = new Subject<{ navigation: Navigation; taskData: any[] }>();
+
+    handleComplete(nav: Navigation, data?: any[]): void {
+        this.onComplete.next({ navigation: nav, taskData: data });
     }
 
-    get title(): string {
-        return this.handleText(this.readerMetadata.metadata.title);
+    afterInit(): void {}
+
+    configure(metadata: QuestionnaireMetadata, config?: TaskPlayerState) {
+        this.metadata = metadata;
+        if (!this.keysExistAndAreUnique(this.metadata)) {
+            this.taskManager.handleErr();
+        } else {
+            this.questionnaire = this.getFormGroup(this.metadata);
+            this.taskData = [];
+            this.isVisible = true;
+        }
     }
 
     get questions(): Question[] {
-        return this.isValid ? this.readerMetadata.metadata.questions : [];
+        return this.metadata?.componentConfig?.questions || [];
     }
 
-    ngOnInit(): void {
-        this.wasClicked = false;
+    get title(): string {
+        return this.handleText(this.metadata?.componentConfig?.title);
     }
 
     handleText(text: string): string {
         return getTextForLang(this.translateService.currentLang as SupportedLangs, text);
     }
 
-    constructor(
-        private taskManager: TaskManagerService,
-        private participantDataService: ParticipantDataService,
-        private userService: UserService,
-        private router: Router,
-        private translateService: TranslateService
-    ) {
-        const state = this.router.getCurrentNavigation()?.extras?.state as QuestionnaireNavigationConfig;
-
-        if (state) {
-            this.readerMetadata = state;
-
-            if (!this.keysExistAndAreUnique(this.readerMetadata.metadata)) {
-                this.taskManager.handleErr();
-            } else {
-                this.questionnaire = this.getFormGroup(this.readerMetadata.metadata);
-            }
-        } else {
-            this.taskManager.handleErr();
-        }
-    }
-
     getFormGroup(metadata: QuestionnaireMetadata): FormGroup {
         const formGroup: {
             [key: string]: FormControl;
         } = {};
-        metadata.questions.forEach((question) => {
+        metadata.componentConfig.questions.forEach((question) => {
             if (question.questionType !== 'divider' && question.questionType !== 'displayText') {
                 // extensible for later if we want to add other validators
                 let validatorFnArr: ValidatorFn[] = [];
@@ -135,7 +130,7 @@ export class QuestionnaireReaderComponent implements AbstractBaseReaderComponent
     private keysExistAndAreUnique(metadata: QuestionnaireMetadata): boolean {
         const keysMap: { [key: string]: boolean } = {};
 
-        metadata.questions.forEach((question) => {
+        metadata.componentConfig.questions.forEach((question) => {
             if (question.questionType !== 'freeTextResponse' && question.questionType !== 'divider') {
                 if (question.key === '' || question.key === undefined) return false;
 
@@ -176,45 +171,23 @@ export class QuestionnaireReaderComponent implements AbstractBaseReaderComponent
             Object.keys(this.questionnaire.controls).forEach((key) => {
                 const value = this.questionnaire.controls[key].value;
                 const isArray = Array.isArray(this.questionnaire.controls[key].value);
+                // for multi select, reduce array to a string with all selected options
                 const reducer = (acc: string, currVal: string, currIndex: number) =>
                     currIndex === 0 ? currVal : `${acc}, ${currVal}`;
 
                 questionaireResponse[key] = isArray ? (value as string[]).reduce(reducer, '') : value;
             });
 
-            this.participantDataService
-                .uploadTaskData(
-                    this.userService.isCrowdsourcedUser
-                        ? this.userService.user?.email
-                        : this.userService.user?.id.toString(),
-                    this.taskManager.currentStudyTask.studyId,
-                    this.taskManager.currentStudyTask.taskOrder,
-                    this.userService.isCrowdsourcedUser,
-                    [questionaireResponse]
-                )
-                .pipe(
-                    mergeMap((res) => {
-                        if (res.ok) {
-                            return this.userService.isCrowdsourcedUser
-                                ? of(true)
-                                : this.taskManager.setTaskAsComplete();
-                        }
-                        return of(false);
-                    }),
-                    take(1)
-                )
-                .subscribe(
-                    (res) => {
-                        if (res) {
-                            this.taskManager.next();
-                        } else {
-                            this.taskManager.handleErr();
-                        }
-                    },
-                    (_err) => {
-                        this.taskManager.handleErr();
-                    }
-                );
+            // override typecheck for questionnaire response
+            this.taskData.push({
+                ...(questionaireResponse as any),
+            });
+
+            this.handleComplete(Navigation.NEXT, this.taskData);
         }
+    }
+
+    ngOnDestroy(): void {
+        this.onComplete.complete();
     }
 }

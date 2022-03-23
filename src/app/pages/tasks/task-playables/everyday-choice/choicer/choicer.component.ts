@@ -10,12 +10,12 @@ import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../../base-task';
-import { TaskConfig } from '../../task-player/task-player.component';
+import { TaskPlayerState } from '../../task-player/task-player.component';
 import { RaterCache, RatingTaskCounterBalance } from '../rater/rater.component';
 
 export interface ChoiceTaskMetadata {
-    component: ComponentName;
-    config: {
+    componentName: ComponentName;
+    componentConfig: {
         isPractice: boolean;
         maxResponseTime: number;
         interTrialDelay: number;
@@ -87,7 +87,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         super(loaderService);
     }
 
-    configure(metadata: ChoiceTaskMetadata, config: TaskConfig) {
+    configure(metadata: ChoiceTaskMetadata, config: TaskPlayerState) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
             this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
@@ -96,16 +96,16 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         }
 
         this.ratingTaskActivities = config.getCacheValue(RaterCache.NEW_ACTIVITIES);
-        this.isPractice = metadata.config.isPractice || false;
-        this.interTrialDelay = metadata.config.interTrialDelay || 0;
-        this.maxResponseTime = metadata.config.maxResponseTime || undefined;
-        this.durationOutOftimeMessageShown = metadata.config.durationOutOftimeMessageShown || undefined;
-        this.delayToShowHelpMessage = metadata.config.delayToShowHelpMessage || undefined;
-        this.durationHelpMessageShown = metadata.config.durationHelpMessageShown || undefined;
-        this.delayToShowRatingSlider = metadata.config.delayToShowRatingSlider || 0;
+        this.isPractice = metadata.componentConfig.isPractice || false;
+        this.interTrialDelay = metadata.componentConfig.interTrialDelay || 0;
+        this.maxResponseTime = metadata.componentConfig.maxResponseTime || undefined;
+        this.durationOutOftimeMessageShown = metadata.componentConfig.durationOutOftimeMessageShown || undefined;
+        this.delayToShowHelpMessage = metadata.componentConfig.delayToShowHelpMessage || undefined;
+        this.durationHelpMessageShown = metadata.componentConfig.durationHelpMessageShown || undefined;
+        this.delayToShowRatingSlider = metadata.componentConfig.delayToShowRatingSlider || 0;
 
-        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
-            this.stimuli = metadata.config.stimuliConfig.stimuli;
+        if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
     }
 
     start() {

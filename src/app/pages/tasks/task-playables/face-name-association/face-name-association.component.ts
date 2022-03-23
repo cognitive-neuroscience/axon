@@ -1,8 +1,8 @@
-import { Component, OnDestroy } from '@angular/core';
-import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
+import { Component } from '@angular/core';
+import { throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { StimuliProvidedType } from 'src/app/models/enums';
-import { Feedback, TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
-import { FaceNameAssociationTaskData, TaskSwitchingTaskData } from 'src/app/models/TaskData';
+import { TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
+import { FaceNameAssociationTaskData } from 'src/app/models/TaskData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import {
     FaceNameAssociationStimulus,
@@ -11,13 +11,13 @@ import {
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../base-task';
-import { TaskConfig } from '../task-player/task-player.component';
+import { TaskPlayerState } from '../task-player/task-player.component';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { ImageService } from 'src/app/services/image.service';
 
 interface FaceNameAssociationMetadata {
-    component: ComponentName;
-    config: {
+    componentName: ComponentName;
+    componentConfig: {
         isPractice: boolean;
         phase: 'learning-phase' | 'test-phase';
         maxResponseTime: number;
@@ -92,32 +92,32 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
         super(loaderService);
     }
 
-    configure(metadata: FaceNameAssociationMetadata, config?: TaskConfig) {
+    configure(metadata: FaceNameAssociationMetadata, config?: TaskPlayerState) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
             this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
             this.maxResponseTime = throwErrIfNotDefined(
-                metadata.config.maxResponseTime,
+                metadata.componentConfig.maxResponseTime,
                 'max response time not defined'
             );
 
             this.durationStimulusPresented = throwErrIfNotDefined(
-                metadata.config.durationStimulusPresented,
+                metadata.componentConfig.durationStimulusPresented,
                 'duration stimulus presented not defined'
             );
 
-            this.phase = throwErrIfNotDefined(metadata.config.phase, 'phase not defined');
+            this.phase = throwErrIfNotDefined(metadata.componentConfig.phase, 'phase not defined');
         } catch (error) {
             throw new Error('values not defined, cannot start study');
         }
-        this.isPractice = metadata.config.isPractice;
-        this.stimulusSet = metadata.config.stimulusSet || 1;
-        this.interTrialDelay = metadata.config.interTrialDelay || 500;
-        this.durationStimulusPresented = metadata.config.durationStimulusPresented || 3000;
+        this.isPractice = metadata.componentConfig.isPractice;
+        this.stimulusSet = metadata.componentConfig.stimulusSet || 1;
+        this.interTrialDelay = metadata.componentConfig.interTrialDelay || 500;
+        this.durationStimulusPresented = metadata.componentConfig.durationStimulusPresented || 3000;
 
-        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
-            this.stimuli = metadata.config.stimuliConfig.stimuli;
+        if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
     }
 
     async start() {

@@ -5,7 +5,6 @@ import { SharedModule } from '../shared/shared.module';
 import { ParticipantDashboardComponent } from './participant-dashboard/participant-dashboard.component';
 import { ParticipantStudiesComponent } from './participant-dashboard/participant-studies/participant-studies.component';
 import { RouterModule } from '@angular/router';
-import { FeedbackQuestionnaireComponent } from './final-page/feedback-questionnaire/feedback-questionnaire.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/modules/material/material.module';
 import { FinalPageComponent } from './final-page/final-page.component';
@@ -18,7 +17,6 @@ import { LanguageDialogComponent } from './participant-dashboard/language-dialog
         ParticipantDashboardComponent,
         ParticipantStudiesComponent,
         FinalPageComponent,
-        FeedbackQuestionnaireComponent,
         ConsentDialogComponent,
         LanguageDialogComponent,
     ],

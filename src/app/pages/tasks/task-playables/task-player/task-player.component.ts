@@ -1,7 +1,7 @@
 import { Component, OnDestroy, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap, take } from 'rxjs/operators';
 import { getRandomNumber } from 'src/app/common/commonMethods';
 import {
     ComponentFactoryService,
@@ -16,27 +16,30 @@ import { IOnComplete } from '../playable';
 import { UserService } from 'src/app/services/user.service';
 import { AdminRouteNames, Role } from 'src/app/models/enums';
 import { TaskData } from 'src/app/models/TaskData';
+import { LoaderService } from 'src/app/services/loader/loader.service';
+import { SessionStorageService } from 'src/app/services/sessionStorage.service';
+import { Location } from '@angular/common';
 
 export interface CounterBalanceGroup {
     [key: number]: any;
 }
 
-export interface TaskMetadata {
-    config: {
+export interface ComponentMetadata {
+    componentName: ComponentName;
+    componentConfig: any;
+}
+
+export interface SharplabTaskConfig {
+    taskConfig: {
         counterBalanceGroups?: CounterBalanceGroup;
     };
     metadata: ComponentMetadata[];
 }
 
-export interface ComponentMetadata {
-    component: ComponentName;
-    content?: any;
-    config?: any;
-}
-
-export class TaskConfig {
+export class TaskPlayerState {
     userID: string;
     studyID: number;
+    mode: 'test' | 'actual' = 'actual';
     private data: {
         [key: string]: any;
     };
@@ -66,7 +69,7 @@ export class TaskConfig {
 }
 
 export class TaskPlayerNavigationConfig {
-    metadata: TaskMetadata;
+    metadata: SharplabTaskConfig;
     mode: 'test' | 'actual';
 }
 
@@ -82,14 +85,23 @@ export class TaskPlayerComponent implements OnDestroy {
         private userService: UserService,
         private uploadDataService: ParticipantDataService,
         private router: Router,
-        private snackbarService: SnackbarService
+        private snackbarService: SnackbarService,
+        private loaderService: LoaderService,
+        private sessionStorageService: SessionStorageService,
+        private location: Location
     ) {
         const navigationConfig = this.router.getCurrentNavigation()?.extras?.state as TaskPlayerNavigationConfig;
         if (navigationConfig) {
             this.handleTaskVariablesAndPlayTask(navigationConfig.metadata, navigationConfig.mode);
         } else {
-            this.taskManager.handleErr();
+            const currentlyRunningStudyId = this.sessionStorageService.getCurrentlyRunningStudyIdFromSessionStorage();
+            if (currentlyRunningStudyId !== null) {
+                this.taskManager.initStudy(parseInt(currentlyRunningStudyId));
+            } else {
+                this.location.back();
+            }
         }
+        // TODO: handle case where page is refreshed by admin
     }
 
     // task metadata variables
@@ -100,10 +112,10 @@ export class TaskPlayerComponent implements OnDestroy {
     subscription: Subscription;
 
     // metadata config
-    state = new TaskConfig(null, null, {}, null); // this state will be shared with each step in the task
+    state = new TaskPlayerState(null, null, {}, null); // this state will be shared with each step in the task
 
-    handleTaskVariablesAndPlayTask(taskMetadataConfig: TaskMetadata, mode: 'test' | 'actual') {
-        this.mode = mode;
+    handleTaskVariablesAndPlayTask(taskMetadataConfig: SharplabTaskConfig, mode: 'test' | 'actual') {
+        this.state.mode = mode;
         if (mode === 'test') {
             this.state.userID = 'TEST';
             this.state.studyID = 0;
@@ -114,7 +126,7 @@ export class TaskPlayerComponent implements OnDestroy {
             this.state.studyID = this.taskManager.study.id;
         }
 
-        const counterBalanceGroups = taskMetadataConfig.config.counterBalanceGroups;
+        const counterBalanceGroups = taskMetadataConfig.taskConfig?.counterBalanceGroups;
         if (counterBalanceGroups) {
             const groupKeys = Object.keys(counterBalanceGroups);
             if (groupKeys.length > 0) {
@@ -153,7 +165,7 @@ export class TaskPlayerComponent implements OnDestroy {
         try {
             this.viewContainer.clear();
             // create component
-            const component = this.componentFactoryService.getComponent(step.component);
+            const component = this.componentFactoryService.getComponent(step.componentName);
             // init component and populate with relevant metadata
             component.instance.configure(step, this.state);
             // subscribe to on complete
@@ -177,7 +189,8 @@ export class TaskPlayerComponent implements OnDestroy {
 
         const shouldSetTaskAsComplete = !this.userService.isCrowdsourcedUser && this.hasCompletedAllBlocks();
 
-        if (onComplete.taskData && this.mode === 'actual') {
+        if (onComplete.taskData && this.state.mode === 'actual') {
+            this.loaderService.showLoader();
             this.handleUploadData(onComplete.taskData)
                 .pipe(mergeMap((ok) => (ok && shouldSetTaskAsComplete ? this.taskManager.setTaskAsComplete() : of(ok))))
                 .subscribe(
@@ -193,7 +206,10 @@ export class TaskPlayerComponent implements OnDestroy {
                     (_err) => {
                         this.taskManager.handleErr();
                     }
-                );
+                )
+                .add(() => {
+                    this.loaderService.hideLoader();
+                });
         } else {
             onComplete.navigation === Navigation.NEXT ? this.renderNextStep() : this.renderPreviousStep();
         }
@@ -201,7 +217,7 @@ export class TaskPlayerComponent implements OnDestroy {
 
     private hasCompletedAllBlocks(): boolean {
         for (let i = this.index + 1; i < this.steps.length; i++) {
-            const componentName = this.steps[i].component;
+            const componentName = this.steps[i].componentName;
             if (!GenericComponentsList.includes(componentName)) {
                 // GenericComponentsList contains a list of components that are used to display generic info and
                 // aren't related to implementation of a particular task.
@@ -241,11 +257,14 @@ export class TaskPlayerComponent implements OnDestroy {
 
     reset() {
         this.index = 0;
+        this.taskData = [];
         this.steps = [];
-        this.state = new TaskConfig(null, null, {}, null);
+        this.state = new TaskPlayerState(null, null, {}, null);
+        this.subscription.unsubscribe();
+        this.viewContainer.clear();
     }
 
     ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.subscription?.unsubscribe();
     }
 }

@@ -1,19 +1,14 @@
 <div class="card-padding">
-    <div align="center">
-        <h1 style="color: #3f51b5">Welcome to the sharplab</h1>
-    </div>
-    <br />
+    <h1 style="color: #3f51b5">Welcome to the sharplab</h1>
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-        <mat-form-field class="py-1" floatLabel="always">
+        <mat-form-field appearance="outline" floatLabel="always">
             <mat-label>EMAIL</mat-label>
-            <mat-icon matSuffix>email</mat-icon>
             <input matInput formControlName="email" type="email" placeholder="example@domain.com" email required />
             <mat-error *ngIf="registerForm.get('email')?.hasError('required')">This is required</mat-error>
             <mat-error *ngIf="registerForm.get('email')?.hasError('email')">This must be a valid email</mat-error>
         </mat-form-field>
-        <mat-form-field class="py-1" floatLabel="always">
+        <mat-form-field appearance="outline" floatLabel="always">
             <mat-label>CONFIRM EMAIL</mat-label>
-            <mat-icon matSuffix>email</mat-icon>
             <input
                 matInput
                 formControlName="confirmEmail"
@@ -22,28 +17,35 @@
                 email
                 required
             />
+            <mat-error *ngIf="registerForm.get('confirmEmail')?.hasError('required')">This is required</mat-error>
+            <mat-error *ngIf="registerForm.get('confirmEmail')?.hasError('email')"
+                >This must be a valid email</mat-error
+            >
+            <mat-error *ngIf="registerForm.hasError('emailMatchErr')">Emails must match</mat-error>
         </mat-form-field>
-        <mat-form-field class="py-1" floatLabel="always">
+        <mat-form-field appearance="outline" floatLabel="always">
             <mat-label>PASSWORD</mat-label>
-            <mat-icon matSuffix>vpn_key</mat-icon>
+            <mat-icon style="cursor: pointer" (click)="togglePasswordVisibility()" matSuffix>{{
+                passwordIsVisible ? 'visibility' : 'visibility_off'
+            }}</mat-icon>
             <input
-                type="text"
                 formControlName="password"
                 #password
-                type="password"
+                [type]="passwordIsVisible ? 'text' : 'password'"
                 matInput
                 placeholder="my-strong-password"
                 required
             />
             <mat-error *ngIf="registerForm.get('password')?.hasError('required')">This is required</mat-error>
         </mat-form-field>
-        <mat-form-field class="py-1" floatLabel="always">
+        <mat-form-field appearance="outline" floatLabel="always">
             <mat-label>CONFIRM PASSWORD</mat-label>
-            <mat-icon matSuffix>vpn_key</mat-icon>
+            <mat-icon style="cursor: pointer" (click)="togglePasswordVisibility()" matSuffix>{{
+                passwordIsVisible ? 'visibility' : 'visibility_off'
+            }}</mat-icon>
             <input
-                type="text"
                 formControlName="confirmPassword"
-                type="password"
+                [type]="passwordIsVisible ? 'text' : 'password'"
                 matInput
                 placeholder="my-strong-password"
                 required
@@ -51,43 +53,19 @@
             <mat-error *ngIf="registerForm.get('confirmPassword').hasError('required')">This is required</mat-error>
             <mat-error *ngIf="registerForm.hasError('passwordMatchErr')">Passwords must match</mat-error>
         </mat-form-field>
-        <div matRipple matRippleColor="#ffffff33" class="mt-3">
+        <div matRipple matRippleColor="#ffffff33">
             <button
                 type="submit"
-                class="btn-block btn-sm rounded-btn"
-                mat-raised-button
+                class="btn-block py-2"
+                mat-flat-button
                 color="primary"
                 [disabled]="!registerForm.valid"
             >
                 REGISTER
             </button>
         </div>
-        <div>
-            <div matRipple matRippleColor="#ffffff33">
-                <button class="btn-block" style="color: #3f51b5" mat-button (click)="navigateToLoginPage()">
-                    Already registered? Log In
-                </button>
-            </div>
-        </div>
+        <a class="btn-block mt-3 underline-on-hover" style="color: #3f51b5" (click)="navigateToLoginPage()">
+            Are you already registered? Log in
+        </a>
     </form>
-
-    <div style="display: flex; flex-direction: row; color: #3f51b5" class="my-4">
-        <button
-            style="white-space: normal; line-height: normal"
-            class="btn-block p-2"
-            mat-button
-            (click)="navigateToCrowdSourceRegister()"
-        >
-            Mturk or Prolific Participant? Click here
-        </button>
-        <mat-divider [vertical]="true"></mat-divider>
-        <button
-            style="white-space: normal; line-height: normal; color: #3f51b5"
-            class="btn-block p-2"
-            mat-button
-            (click)="navigateToForgotPassword()"
-        >
-            Forgot your password? Click here
-        </button>
-    </div>
 </div>

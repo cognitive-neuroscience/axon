@@ -5,7 +5,7 @@ import { TimerService } from '../../../../services/timer.service';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { SnackbarService } from '../../../../services/snackbar.service';
 import { AbstractBaseTaskComponent } from '../base-task';
-import { TaskConfig } from '../task-player/task-player.component';
+import { TaskPlayerState } from '../task-player/task-player.component';
 import { TrailMakingStimulus, TrailMakingTrialType } from 'src/app/services/data-generation/stimuli-models';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
@@ -13,8 +13,8 @@ import { ComponentName } from 'src/app/services/component-factory.service';
 import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 
 interface TrailMakingMetadata {
-    component: ComponentName;
-    config: {
+    componentName: ComponentName;
+    componentConfig: {
         isPractice: boolean;
         maxResponseTime: number;
         flashIncorrectDuration: number;
@@ -79,27 +79,30 @@ export class TrailMakingComponent extends AbstractBaseTaskComponent {
         super(loaderService);
     }
 
-    configure(metadata: TrailMakingMetadata, config: TaskConfig) {
+    configure(metadata: TrailMakingMetadata, config: TaskPlayerState) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
             this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
             this.maxResponseTime = throwErrIfNotDefined(
-                metadata.config.maxResponseTime,
+                metadata.componentConfig.maxResponseTime,
                 'max response time not defined'
             );
-            this.trialType = throwErrIfNotDefined(metadata.config.trialType, 'no trial type defined');
+            this.trialType = throwErrIfNotDefined(metadata.componentConfig.trialType, 'no trial type defined');
         } catch (error) {
             throw new Error('values not defined, cannot start study');
         }
 
         this.config = config;
-        this.isPractice = thisOrDefault(metadata.config.isPractice, false);
-        this.flashIncorrectDuration = thisOrDefault(metadata.config.flashIncorrectDuration, 500);
-        this.durationOutOfTimeMessageShown = thisOrDefault(metadata.config.durationOutOfTimeMessageShown, 3000);
+        this.isPractice = thisOrDefault(metadata.componentConfig.isPractice, false);
+        this.flashIncorrectDuration = thisOrDefault(metadata.componentConfig.flashIncorrectDuration, 500);
+        this.durationOutOfTimeMessageShown = thisOrDefault(
+            metadata.componentConfig.durationOutOfTimeMessageShown,
+            3000
+        );
 
-        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
-            this.stimuli = metadata.config.stimuliConfig.stimuli;
+        if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
     }
 
     async start() {

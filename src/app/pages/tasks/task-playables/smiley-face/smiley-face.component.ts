@@ -6,7 +6,7 @@ import { SmileyFaceTaskData } from 'src/app/models/TaskData';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../base-task';
-import { TaskConfig } from '../task-player/task-player.component';
+import { TaskPlayerState } from '../task-player/task-player.component';
 import { SmileyFaceStimulus, SmileyFaceType } from 'src/app/services/data-generation/stimuli-models';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
@@ -15,8 +15,8 @@ import { ImageService } from 'src/app/services/image.service';
 import { take } from 'rxjs/operators';
 
 interface SmileyFaceMetadata {
-    component: ComponentName;
-    config: {
+    componentName: ComponentName;
+    componentConfig: {
         isPractice: boolean;
         maxResponseTime: number;
         interTrialDelay: number;
@@ -115,23 +115,29 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         super(loaderService);
     }
 
-    configure(metadata: SmileyFaceMetadata, config: TaskConfig) {
+    configure(metadata: SmileyFaceMetadata, config: TaskPlayerState) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
             this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
             this.maxResponseTime = throwErrIfNotDefined(
-                metadata.config.maxResponseTime,
+                metadata.componentConfig.maxResponseTime,
                 'max response time not defined'
             );
-            this.numShortFaces = throwErrIfNotDefined(metadata.config.numShortFaces, 'num short faces not defined');
-            this.numLongFaces = throwErrIfNotDefined(metadata.config.numLongFaces, 'num long faces not defined');
+            this.numShortFaces = throwErrIfNotDefined(
+                metadata.componentConfig.numShortFaces,
+                'num short faces not defined'
+            );
+            this.numLongFaces = throwErrIfNotDefined(
+                metadata.componentConfig.numLongFaces,
+                'num long faces not defined'
+            );
             this.facesMoreRewardedPercentage = throwErrIfNotDefined(
-                metadata.config.facesMoreRewardedPercentage,
+                metadata.componentConfig.facesMoreRewardedPercentage,
                 'num faces less rewarded not defined'
             );
             this.facesLessRewardedPercentage = throwErrIfNotDefined(
-                metadata.config.facesLessRewardedPercentage,
+                metadata.componentConfig.facesLessRewardedPercentage,
                 'num faces more rewarded not defined'
             );
         } catch (error) {
@@ -140,18 +146,18 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
 
         this.config = config;
 
-        this.isPractice = thisOrDefault(metadata.config.isPractice, false);
-        this.interTrialDelay = thisOrDefault(metadata.config.interTrialDelay, 0);
-        this.durationFeedbackPresented = thisOrDefault(metadata.config.durationFeedbackPresented, 1000);
-        this.durationFixationPresented = thisOrDefault(metadata.config.durationFixationPresented, 0);
-        this.durationNoFacePresented = thisOrDefault(metadata.config.durationNoFacePresented, 500);
-        this.durationStimulusPresented = thisOrDefault(metadata.config.durationStimulusPresented, 450);
-        this.showHint = thisOrDefault(metadata.config.showHint, false);
+        this.isPractice = thisOrDefault(metadata.componentConfig.isPractice, false);
+        this.interTrialDelay = thisOrDefault(metadata.componentConfig.interTrialDelay, 0);
+        this.durationFeedbackPresented = thisOrDefault(metadata.componentConfig.durationFeedbackPresented, 1000);
+        this.durationFixationPresented = thisOrDefault(metadata.componentConfig.durationFixationPresented, 0);
+        this.durationNoFacePresented = thisOrDefault(metadata.componentConfig.durationNoFacePresented, 500);
+        this.durationStimulusPresented = thisOrDefault(metadata.componentConfig.durationStimulusPresented, 450);
+        this.showHint = thisOrDefault(metadata.componentConfig.showHint, false);
 
         this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as SmileyFaceTaskCounterbalance;
 
-        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
-            this.stimuli = metadata.config.stimuliConfig.stimuli;
+        if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
     }
 
     async start() {

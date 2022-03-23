@@ -32,7 +32,7 @@ export class ConsentPageComponent implements OnInit {
                     .pipe(take(1))
                     .subscribe((ok) => {
                         if (ok) {
-                            this.taskManager.startAfterConsent();
+                            this.taskManager.runStudy();
                         }
                     });
             } else {

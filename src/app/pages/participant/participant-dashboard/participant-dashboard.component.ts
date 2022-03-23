@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, of } from 'rxjs';
-import { mergeMap, take } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, mergeMap, take } from 'rxjs/operators';
 import { SupportedLangs } from 'src/app/models/enums';
-import { User } from 'src/app/models/Login';
+import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SessionStorageService } from 'src/app/services/sessionStorage.service';
+import { StudyUserService } from 'src/app/services/study-user.service';
 import { UserService } from 'src/app/services/user.service';
 import { LanguageDialogComponent } from './language-dialog/language-dialog.component';
 
@@ -18,54 +19,57 @@ export class ParticipantDashboardComponent implements OnInit {
     constructor(
         private sessionStorageService: SessionStorageService,
         private userService: UserService,
+        private studyUserService: StudyUserService,
         private dialog: MatDialog,
-        private translateService: TranslateService
+        private translateService: TranslateService,
+        private loaderService: LoaderService
     ) {}
 
     ngOnInit(): void {
-        const studyId = parseInt(this.sessionStorageService.getStudyIdFromSessionStorage());
-        const userHasValueObs = this.userService.userHasValue ? of(null) : this.userService.updateUserAsync();
+        const studyId = parseInt(this.sessionStorageService.getStudyIdToRegisterFromSessionStorage());
 
-        userHasValueObs
+        this.userService
+            .getUser()
             .pipe(
-                mergeMap((_res) => {
+                take(1),
+                mergeMap((res) => {
                     // present the user with the choice of lang, save the preference in the db and locally
                     // Otherwise just use the one that is set if it exists
-                    if (this.userService.user.lang === SupportedLangs.NONE) {
+                    if (res.lang === SupportedLangs.NONE) {
                         return this.openLanguageDialog().pipe(
                             mergeMap((lang) => {
                                 this.translateService.use(lang);
-                                return this.userService.updateUserDetails({
-                                    ...this.userService.user,
+                                return this.userService.patchUser({
+                                    ...res,
                                     lang: lang,
                                 });
                             }),
-                            mergeMap((_res) => this.userService.updateUserAsync())
+                            mergeMap((_res) => this.userService.getUser(true))
                         );
                     }
-                    this.translateService.use(this.userService.user.lang);
+                    this.translateService.use(res.lang);
                     return of(null);
                 }),
-                mergeMap((_: User | null) => {
+                mergeMap((_res) => this.userService.getUser()),
+                mergeMap((user) => {
+                    this.loaderService.showLoader();
                     // register the participant for the given study saved in session storage if it exists
-                    return studyId
-                        ? this.userService.registerParticipantForStudy(this.userService.user, studyId)
-                        : of(null);
+                    return studyId ? this.studyUserService.registerParticipantForStudy(user, studyId) : of(null);
                 }),
-                take(1)
+                // if 409 (conflict) then we dont want an error
+                catchError((err) => (err.status === 409 ? of(null) : throwError(err))),
+                mergeMap((_res) => this.studyUserService.getStudyUsers())
             )
             .subscribe(
-                (_res) => {
-                    this.sessionStorageService.clearSessionStorage();
-                    this.userService.updateStudyUsers();
-                },
+                (_res) => {},
                 (err) => {
-                    console.log(err);
-
-                    console.warn('user may have registered for this study already');
-                    this.sessionStorageService.clearSessionStorage();
+                    console.error(err);
                 }
-            );
+            )
+            .add(() => {
+                this.loaderService.hideLoader();
+                this.sessionStorageService.clearSessionStorage(true);
+            });
     }
 
     openLanguageDialog(): Observable<SupportedLangs> {

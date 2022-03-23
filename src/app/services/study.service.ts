@@ -12,7 +12,6 @@ import { CanClear } from './clearance.service';
 export class StudyService implements CanClear {
     /**
      * This service is in charge of handling the CRUD operations of studies
-     * from the ADMIN's perspective.
      */
 
     private readonly RESOURCE_PATH = '/studies';

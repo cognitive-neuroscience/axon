@@ -6,7 +6,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { MaterialModule } from 'src/app/modules/material/material.module';
-import { QuestionnaireReaderComponent } from './questionnaire-reader.component';
+import { QuestionnaireComponent } from './questionnaire.component';
 
 @Component({
     selector: 'app-slider',
@@ -16,12 +16,12 @@ export class MockAppSlider {
     @Input() marks: any;
 }
 describe('QuestionnaireReaderComponent', () => {
-    let component: QuestionnaireReaderComponent;
-    let fixture: ComponentFixture<QuestionnaireReaderComponent>;
+    let component: QuestionnaireComponent;
+    let fixture: ComponentFixture<QuestionnaireComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [QuestionnaireReaderComponent, MockAppSlider],
+            declarations: [QuestionnaireComponent, MockAppSlider],
             imports: [
                 MaterialModule,
                 FormsModule,
@@ -35,7 +35,7 @@ describe('QuestionnaireReaderComponent', () => {
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(QuestionnaireReaderComponent);
+        fixture = TestBed.createComponent(QuestionnaireComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

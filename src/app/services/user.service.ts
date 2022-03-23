@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
-import { CrowdsourcedUser, StudyUser, User } from '../models/Login';
+import { catchError, map, take, tap } from 'rxjs/operators';
+import { CrowdsourcedUser, User } from '../models/Login';
 import { Role, SupportedLangs } from '../models/enums';
 import { TimerService } from './timer.service';
 import { CanClear } from './clearance.service';
+import { SessionStorageService } from './sessionStorage.service';
 
 @Injectable({
     providedIn: 'root',
@@ -14,17 +15,13 @@ import { CanClear } from './clearance.service';
 export class UserService implements CanClear {
     private readonly USERS_RESOURCE_PATH = '/users';
     private readonly CROWDSOURCED_USERS_RESOURCE_PATH = '/crowdsourcedusers';
-    private readonly STUDY_USERS_RESOURCE_PATH = '/studyusers';
-    isCrowdsourcedUser: boolean = false;
-    crowdsourcedUserStudyId: number;
 
-    private _studyUsersSubject: BehaviorSubject<StudyUser[]>;
-    get studyUsers(): Observable<StudyUser[]> {
-        return this._studyUsersSubject.asObservable();
+    get isCrowdsourcedUser(): boolean {
+        return this.sessionStorageService.getIsCrowdsourcedUser();
     }
 
-    get hasStudyUsers(): boolean {
-        return this._studyUsersSubject.value !== null;
+    get currentlyRunningStudyId(): number {
+        return parseInt(this.sessionStorageService.getCurrentlyRunningStudyIdFromSessionStorage());
     }
 
     private _guestsSubject: BehaviorSubject<User[]>;
@@ -48,13 +45,16 @@ export class UserService implements CanClear {
     }
 
     get userIsAdmin(): Observable<boolean> {
-        return this._userBehaviorSubject.asObservable().pipe(map((user) => (user ? user.role === Role.ADMIN : false)));
+        return this.userAsync.pipe(map((user) => (user ? user.role === Role.ADMIN : false)));
     }
 
-    constructor(private http: HttpClient, private timerService: TimerService) {
+    constructor(
+        private http: HttpClient,
+        private timerService: TimerService,
+        private sessionStorageService: SessionStorageService
+    ) {
         this._guestsSubject = new BehaviorSubject(null);
         this._userBehaviorSubject = new BehaviorSubject(null);
-        this._studyUsersSubject = new BehaviorSubject(null);
     }
 
     createGuest(username: string, password: string): Observable<HttpResponse<any>> {
@@ -67,35 +67,37 @@ export class UserService implements CanClear {
         });
     }
 
-    updateUserAsync(): Observable<User> {
-        if (this.isCrowdsourcedUser) {
-            return this._getCrowdsourcedUser(this.crowdsourcedUserStudyId).pipe(
-                map((crowdsourcedUser) => ({
-                    id: 0,
-                    email: crowdsourcedUser.participantId,
-                    role: Role.PARTICIPANT,
-                    createdAt: crowdsourcedUser.registerDate,
-                    changePasswordRequired: false,
-                    lang: SupportedLangs.NONE,
-                })),
-                tap((user: User) => {
-                    this._userBehaviorSubject.next(user);
-                }),
-                take(1)
-            );
+    // gets the user value and updates it if it does not exist
+    getUser(forceUpdate = false): Observable<User> {
+        if (this.userHasValue && !forceUpdate) {
+            return this.userAsync;
         } else {
-            return this._getUser().pipe(
-                tap((user: User) => {
-                    this._userBehaviorSubject.next(user);
-                }),
-                take(1)
-            );
+            return this.isCrowdsourcedUser
+                ? this._getCrowdsourcedUser(this.currentlyRunningStudyId).pipe(
+                      map((crowdsourcedUser) => ({
+                          id: 0,
+                          email: crowdsourcedUser.participantId,
+                          role: Role.PARTICIPANT,
+                          createdAt: crowdsourcedUser.registerDate,
+                          changePasswordRequired: false,
+                          lang: SupportedLangs.NONE,
+                      })),
+                      tap((user: User) => {
+                          this._userBehaviorSubject.next(user);
+                      })
+                  )
+                : this._getUser().pipe(
+                      tap((user: User) => {
+                          this._userBehaviorSubject.next(user);
+                      }),
+                      take(1)
+                  );
         }
     }
 
     updateUser(): void {
         if (this.isCrowdsourcedUser) {
-            this._getCrowdsourcedUser(this.crowdsourcedUserStudyId)
+            this._getCrowdsourcedUser(this.currentlyRunningStudyId)
                 .pipe(take(1))
                 .subscribe(
                     (crowdsourcedUser) => {
@@ -136,28 +138,12 @@ export class UserService implements CanClear {
             });
     }
 
-    updateStudyUsers(): void {
-        this._getStudyUsers()
-            .pipe(take(1))
-            .subscribe((studyUsers) => {
-                this._studyUsersSubject.next(studyUsers);
-            });
-    }
-
     markCompletion(studyId: number): Observable<string> {
         return this.http
             .patch(`${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}/${studyId}`, {
                 observe: 'response',
             })
             .pipe(map((res) => res as string));
-    }
-
-    updateStudyUser(studyUser: StudyUser): Observable<boolean> {
-        return this.http
-            .patch(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}`, studyUser, {
-                observe: 'response',
-            })
-            .pipe(map((res) => res.ok));
     }
 
     registerUser(email: string, password: string, role?: Role): Observable<HttpResponse<any>> {
@@ -172,8 +158,12 @@ export class UserService implements CanClear {
         });
     }
 
-    updateUserDetails(user: User): Observable<HttpResponse<any>> {
-        return this.http.patch<any>(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/${user.id}`, user);
+    patchUser(user: User): Observable<User> {
+        return this.http.patch<User>(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/${user.id}`, user).pipe(
+            tap((user) => {
+                this._userBehaviorSubject.next(user);
+            })
+        );
     }
 
     getCrowdsourcedUsersByStudyId(studyId: number): Observable<CrowdsourcedUser[]> {
@@ -192,29 +182,6 @@ export class UserService implements CanClear {
             },
             { observe: 'response' }
         );
-    }
-
-    // register a given account holding participant with a study id
-    registerParticipantForStudy(user: User, studyId: number): Observable<any> {
-        const studyUser: StudyUser = {
-            userId: user.id,
-            studyId: studyId,
-            completionCode: '',
-            registerDate: this.timerService.getCurrentTimestamp(),
-            dueDate: {
-                valid: false,
-                time: this.timerService.getCurrentTimestamp(),
-            }, // nullable time
-            currentTaskIndex: 0,
-            hasAcceptedConsent: false,
-            lang: user.lang,
-        };
-
-        return this.http.post(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}`, studyUser);
-    }
-
-    getStudyUsersForStudy(studyId: number): Observable<StudyUser[]> {
-        return this.http.get<StudyUser[]>(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}/${studyId}`);
     }
 
     registerCrowdsourcedUser(participantId: string, studyId: number, lang: SupportedLangs) {
@@ -246,16 +213,9 @@ export class UserService implements CanClear {
         );
     }
 
-    private _getStudyUsers(): Observable<StudyUser[]> {
-        return this.http.get<StudyUser[]>(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}/studies`);
-    }
-
     clearService() {
         if (this._guestsSubject.value) {
             this._guestsSubject.next(null);
-        }
-        if (this._studyUsersSubject.value) {
-            this._studyUsersSubject.next(null);
         }
         if (this._userBehaviorSubject.value) {
             this._userBehaviorSubject.next(null);

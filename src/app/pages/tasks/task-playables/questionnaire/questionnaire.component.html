@@ -1,9 +1,9 @@
-<div *ngIf="isValid" class="questionnaire-container">
+<div *ngIf="isVisible" class="questionnaire-container">
     <h1 class="mat-h1 my-3 title-text">
         <b>{{ handleText(title) }}</b>
         <hr />
     </h1>
-    <div *ngIf="isValid">
+    <div>
         <form [formGroup]="questionnaire">
             <ng-container *ngFor="let question of questions">
                 <div [ngSwitch]="question.questionType">
@@ -142,7 +142,7 @@
             <button
                 (click)="onSubmit()"
                 class="w-25 mb-5"
-                [disabled]="!questionnaire.valid || readerMetadata.mode === 'test' || wasClicked"
+                [disabled]="!questionnaire.valid || wasClicked"
                 color="primary"
                 mat-raised-button
             >

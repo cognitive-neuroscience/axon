@@ -5,7 +5,7 @@ import { TaskData } from 'src/app/models/TaskData';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { Navigation } from '../shared/navigation-buttons/navigation-buttons.component';
 import { Playable, IOnComplete } from './playable';
-import { ComponentMetadata, TaskConfig } from './task-player/task-player.component';
+import { ComponentMetadata, TaskPlayerState } from './task-player/task-player.component';
 declare function setFullScreen(): any;
 
 @Component({ template: '' })
@@ -13,12 +13,14 @@ export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
     // shared state variables
     userID: string;
     studyId: number;
-    config: TaskConfig;
+    config: TaskPlayerState;
 
     // base task local state variables
     taskData: TaskData[];
     onComplete: Subject<IOnComplete> = new Subject();
     isDestroyed = false;
+    showLoaderOnInitDuration = 2000;
+    showLoaderOnEndDuration = 1000;
 
     // constants
     TRANSLATION_PREFIX = `tasks.feedback.`;
@@ -30,11 +32,11 @@ export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
             loaderService.hideLoader();
             if (this.isDestroyed) return;
             this.start();
-        }, 2000);
+        }, this.showLoaderOnInitDuration);
     }
 
     // task lifecycle part 1: configure metadata and any higher level task configs
-    abstract configure(metadata: ComponentMetadata, config?: TaskConfig);
+    abstract configure(metadata: ComponentMetadata, config?: TaskPlayerState);
 
     // task lifecycle part 2: setup anything needed by the task and begin the round
     start() {
@@ -57,7 +59,7 @@ export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
     // task lifecycle part 6: decide whether to do another round of the task or complete
     async decideToRepeat() {
         this.loaderService.showLoader();
-        await wait(2000);
+        await wait(this.showLoaderOnEndDuration);
         this.loaderService.hideLoader();
         this.handleComplete();
     }

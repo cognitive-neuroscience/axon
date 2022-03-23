@@ -8,13 +8,13 @@ import { AbstractBaseTaskComponent } from '../base-task';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
-import { TaskConfig } from '../task-player/task-player.component';
+import { TaskPlayerState } from '../task-player/task-player.component';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DigitSpanStimulus } from 'src/app/services/data-generation/stimuli-models';
 
 interface DigitSpanMetadata {
-    component: ComponentName;
-    config: {
+    componentName: ComponentName;
+    componentConfig: {
         isPractice: boolean;
         maxResponseTime: number;
         interTrialDelay: number;
@@ -97,18 +97,18 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
         super(loaderService);
     }
 
-    configure(metadata: DigitSpanMetadata, config: TaskConfig) {
+    configure(metadata: DigitSpanMetadata, config: TaskPlayerState) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
             this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
             this.maxResponseTime = throwErrIfNotDefined(
-                metadata.config.maxResponseTime,
+                metadata.componentConfig.maxResponseTime,
                 'max response time not defined'
             );
 
             this.useForwardSequence = throwErrIfNotDefined(
-                metadata.config.useForwardSequence,
+                metadata.componentConfig.useForwardSequence,
                 'sequence direction not defined'
             );
         } catch (error) {
@@ -116,18 +116,18 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
         }
 
         this.config = config;
-        this.isPractice = thisOrDefault(metadata.config.isPractice, false);
-        this.durationFixationPresented = thisOrDefault(metadata.config.durationFixationPresented, 500);
-        this.interTrialDelay = thisOrDefault(metadata.config.interTrialDelay, 0);
-        this.durationDigitPresented = thisOrDefault(metadata.config.durationDigitPresented, 1000);
-        this.durationPauseBetweenDigits = thisOrDefault(metadata.config.durationPauseBetweenDigits, 300);
-        this.showFeedbackAfterEachTrial = thisOrDefault(metadata.config.showFeedbackAfterEachTrial, false);
-        this.durationOfFeedback = thisOrDefault(metadata.config.durationOfFeedback, 0);
-        this.delayToShowHelpMessage = thisOrDefault(metadata.config.delayToShowHelpMessage, 20000);
-        this.durationHelpMessageShown = thisOrDefault(metadata.config.durationHelpMessageShown, 3000);
+        this.isPractice = thisOrDefault(metadata.componentConfig.isPractice, false);
+        this.durationFixationPresented = thisOrDefault(metadata.componentConfig.durationFixationPresented, 500);
+        this.interTrialDelay = thisOrDefault(metadata.componentConfig.interTrialDelay, 0);
+        this.durationDigitPresented = thisOrDefault(metadata.componentConfig.durationDigitPresented, 1000);
+        this.durationPauseBetweenDigits = thisOrDefault(metadata.componentConfig.durationPauseBetweenDigits, 300);
+        this.showFeedbackAfterEachTrial = thisOrDefault(metadata.componentConfig.showFeedbackAfterEachTrial, false);
+        this.durationOfFeedback = thisOrDefault(metadata.componentConfig.durationOfFeedback, 0);
+        this.delayToShowHelpMessage = thisOrDefault(metadata.componentConfig.delayToShowHelpMessage, 20000);
+        this.durationHelpMessageShown = thisOrDefault(metadata.componentConfig.durationHelpMessageShown, 3000);
 
-        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
-            this.stimuli = metadata.config.stimuliConfig.stimuli;
+        if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
     }
 
     async start() {

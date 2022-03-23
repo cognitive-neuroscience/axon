@@ -41,6 +41,7 @@ function fieldsMatchingValidator(
 })
 export class RegisterComponent {
     subscriptions: Subscription[] = [];
+    passwordIsVisible = false;
 
     private readonly REGISTER_SUCCESS_STR = 'User successfully created!';
 
@@ -89,6 +90,10 @@ export class RegisterComponent {
                 }
             )
         );
+    }
+
+    togglePasswordVisibility() {
+        this.passwordIsVisible = !this.passwordIsVisible;
     }
 
     navigateToCrowdSourceRegister() {

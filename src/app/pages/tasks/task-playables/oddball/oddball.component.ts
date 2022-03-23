@@ -13,11 +13,11 @@ import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../base-task';
-import { TaskConfig } from '../task-player/task-player.component';
+import { TaskPlayerState } from '../task-player/task-player.component';
 
 export interface OddballTaskMetadata {
-    component: ComponentName;
-    config: {
+    componentName: ComponentName;
+    componentConfig: {
         isPractice: boolean;
         maxResponseTime: number;
         interTrialDelay: number;
@@ -110,30 +110,30 @@ export class OddballComponent extends AbstractBaseTaskComponent {
         super(loaderService);
     }
 
-    configure(metadata: OddballTaskMetadata, config: TaskConfig) {
+    configure(metadata: OddballTaskMetadata, config: TaskPlayerState) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
             this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
             this.durationFixationJitteredLowerBound = throwErrIfNotDefined(
-                metadata.config.durationFixationJitteredLowerBound,
+                metadata.componentConfig.durationFixationJitteredLowerBound,
                 'no jitter lower bound found'
             );
             this.durationFixationJitteredUpperBound = throwErrIfNotDefined(
-                metadata.config.durationFixationJitteredUpperBound,
+                metadata.componentConfig.durationFixationJitteredUpperBound,
                 'no jitter upper bound found'
             );
-            this.numTrials = throwErrIfNotDefined(metadata.config.numTrials, 'num trials not defined');
+            this.numTrials = throwErrIfNotDefined(metadata.componentConfig.numTrials, 'num trials not defined');
             this.numTargetTrials = throwErrIfNotDefined(
-                metadata.config.numTargetTrials,
+                metadata.componentConfig.numTargetTrials,
                 'num target trials not defined'
             );
             this.numNovelStimuli = throwErrIfNotDefined(
-                metadata.config.numNovelStimuli,
+                metadata.componentConfig.numNovelStimuli,
                 'num novel stimuli not defined'
             );
             this.durationStimulusPresented = throwErrIfNotDefined(
-                metadata.config.durationStimulusPresented,
+                metadata.componentConfig.durationStimulusPresented,
                 'duration stimulus presented not defined'
             );
         } catch (error) {
@@ -141,18 +141,18 @@ export class OddballComponent extends AbstractBaseTaskComponent {
         }
 
         this.config = config;
-        this.isPractice = metadata.config.isPractice || false;
-        this.interTrialDelay = metadata.config.interTrialDelay || 0;
+        this.isPractice = metadata.componentConfig.isPractice || false;
+        this.interTrialDelay = metadata.componentConfig.interTrialDelay || 0;
 
-        this.maxResponseTime = metadata.config.maxResponseTime || undefined;
+        this.maxResponseTime = metadata.componentConfig.maxResponseTime || undefined;
 
-        this.showFeedbackAfterEachTrial = metadata.config.showFeedbackAfterEachTrial || false;
-        this.durationOfFeedback = metadata.config.durationOfFeedback || 0;
+        this.showFeedbackAfterEachTrial = metadata.componentConfig.showFeedbackAfterEachTrial || false;
+        this.durationOfFeedback = metadata.componentConfig.durationOfFeedback || 0;
 
         this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as OddballTaskCounterbalance;
 
-        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
-            this.stimuli = metadata.config.stimuliConfig.stimuli;
+        if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
     }
 
     async start() {

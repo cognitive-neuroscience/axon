@@ -4,7 +4,7 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RouteNames, TaskType } from 'src/app/models/enums';
 import { Task } from 'src/app/models/Task';
-import { QuestionnaireNavigationConfig } from 'src/app/pages/tasks/questionnaire-reader/questionnaire-reader.component';
+import { TaskPlayerNavigationConfig } from 'src/app/pages/tasks/task-playables/task-player/task-player.component';
 import { TaskService } from 'src/app/services/task.service';
 import { ViewComponentsTableModel } from '../shared/view-components-table/view-components-table.component';
 
@@ -40,12 +40,12 @@ export class ManageQuestionnairesComponent {
     }
 
     previewQuestionnaire(questionnaire: Task) {
-        const questionnaireConfig: QuestionnaireNavigationConfig = {
+        const config: TaskPlayerNavigationConfig = {
             metadata: questionnaire.config,
             mode: 'test',
         };
 
-        this.router.navigate([`${RouteNames.QUESTIONNAIRE}`], { state: questionnaireConfig });
+        this.router.navigate([`${RouteNames.TASKPLAYER}`], { state: config });
     }
 
     ngOnDestroy() {

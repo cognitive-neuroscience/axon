@@ -10,15 +10,15 @@ import {
     DemandSelectionCounterbalance,
     DemandSelectionStimulus,
 } from 'src/app/services/data-generation/stimuli-models';
-import { TaskConfig } from '../task-player/task-player.component';
+import { TaskPlayerState } from '../task-player/task-player.component';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 
 interface DemandSelectionMetadata {
-    component: ComponentName;
-    config: {
+    componentName: ComponentName;
+    componentConfig: {
         isPractice: boolean;
         maxResponseTime: number;
         interTrialDelay: number;
@@ -121,26 +121,26 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         super(loaderService);
     }
 
-    configure(metadata: DemandSelectionMetadata, config: TaskConfig) {
+    configure(metadata: DemandSelectionMetadata, config: TaskPlayerState) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
             this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
-            this.numTrials = throwErrIfNotDefined(metadata.config.numTrials, 'num trials not defined');
+            this.numTrials = throwErrIfNotDefined(metadata.componentConfig.numTrials, 'num trials not defined');
             this.maxResponseTime = throwErrIfNotDefined(
-                metadata.config.maxResponseTime,
+                metadata.componentConfig.maxResponseTime,
                 'max response time not defined'
             );
             this.probOfShiftFirstPatch = throwErrIfNotDefined(
-                metadata.config.probOfShiftFirstPatch,
+                metadata.componentConfig.probOfShiftFirstPatch,
                 'first patch shift probability not defined'
             );
             this.probOfShiftSecondPatch = throwErrIfNotDefined(
-                metadata.config.probOfShiftSecondPatch,
+                metadata.componentConfig.probOfShiftSecondPatch,
                 'second patch shift probability not defined'
             );
             this.counterbalanceMode = throwErrIfNotDefined(
-                metadata.config.counterbalanceMode,
+                metadata.componentConfig.counterbalanceMode,
                 'counterbalanceMode not defined'
             );
         } catch (error) {
@@ -148,20 +148,20 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         }
 
         this.config = config;
-        this.isPractice = thisOrDefault(metadata.config.isPractice, false);
-        this.interTrialDelay = thisOrDefault(metadata.config.interTrialDelay, 0);
-        this.showFeedbackAfterEachTrial = thisOrDefault(metadata.config.showFeedbackAfterEachTrial, false);
-        this.durationHelpMessageShown = thisOrDefault(metadata.config.durationHelpMessageShown, 6000);
-        this.durationOfFeedback = thisOrDefault(metadata.config.durationOfFeedback, 0);
-        this.skippable = thisOrDefault(metadata.config.skippable, false);
-        this.delayToShowHelpMessage = thisOrDefault(metadata.config.delayToShowHelpMessage, 4000);
-        this.oddEvenColor = thisOrDefault(metadata.config.oddEvenColor, Color.BLUE);
-        this.ltGtColor = thisOrDefault(metadata.config.ltGtColor, Color.ORANGE);
+        this.isPractice = thisOrDefault(metadata.componentConfig.isPractice, false);
+        this.interTrialDelay = thisOrDefault(metadata.componentConfig.interTrialDelay, 0);
+        this.showFeedbackAfterEachTrial = thisOrDefault(metadata.componentConfig.showFeedbackAfterEachTrial, false);
+        this.durationHelpMessageShown = thisOrDefault(metadata.componentConfig.durationHelpMessageShown, 6000);
+        this.durationOfFeedback = thisOrDefault(metadata.componentConfig.durationOfFeedback, 0);
+        this.skippable = thisOrDefault(metadata.componentConfig.skippable, false);
+        this.delayToShowHelpMessage = thisOrDefault(metadata.componentConfig.delayToShowHelpMessage, 4000);
+        this.oddEvenColor = thisOrDefault(metadata.componentConfig.oddEvenColor, Color.BLUE);
+        this.ltGtColor = thisOrDefault(metadata.componentConfig.ltGtColor, Color.ORANGE);
 
         this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as DemandSelectionCounterbalance;
 
-        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
-            this.stimuli = metadata.config.stimuliConfig.stimuli;
+        if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
     }
 
     async start() {

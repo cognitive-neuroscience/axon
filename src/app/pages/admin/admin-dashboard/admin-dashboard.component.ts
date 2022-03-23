@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { map, tap } from 'rxjs/operators';
+import { map, take, tap } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -14,8 +14,13 @@ export class AdminDashboardComponent implements OnInit {
     ngOnInit() {
         // subscribe noop because it is lazy
         this.userService
-            .updateUserAsync()
-            .pipe(tap((user) => this.translateService.use(user.lang)))
+            .getUser()
+            .pipe(
+                take(1),
+                tap((user) => {
+                    this.translateService.use(user.lang);
+                })
+            )
             .subscribe(() => {});
     }
 }

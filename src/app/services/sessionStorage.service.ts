@@ -4,14 +4,34 @@ import { Injectable } from '@angular/core';
     providedIn: 'root',
 })
 export class SessionStorageService {
-    private STUDYID = 'STUDYID';
+    private STUDYID_FOR_REGISTRATION = 'STUDYID_FOR_REGISTRATION';
+    private STUDYID_FOR_CURRENTLY_RUNNING_STUDY = 'STUDYID_FOR_CURRENTLY_RUNNING_STUDY';
+    private IS_CROWDSOURCED_USER = 'IS_CROWDSOURCED_USER';
 
-    setStudyIdInSessionStorage(code: string): void {
-        sessionStorage.setItem(this.STUDYID, code);
+    setStudyIdToRegisterInSessionStorage(code: string): void {
+        sessionStorage.setItem(this.STUDYID_FOR_REGISTRATION, code);
     }
 
-    getStudyIdFromSessionStorage(): string | null {
-        return sessionStorage.getItem(this.STUDYID);
+    getStudyIdToRegisterFromSessionStorage(): string | null {
+        return sessionStorage.getItem(this.STUDYID_FOR_REGISTRATION);
+    }
+
+    setCurrentlyRunningStudyIdInSessionStorage(id: string): void {
+        sessionStorage.setItem(this.STUDYID_FOR_CURRENTLY_RUNNING_STUDY, id);
+    }
+
+    getCurrentlyRunningStudyIdFromSessionStorage(): string | null {
+        return sessionStorage.getItem(this.STUDYID_FOR_CURRENTLY_RUNNING_STUDY);
+    }
+
+    setIsCrowdsourcedUser(bool: boolean): void {
+        sessionStorage.setItem(this.IS_CROWDSOURCED_USER, String(bool));
+    }
+
+    getIsCrowdsourcedUser(): boolean {
+        const isCrowdsourcedUser = sessionStorage.getItem(this.IS_CROWDSOURCED_USER);
+        // return true if isCrowdsourcedUser is true, and false otherwise (even if its null)
+        return isCrowdsourcedUser === 'true' ? true : false;
     }
 
     setKVPInSessionStorage(key: string, value: string): void {
@@ -22,7 +42,14 @@ export class SessionStorageService {
         return sessionStorage.getItem(key);
     }
 
-    clearSessionStorage(): void {
-        sessionStorage.clear();
+    clearSessionStorage(fullClear = false): void {
+        if (fullClear) {
+            sessionStorage.clear();
+        } else {
+            // make sure we remove all KVPs except for the study id that we want the user to join
+            const registerStudyId = this.getStudyIdToRegisterFromSessionStorage();
+            sessionStorage.clear();
+            this.setStudyIdToRegisterInSessionStorage(registerStudyId);
+        }
     }
 }

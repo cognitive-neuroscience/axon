@@ -6,11 +6,11 @@ import { ComponentName } from 'src/app/services/component-factory.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../base-task';
-import { TaskConfig } from '../task-player/task-player.component';
+import { TaskPlayerState } from '../task-player/task-player.component';
 
 interface FingerTappingMetadata {
-    component: ComponentName;
-    config: {
+    componentName: ComponentName;
+    componentConfig: {
         isPractice: boolean;
         maxResponseTime: number;
         durationFixationPresented: number;
@@ -75,23 +75,23 @@ export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
         super(loaderService);
     }
 
-    configure(metadata: FingerTappingMetadata, config: TaskConfig) {
+    configure(metadata: FingerTappingMetadata, config: TaskPlayerState) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
             this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
             this.maxResponseTime = throwErrIfNotDefined(
-                metadata.config.maxResponseTime,
+                metadata.componentConfig.maxResponseTime,
                 'max response time not defined'
             );
-            this.useHand = throwErrIfNotDefined(metadata.config.useHand, 'use hand not defined');
+            this.useHand = throwErrIfNotDefined(metadata.componentConfig.useHand, 'use hand not defined');
         } catch (error) {
             throw new Error('values not defined, cannot start study');
         }
 
         this.config = config;
-        this.isPractice = thisOrDefault(metadata.config.isPractice, false);
-        this.durationFixationPresented = thisOrDefault(metadata.config.durationFixationPresented, 50);
+        this.isPractice = thisOrDefault(metadata.componentConfig.isPractice, false);
+        this.durationFixationPresented = thisOrDefault(metadata.componentConfig.durationFixationPresented, 50);
 
         // no stimuli required for this task
     }

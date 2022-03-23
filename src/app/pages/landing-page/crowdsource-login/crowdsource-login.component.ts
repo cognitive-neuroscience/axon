@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, throwError } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 import { mergeMap, take } from 'rxjs/operators';
 import { thisOrDefault, wait } from 'src/app/common/commonMethods';
@@ -12,6 +12,7 @@ import { SupportedLangs } from 'src/app/models/enums';
 import { MatDialog } from '@angular/material/dialog';
 import { LanguageDialogComponent } from '../../participant/participant-dashboard/language-dialog/language-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { SessionStorageService } from 'src/app/services/sessionStorage.service';
 declare function setFullScreen(): any;
 
 @Component({
@@ -33,7 +34,8 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
         private loaderService: LoaderService,
         private clearanceService: ClearanceService,
         private dialog: MatDialog,
-        private translateService: TranslateService
+        private translateService: TranslateService,
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit(): void {
@@ -62,13 +64,16 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
         this.openLanguageDialog()
             .pipe(
                 mergeMap((lang) => {
+                    if (!lang) return throwError('user exited dialog');
                     this.translateService.use(lang);
+                    this.loaderService.showLoader();
                     return this.userService.registerCrowdsourcedUser(this.workerId, this.studyId, lang);
                 }),
                 mergeMap((res) => {
-                    this.userService.isCrowdsourcedUser = true;
-                    this.userService.crowdsourcedUserStudyId = res.studyId;
-                    return this.userService.updateUserAsync();
+                    this.sessionStorageService.setIsCrowdsourcedUser(true);
+                    // we set this here because the getUser func requires the current study id
+                    this.sessionStorageService.setCurrentlyRunningStudyIdInSessionStorage(res.studyId.toString());
+                    return this.userService.getUser();
                 })
             )
             .subscribe(
@@ -76,8 +81,7 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                     if (user) {
                         await this.startGameInFullScreen();
                         this._snackbarService.openSuccessSnackbar('Registered: ' + this.workerId);
-                        this._taskManager.configureStudy(this.studyId, 0);
-                        this.loaderService.hideLoader();
+                        this._taskManager.initStudy(this.studyId);
                     }
                 },
                 (err) => {
@@ -89,11 +93,16 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                             6000
                         );
                     } else {
-                        console.log(err);
-                        this._snackbarService.openErrorSnackbar(err.message || err.error?.message);
+                        if (err !== 'user exited dialog') {
+                            console.error(err);
+                            this._snackbarService.openErrorSnackbar(err.message || err.error?.message);
+                        }
                     }
                 }
-            );
+            )
+            .add(() => {
+                this.loaderService.hideLoader();
+            });
     }
 
     async startGameInFullScreen() {

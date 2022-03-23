@@ -42,22 +42,23 @@ export class StudyBackgroundComponent implements OnInit, OnDestroy {
                     .pipe(take(1))
                     .subscribe(
                         (task) => {
-                            this.loader.hideLoader();
                             if (task.status === 204) {
                                 this.router.navigate([`${RouteNames.LANDINGPAGE_NOTFOUND}`]);
                                 return;
                             } else {
                                 // save the id in session storage so that the user can register for it later
-                                this.sessionStorageService.setStudyIdInSessionStorage(studyIdFromURL);
+                                this.sessionStorageService.setStudyIdToRegisterInSessionStorage(studyIdFromURL);
                                 this.studyBackground =
                                     Object.keys(task.body.config).length === 0 ? null : task.body.config;
                             }
                         },
                         (_err) => {
-                            this.loader.hideLoader();
                             this.router.navigate([`${RouteNames.LANDINGPAGE_NOTFOUND}`]);
                         }
                     )
+                    .add(() => {
+                        this.loader.hideLoader();
+                    })
             );
         } else {
             // handle case with invalid url param

@@ -5,18 +5,21 @@ import { SnackbarService } from './snackbar.service';
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
 import { SessionStorageService } from './sessionStorage.service';
-import { map, mergeMap, take } from 'rxjs/operators';
-import { ParticipantRouteNames, Platform, RouteNames, TaskType } from '../models/enums';
+import { map, mergeMap, take, tap } from 'rxjs/operators';
+import { ParticipantRouteNames, RouteNames } from '../models/enums';
 import { StudyTask, Task } from '../models/Task';
-import { TaskPlayerNavigationConfig } from '../pages/tasks/task-playables/task-player/task-player.component';
-import { QuestionnaireNavigationConfig } from '../pages/tasks/questionnaire-reader/questionnaire-reader.component';
+import {
+    SharplabTaskConfig,
+    TaskPlayerNavigationConfig,
+} from '../pages/tasks/task-playables/task-player/task-player.component';
 import { Observable, of } from 'rxjs';
 import { TaskService } from './task.service';
 import { ConsentNavigationConfig } from '../pages/shared/consent-component/consent-reader.component';
-import { EmbeddedPageNavigationConfig } from '../pages/tasks/embedded-page/embedded-page.component';
 import { CanClear } from './clearance.service';
 import { objIsEmpty } from '../common/commonMethods';
-import { InfoDisplayNavigationConfig } from '../pages/tasks/info-display/info-display.component';
+import { StudyUserService } from './study-user.service';
+import { LoaderService } from './loader/loader.service';
+import { StudyUser } from '../models/Login';
 
 @Injectable({
     providedIn: 'root',
@@ -42,72 +45,92 @@ export class TaskManagerService implements CanClear {
     }
 
     constructor(
-        private _studyService: StudyService,
-        private _snackbarService: SnackbarService,
-        private _router: Router,
-        private _userService: UserService,
-        private _sessionStorageService: SessionStorageService,
-        private _taskService: TaskService
+        private studyService: StudyService,
+        private snackbarService: SnackbarService,
+        private router: Router,
+        private userService: UserService,
+        private studyUserService: StudyUserService,
+        private sessionStorageService: SessionStorageService,
+        private taskService: TaskService,
+        private loaderService: LoaderService
     ) {}
 
-    // 1. call startStudy, which gets study from backend DB and extracts tasks
-    // 2. keep track of task number and route user to task
-    // 3. when finished, the task will call taskFinished and we increment the task number
-    // 4. repeat until we are out of tasks. Display completion code
+    /**
+     * 1. call initStudy, which gets study from backend DB and extracts tasks
+     *      we set the study id in session storage in order to persist it in case the user reloads the page
+     * 2. call runStudy, which goes to the next required task and runs it
+     * 3. call next, which will redirect to the next scheduled task
+     *      this also coincides with a call to setTaskAsComplete(), as that increments the task index on the backend
+     * 4. repeat until we are out of tasks
+     */
 
-    configureStudy(studyId: number, currentIndex: number) {
-        this._currentTaskIndex = currentIndex;
-        this._studyService
-            .getStudyById(studyId)
+    initStudy(studyId: number) {
+        this.loaderService.showLoader();
+        this.sessionStorageService.setCurrentlyRunningStudyIdInSessionStorage(studyId.toString());
+        this.userService
+            .getUser()
             .pipe(
-                map((res) => res.body),
-                mergeMap((study) => {
-                    this._study = study;
-                    if (!this._userService.userHasValue) this._userService.updateUser();
-                    return this._userService.isCrowdsourcedUser
-                        ? this._taskService.getTaskByTaskId(study.consent)
-                        : of(null);
+                take(1),
+                mergeMap((_user) =>
+                    this.userService.isCrowdsourcedUser ? of(null) : this.studyUserService.getStudyUsers(true)
+                ),
+                mergeMap((studyUsers: null | StudyUser[]) => {
+                    if (studyUsers) {
+                        const studyUser = studyUsers.find((studyUser) => studyUser.studyId === studyId);
+                        if (!studyUser.hasAcceptedConsent) throw new Error('user has not accepted consent');
+                        this._currentTaskIndex = studyUser.currentTaskIndex;
+                    } else {
+                        // this is a crowdsourced user
+                        this._currentTaskIndex = 0;
+                    }
+                    return this.studyService.getStudyById(studyId);
                 }),
-                take(1)
+                mergeMap((res) => {
+                    this._study = res.body;
+                    return this.userService.isCrowdsourcedUser
+                        ? this.taskService.getTaskByTaskId(res.body.consent)
+                        : of(null);
+                })
             )
             .subscribe(
-                (task: Task) => {
-                    if (task === null) {
-                        // account holders already have to agree to the consent before beginning the study
-                        // so they have already seen it
-                        this.startAfterConsent();
-                    } else {
-                        // crowdsourced user, always show consent in the beginning
-                        this.showConsent(task);
-                    }
+                (task: Task | null) => {
+                    /**
+                     * Account holders must agree to consent before starting the study so we can direct them straight
+                     * to the tasks.
+                     * Crowdsourced users must be shown the consent first.
+                     */
+                    task === null ? this.runStudy() : this.showConsent(task);
                 },
                 (_err) => {
                     this.handleErr();
                 }
-            );
+            )
+            .add(() => {
+                this.loaderService.hideLoader();
+            });
+    }
+
+    public runStudy() {
+        this._routeToTask(this.currentStudyTask);
     }
 
     private showConsent(consent: Task) {
         const config: ConsentNavigationConfig = {
             mode: 'actual',
-            metadata: consent.config,
+            metadata: consent.config.metadata[0].componentConfig,
         };
 
-        this._router.navigate([`${RouteNames.CONSENT}`], { state: config });
-    }
-
-    startAfterConsent() {
-        this._routeToTask(this.currentStudyTask);
+        this.router.navigate([`${RouteNames.CONSENT}`], { state: config });
     }
 
     handleErr(): void {
-        this._sessionStorageService.clearSessionStorage();
-        if (this._userService.isCrowdsourcedUser) {
-            this._router.navigate([ParticipantRouteNames.CROWDSOURCEPARTICIPANT_REGISTER_BASEROUTE]);
+        this.sessionStorageService.clearSessionStorage();
+        if (this.userService.isCrowdsourcedUser) {
+            this.router.navigate([ParticipantRouteNames.CROWDSOURCEPARTICIPANT_REGISTER_BASEROUTE]);
         } else {
-            this._router.navigate([ParticipantRouteNames.DASHBOARD_BASEROUTE]);
+            this.router.navigate([ParticipantRouteNames.DASHBOARD_BASEROUTE]);
         }
-        this._snackbarService.openErrorSnackbar(
+        this.snackbarService.openErrorSnackbar(
             'There was an error. Please contact sharplab.neuro@mcgill.ca',
             undefined,
             15000
@@ -117,53 +140,41 @@ export class TaskManagerService implements CanClear {
     // ------------------------------------
 
     private _routeToTask(studyTask: StudyTask) {
-        this._router.navigate([`${ParticipantRouteNames.DASHBOARD_BASEROUTE}`]).then(() => {
-            if (studyTask.task.fromPlatform === Platform.PAVLOVIA) {
-                // taskType can also be experimental or NAB from pavlovia
-                const navigationConfig: EmbeddedPageNavigationConfig = {
-                    mode: 'actual',
-                    config: {
-                        externalURL: studyTask.task.externalURL,
-                        task: studyTask.task,
-                    },
-                };
-                this._router.navigate([RouteNames.PAVLOVIA], { state: navigationConfig });
-            } else if (studyTask.task.taskType === TaskType.QUESTIONNAIRE) {
-                // if config object is empty, that means we use the default config.
-                // otherwise, use the overriding config
-                const config = objIsEmpty(studyTask.config) ? studyTask.task.config : studyTask.config;
-                const navigationConfig: QuestionnaireNavigationConfig = {
-                    metadata: config,
-                    mode: 'actual',
-                };
-                this._router.navigate([RouteNames.QUESTIONNAIRE], { state: navigationConfig });
-            } else if (studyTask.task.taskType === TaskType.EXPERIMENTAL || studyTask.task.taskType === TaskType.NAB) {
-                const config = objIsEmpty(studyTask.config) ? studyTask.task.config : studyTask.config;
-                const navigationConfig: TaskPlayerNavigationConfig = {
-                    metadata: config,
-                    mode: 'actual',
-                };
-                this._router.navigate([RouteNames.TASKPLAYER], { state: navigationConfig });
-            } else if (studyTask.task.taskType === TaskType.INFO_DISPLAY) {
-                const config = objIsEmpty(studyTask.config) ? studyTask.task.config : studyTask.config;
-                const navigationConfig: InfoDisplayNavigationConfig = {
-                    metadata: config,
-                    mode: 'actual',
-                };
-                this._router.navigate([RouteNames.INFO_DISPLAY], { state: navigationConfig });
-            }
+        this.router.navigate([`${RouteNames.BLANK}`]).then(() => {
+            const hasConfigOverride = !objIsEmpty(studyTask.config);
+
+            const sharplabConfig = (hasConfigOverride ? studyTask.config : studyTask.task.config) as SharplabTaskConfig;
+
+            const navigationConfig: TaskPlayerNavigationConfig = {
+                mode: 'actual',
+                metadata: sharplabConfig,
+            };
+
+            this.router.navigate([`${RouteNames.TASKPLAYER}`], { state: navigationConfig });
         });
     }
 
     private _routeToFinalPage(completionCode: string): void {
-        if (this._userService.isCrowdsourcedUser) {
-            this._router.navigate(['/complete'], { state: { completionCode: completionCode } });
+        if (this.userService.isCrowdsourcedUser) {
+            this.router.navigate(['/complete'], { state: { completionCode: completionCode } });
         } else {
-            this._userService.updateStudyUsers();
-            this._router.navigate([
-                `${ParticipantRouteNames.DASHBOARD_BASEROUTE}/${ParticipantRouteNames.STUDIES_SUBROUTE}`,
-            ]);
-            this._snackbarService.openSuccessSnackbar('Completed Study!');
+            this.loaderService.showLoader();
+            this.studyUserService
+                .getStudyUsers(true)
+                .subscribe(
+                    () => {
+                        this.router.navigate([
+                            `${ParticipantRouteNames.DASHBOARD_BASEROUTE}/${ParticipantRouteNames.STUDIES_SUBROUTE}`,
+                        ]);
+                        this.snackbarService.openSuccessSnackbar('Completed Study!');
+                    },
+                    (err) => {
+                        this.snackbarService.openErrorSnackbar('there was an error');
+                    }
+                )
+                .add(() => {
+                    this.loaderService.hideLoader();
+                });
         }
     }
 
@@ -176,19 +187,22 @@ export class TaskManagerService implements CanClear {
         // currentTaskIndex is incremented in the setTaskAsComplete method for account holders
         // this functionality is kept separate as there are cases where we want to set as complete before
         // the user officially finishes the task (when the last block is finished, not when the user hits next)
-        if (this._userService.isCrowdsourcedUser) ++this._currentTaskIndex;
+        if (this.userService.isCrowdsourcedUser) ++this._currentTaskIndex;
 
         this.handleNext();
     }
 
     // only for account holders because their current task index is saved in the db
     setTaskAsComplete(): Observable<boolean> {
-        return this._userService.studyUsers.pipe(
+        return this.studyUserService.studyUsers.pipe(
             map((studyUsers) => studyUsers.find((studyUser) => studyUser.studyId === this.study.id)),
             mergeMap((studyUser) => {
-                studyUser.currentTaskIndex = ++this._currentTaskIndex;
-                return this._userService.updateStudyUser(studyUser);
+                return this.studyUserService.incrementStudyUserTaskIndex(studyUser);
             }),
+            tap((res) => {
+                this._currentTaskIndex = res.body.currentTaskIndex;
+            }),
+            map((res) => res.ok),
             take(1)
         );
     }
@@ -200,8 +214,8 @@ export class TaskManagerService implements CanClear {
             this._routeToTask(this.currentStudyTask);
             return;
         } else {
-            if (this._userService.isCrowdsourcedUser) {
-                this._userService.markCompletion(this.study.id).subscribe(
+            if (this.userService.isCrowdsourcedUser) {
+                this.userService.markCompletion(this.study.id).subscribe(
                     (completionCode: string) => {
                         this._routeToFinalPage(completionCode);
                     },
