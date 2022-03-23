@@ -16,7 +16,6 @@ export class AdminDashboardComponent implements OnInit {
         this.userService
             .getUser()
             .pipe(
-                take(1),
                 tap((user) => {
                     this.translateService.use(user.lang);
                 })

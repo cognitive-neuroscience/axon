@@ -25,21 +25,30 @@ export class SendResetPasswordComponent implements OnInit {
     handleSubmit() {
         if (this.email.length > 0) {
             this.loaderService.showLoader();
-            this.emailService.sendForgotPasswordEmail(this.email).subscribe(
-                (ok) => {
-                    this.loaderService.hideLoader();
-                    if (ok) {
-                        this.snackbarService.openSuccessSnackbar('reset email sent to ' + this.email, undefined, 5000);
-                        this.router.navigate([`${RouteNames.LANDINGPAGE_RESET_PASSWORD_BASEROUTE}`]);
-                    } else {
+            this.emailService
+                .sendForgotPasswordEmail(this.email)
+                .subscribe(
+                    (ok) => {
+                        if (ok) {
+                            this.snackbarService.openSuccessSnackbar(
+                                'reset email sent to ' + this.email,
+                                undefined,
+                                5000
+                            );
+                            this.router.navigate([`${RouteNames.LANDINGPAGE_RESET_PASSWORD_BASEROUTE}`]);
+                        } else {
+                            this.snackbarService.openErrorSnackbar(
+                                `there was an error sending an email to ${this.email}`
+                            );
+                        }
+                    },
+                    (_err) => {
                         this.snackbarService.openErrorSnackbar(`there was an error sending an email to ${this.email}`);
                     }
-                },
-                (_err) => {
+                )
+                .add(() => {
                     this.loaderService.hideLoader();
-                    this.snackbarService.openErrorSnackbar(`there was an error sending an email to ${this.email}`);
-                }
-            );
+                });
         }
     }
 

@@ -62,6 +62,7 @@ export class TaskManagerService implements CanClear {
      * 3. call next, which will redirect to the next scheduled task
      *      this also coincides with a call to setTaskAsComplete(), as that increments the task index on the backend
      * 4. repeat until we are out of tasks
+     * 5. call route
      */
 
     initStudy(studyId: number) {
@@ -120,7 +121,9 @@ export class TaskManagerService implements CanClear {
             metadata: consent.config.metadata[0].componentConfig,
         };
 
-        this.router.navigate([`${RouteNames.CONSENT}`], { state: config });
+        this.router.navigate([`${RouteNames.BLANK}`]).then(() => {
+            this.router.navigate([`${RouteNames.CONSENT}`], { state: config });
+        });
     }
 
     handleErr(): void {
@@ -156,7 +159,13 @@ export class TaskManagerService implements CanClear {
 
     private _routeToFinalPage(completionCode: string): void {
         if (this.userService.isCrowdsourcedUser) {
-            this.router.navigate(['/complete'], { state: { completionCode: completionCode } });
+            this.loaderService.showLoader();
+            this.router
+                .navigate(['/complete'], { state: { completionCode: completionCode } })
+                .then(() => {})
+                .finally(() => {
+                    this.loaderService.hideLoader();
+                });
         } else {
             this.loaderService.showLoader();
             this.studyUserService
@@ -189,12 +198,13 @@ export class TaskManagerService implements CanClear {
         // the user officially finishes the task (when the last block is finished, not when the user hits next)
         if (this.userService.isCrowdsourcedUser) ++this._currentTaskIndex;
 
-        this.handleNext();
+        this._handleNext();
     }
 
     // only for account holders because their current task index is saved in the db
     setTaskAsComplete(): Observable<boolean> {
         return this.studyUserService.studyUsers.pipe(
+            take(1),
             map((studyUsers) => studyUsers.find((studyUser) => studyUser.studyId === this.study.id)),
             mergeMap((studyUser) => {
                 return this.studyUserService.incrementStudyUserTaskIndex(studyUser);
@@ -202,12 +212,11 @@ export class TaskManagerService implements CanClear {
             tap((res) => {
                 this._currentTaskIndex = res.body.currentTaskIndex;
             }),
-            map((res) => res.ok),
-            take(1)
+            map((res) => res.ok)
         );
     }
 
-    private handleNext() {
+    private _handleNext() {
         const totalTasks = this.study.tasks.length;
         // route to next task if there is still another task to go to
         if (this._currentTaskIndex < totalTasks) {

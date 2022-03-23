@@ -45,7 +45,10 @@ export class UserService implements CanClear {
     }
 
     get userIsAdmin(): Observable<boolean> {
-        return this.userAsync.pipe(map((user) => (user ? user.role === Role.ADMIN : false)));
+        return this.userAsync.pipe(
+            map((user) => (user ? user.role === Role.ADMIN : false)),
+            take(1)
+        );
     }
 
     constructor(
@@ -70,7 +73,8 @@ export class UserService implements CanClear {
     // gets the user value and updates it if it does not exist
     getUser(forceUpdate = false): Observable<User> {
         if (this.userHasValue && !forceUpdate) {
-            return this.userAsync;
+            // this observable will keep omitting values unless we suppress it
+            return this.userAsync.pipe(take(1));
         } else {
             return this.isCrowdsourcedUser
                 ? this._getCrowdsourcedUser(this.currentlyRunningStudyId).pipe(
@@ -89,53 +93,46 @@ export class UserService implements CanClear {
                 : this._getUser().pipe(
                       tap((user: User) => {
                           this._userBehaviorSubject.next(user);
-                      }),
-                      take(1)
+                      })
                   );
         }
     }
 
     updateUser(): void {
         if (this.isCrowdsourcedUser) {
-            this._getCrowdsourcedUser(this.currentlyRunningStudyId)
-                .pipe(take(1))
-                .subscribe(
-                    (crowdsourcedUser) => {
-                        const user: User = {
-                            id: 0,
-                            email: crowdsourcedUser.participantId,
-                            role: Role.PARTICIPANT,
-                            createdAt: crowdsourcedUser.registerDate,
-                            changePasswordRequired: false,
-                            lang: SupportedLangs.NONE,
-                        };
-                        this._userBehaviorSubject.next(user);
-                    },
-                    (err) => {
-                        throw new Error(err.message);
-                    }
-                );
+            this._getCrowdsourcedUser(this.currentlyRunningStudyId).subscribe(
+                (crowdsourcedUser) => {
+                    const user: User = {
+                        id: 0,
+                        email: crowdsourcedUser.participantId,
+                        role: Role.PARTICIPANT,
+                        createdAt: crowdsourcedUser.registerDate,
+                        changePasswordRequired: false,
+                        lang: SupportedLangs.NONE,
+                    };
+                    this._userBehaviorSubject.next(user);
+                },
+                (err) => {
+                    throw new Error(err.message);
+                }
+            );
         } else {
-            this._getUser()
-                .pipe(take(1))
-                .subscribe(
-                    (user) => {
-                        this._userBehaviorSubject.next(user);
-                    },
-                    (err) => {
-                        this._userBehaviorSubject.next(null);
-                        throw new Error(err.message);
-                    }
-                );
+            this._getUser().subscribe(
+                (user) => {
+                    this._userBehaviorSubject.next(user);
+                },
+                (err) => {
+                    this._userBehaviorSubject.next(null);
+                    throw new Error(err.message);
+                }
+            );
         }
     }
 
     updateGuests(): void {
-        this._getGuests()
-            .pipe(take(1))
-            .subscribe((guests) => {
-                this._guestsSubject.next(guests);
-            });
+        this._getGuests().subscribe((guests) => {
+            this._guestsSubject.next(guests);
+        });
     }
 
     markCompletion(studyId: number): Observable<string> {

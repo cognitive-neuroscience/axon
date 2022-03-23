@@ -34,11 +34,9 @@ export class StudyService implements CanClear {
     }
 
     update(): void {
-        this._getAllStudies()
-            .pipe(take(1))
-            .subscribe((studies) => {
-                this._studiesBehaviorSubject.next(studies);
-            });
+        this._getAllStudies().subscribe((studies) => {
+            this._studiesBehaviorSubject.next(studies);
+        });
     }
 
     getStudyById(studyId: number): Observable<HttpResponse<Study>> {

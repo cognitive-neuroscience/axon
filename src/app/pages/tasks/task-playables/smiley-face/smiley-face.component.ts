@@ -167,7 +167,6 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
                 '/assets/images/stimuli/smileyface/no.png',
                 '/assets/images/stimuli/smileyface/long.png',
             ])
-            .pipe(take(1))
             .subscribe((blobs) => {
                 this.blobs = blobs;
                 this.taskData = [];

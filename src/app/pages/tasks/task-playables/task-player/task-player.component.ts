@@ -98,10 +98,10 @@ export class TaskPlayerComponent implements OnDestroy {
             if (currentlyRunningStudyId !== null) {
                 this.taskManager.initStudy(parseInt(currentlyRunningStudyId));
             } else {
+                // handle case where page is refreshed and no study is in session storage
                 this.location.back();
             }
         }
-        // TODO: handle case where page is refreshed by admin
     }
 
     // task metadata variables

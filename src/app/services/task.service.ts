@@ -27,9 +27,7 @@ export class TaskService implements CanClear {
     }
 
     public update() {
-        this._getTasks()
-            .pipe(take(1))
-            .subscribe((tasks) => this._tasksBehaviorSubject.next(tasks));
+        this._getTasks().subscribe((tasks) => this._tasksBehaviorSubject.next(tasks));
     }
 
     private _getTasks(): Observable<Task[]> {

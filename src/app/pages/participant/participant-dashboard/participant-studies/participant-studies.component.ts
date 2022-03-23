@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, of, Subscription } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap, tap } from 'rxjs/operators';
 import { wait } from 'src/app/common/commonMethods';
 import { StudyUser } from 'src/app/models/Login';
 import { ConsentNavigationConfig } from 'src/app/pages/shared/consent-component/consent-reader.component';

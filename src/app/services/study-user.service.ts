@@ -1,7 +1,7 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { StudyUser, User } from '../models/Login';
 import { CanClear } from './clearance.service';
@@ -28,7 +28,7 @@ export class StudyUserService implements CanClear {
 
     getStudyUsers(forceUpdate: boolean = false): Observable<StudyUser[]> {
         return this.hasStudyUsers && !forceUpdate
-            ? this.studyUsers
+            ? this.studyUsers.pipe(take(1))
             : this._getStudyUsers().pipe(
                   tap((studyUsers: StudyUser[]) => {
                       this._studyUsersSubject.next(studyUsers);

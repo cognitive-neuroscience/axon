@@ -25,6 +25,7 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
     studyId: number;
     urlContainsCode: boolean = false;
     subscriptions: Subscription[] = [];
+    wasClicked = false;
 
     constructor(
         private _route: ActivatedRoute,
@@ -57,52 +58,57 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
     }
 
     onRegister() {
-        if (this.workerId.length === 0) return;
+        if (!this.wasClicked) {
+            this.wasClicked = true;
 
-        this.clearanceService.clearServices();
+            if (this.workerId.length === 0) return;
 
-        this.openLanguageDialog()
-            .pipe(
-                mergeMap((lang) => {
-                    if (!lang) return throwError('user exited dialog');
-                    this.translateService.use(lang);
-                    this.loaderService.showLoader();
-                    return this.userService.registerCrowdsourcedUser(this.workerId, this.studyId, lang);
-                }),
-                mergeMap((res) => {
-                    this.sessionStorageService.setIsCrowdsourcedUser(true);
-                    // we set this here because the getUser func requires the current study id
-                    this.sessionStorageService.setCurrentlyRunningStudyIdInSessionStorage(res.studyId.toString());
-                    return this.userService.getUser();
-                })
-            )
-            .subscribe(
-                async (user) => {
-                    if (user) {
-                        await this.startGameInFullScreen();
-                        this._snackbarService.openSuccessSnackbar('Registered: ' + this.workerId);
-                        this._taskManager.initStudy(this.studyId);
-                    }
-                },
-                (err) => {
-                    // if headers too large error
-                    if (err.status && err.status === 431) {
-                        this._snackbarService.openErrorSnackbar(
-                            'There was an error. Please try again by clearing your cookies, or open the study in incognito mode.',
-                            '',
-                            6000
-                        );
-                    } else {
-                        if (err !== 'user exited dialog') {
-                            console.error(err);
-                            this._snackbarService.openErrorSnackbar(err.message || err.error?.message);
+            this.clearanceService.clearServices();
+
+            this.openLanguageDialog()
+                .pipe(
+                    mergeMap((lang) => {
+                        if (!lang) return throwError('user exited dialog');
+                        this.translateService.use(lang);
+                        this.loaderService.showLoader();
+                        return this.userService.registerCrowdsourcedUser(this.workerId, this.studyId, lang);
+                    }),
+                    mergeMap((res) => {
+                        this.sessionStorageService.setIsCrowdsourcedUser(true);
+                        // we set this here because the getUser func requires the current study id
+                        this.sessionStorageService.setCurrentlyRunningStudyIdInSessionStorage(res.studyId.toString());
+                        return this.userService.getUser();
+                    }),
+                    take(1)
+                )
+                .subscribe(
+                    async (user) => {
+                        if (user) {
+                            await this.startGameInFullScreen();
+                            this._snackbarService.openSuccessSnackbar('Registered: ' + this.workerId);
+                            this._taskManager.initStudy(this.studyId);
+                        }
+                    },
+                    (err) => {
+                        // if headers too large error
+                        if (err.status && err.status === 431) {
+                            this._snackbarService.openErrorSnackbar(
+                                'There was an error. Please try again by clearing your cookies, or open the study in incognito mode.',
+                                '',
+                                6000
+                            );
+                        } else {
+                            if (err !== 'user exited dialog') {
+                                console.error(err);
+                                this._snackbarService.openErrorSnackbar(err.message || err.error?.message);
+                            }
                         }
                     }
-                }
-            )
-            .add(() => {
-                this.loaderService.hideLoader();
-            });
+                )
+                .add(() => {
+                    this.loaderService.hideLoader();
+                });
+        }
     }
 
     async startGameInFullScreen() {

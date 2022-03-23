@@ -39,7 +39,6 @@ export class StudyBackgroundComponent implements OnInit, OnDestroy {
             this.subscriptions.push(
                 this.studyService
                     .getStudyById(parsedNum)
-                    .pipe(take(1))
                     .subscribe(
                         (task) => {
                             if (task.status === 204) {

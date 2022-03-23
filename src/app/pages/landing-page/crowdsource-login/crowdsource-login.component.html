@@ -10,7 +10,7 @@
     <div class="right-login-screen">
         <div class="w-75">
             <form #f="ngForm">
-                <mat-form-field class="w-100">
+                <mat-form-field class="w-100 mb-2">
                     <mat-label>Enter your ID</mat-label>
                     <!-- capitalize all input -->
                     <!-- workerId is tied to the string input, workerid is tied to the model -->
@@ -37,7 +37,9 @@
                     *ngIf="f.valid"
                     mat-raised-button
                     color="primary"
-                    style="font-size: 1.5rem; position: absolute; height: 45px"
+                    style="font-size: 1.5rem; position: absolute; width: 200px"
+                    class="p-2"
+                    [disabled]="wasClicked"
                 >
                     continue
                 </button>

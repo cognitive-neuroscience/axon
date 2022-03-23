@@ -68,7 +68,6 @@ export class DataComponent implements OnInit {
                 mergeMap((isAdmin) => {
                     return isAdmin ? this.studyDataService.getParticipantData(study.id, studyTask.taskOrder) : of(null);
                 }),
-                take(1),
                 catchError((x) => {
                     this.loaderService.hideLoader();
                     this.snackbarService.openErrorSnackbar('there was an error getting task data');
@@ -153,60 +152,54 @@ export class DataComponent implements OnInit {
     getCrowdsourceUsersForStudy(study: Study) {
         this.loaderService.showLoader();
 
-        this.userService
-            .getCrowdsourcedUsersByStudyId(study.id)
-            .pipe(take(1))
-            .subscribe(
-                (crowdsourcedUsers) => {
-                    let crowdsourcedUsersDataTable: DataTableFormat[] = crowdsourcedUsers.map((data) => {
-                        return {
-                            fields: {
-                                ...data,
-                            },
-                            expandable: [],
-                        };
-                    });
-                    crowdsourcedUsersDataTable = this.formatDates(crowdsourcedUsersDataTable);
+        this.userService.getCrowdsourcedUsersByStudyId(study.id).subscribe(
+            (crowdsourcedUsers) => {
+                let crowdsourcedUsersDataTable: DataTableFormat[] = crowdsourcedUsers.map((data) => {
+                    return {
+                        fields: {
+                            ...data,
+                        },
+                        expandable: [],
+                    };
+                });
+                crowdsourcedUsersDataTable = this.formatDates(crowdsourcedUsersDataTable);
 
-                    this.tableData = crowdsourcedUsersDataTable;
-                    this.fileName = `TASKDATA_${study.internalName}_CROWDSOURCED_USERS`;
-                    this.loaderService.hideLoader();
-                },
-                (err) => {
-                    this.loaderService.hideLoader();
-                    this.snackbarService.openErrorSnackbar(err.message);
-                }
-            );
+                this.tableData = crowdsourcedUsersDataTable;
+                this.fileName = `TASKDATA_${study.internalName}_CROWDSOURCED_USERS`;
+                this.loaderService.hideLoader();
+            },
+            (err) => {
+                this.loaderService.hideLoader();
+                this.snackbarService.openErrorSnackbar(err.message);
+            }
+        );
     }
 
     getStudyUsersForStudy(study: Study) {
         this.loaderService.showLoader();
 
-        this.studyUserService
-            .getStudyUsersForStudy(study.id)
-            .pipe(take(1))
-            .subscribe(
-                (studyUsers) => {
-                    let studyUsersDataTable: DataTableFormat[] = studyUsers.map((data) => {
-                        delete data.study;
-                        return {
-                            fields: {
-                                ...data,
-                            },
-                            expandable: [],
-                        };
-                    });
-                    studyUsersDataTable = this.formatDates(studyUsersDataTable);
+        this.studyUserService.getStudyUsersForStudy(study.id).subscribe(
+            (studyUsers) => {
+                let studyUsersDataTable: DataTableFormat[] = studyUsers.map((data) => {
+                    delete data.study;
+                    return {
+                        fields: {
+                            ...data,
+                        },
+                        expandable: [],
+                    };
+                });
+                studyUsersDataTable = this.formatDates(studyUsersDataTable);
 
-                    this.tableData = studyUsersDataTable;
-                    this.fileName = `TASKDATA_${study.internalName}_ACCOUNT_HOLDERS`;
-                    this.loaderService.hideLoader();
-                },
-                (err) => {
-                    this.loaderService.hideLoader();
-                    this.snackbarService.openErrorSnackbar(err.message);
-                }
-            );
+                this.tableData = studyUsersDataTable;
+                this.fileName = `TASKDATA_${study.internalName}_ACCOUNT_HOLDERS`;
+                this.loaderService.hideLoader();
+            },
+            (err) => {
+                this.loaderService.hideLoader();
+                this.snackbarService.openErrorSnackbar(err.message);
+            }
+        );
     }
 
     // returns the dateTime or null if invalid

@@ -61,8 +61,7 @@ export class LoginComponent implements OnDestroy {
                 mergeMap(() => this.userService.getUser()),
                 catchError((err) => {
                     throw err;
-                }),
-                take(1)
+                })
             )
             .subscribe(
                 (user) => {

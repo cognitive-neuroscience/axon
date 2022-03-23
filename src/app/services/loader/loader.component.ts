@@ -1,12 +1,12 @@
-import { Component, OnInit } from "@angular/core";
-import { take } from "rxjs/operators";
-import { ImageService } from "../image.service";
-import { LoaderService } from "./loader.service";
+import { Component, OnInit } from '@angular/core';
+import { take } from 'rxjs/operators';
+import { ImageService } from '../image.service';
+import { LoaderService } from './loader.service';
 
 @Component({
-    selector: "app-loader",
-    templateUrl: "./loader.component.html",
-    styleUrls: ["./loader.component.scss"],
+    selector: 'app-loader',
+    templateUrl: './loader.component.html',
+    styleUrls: ['./loader.component.scss'],
 })
 export class LoaderComponent implements OnInit {
     shouldShowLoader: boolean = false;
@@ -23,20 +23,17 @@ export class LoaderComponent implements OnInit {
 
     private setImage(blob: Blob) {
         const fr = new FileReader();
-        fr.addEventListener("load", () => {
+        fr.addEventListener('load', () => {
             this.loadingBlob = fr.result;
         });
         fr.readAsDataURL(blob);
     }
 
     constructor(private loaderService: LoaderService, private imageService: ImageService) {
-        this.imageService
-            .loadImagesAsBlobs(["/assets/logo/lablogo.png"])
-            .pipe(take(1))
-            .subscribe((res) => {
-                this.subscribeToLoader();
-                this.setImage(res[0]);
-            });
+        this.imageService.loadImagesAsBlobs(['/assets/logo/lablogo.png']).subscribe((res) => {
+            this.subscribeToLoader();
+            this.setImage(res[0]);
+        });
     }
 
     private subscribeToLoader() {

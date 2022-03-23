@@ -43,7 +43,7 @@ export class RegisterComponent {
     subscriptions: Subscription[] = [];
     passwordIsVisible = false;
 
-    private readonly REGISTER_SUCCESS_STR = 'User successfully created!';
+    private readonly REGISTER_SUCCESS_STR = 'User successfully created! ';
 
     constructor(
         private router: Router,
@@ -77,18 +77,21 @@ export class RegisterComponent {
         this.loaderService.showLoader();
 
         this.subscriptions.push(
-            this.userService.registerUser(email, password, Role.PARTICIPANT).subscribe(
-                (_) => {
+            this.userService
+                .registerUser(email, password, Role.PARTICIPANT)
+                .subscribe(
+                    (_) => {
+                        this.snackbarService.openSuccessSnackbar(this.REGISTER_SUCCESS_STR);
+                        this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
+                    },
+                    (error: HttpErrorResponse) => {
+                        console.error(error);
+                        this.snackbarService.openErrorSnackbar(error.message);
+                    }
+                )
+                .add(() => {
                     this.loaderService.hideLoader();
-                    this.snackbarService.openSuccessSnackbar(this.REGISTER_SUCCESS_STR);
-                    this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
-                },
-                (error: HttpErrorResponse) => {
-                    this.loaderService.hideLoader();
-                    console.error(error);
-                    this.snackbarService.openErrorSnackbar(error.message);
-                }
-            )
+                })
         );
     }
 

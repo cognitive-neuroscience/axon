@@ -51,8 +51,9 @@ export class NavbarComponent implements OnInit {
         this.userService
             .getUser()
             .pipe(
-                take(1),
-                mergeMap((user) => this.userService.patchUser({ ...user, lang: newLang })),
+                mergeMap((user) => {
+                    return this.userService.patchUser({ ...user, lang: newLang });
+                }),
                 mergeMap((_res) => this.userService.getUser(true))
             )
             .subscribe(
