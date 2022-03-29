@@ -4,7 +4,7 @@ import { getTextForLang, thisOrDefault } from 'src/app/common/commonMethods';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { Navigation } from '../navigation-buttons/navigation-buttons.component';
 import { Playable } from '../../task-playables/playable';
-import { TaskConfig } from '../../task-playables/task-player/task-player.component';
+import { TaskPlayerState } from '../../task-playables/task-player/task-player.component';
 import { TranslateService } from '@ngx-translate/core';
 import { ITranslationText } from 'src/app/models/InternalDTOs';
 import { SupportedLangs } from 'src/app/models/enums';
@@ -25,10 +25,10 @@ export interface ButtonConfig {
 }
 
 export interface TaskDisplayComponentMetadata {
-    component: ComponentName;
-    skippable?: boolean;
-    skippableCacheKey: string; // name of variable storing the boolean indicating whether to skip
-    content: {
+    componentName: ComponentName;
+    componentConfig: {
+        skippable?: boolean;
+        skippableCacheKey: string; // name of variable storing the boolean indicating whether to skip
         title?: string | ITranslationText;
         timerConfig?: {
             timer: number;
@@ -64,7 +64,7 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
     cacheKey: string = '';
 
     // config variables
-    config: TaskConfig;
+    config: TaskPlayerState;
     counterbalanceStr: string;
     counterbalanceAltStr: string;
 
@@ -78,7 +78,7 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
     // intervals/timers
     interval: number;
 
-    // inherited
+    // implemented
     onComplete = new Subject<{ navigation: Navigation }>();
 
     constructor(private translateService: TranslateService) {}
@@ -117,66 +117,49 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
         return getTextForLang(this.translateService.currentLang as SupportedLangs, titleObj);
     }
 
-    getTextForLang(textObj: ITranslationText | string): string {
-        let lang = this.translateService.currentLang;
-        if (!lang) lang = 'en';
-
-        if (!textObj) {
-            // textObj is falsy
-            return '';
-        } else if (typeof textObj === 'string') {
-            // for backwards compatibility sake, textObj is just a plain string with no translation
-            return textObj;
-        } else if (!textObj[lang]) {
-            // no translation for the given language
-            const hasEnglish = !textObj['en'];
-            // also no translation for english
-            if (!hasEnglish) return '';
-        } else {
-            return textObj[lang];
-        }
-    }
-
-    configure(metadata: TaskDisplayComponentMetadata, config: TaskConfig): void {
+    configure(metadata: TaskDisplayComponentMetadata, config: TaskPlayerState): void {
         this.config = config;
 
-        this.skippable = thisOrDefault(metadata.skippable, false);
-        this.cacheKey = thisOrDefault(metadata.skippableCacheKey, '');
+        this.skippable = thisOrDefault(metadata.componentConfig.skippable, false);
+        this.cacheKey = thisOrDefault(metadata.componentConfig.skippableCacheKey, '');
 
-        this.title = this.getTitle(metadata.content.title);
-        this.subtitle = thisOrDefault(metadata.content.subtitle, '');
-        this.displaySections = thisOrDefault(metadata.content.sections, []);
-        this.timerMode = thisOrDefault(!!metadata.content.timerConfig, false);
-        this.buttonConfig = thisOrDefault(metadata.content.buttons, {
+        this.title = this.getTitle(metadata.componentConfig.title);
+        this.subtitle = thisOrDefault(metadata.componentConfig.subtitle, '');
+        this.displaySections = thisOrDefault(metadata.componentConfig.sections, []);
+        this.timerMode = thisOrDefault(!!metadata.componentConfig.timerConfig, false);
+        this.buttonConfig = thisOrDefault(metadata.componentConfig.buttons, {
             isStart: false,
             previousDisabled: true,
             nextDisabled: false,
         });
 
         // search the display sections to see if counterbalance needs to be injected
-        if (!!metadata.content.sections.find((section) => section.injection === 'counterbalance')) {
+        if (!!metadata.componentConfig.sections.find((section) => section.injection === 'counterbalance')) {
             this.counterbalanceStr = config.counterBalanceGroups[config.counterbalanceNumber];
         }
 
         // search the display sections to see if counterbalance alt needs to be injected
-        if (!!metadata.content.sections.find((section) => section.injection === 'counterbalance-alternative')) {
+        if (!!metadata.componentConfig.sections.find((section) => section.injection === 'counterbalance-alternative')) {
             // 3 - 1 == 2, and 3 - 2 == 1. This gives us the value that is not the counterbalance target value
             this.counterbalanceAltStr = config.counterBalanceGroups[3 - config.counterbalanceNumber];
         }
 
         if (this.timerMode) {
-            this.timerCountDown = thisOrDefault(metadata.content.timerConfig.countDown, false);
-            this.showTimer = thisOrDefault(metadata.content.timerConfig.showTimer, false);
-            this.canSkipTimer = thisOrDefault(metadata.content.timerConfig.canSkipTimer, false);
-            this.skipAvailableAfterXSeconds = thisOrDefault(metadata.content.timerConfig.skipAvailableAfterXSeconds, 0);
+            this.timerCountDown = thisOrDefault(metadata.componentConfig.timerConfig.countDown, false);
+            this.showTimer = thisOrDefault(metadata.componentConfig.timerConfig.showTimer, false);
+            this.canSkipTimer = thisOrDefault(metadata.componentConfig.timerConfig.canSkipTimer, false);
+            this.skipAvailableAfterXSeconds = thisOrDefault(
+                metadata.componentConfig.timerConfig.skipAvailableAfterXSeconds,
+                0
+            );
 
             if (!this.canSkipTimer || this.skipAvailableAfterXSeconds > 0) {
                 this.showNavigationButtons = false;
             }
 
             this.timerCountDown
-                ? this.startTimerReverse(metadata.content.timerConfig.timer / 1000)
-                : this.startTimer(metadata.content.timerConfig.timer / 1000);
+                ? this.startTimerReverse(metadata.componentConfig.timerConfig.timer / 1000)
+                : this.startTimer(metadata.componentConfig.timerConfig.timer / 1000);
         }
     }
 

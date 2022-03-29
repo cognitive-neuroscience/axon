@@ -10,11 +10,11 @@ import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../base-task';
-import { TaskConfig } from '../task-player/task-player.component';
+import { TaskPlayerState } from '../task-player/task-player.component';
 
 export interface SARTMetadata {
-    component: ComponentName;
-    config: {
+    componentName: ComponentName;
+    componentConfig: {
         isPractice: boolean;
         maxResponseTime: number;
         interTrialDelay: number;
@@ -92,14 +92,14 @@ export class SartComponent extends AbstractBaseTaskComponent {
         super(loaderService);
     }
 
-    configure(metadata: SARTMetadata, config?: TaskConfig) {
+    configure(metadata: SARTMetadata, config?: TaskPlayerState) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
             this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
-            this.trialSize = throwErrIfNotDefined(metadata.config.trialSize, 'trial size not defined');
+            this.trialSize = throwErrIfNotDefined(metadata.componentConfig.trialSize, 'trial size not defined');
             this.maxResponseTime = throwErrIfNotDefined(
-                metadata.config.maxResponseTime,
+                metadata.componentConfig.maxResponseTime,
                 'max response time not defined'
             );
         } catch (error) {
@@ -107,19 +107,19 @@ export class SartComponent extends AbstractBaseTaskComponent {
         }
 
         this.config = config;
-        this.isPractice = thisOrDefault(metadata.config.isPractice, false);
-        this.maxResponseTime = thisOrDefault(metadata.config.maxResponseTime, 900);
-        this.interTrialDelay = thisOrDefault(metadata.config.interTrialDelay, 0);
-        this.durationFeedbackPresented = thisOrDefault(metadata.config.durationFeedbackPresented, 1000);
-        this.durationStimulusPresented = thisOrDefault(metadata.config.durationStimulusPresented, 250);
-        this.nogoTrialNum = thisOrDefault(metadata.config.nogoTrialNum, 25);
+        this.isPractice = thisOrDefault(metadata.componentConfig.isPractice, false);
+        this.maxResponseTime = thisOrDefault(metadata.componentConfig.maxResponseTime, 900);
+        this.interTrialDelay = thisOrDefault(metadata.componentConfig.interTrialDelay, 0);
+        this.durationFeedbackPresented = thisOrDefault(metadata.componentConfig.durationFeedbackPresented, 1000);
+        this.durationStimulusPresented = thisOrDefault(metadata.componentConfig.durationStimulusPresented, 250);
+        this.nogoTrialNum = thisOrDefault(metadata.componentConfig.nogoTrialNum, 25);
 
         this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as SARTStimuliSetType;
         if (this.isPractice) {
             this.counterbalance = SARTStimuliSetType.RANDOM;
         } else if (
-            metadata.config.counterbalanceMode &&
-            metadata.config.counterbalanceMode === 'counterbalance-alternative'
+            metadata.componentConfig.counterbalanceMode &&
+            metadata.componentConfig.counterbalanceMode === 'counterbalance-alternative'
         ) {
             this.counterbalance =
                 this.counterbalance === SARTStimuliSetType.ASCENDING
@@ -127,8 +127,8 @@ export class SartComponent extends AbstractBaseTaskComponent {
                     : SARTStimuliSetType.ASCENDING;
         }
 
-        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
-            this.stimuli = metadata.config.stimuliConfig.stimuli;
+        if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
     }
 
     start() {

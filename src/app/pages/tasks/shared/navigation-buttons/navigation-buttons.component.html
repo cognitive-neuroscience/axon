@@ -12,7 +12,7 @@
                 [class.error-text]="warn"
                 mat-raised-button
                 color="primary"
-                [disabled]="nextDisabled"
+                [disabled]="nextDisabled || wasClicked"
                 (click)="handleNext()"
             >
                 {{ forwardButtonText }}

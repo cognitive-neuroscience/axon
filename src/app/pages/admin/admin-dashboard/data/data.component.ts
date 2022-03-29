@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { forkJoin, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { DateTime } from 'luxon';
 import { StudyService } from '../../../../services/study.service';
 import { Study } from '../../../../models/Study';
@@ -12,6 +12,7 @@ import { SnackbarService } from 'src/app/services/snackbar.service';
 import { ParticipantData } from 'src/app/models/TaskData';
 import { TaskType } from 'src/app/models/enums';
 import { LoaderService } from 'src/app/services/loader/loader.service';
+import { StudyUserService } from 'src/app/services/study-user.service';
 
 @Component({
     selector: 'app-data',
@@ -32,6 +33,7 @@ export class DataComponent implements OnInit {
         private studyService: StudyService,
         private route: ActivatedRoute,
         private userService: UserService,
+        private studyUserService: StudyUserService,
         private studyDataService: ParticipantDataService,
         private snackbarService: SnackbarService,
         private loaderService: LoaderService
@@ -66,7 +68,6 @@ export class DataComponent implements OnInit {
                 mergeMap((isAdmin) => {
                     return isAdmin ? this.studyDataService.getParticipantData(study.id, studyTask.taskOrder) : of(null);
                 }),
-                take(1),
                 catchError((x) => {
                     this.loaderService.hideLoader();
                     this.snackbarService.openErrorSnackbar('there was an error getting task data');
@@ -151,99 +152,54 @@ export class DataComponent implements OnInit {
     getCrowdsourceUsersForStudy(study: Study) {
         this.loaderService.showLoader();
 
-        this.userService
-            .getCrowdsourcedUsersByStudyId(study.id)
-            .pipe(take(1))
-            .subscribe(
-                (crowdsourcedUsers) => {
-                    let crowdsourcedUsersDataTable: DataTableFormat[] = crowdsourcedUsers.map((data) => {
-                        return {
-                            fields: {
-                                ...data,
-                            },
-                            expandable: [],
-                        };
-                    });
-                    crowdsourcedUsersDataTable = this.formatDates(crowdsourcedUsersDataTable);
+        this.userService.getCrowdsourcedUsersByStudyId(study.id).subscribe(
+            (crowdsourcedUsers) => {
+                let crowdsourcedUsersDataTable: DataTableFormat[] = crowdsourcedUsers.map((data) => {
+                    return {
+                        fields: {
+                            ...data,
+                        },
+                        expandable: [],
+                    };
+                });
+                crowdsourcedUsersDataTable = this.formatDates(crowdsourcedUsersDataTable);
 
-                    this.tableData = crowdsourcedUsersDataTable;
-                    this.fileName = `TASKDATA_${study.internalName}_CROWDSOURCED_USERS`;
-                    this.loaderService.hideLoader();
-                },
-                (err) => {
-                    this.loaderService.hideLoader();
-                    this.snackbarService.openErrorSnackbar(err.message);
-                }
-            );
+                this.tableData = crowdsourcedUsersDataTable;
+                this.fileName = `TASKDATA_${study.internalName}_CROWDSOURCED_USERS`;
+                this.loaderService.hideLoader();
+            },
+            (err) => {
+                this.loaderService.hideLoader();
+                this.snackbarService.openErrorSnackbar(err.message);
+            }
+        );
     }
 
     getStudyUsersForStudy(study: Study) {
         this.loaderService.showLoader();
 
-        this.userService
-            .getStudyUsersForStudy(study.id)
-            .pipe(take(1))
-            .subscribe(
-                (studyUsers) => {
-                    let studyUsersDataTable: DataTableFormat[] = studyUsers.map((data) => {
-                        delete data.study;
-                        return {
-                            fields: {
-                                ...data,
-                            },
-                            expandable: [],
-                        };
-                    });
-                    studyUsersDataTable = this.formatDates(studyUsersDataTable);
+        this.studyUserService.getStudyUsersForStudy(study.id).subscribe(
+            (studyUsers) => {
+                let studyUsersDataTable: DataTableFormat[] = studyUsers.map((data) => {
+                    delete data.study;
+                    return {
+                        fields: {
+                            ...data,
+                        },
+                        expandable: [],
+                    };
+                });
+                studyUsersDataTable = this.formatDates(studyUsersDataTable);
 
-                    this.tableData = studyUsersDataTable;
-                    this.fileName = `TASKDATA_${study.internalName}_ACCOUNT_HOLDERS`;
-                    this.loaderService.hideLoader();
-                },
-                (err) => {
-                    this.loaderService.hideLoader();
-                    this.snackbarService.openErrorSnackbar(err.message);
-                }
-            );
-    }
-
-    getFeedbackForStudy(study: Study) {
-        this.loaderService.showLoader();
-
-        this.userService.userIsAdmin
-            .pipe(
-                mergeMap((isAdmin) => {
-                    return isAdmin ? this.studyDataService.getFeedbackForStudyId(study.id) : of(null);
-                }),
-                take(1),
-                catchError((x) => {
-                    this.loaderService.hideLoader();
-                    this.snackbarService.openErrorSnackbar('there was an error getting task data');
-                    throw new Error('error getting data');
-                })
-            )
-            .subscribe(
-                (feedbackData) => {
-                    let dataTableFormat: DataTableFormat[] = feedbackData.map((data) => {
-                        return {
-                            fields: {
-                                ...data,
-                            },
-                            expandable: [],
-                        };
-                    });
-
-                    dataTableFormat = this.formatDates(dataTableFormat);
-
-                    this.tableData = dataTableFormat;
-                    this.fileName = `TASKDATA_${study.internalName}_FEEDBACK`;
-                    this.loaderService.hideLoader();
-                },
-                (err) => {
-                    this.loaderService.hideLoader();
-                    this.snackbarService.openErrorSnackbar(err.message);
-                }
-            );
+                this.tableData = studyUsersDataTable;
+                this.fileName = `TASKDATA_${study.internalName}_ACCOUNT_HOLDERS`;
+                this.loaderService.hideLoader();
+            },
+            (err) => {
+                this.loaderService.hideLoader();
+                this.snackbarService.openErrorSnackbar(err.message);
+            }
+        );
     }
 
     // returns the dateTime or null if invalid

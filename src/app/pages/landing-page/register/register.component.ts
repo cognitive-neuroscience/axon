@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -39,10 +39,11 @@ function fieldsMatchingValidator(
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnDestroy {
     subscriptions: Subscription[] = [];
+    passwordIsVisible = false;
 
-    private readonly REGISTER_SUCCESS_STR = 'User successfully created!';
+    private readonly REGISTER_SUCCESS_STR = 'User successfully created! Login using your credentials';
 
     constructor(
         private router: Router,
@@ -76,19 +77,26 @@ export class RegisterComponent {
         this.loaderService.showLoader();
 
         this.subscriptions.push(
-            this.userService.registerUser(email, password, Role.PARTICIPANT).subscribe(
-                (_) => {
+            this.userService
+                .registerUser(email, password, Role.PARTICIPANT)
+                .subscribe(
+                    (_) => {
+                        this.snackbarService.openSuccessSnackbar(this.REGISTER_SUCCESS_STR, undefined, 20000);
+                        this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
+                    },
+                    (error: HttpErrorResponse) => {
+                        console.error(error);
+                        this.snackbarService.openErrorSnackbar(error.message);
+                    }
+                )
+                .add(() => {
                     this.loaderService.hideLoader();
-                    this.snackbarService.openSuccessSnackbar(this.REGISTER_SUCCESS_STR);
-                    this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
-                },
-                (error: HttpErrorResponse) => {
-                    this.loaderService.hideLoader();
-                    console.error(error);
-                    this.snackbarService.openErrorSnackbar(error.message);
-                }
-            )
+                })
         );
+    }
+
+    togglePasswordVisibility() {
+        this.passwordIsVisible = !this.passwordIsVisible;
     }
 
     navigateToCrowdSourceRegister() {
@@ -101,5 +109,9 @@ export class RegisterComponent {
 
     navigateToForgotPassword() {
         this.router.navigate([RouteNames.LANDINGPAGE_FORGOT_PASSWORD_BASEROUTE]);
+    }
+
+    ngOnDestroy(): void {
+        this.snackbarService.clearSnackbar();
     }
 }

@@ -1,7 +1,7 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -19,9 +19,6 @@ export class EmailService {
                 { email: email },
                 { observe: 'response' }
             )
-            .pipe(
-                map((res) => res.ok),
-                take(1)
-            );
+            .pipe(map((res) => res.ok));
     }
 }

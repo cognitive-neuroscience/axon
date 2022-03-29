@@ -25,18 +25,19 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RotateDirective } from './shared/Rotate.directive';
 import { ColorGameComponent } from './unused/color-game/color-game.component';
-import { EmbeddedPageComponent } from './embedded-page/embedded-page.component';
+import { EmbeddedPageComponent } from './task-playables/embedded-page/embedded-page.component';
 import { SafeResoucePipe } from 'src/app/pipes/safe.pipe';
 import { SelectOptionComponent } from './shared/select-option/select-option.component';
-import { QuestionnaireReaderComponent } from './questionnaire-reader/questionnaire-reader.component';
-import { IntroDialogComponent } from './embedded-page/intro-dialog/intro-dialog.component';
-import { ConfirmDoneDialogComponent } from './embedded-page/confirm-done-dialog/confirm-done-dialog.component';
+import { QuestionnaireComponent } from './task-playables/questionnaire/questionnaire.component';
+import { IntroDialogComponent } from './task-playables/embedded-page/intro-dialog/intro-dialog.component';
+import { ConfirmDoneDialogComponent } from './task-playables/embedded-page/confirm-done-dialog/confirm-done-dialog.component';
 import { ConsentPageComponent } from './consent/consent-page/consent-page.component';
 import { SharedModule } from '../shared/shared.module';
-import { InfoDisplayComponent } from './info-display/info-display.component';
+import { InfoDisplayComponent } from './task-playables/info-display/info-display.component';
 import { SartComponent } from './task-playables/sart/sart.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FaceNameAssociationComponent } from './task-playables/face-name-association/face-name-association.component';
+import { BlankComponent } from './blank/blank.component';
 
 @NgModule({
     declarations: [
@@ -74,12 +75,13 @@ import { FaceNameAssociationComponent } from './task-playables/face-name-associa
         RotateDirective,
 
         SafeResoucePipe,
-        QuestionnaireReaderComponent,
+        QuestionnaireComponent,
         IntroDialogComponent,
         ConfirmDoneDialogComponent,
         ConsentPageComponent,
         SartComponent,
         FaceNameAssociationComponent,
+        BlankComponent,
     ],
     imports: [
         CommonModule,

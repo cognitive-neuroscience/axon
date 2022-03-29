@@ -12,16 +12,15 @@ body {
     background-color: white;
 }
 
+// remove outlines when button is clicked
 button {
     outline: none !important;
 }
 
-.underline {
-    text-decoration: underline;
-}
-
-.bold {
-    font-weight: bold;
+.underline-on-hover {
+    &:hover {
+        text-decoration: underline !important;
+    }
 }
 
 .task-text {
@@ -179,58 +178,6 @@ button {
     .feedback {
         font-size: 30px;
         text-transform: uppercase;
-    }
-
-    .rect {
-        height: 50px;
-        width: 50px;
-        border-radius: 0%;
-        margin: 5px;
-        text-align: left;
-        border: solid thin #000;
-    }
-
-    .circle {
-        height: 50px;
-        width: 50px;
-        border-radius: 50%;
-        margin: 5px;
-        text-align: left;
-        border: solid thin #000;
-    }
-
-    .teal {
-        background-color: green;
-    }
-    .red {
-        background-color: red;
-    }
-    .orange {
-        background-color: orange;
-    }
-    .purple {
-        background-color: purple;
-    }
-    .pink {
-        background-color: pink;
-    }
-    .brown {
-        background-color: brown;
-    }
-    .grey {
-        background-color: grey;
-    }
-    .blue {
-        background-color: blue;
-    }
-
-    .light {
-        font-weight: lighter;
-    }
-
-    .big {
-        height: 75px;
-        width: 75px;
     }
 }
 

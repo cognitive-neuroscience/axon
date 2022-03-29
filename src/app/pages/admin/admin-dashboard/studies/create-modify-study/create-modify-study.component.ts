@@ -204,7 +204,6 @@ export class CreateModifyStudyComponent implements OnInit {
                     study.tasks.map((t) => t.task)
                 )
             )
-            .pipe(take(1))
             .subscribe(
                 () => {
                     this.studyService.update();
@@ -249,20 +248,15 @@ export class CreateModifyStudyComponent implements OnInit {
             }),
         };
 
-        this.studyService
-            .createStudy(study)
-            .pipe(take(1))
-            .subscribe(
-                () => {
-                    this.studyService.update();
-                    this.snackbarService.openSuccessSnackbar('Successfully created ' + study.internalName);
-                    this.router.navigate([
-                        `${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.STUDIES_SUBROUTE}`,
-                    ]);
-                },
-                (err: HttpErrorResponse) => {
-                    this.snackbarService.openErrorSnackbar(err.message);
-                }
-            );
+        this.studyService.createStudy(study).subscribe(
+            () => {
+                this.studyService.update();
+                this.snackbarService.openSuccessSnackbar('Successfully created ' + study.internalName);
+                this.router.navigate([`${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.STUDIES_SUBROUTE}`]);
+            },
+            (err: HttpErrorResponse) => {
+                this.snackbarService.openErrorSnackbar(err.message);
+            }
+        );
     }
 }

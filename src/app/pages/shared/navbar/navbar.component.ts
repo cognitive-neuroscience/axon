@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap, take } from 'rxjs/operators';
 import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames, SupportedLangs } from 'src/app/models/enums';
-import { User } from 'src/app/models/Login';
 import { AuthService } from 'src/app/services/auth.service';
+import { ClearanceService } from 'src/app/services/clearance.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { UserService } from 'src/app/services/user.service';
@@ -39,27 +39,35 @@ export class NavbarComponent implements OnInit {
         private authService: AuthService,
         private loaderService: LoaderService,
         private snackbarService: SnackbarService,
-        private translateService: TranslateService
+        private translateService: TranslateService,
+        private clearanceService: ClearanceService
     ) {}
 
     ngOnInit(): void {}
 
     handleLanguageSwitch() {
+        this.loaderService.showLoader();
         const newLang = this.currentLang === SupportedLangs.FR ? SupportedLangs.EN : SupportedLangs.FR;
+
         this.userService
-            .updateUserDetails({
-                ...this.userService.user,
-                lang: newLang,
-            })
+            .getUser()
+            .pipe(
+                mergeMap((user) => {
+                    return this.userService.patchUser({ ...user, lang: newLang });
+                }),
+                mergeMap((_res) => this.userService.getUser(true))
+            )
             .subscribe(
-                (res) => {
-                    this.userService.updateUser();
+                (_res) => {
                     this.translateService.use(newLang);
                 },
-                (err) => {
+                (_err) => {
                     this.snackbarService.openErrorSnackbar('There was an error changing the language');
                 }
-            );
+            )
+            .add(() => {
+                this.loaderService.hideLoader();
+            });
     }
 
     get currentLang(): string {
@@ -68,17 +76,21 @@ export class NavbarComponent implements OnInit {
 
     logout() {
         this.loaderService.showLoader();
-        this.authService.logout().subscribe(
-            () => {
+        this.clearanceService.clearServices();
+        this.authService
+            .logout()
+            .subscribe(
+                () => {
+                    this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
+                    this.snackbarService.openSuccessSnackbar('Successfully logged out');
+                },
+                (_err) => {
+                    this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
+                    this.snackbarService.openErrorSnackbar('Logged out but encountered issues clearing cookies');
+                }
+            )
+            .add(() => {
                 this.loaderService.hideLoader();
-                this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
-                this.snackbarService.openSuccessSnackbar('Successfully logged out');
-            },
-            (err) => {
-                this.loaderService.hideLoader();
-                this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
-                this.snackbarService.openErrorSnackbar('Logged out but encountered issues clearing cookies');
-            }
-        );
+            });
     }
 }

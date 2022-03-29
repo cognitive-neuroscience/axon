@@ -8,13 +8,9 @@ export enum RouteNames {
 
     TASKPLAYER = 'playtask',
 
-    QUESTIONNAIRE = 'questionnaire',
-
-    PAVLOVIA = 'pavlovia',
-
     CONSENT = 'consent',
 
-    INFO_DISPLAY = 'infodisplay',
+    BLANK = 'blank',
 }
 
 export enum AdminRouteNames {

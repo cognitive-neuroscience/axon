@@ -1,13 +1,13 @@
-import { Component } from "@angular/core";
-import { Subject } from "rxjs";
-import { ComponentName } from "src/app/services/component-factory.service";
-import { Playable } from "../../task-playables/playable";
-import { TaskConfig } from "../../task-playables/task-player/task-player.component";
-import { Navigation } from "../navigation-buttons/navigation-buttons.component";
+import { Component } from '@angular/core';
+import { Subject } from 'rxjs';
+import { ComponentName } from 'src/app/services/component-factory.service';
+import { Playable } from '../../task-playables/playable';
+import { TaskPlayerState } from '../../task-playables/task-player/task-player.component';
+import { Navigation } from '../navigation-buttons/navigation-buttons.component';
 
 interface SelectOptionMetadata {
     component: ComponentName;
-    content: {
+    componentConfig: {
         question: string;
         cacheKey: string;
         options: {
@@ -18,15 +18,15 @@ interface SelectOptionMetadata {
 }
 
 @Component({
-    selector: "app-select-option",
-    templateUrl: "./select-option.component.html",
-    styleUrls: ["./select-option.component.scss"],
+    selector: 'app-select-option',
+    templateUrl: './select-option.component.html',
+    styleUrls: ['./select-option.component.scss'],
 })
 export class SelectOptionComponent implements Playable {
-    config: TaskConfig;
+    config: TaskPlayerState;
 
-    question: string = "";
-    cacheKey: string = "";
+    question: string = '';
+    cacheKey: string = '';
     options: {
         label: string;
         value: any;
@@ -45,12 +45,12 @@ export class SelectOptionComponent implements Playable {
         this.onComplete.next({ navigation: nav });
     }
 
-    configure(metadata: SelectOptionMetadata, config: TaskConfig): void {
+    configure(metadata: SelectOptionMetadata, config: TaskPlayerState): void {
         this.config = config;
 
-        this.question = metadata.content.question;
-        this.cacheKey = metadata.content.cacheKey;
-        this.options = metadata.content.options;
+        this.question = metadata.componentConfig.question;
+        this.cacheKey = metadata.componentConfig.cacheKey;
+        this.options = metadata.componentConfig.options;
     }
 
     afterInit(): void {}

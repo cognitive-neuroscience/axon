@@ -1,16 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 export enum Navigation {
-    PREVIOUS = "previous",
-    NEXT = "next",
+    PREVIOUS = 'previous',
+    NEXT = 'next',
 }
 
 @Component({
-    selector: "app-navigation-buttons",
-    templateUrl: "./navigation-buttons.component.html",
-    styleUrls: ["./navigation-buttons.component.scss"],
+    selector: 'app-navigation-buttons',
+    templateUrl: './navigation-buttons.component.html',
+    styleUrls: ['./navigation-buttons.component.scss'],
 })
 export class NavigationButtonsComponent implements OnInit {
+    wasClicked: boolean = false;
+
     @Input()
     previousDisabled: boolean = false;
 
@@ -24,7 +26,7 @@ export class NavigationButtonsComponent implements OnInit {
 
     @Input()
     set isStart(isStart: boolean) {
-        if (isStart) this.forwardButtonText = "START";
+        if (isStart) this.forwardButtonText = 'START';
         this._isStart = isStart;
     }
 
@@ -33,10 +35,10 @@ export class NavigationButtonsComponent implements OnInit {
     }
 
     @Input()
-    backButtonText: string = "PREVIOUS";
+    backButtonText: string = 'PREVIOUS';
 
     @Input()
-    forwardButtonText: string = "NEXT";
+    forwardButtonText: string = 'NEXT';
 
     @Output()
     onPrevious: EventEmitter<Navigation> = new EventEmitter();
@@ -45,7 +47,10 @@ export class NavigationButtonsComponent implements OnInit {
     onNext: EventEmitter<Navigation> = new EventEmitter();
 
     handleNext() {
-        this.onNext.next(Navigation.NEXT);
+        if (!this.wasClicked) {
+            this.onNext.next(Navigation.NEXT);
+            this.wasClicked = true;
+        }
     }
 
     handlePrevious() {
@@ -54,5 +59,7 @@ export class NavigationButtonsComponent implements OnInit {
 
     constructor() {}
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        this.wasClicked = false;
+    }
 }

@@ -1,9 +1,11 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { AdminRouteNames, ParticipantRouteNames } from 'src/app/models/enums';
 import { ConsentNavigationConfig } from 'src/app/pages/shared/consent-component/consent-reader.component';
 import { ConfirmationService } from 'src/app/services/confirmation/confirmation.service';
+import { SessionStorageService } from 'src/app/services/sessionStorage.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
 
 @Component({
@@ -16,10 +18,19 @@ export class ConsentPageComponent implements OnInit {
     constructor(
         private confirmationService: ConfirmationService,
         private taskManager: TaskManagerService,
-        private router: Router
+        private router: Router,
+        private sessionStorageService: SessionStorageService,
+        private location: Location
     ) {
         const params = this.router.getCurrentNavigation()?.extras?.state as ConsentNavigationConfig;
-        this.data = params;
+        if (params) {
+            this.data = params;
+        } else {
+            const currentlyRunningStudyId = this.sessionStorageService.getCurrentlyRunningStudyIdFromSessionStorage();
+            currentlyRunningStudyId !== null
+                ? this.taskManager.initStudy(parseInt(currentlyRunningStudyId))
+                : this.location.back();
+        }
     }
 
     ngOnInit(): void {}
@@ -32,7 +43,7 @@ export class ConsentPageComponent implements OnInit {
                     .pipe(take(1))
                     .subscribe((ok) => {
                         if (ok) {
-                            this.taskManager.startAfterConsent();
+                            this.taskManager.runStudy();
                         }
                     });
             } else {

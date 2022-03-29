@@ -1,4 +1,4 @@
-<div class="w-100 h-100 flex-column-space-between" (click)="refocusIframe()">
+<div *ngIf="embeddedSurveyLink" class="w-100 h-100 flex-column-space-between" (click)="refocusIframe()">
     <iframe
         #iframe
         *ngIf="embeddedSurveyLink"
@@ -14,7 +14,6 @@
         class="w-100"
         previousDisabled="true"
         [warn]="true"
-        [nextDisabled]="embeddedPageNavigation && embeddedPageNavigation.mode === 'test'"
         forwardButtonText="DO NOT CLICK THIS UNTIL YOU SEE THE ABOVE CODE WORD"
         (onNext)="proceed()"
     ></app-navigation-buttons>

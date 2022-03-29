@@ -39,7 +39,7 @@ export class ViewConsentsComponent {
 
     showConsent(consent: Task) {
         const infoDisplayConfig: ReaderNavigationConfig = {
-            metadata: consent.config,
+            metadata: consent.config.metadata[0].componentConfig,
             mode: 'test',
         };
 

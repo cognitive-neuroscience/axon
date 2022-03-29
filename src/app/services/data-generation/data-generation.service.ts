@@ -35,7 +35,6 @@ import {
     TrailMakingTrialType,
     SARTTrialType,
     FaceNameAssociationStimulus,
-    FaceNameAssociationTaskTrialtype,
 } from './stimuli-models';
 import { NBackSet } from './raw-data/nback-data-list';
 import { Color } from 'src/app/models/InternalDTOs';

@@ -4,18 +4,15 @@ import { LoginComponent } from '../pages/landing-page/login/login.component';
 import { FinalPageComponent } from '../pages/participant/final-page/final-page.component';
 import { LandingPageComponent } from '../pages/landing-page/landing-page.component';
 import { RegisterComponent } from '../pages/landing-page/register/register.component';
-import { AdminRouteNames, ParticipantRouteNames, RouteNames } from '../models/enums';
+import { ParticipantRouteNames, RouteNames } from '../models/enums';
 import { CrowdSourceLoginComponent } from '../pages/landing-page/crowdsource-login/crowdsource-login.component';
 import { TaskPlayerComponent } from '../pages/tasks/task-playables/task-player/task-player.component';
-import { QuestionnaireReaderComponent } from '../pages/tasks/questionnaire-reader/questionnaire-reader.component';
-import { EmbeddedPageComponent } from '../pages/tasks/embedded-page/embedded-page.component';
 import { ConsentPageComponent } from '../pages/tasks/consent/consent-page/consent-page.component';
 import { SendResetPasswordComponent } from '../pages/landing-page/forgot-password/send-reset-password/send-reset-password.component';
 import { ResetPasswordLoginComponent } from '../pages/landing-page/forgot-password/change-password-page/reset-password-login.component';
-import { InfoDisplayComponent } from '../pages/tasks/info-display/info-display.component';
 import { StudyBackgroundComponent } from '../pages/landing-page/study-background/study-background.component';
 import { NotFoundComponent } from '../pages/landing-page/not-found/not-found.component';
-import { AdminDashboardComponent } from '../pages/admin/admin-dashboard/admin-dashboard.component';
+import { BlankComponent } from '../pages/tasks/blank/blank.component';
 
 const routes: Routes = [
     {
@@ -45,14 +42,6 @@ const routes: Routes = [
         component: TaskPlayerComponent,
     },
     {
-        path: RouteNames.INFO_DISPLAY,
-        component: InfoDisplayComponent,
-    },
-    {
-        path: RouteNames.PAVLOVIA,
-        component: EmbeddedPageComponent,
-    },
-    {
         path: RouteNames.LANDINGPAGE_STUDIES_BASEROUTE,
         children: [
             {
@@ -66,10 +55,7 @@ const routes: Routes = [
             },
         ],
     },
-    {
-        path: RouteNames.QUESTIONNAIRE,
-        component: QuestionnaireReaderComponent,
-    },
+    { path: 'blank', component: BlankComponent },
     { path: 'complete', component: FinalPageComponent },
     { path: 'notfound', component: NotFoundComponent },
     { path: '**', component: NotFoundComponent },

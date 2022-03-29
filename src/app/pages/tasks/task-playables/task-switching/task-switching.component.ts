@@ -7,13 +7,13 @@ import { AbstractBaseTaskComponent } from '../base-task';
 import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { TaskSwitchingStimulus } from 'src/app/services/data-generation/stimuli-models';
-import { TaskConfig } from '../task-player/task-player.component';
+import { TaskPlayerState } from '../task-player/task-player.component';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 
 interface TaskSwitchingMetadata {
-    component: ComponentName;
-    config: {
+    componentName: ComponentName;
+    componentConfig: {
         isPractice: boolean;
         maxResponseTime: number;
         interTrialDelay: number;
@@ -99,34 +99,34 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
         super(loaderService);
     }
 
-    configure(metadata: TaskSwitchingMetadata, config: TaskConfig) {
+    configure(metadata: TaskSwitchingMetadata, config: TaskPlayerState) {
         try {
             this.userID = throwErrIfNotDefined(config.userID, 'no user ID defined');
             this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
-            this.numTrials = throwErrIfNotDefined(metadata.config.numTrials, 'num trials not defined');
+            this.numTrials = throwErrIfNotDefined(metadata.componentConfig.numTrials, 'num trials not defined');
             this.maxResponseTime = throwErrIfNotDefined(
-                metadata.config.maxResponseTime,
+                metadata.componentConfig.maxResponseTime,
                 'max response time not defined'
             );
-            this.probOfShift = throwErrIfNotDefined(metadata.config.probOfShift, 'probOfShift not defined');
+            this.probOfShift = throwErrIfNotDefined(metadata.componentConfig.probOfShift, 'probOfShift not defined');
         } catch (error) {
             throw new Error('values not defined, cannot start study: ' + error);
         }
 
         this.config = config;
-        this.showHint = thisOrDefault(metadata.config.showHint, false);
-        this.isPractice = thisOrDefault(metadata.config.isPractice, false);
-        this.interTrialDelay = thisOrDefault(metadata.config.interTrialDelay, 0);
-        this.skippable = thisOrDefault(metadata.config.skippable, false);
-        this.showFeedbackAfterEachTrial = thisOrDefault(metadata.config.showFeedbackAfterEachTrial, false);
-        this.durationOfFeedback = thisOrDefault(metadata.config.durationOfFeedback, 0);
-        this.oddEvenColor = thisOrDefault(metadata.config.oddEvenColor, Color.BLUE);
-        this.ltGtColor = thisOrDefault(metadata.config.ltGtColor, Color.ORANGE);
-        this.durationFixationPresented = thisOrDefault(metadata.config.durationFixationPresented, 500);
+        this.showHint = thisOrDefault(metadata.componentConfig.showHint, false);
+        this.isPractice = thisOrDefault(metadata.componentConfig.isPractice, false);
+        this.interTrialDelay = thisOrDefault(metadata.componentConfig.interTrialDelay, 0);
+        this.skippable = thisOrDefault(metadata.componentConfig.skippable, false);
+        this.showFeedbackAfterEachTrial = thisOrDefault(metadata.componentConfig.showFeedbackAfterEachTrial, false);
+        this.durationOfFeedback = thisOrDefault(metadata.componentConfig.durationOfFeedback, 0);
+        this.oddEvenColor = thisOrDefault(metadata.componentConfig.oddEvenColor, Color.BLUE);
+        this.ltGtColor = thisOrDefault(metadata.componentConfig.ltGtColor, Color.ORANGE);
+        this.durationFixationPresented = thisOrDefault(metadata.componentConfig.durationFixationPresented, 500);
 
-        if (metadata.config.stimuliConfig.type === StimuliProvidedType.HARDCODED)
-            this.stimuli = metadata.config.stimuliConfig.stimuli;
+        if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+            this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
     }
 
     async start() {

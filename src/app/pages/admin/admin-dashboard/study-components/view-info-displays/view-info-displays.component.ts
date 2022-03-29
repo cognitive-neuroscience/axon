@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { RouteNames, TaskType } from 'src/app/models/enums';
 import { Task } from 'src/app/models/Task';
 import { ReaderNavigationConfig } from 'src/app/pages/tasks/shared/base-reader';
+import { TaskPlayerNavigationConfig } from 'src/app/pages/tasks/task-playables/task-player/task-player.component';
 import { TaskService } from 'src/app/services/task.service';
 import { ViewComponentsTableModel } from '../shared/view-components-table/view-components-table.component';
 
@@ -38,11 +39,11 @@ export class ViewInfoDisplaysComponent {
     }
 
     showInfoDisplay(infoDisplay: Task) {
-        const infoDisplayConfig: ReaderNavigationConfig = {
+        const navigationConfig: TaskPlayerNavigationConfig = {
             metadata: infoDisplay.config,
             mode: 'test',
         };
 
-        this.router.navigate([`${RouteNames.INFO_DISPLAY}`], { state: infoDisplayConfig });
+        this.router.navigate([`${RouteNames.TASKPLAYER}`], { state: navigationConfig });
     }
 }

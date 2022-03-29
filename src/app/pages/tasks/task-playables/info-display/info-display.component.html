@@ -1,23 +1,23 @@
-<div class="info-display-container">
-    <app-info-display-viewer [readerMetadata]="readerMetadata.metadata"></app-info-display-viewer>
+<div class="info-display-container" *ngIf="isVisible">
+    <app-info-display-viewer [readerMetadata]="metadata.componentConfig"></app-info-display-viewer>
 
     <div class="button-container">
         <button
-            (click)="onSubmit('home')"
+            (click)="onButtonClick('home')"
             class="w-25"
             color="secondary"
             mat-raised-button
-            [disabled]="readerMetadata.mode === 'test'"
+            [disabled]="wasClicked"
             *ngIf="shouldShowHomeButton"
         >
             Return to Home
         </button>
         <button
-            (click)="onSubmit('continue')"
+            (click)="onButtonClick('continue')"
             class="w-25"
             color="primary"
             mat-raised-button
-            [disabled]="readerMetadata.mode === 'test'"
+            [disabled]="wasClicked"
             *ngIf="shouldShowContinueButton"
         >
             Continue

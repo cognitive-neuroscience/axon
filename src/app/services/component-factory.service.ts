@@ -15,6 +15,9 @@ import { FingerTappingTaskComponent } from '../pages/tasks/task-playables/finger
 import { TrailMakingComponent } from '../pages/tasks/task-playables/trail-making/trail-making.component';
 import { SartComponent } from '../pages/tasks/task-playables/sart/sart.component';
 import { FaceNameAssociationComponent } from '../pages/tasks/task-playables/face-name-association/face-name-association.component';
+import { QuestionnaireComponent } from '../pages/tasks/task-playables/questionnaire/questionnaire.component';
+import { EmbeddedPageComponent } from '../pages/tasks/task-playables/embedded-page/embedded-page.component';
+import { InfoDisplayComponent } from '../pages/tasks/task-playables/info-display/info-display.component';
 
 export enum ComponentName {
     // Generic components
@@ -35,6 +38,11 @@ export enum ComponentName {
     TRAIL_MAKING_COMPONENT = 'TRAILMAKINGCOMPONENT',
     SART_COMPONENT = 'SARTCOMPONENT',
     FACE_NAME_ASSOCIATION_COMPONENT = 'FACENAMEASSOCIATIONCOMPONENT',
+
+    // Special Components
+    EMBEDDED_PAGE_COMPONENT = 'EMBEDDEDPAGECOMPONENT',
+    QUESTIONNAIRE_COMPONENT = 'QUESTIONNAIRECOMPONENT',
+    INFO_DISPLAY_COMPONENT = 'INFODISPLAYCOMPONENT',
 }
 
 export const GenericComponentsList = [ComponentName.DISPLAY_COMPONENT, ComponentName.SELECT_OPTION_COMPONENT];
@@ -55,6 +63,9 @@ const ComponentMap = {
     [ComponentName.TRAIL_MAKING_COMPONENT]: TrailMakingComponent,
     [ComponentName.SART_COMPONENT]: SartComponent,
     [ComponentName.FACE_NAME_ASSOCIATION_COMPONENT]: FaceNameAssociationComponent,
+    [ComponentName.QUESTIONNAIRE_COMPONENT]: QuestionnaireComponent,
+    [ComponentName.EMBEDDED_PAGE_COMPONENT]: EmbeddedPageComponent,
+    [ComponentName.INFO_DISPLAY_COMPONENT]: InfoDisplayComponent,
 };
 
 @Injectable({

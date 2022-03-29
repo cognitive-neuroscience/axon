@@ -1,17 +1,16 @@
-import { Injectable } from "@angular/core";
-import { HttpClient, HttpResponse } from "@angular/common/http";
-import { environment } from "src/environments/environment";
-import { ParticipantData, TaskData } from "../models/TaskData";
-import { Observable } from "rxjs";
-import { TimerService } from "./timer.service";
-import { FeedbackQuestionnaireResponse } from "../models/Questionnaire";
-import { ParticipantType } from "../models/enums";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { ParticipantData, TaskData } from '../models/TaskData';
+import { Observable } from 'rxjs';
+import { TimerService } from './timer.service';
+import { ParticipantType } from '../models/enums';
 
 @Injectable({
-    providedIn: "root",
+    providedIn: 'root',
 })
 export class ParticipantDataService {
-    private readonly RESOURCE_PATH = "/studydata";
+    private readonly RESOURCE_PATH = '/studydata';
 
     constructor(private http: HttpClient, private timerService: TimerService) {}
 
@@ -33,23 +32,13 @@ export class ParticipantDataService {
         };
 
         return this.http.post(`${environment.apiBaseURL}${this.RESOURCE_PATH}`, participantData, {
-            observe: "response",
+            observe: 'response',
         });
     }
 
     getParticipantData(studyId: number, taskOrder: number): Observable<ParticipantData[]> {
         return this.http.get<ParticipantData[]>(
             `${environment.apiBaseURL}${this.RESOURCE_PATH}/${studyId}/${taskOrder}`
-        );
-    }
-
-    uploadFeedback(data: FeedbackQuestionnaireResponse): Observable<HttpResponse<any>> {
-        return this.http.post(`${environment.apiBaseURL}${this.RESOURCE_PATH}/feedback`, data, { observe: "response" });
-    }
-
-    getFeedbackForStudyId(studyId: number): Observable<FeedbackQuestionnaireResponse[]> {
-        return this.http.get<FeedbackQuestionnaireResponse[]>(
-            `${environment.apiBaseURL}${this.RESOURCE_PATH}/feedback/${studyId}`
         );
     }
 }

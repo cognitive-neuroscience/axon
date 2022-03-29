@@ -1,4 +1,5 @@
-import { Platform, TaskType } from "./enums";
+import { SharplabTaskConfig } from '../pages/tasks/task-playables/task-player/task-player.component';
+import { Platform, TaskType } from './enums';
 
 export class Task {
     id: number;
@@ -7,13 +8,13 @@ export class Task {
     name: string;
     description: string;
     externalURL?: string;
-    config?: any; // will either store task metadata or questionnaire metadata
+    config: SharplabTaskConfig;
 }
 
 export class StudyTask {
     studyId: number;
     taskId: number;
     taskOrder: number;
-    config: any; // json task metadata or questionnaire metadata
+    config: {} | SharplabTaskConfig; // json task metadata or questionnaire metadata
     task: Task;
 }

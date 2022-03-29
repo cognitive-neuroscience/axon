@@ -1,12 +1,12 @@
-<div *ngIf="isValid" class="questionnaire-container">
+<div *ngIf="isVisible" class="questionnaire-container">
     <h1 class="mat-h1 my-3 title-text">
         <b>{{ handleText(title) }}</b>
         <hr />
     </h1>
-    <div *ngIf="isValid">
+    <div>
         <form [formGroup]="questionnaire">
             <ng-container *ngFor="let question of questions">
-                <div [ngSwitch]="question.questionType">
+                <ng-container [ngSwitch]="question.questionType">
                     <div class="my-5" *ngSwitchCase="'multipleChoiceSelect'">
                         <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
                         <p
@@ -94,8 +94,25 @@
                     </div>
 
                     <div class="slider-container" *ngSwitchCase="'slider'">
-                        <div class="w-75">
-                            <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
+                        <div class="slider-inner-container">
+                            <h2 style="display: flex">
+                                <h2
+                                    *ngIf="question.title"
+                                    class="title-text"
+                                    [innerHTML]="handleText(question.title)"
+                                ></h2>
+                                <h2
+                                    class="error-text font-weight-lighter"
+                                    *ngIf="questionnaire.get(question.key)?.hasError('required')"
+                                >
+                                    &nbsp;(This is required)
+                                </h2>
+                                <!-- <div class="w-25 slider-error error-text" style="font-size: 1rem">
+                                    <span *ngIf="questionnaire.get(question.key)?.hasError('required')">
+                                        This is required
+                                    </span>
+                                </div> -->
+                            </h2>
                             <p
                                 *ngIf="question.textContent"
                                 class="sub-text"
@@ -107,11 +124,6 @@
                                     (sliderValueSelected)="handleSliderValueSelected(question.key, $event)"
                                 ></app-slider>
                             </div>
-                        </div>
-                        <div class="w-25 slider-error error-text" style="font-size: 1rem">
-                            <span *ngIf="questionnaire.get(question.key)?.hasError('required')">
-                                This is required
-                            </span>
                         </div>
                     </div>
 
@@ -131,7 +143,7 @@
                     <div *ngSwitchDefault>
                         <span class="error-text">Could not get question</span>
                     </div>
-                </div>
+                </ng-container>
             </ng-container>
             <div style="color: red; font-size: 1rem; padding: 10px 0" *ngIf="!questionnaire.valid">
                 <span
@@ -142,7 +154,7 @@
             <button
                 (click)="onSubmit()"
                 class="w-25 mb-5"
-                [disabled]="!questionnaire.valid || readerMetadata.mode === 'test'"
+                [disabled]="!questionnaire.valid || wasClicked"
                 color="primary"
                 mat-raised-button
             >

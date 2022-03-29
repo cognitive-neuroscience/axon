@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { SessionStorageService } from './sessionStorage.service';
+import { StudyUserService } from './study-user.service';
 import { StudyService } from './study.service';
 import { TaskManagerService } from './task-manager.service';
 import { TaskService } from './task.service';
@@ -22,12 +24,16 @@ export class ClearanceService {
         this.taskManager.clearService();
         this.taskService.clearService();
         this.userService.clearService();
+        this.studyUserService.clearService();
+        this.sessionStorageService.clearSessionStorage();
     }
 
     constructor(
         private studyService: StudyService,
         private taskManager: TaskManagerService,
         private taskService: TaskService,
-        private userService: UserService
+        private userService: UserService,
+        private sessionStorageService: SessionStorageService,
+        private studyUserService: StudyUserService
     ) {}
 }

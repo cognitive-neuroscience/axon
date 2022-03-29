@@ -6,7 +6,7 @@ import { SnackbarService } from 'src/app/services/snackbar.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames } from 'src/app/models/enums';
-import { catchError, map, mergeMap, take } from 'rxjs/operators';
+import { catchError, mergeMap, take } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user.service';
 import { ClearanceService } from 'src/app/services/clearance.service';
 
@@ -17,7 +17,7 @@ import { ClearanceService } from 'src/app/services/clearance.service';
 })
 export class LoginComponent implements OnDestroy {
     private readonly LOGIN_SUCCESS_STR = 'Successfully logged in!';
-
+    passwordIsVisible = false;
     subscriptions: Subscription[] = [];
 
     loginForm = this.fb.group({
@@ -30,41 +30,51 @@ export class LoginComponent implements OnDestroy {
         this.router.navigate([RouteNames.LANDINGPAGE_REGISTER_BASEROUTE]);
     }
 
-    navigateToCrowdSourceRegister() {
-        this.router.navigate([ParticipantRouteNames.CROWDSOURCEPARTICIPANT_REGISTER_BASEROUTE]);
-    }
-
     navigateToForgotPassword() {
         this.router.navigate([RouteNames.LANDINGPAGE_FORGOT_PASSWORD_BASEROUTE]);
     }
 
+    togglePasswordVisibility() {
+        this.passwordIsVisible = !this.passwordIsVisible;
+    }
+
     onSubmit() {
         this.clearanceService.clearServices();
+        const formControls = this.loginForm.controls;
+
+        this.loginForm.markAllAsTouched();
+
+        const hasErrors =
+            formControls.email.errors || formControls.password.errors || formControls.confirmPassword.errors;
+
+        if (hasErrors) {
+            return;
+        }
+
+        const email = formControls.email.value;
+        const password = formControls.password.value;
 
         this.loaderService.showLoader();
-        const email = this.loginForm.controls.email.value;
-        const password = this.loginForm.controls.password.value;
-
         this.authService
             .login(email, password)
             .pipe(
-                mergeMap(() => this.userService.updateUserAsync()),
+                mergeMap(() => this.userService.getUser()),
                 catchError((err) => {
                     throw err;
-                }),
-                take(1)
+                })
             )
             .subscribe(
-                (res) => {
-                    this.loaderService.hideLoader();
+                (user) => {
                     this.snackbarService.openSuccessSnackbar(this.LOGIN_SUCCESS_STR);
-                    this.handleNavigate(res.role);
+                    this.handleNavigate(user.role);
                 },
                 (err) => {
-                    this.loaderService.hideLoader();
                     this.snackbarService.openErrorSnackbar(err.message);
                 }
-            );
+            )
+            .add(() => {
+                this.loaderService.hideLoader();
+            });
     }
 
     constructor(
