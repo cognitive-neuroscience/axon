@@ -46,6 +46,7 @@ export class NavbarComponent implements OnInit {
     ngOnInit(): void {}
 
     handleLanguageSwitch() {
+        this.loaderService.showLoader();
         const newLang = this.currentLang === SupportedLangs.FR ? SupportedLangs.EN : SupportedLangs.FR;
 
         this.userService
@@ -63,7 +64,10 @@ export class NavbarComponent implements OnInit {
                 (_err) => {
                     this.snackbarService.openErrorSnackbar('There was an error changing the language');
                 }
-            );
+            )
+            .add(() => {
+                this.loaderService.hideLoader();
+            });
     }
 
     get currentLang(): string {

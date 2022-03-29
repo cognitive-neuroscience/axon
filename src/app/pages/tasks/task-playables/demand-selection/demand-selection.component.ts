@@ -321,28 +321,31 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
 
     @HostListener('window:keydown', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
-        const thisTrial = this.taskData[this.taskData.length - 1];
-        thisTrial.submitted = this.timerService.getCurrentTimestamp();
+        if (this.taskData?.length > 0) {
+            // guard against case where we have not selected our first patch
+            const thisTrial = this.taskData[this.taskData.length - 1];
+            thisTrial.submitted = this.timerService.getCurrentTimestamp();
 
-        if (event === null) {
-            this.clearHelpMessage();
-            this.clearMaxResponseTimer();
-            thisTrial.userAnswer = UserResponse.NA;
-            thisTrial.score = 0;
-            thisTrial.isCorrect = false;
-            thisTrial.respondToNumberResponseTime = this.maxResponseTime;
-            super.handleRoundInteraction(null);
-        } else if (this.responseAllowed && this.isValidKey(event.key)) {
-            this.clearHelpMessage();
-            this.clearMaxResponseTimer();
-            thisTrial.respondToNumberResponseTime = this.timerService.stopTimerAndGetTime();
-            const selectedColor = this.currentStimulus[this.selectedPatch];
-            if (selectedColor === this.oddEvenColor) {
-                thisTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.ODD : UserResponse.EVEN;
-            } else {
-                thisTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.LESSER : UserResponse.GREATER;
+            if (event === null) {
+                this.clearHelpMessage();
+                this.clearMaxResponseTimer();
+                thisTrial.userAnswer = UserResponse.NA;
+                thisTrial.score = 0;
+                thisTrial.isCorrect = false;
+                thisTrial.respondToNumberResponseTime = this.maxResponseTime;
+                super.handleRoundInteraction(null);
+            } else if (this.responseAllowed && this.isValidKey(event.key)) {
+                this.clearHelpMessage();
+                this.clearMaxResponseTimer();
+                thisTrial.respondToNumberResponseTime = this.timerService.stopTimerAndGetTime();
+                const selectedColor = this.currentStimulus[this.selectedPatch];
+                if (selectedColor === this.oddEvenColor) {
+                    thisTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.ODD : UserResponse.EVEN;
+                } else {
+                    thisTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.LESSER : UserResponse.GREATER;
+                }
+                super.handleRoundInteraction(event.key);
             }
-            super.handleRoundInteraction(event.key);
         }
     }
 

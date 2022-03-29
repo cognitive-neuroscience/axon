@@ -29,7 +29,9 @@ function passwordMatchingValidator(control: AbstractControl): ValidationErrors |
     templateUrl: './reset-password-login.component.html',
     styleUrls: ['./reset-password-login.component.scss'],
 })
-export class ResetPasswordLoginComponent implements OnInit {
+export class ResetPasswordLoginComponent {
+    passwordIsVisible = false;
+
     resetPasswordForm = this.fb.group(
         {
             email: ['', Validators.compose([Validators.email, Validators.required])],
@@ -48,7 +50,9 @@ export class ResetPasswordLoginComponent implements OnInit {
         private loaderService: LoaderService
     ) {}
 
-    ngOnInit(): void {}
+    togglePasswordVisibility() {
+        this.passwordIsVisible = !this.passwordIsVisible;
+    }
 
     onSubmit() {
         const email = this.resetPasswordForm.controls.email.value;
@@ -60,7 +64,11 @@ export class ResetPasswordLoginComponent implements OnInit {
         this.userService.changePassword(email, temporaryPassword, password).subscribe(
             (_res) => {
                 this.loaderService.hideLoader();
-                this.snackbarService.openSuccessSnackbar('password successfully changed, please log in');
+                this.snackbarService.openSuccessSnackbar(
+                    'password successfully changed, please log in using your new password',
+                    undefined,
+                    10000
+                );
                 this.router.navigate([`${RouteNames.LANDINGPAGE_LOGIN_BASEROUTE}`]);
             },
             (err) => {

@@ -8,6 +8,7 @@
                             *ngIf="button.value"
                             class="fab"
                             [style.background-color]="getColor(button.value)"
+                            [style.font-family]="button.value === 'I' ? 'Roboto Mono' : 'inherit'"
                             #myButton
                             mat-fab
                             (click)="handleRoundInteraction({ button: myButton, value: button.value })"
