@@ -1,9 +1,14 @@
 <div class="container-fluid task-text wrapper flex-column-center">
-    <!-- Start Practice Round -->
     <div class="full-box flex-column-center">
         <div *ngIf="showStimulus" class="w-100 d-flex flex-row align-items-center justify-content-center">
-            <div *ngIf="stimulusBlobShown">
-                <img class="smiley-face-img" [src]="stimulusBlobShown" alt="Stimulus" />
+            <div class="smiley-face">
+                <div class="upper-face-container">
+                    <div class="left-eye"></div>
+                    <div class="right-eye"></div>
+                </div>
+                <div *ngIf="showMouth" class="lower-face-container">
+                    <div class="mouth {{ currentStimulus.faceShown }}"></div>
+                </div>
             </div>
         </div>
 
