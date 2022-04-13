@@ -195,6 +195,7 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
             isPractice: this.isPractice,
             studyId: this.studyId,
             rewardedMore: this.counterbalance,
+            isNewVersion: true,
         });
 
         // show fixation
