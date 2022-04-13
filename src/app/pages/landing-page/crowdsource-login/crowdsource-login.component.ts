@@ -5,7 +5,7 @@ import { TaskManagerService } from '../../../services/task-manager.service';
 import { Observable, Subscription, throwError } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 import { mergeMap, take } from 'rxjs/operators';
-import { thisOrDefault, wait } from 'src/app/common/commonMethods';
+import { wait } from 'src/app/common/commonMethods';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { SupportedLangs } from 'src/app/models/enums';
@@ -90,6 +90,8 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                         }
                     },
                     (err) => {
+                        // reset wasClicked if there was some sort of issue that caused them to come back to this page
+                        this.wasClicked = false;
                         // if headers too large error
                         if (err.status && err.status === 431) {
                             this._snackbarService.openErrorSnackbar(

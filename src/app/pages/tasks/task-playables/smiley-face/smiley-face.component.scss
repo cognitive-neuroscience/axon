@@ -48,6 +48,14 @@
             height: 5px;
         }
 
+        /*
+         * We need a ratio of 11:13, ideally as close to 11:13 mm as possible
+         * With a resolution of 1280 x 800 px and a 13.3 inch diagonal (typical macbook pro),
+         * we get a Pixel Per Inch of 113.49.
+         * (https://www.calculatorsoup.com/calculators/technology/ppi-calculator.php)
+         * So converting to mm, this gives us the below pixel lengths.
+         */
+
         .SHORT {
             width: 49.15px;
         }

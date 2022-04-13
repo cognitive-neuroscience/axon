@@ -129,6 +129,11 @@ export class SmileyFaceTaskData extends TaskData {
     rewardedMore: SmileyFaceTaskCounterbalance;
     isCorrect: boolean;
     score: number;
+    /**
+     * a flag that marks this data as coming from the newer smiley face version with
+     * corrected/fixed mouth lengths
+     */
+    isNewVersion: boolean;
 }
 
 export class EverydayChoiceTaskData extends TaskData {
