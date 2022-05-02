@@ -38,6 +38,7 @@ import { SartComponent } from './task-playables/sart/sart.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FaceNameAssociationComponent } from './task-playables/face-name-association/face-name-association.component';
 import { BlankComponent } from './blank/blank.component';
+import { ProbabilisticLearningTaskComponent } from './task-playables/probabilistic-learning-task/probabilistic-learning-task.component';
 
 @NgModule({
     declarations: [
@@ -82,6 +83,7 @@ import { BlankComponent } from './blank/blank.component';
         SartComponent,
         FaceNameAssociationComponent,
         BlankComponent,
+        ProbabilisticLearningTaskComponent,
     ],
     imports: [
         CommonModule,

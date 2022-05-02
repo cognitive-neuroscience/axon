@@ -1,0 +1,13 @@
+.stimuli-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 300px;
+
+    .stimulus {
+        display: block;
+        width: 150px;
+        height: 150px;
+    }
+}

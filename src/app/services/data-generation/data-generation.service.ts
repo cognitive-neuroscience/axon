@@ -35,6 +35,7 @@ import {
     TrailMakingTrialType,
     SARTTrialType,
     FaceNameAssociationStimulus,
+    PLTStimulus,
 } from './stimuli-models';
 import { NBackSet } from './raw-data/nback-data-list';
 import { Color } from 'src/app/models/InternalDTOs';
@@ -445,5 +446,119 @@ export class DataGenerationService {
         } else {
             return shuffle(getFaceNameAssociationStimuli('test-phase'));
         }
+    }
+
+    generatePLTStimuli(phase: 'practice-phase' | 'training-phase' | 'test-phase'): PLTStimulus[] {
+        const stimuli: PLTStimulus[] = [];
+        switch (phase) {
+            case 'training-phase':
+                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_A', 'stimulus_B', 20, 5, 20, 5));
+                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_C', 'stimulus_D', 18, 7, 17, 8));
+                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_E', 'stimulus_F', 15, 10, 15, 10));
+                break;
+            case 'practice-phase':
+                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_G', 'stimulus_H', 4, 1, 4, 1));
+                break;
+            case 'test-phase':
+                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_A', 'stimulus_B', 5, 0, 5, 0));
+                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_C', 'stimulus_D', 5, 0, 5, 0));
+                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_E', 'stimulus_F', 5, 0, 5, 0));
+                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_A', 'stimulus_C', 5, 0, 5, 0));
+                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_A', 'stimulus_D', 5, 0, 5, 0));
+                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_A', 'stimulus_E', 5, 0, 5, 0));
+                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_A', 'stimulus_F', 5, 0, 5, 0));
+                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_B', 'stimulus_C', 0, 5, 0, 5));
+                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_B', 'stimulus_D', 0, 5, 0, 5));
+                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_B', 'stimulus_E', 0, 5, 0, 5));
+                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_B', 'stimulus_F', 0, 5, 0, 5));
+            default:
+                break;
+        }
+
+        return shuffle(stimuli);
+    }
+
+    /**
+     * @param primaryStimName the name of the primary stimulus
+     * @param complementStimName the name of the secondary stimulus
+     * @param primaryStimLeftCorrect number of times when the primary stimulus is correct and presented on the left side of the screen
+     * @param primaryStimLeftIncorrect number of times whne the primary stimulus is incorrect and presented on the left side of the screen
+     * @param primaryStimRightCorrect number of times when the primary stimulus is correct and presented on the right side of the screen
+     * @param primaryStimRightIncorrect number of times whne the primary stimulus is incorrect and presented on the right side of the screen
+     */
+    private generatePLTStimuliForTaskType(
+        primaryStimName: string,
+        complementStimName: string,
+        primaryStimLeftCorrect: number,
+        primaryStimLeftIncorrect: number,
+        primaryStimRightCorrect: number,
+        primaryStimRightIncorrect: number
+    ): PLTStimulus[] {
+        const stimuli: PLTStimulus[] = [];
+
+        // generate primary stim left correct
+        stimuli.push(
+            ...this.generatePLTStimuliForTrialTypeCondition(
+                primaryStimLeftCorrect,
+                primaryStimName,
+                complementStimName,
+                'LEFT',
+                primaryStimName
+            )
+        );
+
+        // generate primary stim left incorrect
+        stimuli.push(
+            ...this.generatePLTStimuliForTrialTypeCondition(
+                primaryStimLeftIncorrect,
+                primaryStimName,
+                complementStimName,
+                'RIGHT',
+                complementStimName
+            )
+        );
+
+        // generate primary stim right incorrect
+        stimuli.push(
+            ...this.generatePLTStimuliForTrialTypeCondition(
+                primaryStimRightCorrect,
+                complementStimName,
+                primaryStimName,
+                'RIGHT',
+                primaryStimName
+            )
+        );
+
+        // generate primary stim right incorrect
+        stimuli.push(
+            ...this.generatePLTStimuliForTrialTypeCondition(
+                primaryStimRightIncorrect,
+                complementStimName,
+                primaryStimName,
+                'LEFT',
+                complementStimName
+            )
+        );
+
+        return stimuli;
+    }
+
+    private generatePLTStimuliForTrialTypeCondition(
+        numTrials: number,
+        leftStimName: string,
+        rightStimName: string,
+        leftOrRightCorrect: 'LEFT' | 'RIGHT',
+        correctStimulusName: string
+    ): PLTStimulus[] {
+        const pltStimuli: PLTStimulus[] = [];
+        for (let i = 0; i < numTrials; i++) {
+            pltStimuli.push({
+                leftStimulusName: leftStimName,
+                rightStimulusName: rightStimName,
+                leftOrRightCorrect: leftOrRightCorrect,
+                correctStimulusName: correctStimulusName,
+            });
+        }
+        return pltStimuli;
     }
 }

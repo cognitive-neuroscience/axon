@@ -141,3 +141,10 @@ export enum FaceNameAssociationTaskTrialtype {
     RECOMBINED = 'RECOMBINED',
     INTACT = 'INTACT',
 }
+
+export class PLTStimulus {
+    leftStimulusName: string;
+    rightStimulusName: string;
+    correctStimulusName: string;
+    leftOrRightCorrect: 'LEFT' | 'RIGHT';
+}
