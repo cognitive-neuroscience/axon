@@ -64,7 +64,7 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
                 )
                 .subscribe(
                     (_res) => {
-                        console.log(_res);
+                        // noop
                     },
                     (err) => {
                         console.error(err);
