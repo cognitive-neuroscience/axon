@@ -3,19 +3,14 @@ import * as commonMethodModule from 'src/app/common/commonMethods';
 import { ImageService } from '../image.service';
 import { DataGenerationService } from './data-generation.service';
 import { getFaceNameAssociationStimuli } from './raw-data/face-name-association';
-import {
-    FaceNameAssociationTaskTrialtype,
-    SARTStimuliSetType,
-    SARTTrialType,
-    SmileyFaceType,
-    StroopStimulus,
-} from './stimuli-models';
+import { PLTStimulus, SARTStimuliSetType, SARTTrialType, SmileyFaceType, StroopStimulus } from './stimuli-models';
 
 describe('Data Generation Service', () => {
     let service: DataGenerationService;
     let mockImagesAsBlobsFunc = jest.fn();
 
     beforeEach(() => {
+        jest.spyOn(commonMethodModule, 'shuffle').mockImplementation((arr) => arr);
         const mockImageService = {
             loadImagesAsBlobs: mockImagesAsBlobsFunc,
         };
@@ -108,7 +103,7 @@ describe('Data Generation Service', () => {
 
     describe('FaceName Association Stimuli', () => {
         it('should have equivalent person and correctPerson names', () => {
-            const generatedStimuli = getFaceNameAssociationStimuli('learning-phase');
+            const generatedStimuli = service.generateFaceNameAssociationTaskStimuli('learning-phase');
             generatedStimuli.forEach((stimulus) => {
                 expect(stimulus.personName).toEqual(stimulus.correctPersonName);
             });
@@ -116,22 +111,149 @@ describe('Data Generation Service', () => {
 
         it('should return the same data for intact trial type', () => {
             const stimuli = getFaceNameAssociationStimuli('learning-phase');
-            jest.spyOn(commonMethodModule, 'shuffle').mockReturnValue(stimuli);
-
-            const generatedStimuli = service.generateFaceNameAssociationTaskStimuli(
-                FaceNameAssociationTaskTrialtype.INTACT
-            );
+            const generatedStimuli = service.generateFaceNameAssociationTaskStimuli('learning-phase');
             expect(generatedStimuli).toEqual(stimuli);
         });
 
         it('should generate the correct stimuli for recombined trial type', () => {
-            const stimuli = getFaceNameAssociationStimuli('learning-phase');
-            jest.spyOn(commonMethodModule, 'shuffle').mockReturnValue(stimuli);
-
-            const generatedStimuli = service.generateFaceNameAssociationTaskStimuli(
-                FaceNameAssociationTaskTrialtype.RECOMBINED
-            );
+            const stimuli = getFaceNameAssociationStimuli('test-phase');
+            const generatedStimuli = service.generateFaceNameAssociationTaskStimuli('test-phase');
             expect(generatedStimuli).toEqual(stimuli);
+        });
+    });
+
+    describe('Probabilistic Learning Task', () => {
+        function helper(
+            primaryStimulusName: string,
+            complementStimulusName: string,
+            stimuli: PLTStimulus[]
+        ): [number, number, number, number] {
+            const numLeftPrimaryCorrect = stimuli.filter(
+                (x) =>
+                    x.correctStimulusName === primaryStimulusName &&
+                    x.leftStimulusName === primaryStimulusName &&
+                    x.rightStimulusName === complementStimulusName &&
+                    x.leftOrRightCorrect === 'LEFT'
+            );
+            const numRightPrimaryCorrect = stimuli.filter(
+                (x) =>
+                    x.correctStimulusName === primaryStimulusName &&
+                    x.leftStimulusName === complementStimulusName &&
+                    x.rightStimulusName === primaryStimulusName &&
+                    x.leftOrRightCorrect === 'RIGHT'
+            );
+            const numLeftPrimaryIncorrect = stimuli.filter(
+                (x) =>
+                    x.correctStimulusName === complementStimulusName &&
+                    x.leftStimulusName === primaryStimulusName &&
+                    x.rightStimulusName === complementStimulusName &&
+                    x.leftOrRightCorrect === 'RIGHT'
+            );
+            const numRightPrimaryIncorrect = stimuli.filter(
+                (x) =>
+                    x.correctStimulusName === complementStimulusName &&
+                    x.leftStimulusName === complementStimulusName &&
+                    x.rightStimulusName === primaryStimulusName &&
+                    x.leftOrRightCorrect === 'LEFT'
+            );
+
+            return [
+                numLeftPrimaryCorrect.length,
+                numRightPrimaryCorrect.length,
+                numLeftPrimaryIncorrect.length,
+                numRightPrimaryIncorrect.length,
+            ];
+        }
+
+        it('should generate the correct stimuli for the practice trials', () => {
+            const correctPrimaryStimulusName = 'G';
+            const complementStimulusName = 'H';
+            jest.spyOn(commonMethodModule, 'shuffle').mockImplementation((arr) => arr);
+            const stimuli = service.generatePLTStimuli('practice-phase');
+
+            const [numLeftPrimaryCorrect, numRightPrimaryCorrect, numLeftPrimaryIncorrect, numRightPrimaryIncorrect] =
+                helper(correctPrimaryStimulusName, complementStimulusName, stimuli);
+
+            expect(numLeftPrimaryCorrect).toEqual(4);
+            expect(numRightPrimaryCorrect).toEqual(4);
+            expect(numLeftPrimaryIncorrect).toEqual(1);
+            expect(numRightPrimaryIncorrect).toEqual(1);
+        });
+
+        describe('training phase', () => {
+            test.each([
+                ['A', 'B', 20, 20, 5, 5],
+                ['C', 'D', 18, 17, 7, 8],
+                ['E', 'F', 15, 15, 10, 10],
+            ])(
+                'should generate the correct stimuli for the %s %s pair',
+                (
+                    first: string,
+                    second: string,
+                    expectedNumLeftPrimaryCorrect,
+                    expectedNumRightPrimaryCorrect,
+                    expectedNumLeftPrimaryIncorrect,
+                    expectedNumRightPrimaryIncorrect
+                ) => {
+                    const correctPrimaryStimulusName = first;
+                    const complementStimulusName = second;
+                    const stimuli = service.generatePLTStimuli('training-phase');
+
+                    const [
+                        numLeftPrimaryCorrect,
+                        numRightPrimaryCorrect,
+                        numLeftPrimaryIncorrect,
+                        numRightPrimaryIncorrect,
+                    ] = helper(correctPrimaryStimulusName, complementStimulusName, stimuli);
+
+                    expect(numLeftPrimaryCorrect).toEqual(expectedNumLeftPrimaryCorrect);
+                    expect(numRightPrimaryCorrect).toEqual(expectedNumRightPrimaryCorrect);
+                    expect(numLeftPrimaryIncorrect).toEqual(expectedNumLeftPrimaryIncorrect);
+                    expect(numRightPrimaryIncorrect).toEqual(expectedNumRightPrimaryIncorrect);
+                }
+            );
+        });
+
+        describe('test phase', () => {
+            test.each([
+                ['A', 'B', 5, 5, 0, 0],
+                ['C', 'D', 5, 5, 0, 0],
+                ['E', 'F', 5, 5, 0, 0],
+                ['A', 'C', 5, 5, 0, 0],
+                ['A', 'D', 5, 5, 0, 0],
+                ['A', 'E', 5, 5, 0, 0],
+                ['A', 'F', 5, 5, 0, 0],
+                ['B', 'C', 0, 0, 5, 5],
+                ['B', 'D', 0, 0, 5, 5],
+                ['B', 'E', 0, 0, 5, 5],
+                ['B', 'F', 0, 0, 5, 5],
+            ])(
+                'should generate the correct stimuli for the %s %s pair',
+                (
+                    first: string,
+                    second: string,
+                    expectedNumLeftPrimaryCorrect,
+                    expectedNumRightPrimaryCorrect,
+                    expectedNumLeftPrimaryIncorrect,
+                    expectedNumRightPrimaryIncorrect
+                ) => {
+                    const correctPrimaryStimulusName = `stimulus_${first}`;
+                    const complementStimulusName = `stimulus_${second}`;
+                    const stimuli = service.generatePLTStimuli('test-phase');
+
+                    const [
+                        numLeftPrimaryCorrect,
+                        numRightPrimaryCorrect,
+                        numLeftPrimaryIncorrect,
+                        numRightPrimaryIncorrect,
+                    ] = helper(correctPrimaryStimulusName, complementStimulusName, stimuli);
+
+                    expect(numLeftPrimaryCorrect).toEqual(expectedNumLeftPrimaryCorrect);
+                    expect(numRightPrimaryCorrect).toEqual(expectedNumRightPrimaryCorrect);
+                    expect(numLeftPrimaryIncorrect).toEqual(expectedNumLeftPrimaryIncorrect);
+                    expect(numRightPrimaryIncorrect).toEqual(expectedNumRightPrimaryIncorrect);
+                }
+            );
         });
     });
 });

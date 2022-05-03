@@ -18,6 +18,7 @@ import { FaceNameAssociationComponent } from '../pages/tasks/task-playables/face
 import { QuestionnaireComponent } from '../pages/tasks/task-playables/questionnaire/questionnaire.component';
 import { EmbeddedPageComponent } from '../pages/tasks/task-playables/embedded-page/embedded-page.component';
 import { InfoDisplayComponent } from '../pages/tasks/task-playables/info-display/info-display.component';
+import { ProbabilisticLearningTaskComponent } from '../pages/tasks/task-playables/probabilistic-learning-task/probabilistic-learning-task.component';
 
 export enum ComponentName {
     // Generic components
@@ -38,6 +39,7 @@ export enum ComponentName {
     TRAIL_MAKING_COMPONENT = 'TRAILMAKINGCOMPONENT',
     SART_COMPONENT = 'SARTCOMPONENT',
     FACE_NAME_ASSOCIATION_COMPONENT = 'FACENAMEASSOCIATIONCOMPONENT',
+    PLT_COMPONENT = 'PLTCOMPONENT',
 
     // Special Components
     EMBEDDED_PAGE_COMPONENT = 'EMBEDDEDPAGECOMPONENT',
@@ -66,6 +68,7 @@ const ComponentMap = {
     [ComponentName.QUESTIONNAIRE_COMPONENT]: QuestionnaireComponent,
     [ComponentName.EMBEDDED_PAGE_COMPONENT]: EmbeddedPageComponent,
     [ComponentName.INFO_DISPLAY_COMPONENT]: InfoDisplayComponent,
+    [ComponentName.PLT_COMPONENT]: ProbabilisticLearningTaskComponent,
 };
 
 @Injectable({

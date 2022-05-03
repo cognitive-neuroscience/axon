@@ -12,7 +12,6 @@ import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { ImageService } from 'src/app/services/image.service';
-import { take } from 'rxjs/operators';
 
 interface SmileyFaceMetadata {
     componentName: ComponentName;

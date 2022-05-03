@@ -173,6 +173,20 @@ export class FaceNameAssociationTaskData extends TaskData {
     responseTime: number;
 }
 
+export class PLTTaskData extends TaskData {
+    score: number;
+    isPractice: boolean;
+    phase: 'practice-phase' | 'training-phase' | 'test-phase';
+    leftStimulusPresented: string;
+    rightStimulusPresented: string;
+    isCorrect: boolean;
+    correctStimulus: string;
+    correctSide: 'LEFT' | 'RIGHT';
+    userAnswer: Key | UserResponse.NA;
+    actualAnswer: Key;
+    responseTime: number;
+}
+
 export class ParticipantData {
     userId: string;
     studyId: number;
