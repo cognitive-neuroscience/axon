@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { wait } from 'src/app/common/commonMethods';
 import { TaskData } from 'src/app/models/TaskData';
 import { LoaderService } from 'src/app/services/loader/loader.service';
@@ -21,6 +21,7 @@ export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
     isDestroyed = false;
     showLoaderOnInitDuration = 2000;
     showLoaderOnEndDuration = 1000;
+    subscriptions: Subscription[] = [];
 
     // constants
     TRANSLATION_PREFIX = `tasks.feedback.`;
@@ -77,6 +78,6 @@ export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
     ngOnDestroy() {
         this.isDestroyed = true;
         this.onComplete.complete();
-        return;
+        this.subscriptions.forEach((sub) => sub.unsubscribe());
     }
 }

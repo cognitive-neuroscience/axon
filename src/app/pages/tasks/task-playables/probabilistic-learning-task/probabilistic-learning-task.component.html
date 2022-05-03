@@ -1,13 +1,8 @@
 <div class="wrapper task-text flex-column-center">
     <div class="full-box flex-column-center" style="justify-content: space-around">
-        <div class="stimuli-container" *ngIf="shouldShowStimulus">
-            <img
-                style="margin-right: 300px"
-                class="stimulus"
-                [src]="'/assets/images/stimuli/plt/' + leftStimulusShownPath"
-                alt="Stimulus"
-            />
-            <img class="stimulus" [src]="'/assets/images/stimuli/plt/' + rightStimulusShownPath" alt="Stimulus" />
+        <div class="stimuli-container" *ngIf="shouldShowStimulus && leftStimulusShown && rightStimulusShown">
+            <img style="margin-right: 300px" class="stimulus" [src]="leftStimulusShown" alt="left Stimulus" />
+            <img class="stimulus" [src]="rightStimulusShown" alt="right Stimulus" />
         </div>
 
         <ng-container *ngIf="showFixation">

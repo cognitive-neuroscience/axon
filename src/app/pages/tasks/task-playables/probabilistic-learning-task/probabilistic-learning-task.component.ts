@@ -7,6 +7,7 @@ import { PLTTaskData } from 'src/app/models/TaskData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { PLTStimulus } from 'src/app/services/data-generation/stimuli-models';
+import { ImageService } from 'src/app/services/image.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../base-task';
@@ -66,13 +67,15 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
     // local state variables
     feedback: string;
     shouldShowStimulus: boolean = false;
-    leftStimulusShownPath: string = '';
-    rightStimulusShownPath: string = '';
+    leftStimulusShown: string | ArrayBuffer = null;
+    rightStimulusShown: string | ArrayBuffer = null;
     showFeedback: boolean = false;
     showFixation: boolean = false;
     trialNum: number = 0;
     trialScore: number = 0;
     responseAllowed: boolean = false;
+
+    imageBlobMap: { [key: string]: Blob } = {};
 
     // timers
     maxResponseTimer: any;
@@ -89,7 +92,8 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
         protected loaderService: LoaderService,
-        protected translateService: TranslateService
+        protected translateService: TranslateService,
+        protected imageService: ImageService
     ) {
         super(loaderService);
     }
@@ -130,15 +134,46 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
 
         // either the stimuli have been defined in config or we generate it here from service
         if (!this.stimuli) this.stimuli = this.dataGenService.generatePLTStimuli(this.phase);
-        super.start();
+        this.subscriptions.push(
+            this.imageService
+                .loadImagesAsBlobs([
+                    '/assets/images/stimuli/plt/A.jpg',
+                    '/assets/images/stimuli/plt/B.jpg',
+                    '/assets/images/stimuli/plt/C.jpg',
+                    '/assets/images/stimuli/plt/D.jpg',
+                    '/assets/images/stimuli/plt/E.jpg',
+                    '/assets/images/stimuli/plt/F.jpg',
+                    '/assets/images/stimuli/plt/G.jpg',
+                    '/assets/images/stimuli/plt/H.jpg',
+                ])
+                .subscribe(
+                    (blobs) => {
+                        this.imageBlobMap = {
+                            A: blobs[0],
+                            B: blobs[1],
+                            C: blobs[2],
+                            D: blobs[3],
+                            E: blobs[4],
+                            F: blobs[5],
+                            G: blobs[6],
+                            H: blobs[7],
+                        };
+
+                        super.start();
+                    },
+                    (_err) => {
+                        throw new Error('there was an error getting images');
+                    }
+                )
+        );
     }
 
     async beginRound() {
         this.timerService.clearTimer();
         this.showFeedback = false;
         this.showFixation = false;
-        this.leftStimulusShownPath = '';
-        this.rightStimulusShownPath = '';
+        this.leftStimulusShown = null;
+        this.rightStimulusShown = null;
         this.shouldShowStimulus = false;
         this.responseAllowed = false;
         this.trialScore = 0;
@@ -171,27 +206,24 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
 
         this.timerService.startTimer();
 
-        this.setTimer('maxResponseTimer', this.maxResponseTime, () => {
-            this.responseAllowed = false;
+        this.setTimer(this.maxResponseTime, () => {
             this.handleRoundInteraction(null);
         });
     }
 
     private setStimuliUI(stimulus: PLTStimulus) {
-        this.leftStimulusShownPath = `${stimulus.leftStimulusName}.png`;
-        this.rightStimulusShownPath = `${stimulus.rightStimulusName}.png`;
+        const leftImage = this.imageBlobMap[stimulus.leftStimulusName];
+        const rightImage = this.imageBlobMap[stimulus.rightStimulusName];
+        this.showLeftImage(leftImage);
+        this.showRightImage(rightImage);
         this.shouldShowStimulus = true;
         this.responseAllowed = true;
     }
 
-    private setTimer(timerType: 'showStimulusTimer' | 'maxResponseTimer', delay: number, cbFunc?: () => void) {
-        if (timerType === 'maxResponseTimer') {
-            this.maxResponseTimer = setTimeout(() => {
-                if (cbFunc) cbFunc();
-            }, delay);
-        } else {
-            throw new Error('Invalid Timer type, could not set timer');
-        }
+    private setTimer(delay: number, cbFunc?: () => void) {
+        this.maxResponseTimer = setTimeout(() => {
+            if (cbFunc) cbFunc();
+        }, delay);
     }
 
     private cancelAllTimers() {
@@ -199,17 +231,20 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
     }
 
     @HostListener('window:keypress', ['$event'])
-    handleRoundInteraction(event: KeyboardEvent): void {
+    handleRoundInteraction(event: KeyboardEvent | null): void {
+        if (!this.responseAllowed) return;
+
         const thisTrial = this.taskData[this.taskData.length - 1];
         thisTrial.submitted = this.timerService.getCurrentTimestamp();
-        if (this.responseAllowed && this.isValidKey(event.key)) {
+        if (this.isValidKey(event?.key)) {
+            const caseInsensitiveKey = event.key.toLocaleLowerCase();
             this.cancelAllTimers();
             this.responseAllowed = false;
 
-            thisTrial.userAnswer = event.key as Key;
+            thisTrial.userAnswer = caseInsensitiveKey as Key;
             thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
 
-            super.handleRoundInteraction(event.key);
+            super.handleRoundInteraction(caseInsensitiveKey);
         } else if (event === null) {
             this.cancelAllTimers();
             // we reached max response time
@@ -222,12 +257,14 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
     }
 
     private isValidKey(key: string): boolean {
-        const caseInsensitiveKey = key.toLocaleLowerCase();
+        const caseInsensitiveKey = key ? key.toLocaleLowerCase() : key;
         return caseInsensitiveKey === Key.Z || caseInsensitiveKey === Key.M;
     }
 
     async completeRound() {
         this.shouldShowStimulus = false;
+        this.leftStimulusShown = null;
+        this.rightStimulusShown = null;
         this.showFixation = false;
         this.responseAllowed = false;
 
@@ -279,6 +316,22 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
             this.beginRound();
             return;
         }
+    }
+
+    private showLeftImage(blob: Blob) {
+        const fr = new FileReader();
+        fr.addEventListener('load', () => {
+            this.leftStimulusShown = fr.result;
+        });
+        fr.readAsDataURL(blob);
+    }
+
+    private showRightImage(blob: Blob) {
+        const fr = new FileReader();
+        fr.addEventListener('load', () => {
+            this.rightStimulusShown = fr.result;
+        });
+        fr.readAsDataURL(blob);
     }
 
     ngOnDestroy(): void {

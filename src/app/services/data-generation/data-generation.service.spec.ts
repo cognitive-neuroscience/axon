@@ -166,8 +166,8 @@ describe('Data Generation Service', () => {
         }
 
         it('should generate the correct stimuli for the practice trials', () => {
-            const correctPrimaryStimulusName = 'stimulus_G';
-            const complementStimulusName = 'stimulus_H';
+            const correctPrimaryStimulusName = 'G';
+            const complementStimulusName = 'H';
             jest.spyOn(commonMethodModule, 'shuffle').mockImplementation((arr) => arr);
             const stimuli = service.generatePLTStimuli('practice-phase');
 
@@ -195,8 +195,8 @@ describe('Data Generation Service', () => {
                     expectedNumLeftPrimaryIncorrect,
                     expectedNumRightPrimaryIncorrect
                 ) => {
-                    const correctPrimaryStimulusName = `stimulus_${first}`;
-                    const complementStimulusName = `stimulus_${second}`;
+                    const correctPrimaryStimulusName = first;
+                    const complementStimulusName = second;
                     const stimuli = service.generatePLTStimuli('training-phase');
 
                     const [

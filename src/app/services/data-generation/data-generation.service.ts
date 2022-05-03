@@ -452,25 +452,25 @@ export class DataGenerationService {
         const stimuli: PLTStimulus[] = [];
         switch (phase) {
             case 'training-phase':
-                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_A', 'stimulus_B', 20, 5, 20, 5));
-                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_C', 'stimulus_D', 18, 7, 17, 8));
-                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_E', 'stimulus_F', 15, 10, 15, 10));
+                stimuli.push(...this.generatePLTStimuliForTaskType('A', 'B', 20, 5, 20, 5));
+                stimuli.push(...this.generatePLTStimuliForTaskType('C', 'D', 18, 7, 17, 8));
+                stimuli.push(...this.generatePLTStimuliForTaskType('E', 'F', 15, 10, 15, 10));
                 break;
             case 'practice-phase':
-                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_G', 'stimulus_H', 4, 1, 4, 1));
+                stimuli.push(...this.generatePLTStimuliForTaskType('G', 'H', 4, 1, 4, 1));
                 break;
             case 'test-phase':
-                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_A', 'stimulus_B', 5, 0, 5, 0));
-                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_C', 'stimulus_D', 5, 0, 5, 0));
-                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_E', 'stimulus_F', 5, 0, 5, 0));
-                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_A', 'stimulus_C', 5, 0, 5, 0));
-                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_A', 'stimulus_D', 5, 0, 5, 0));
-                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_A', 'stimulus_E', 5, 0, 5, 0));
-                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_A', 'stimulus_F', 5, 0, 5, 0));
-                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_B', 'stimulus_C', 0, 5, 0, 5));
-                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_B', 'stimulus_D', 0, 5, 0, 5));
-                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_B', 'stimulus_E', 0, 5, 0, 5));
-                stimuli.push(...this.generatePLTStimuliForTaskType('stimulus_B', 'stimulus_F', 0, 5, 0, 5));
+                stimuli.push(...this.generatePLTStimuliForTaskType('A', 'B', 5, 0, 5, 0));
+                stimuli.push(...this.generatePLTStimuliForTaskType('C', 'D', 5, 0, 5, 0));
+                stimuli.push(...this.generatePLTStimuliForTaskType('E', 'F', 5, 0, 5, 0));
+                stimuli.push(...this.generatePLTStimuliForTaskType('A', 'C', 5, 0, 5, 0));
+                stimuli.push(...this.generatePLTStimuliForTaskType('A', 'D', 5, 0, 5, 0));
+                stimuli.push(...this.generatePLTStimuliForTaskType('A', 'E', 5, 0, 5, 0));
+                stimuli.push(...this.generatePLTStimuliForTaskType('A', 'F', 5, 0, 5, 0));
+                stimuli.push(...this.generatePLTStimuliForTaskType('B', 'C', 0, 5, 0, 5));
+                stimuli.push(...this.generatePLTStimuliForTaskType('B', 'D', 0, 5, 0, 5));
+                stimuli.push(...this.generatePLTStimuliForTaskType('B', 'E', 0, 5, 0, 5));
+                stimuli.push(...this.generatePLTStimuliForTaskType('B', 'F', 0, 5, 0, 5));
             default:
                 break;
         }
