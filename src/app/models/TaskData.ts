@@ -178,7 +178,9 @@ export class PLTTaskData extends TaskData {
     isPractice: boolean;
     phase: 'practice-phase' | 'training-phase' | 'test-phase';
     leftStimulusPresented: string;
+    leftImageFileName: string;
     rightStimulusPresented: string;
+    rightImageFileName: string;
     isCorrect: boolean;
     correctStimulus: string;
     correctSide: 'LEFT' | 'RIGHT';
