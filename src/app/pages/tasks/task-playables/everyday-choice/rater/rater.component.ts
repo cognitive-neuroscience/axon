@@ -223,14 +223,14 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         if (sliderValue === null) {
             // no input, ran out of time
             thisTrial.responseTime = this.maxResponseTime;
-            thisTrial.userAnswer = 50; // set anchor to default middle
+            thisTrial.userAnswer = `${50}`; // set anchor to default middle
             super.handleRoundInteraction(sliderValue);
             return;
         }
 
         thisTrial.responseTime = this.timerService.getTime();
         thisTrial.submitted = this.timerService.getCurrentTimestamp();
-        thisTrial.userAnswer = sliderValue;
+        thisTrial.userAnswer = `${sliderValue}`;
         this.showNextButton = true;
         return;
     }

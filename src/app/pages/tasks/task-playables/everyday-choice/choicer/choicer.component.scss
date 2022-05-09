@@ -1,11 +1,5 @@
-@import "/src/app/sass/mixins";
+@import '/src/app/sass/mixins';
 
-.activity-container {
-    width: 80% !important;
-    height: 30% !important;
-
-    .activity {
-        width: 400px !important;
-        line-height: normal !important;
-    }
+.practice-hint {
+    font-size: 1rem;
 }

@@ -12,7 +12,6 @@ export interface RatingTaskStimuli {
 export interface ChoiceTaskStimulus {
     firstActivity: string;
     secondActivity: string;
-    legend: string[];
 }
 
 export interface OddballStimulus {
