@@ -21,7 +21,7 @@ export interface ChoiceTaskMetadata {
         interTrialDelay: number;
         delayToShowHelpMessage: number;
         durationHelpMessageShown: number;
-        delayToShowRatingSlider: number;
+        delayToShowRatingInput: number;
         durationOutOftimeMessageShown: number;
         stimuliConfig: {
             type: StimuliProvidedType;
@@ -48,7 +48,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     private maxResponseTime: number;
     private interTrialDelay: number; // In milliseconds
     private delayToShowHelpMessage: number; //delay to show help message
-    private delayToShowRatingSlider: number;
+    private delayToShowRatingInput: number;
     private durationHelpMessageShown: number;
     private durationOutOftimeMessageShown: number;
 
@@ -63,13 +63,10 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     // local state variables
     showStimulus: boolean = false;
     showNextButton: boolean = false;
-    showSlider: boolean = false;
+    showInput: boolean = false;
     trialNum: number = 0;
 
-    currentSliderMarks: NzMarks = {}; // set slider legend
-
-    activityLeft: string = '';
-    activityRight: string = '';
+    activitiesShown: { label: string; value: string }[] = [];
 
     maxResponseTimer: any;
     showHelpMessageTimer: any;
@@ -102,7 +99,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         this.durationOutOftimeMessageShown = metadata.componentConfig.durationOutOftimeMessageShown || undefined;
         this.delayToShowHelpMessage = metadata.componentConfig.delayToShowHelpMessage || undefined;
         this.durationHelpMessageShown = metadata.componentConfig.durationHelpMessageShown || undefined;
-        this.delayToShowRatingSlider = metadata.componentConfig.delayToShowRatingSlider || 0;
+        this.delayToShowRatingInput = metadata.componentConfig.delayToShowRatingInput || 0;
 
         if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
             this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
@@ -111,16 +108,14 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     start() {
         this.taskData = [];
         // either the stimuli has been defined in config or we generate it here
-        this.stimuli = this.stimuli
-            ? this.stimuli
-            : this.dataGenService.generateChoiceStimuli(this.ratingTaskActivities);
+        if (!this.stimuli) this.stimuli = this.dataGenService.generateChoiceStimuli(this.ratingTaskActivities);
         this.currentStimuliIndex = 0;
         super.start();
     }
 
     async beginRound() {
         this.showNextButton = false;
-        this.showSlider = false;
+        this.showInput = false;
         this.timerService.clearTimer();
 
         this.taskData.push({
@@ -141,11 +136,11 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         this.setStimuliUI(this.currentStimulus);
         this.showStimulus = true;
 
-        await wait(this.delayToShowRatingSlider);
+        await wait(this.delayToShowRatingInput);
         if (this.isDestroyed) return;
 
         this.timerService.startTimer();
-        this.showSlider = true;
+        this.showInput = true;
 
         // if these values are not set in the config, then we assume that they are not wanted
         if (this.maxResponseTime !== undefined) {
@@ -165,7 +160,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         if (this.delayToShowHelpMessage !== undefined) {
             this.setTimer(
                 'helpMessageTimer',
-                'Please make the rating by adjusting the slider and clicking next',
+                'Please make the rating by clicking the button corresponding to the activity you would like to select',
                 this.delayToShowHelpMessage,
                 this.durationHelpMessageShown
             );
@@ -173,19 +168,16 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     }
 
     private setStimuliUI(stimulus: ChoiceTaskStimulus) {
-        this.activityLeft = stimulus.firstActivity;
-        this.activityRight = stimulus.secondActivity;
-
-        const tempMarks: NzMarks = {};
-        let index = 0;
-        const tickIncrement = 100 / (stimulus.legend.length - 1);
-
-        for (let i = 0; i < stimulus.legend.length; i++) {
-            tempMarks[index] = stimulus.legend[i];
-            index += tickIncrement;
-        }
-
-        this.currentSliderMarks = tempMarks;
+        this.activitiesShown = [
+            {
+                label: stimulus.firstActivity,
+                value: stimulus.firstActivity,
+            },
+            {
+                label: stimulus.secondActivity,
+                value: stimulus.secondActivity,
+            },
+        ];
     }
 
     /**
@@ -193,21 +185,22 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
      * Only when we receive null as an arg (meaning that the timeout has completed)
      * that we move on. Otherwise, we just keep replacing the trial with updated data
      */
-    handleRoundInteraction(sliderValue: number) {
+    handleRoundInteraction(inputValue: string) {
         const thisTrial = this.taskData[this.taskData.length - 1];
-        if (sliderValue === null) {
+        if (inputValue === null) {
             // no input, ran out of time
             thisTrial.responseTime = this.maxResponseTime;
-            thisTrial.userAnswer = 50; // set anchor to default middle
-            super.handleRoundInteraction(sliderValue);
+            thisTrial.userAnswer = ''; // set anchor to default middle
+            super.handleRoundInteraction(inputValue);
+            return;
+        } else {
+            thisTrial.responseTime = this.timerService.getTime();
+            thisTrial.submitted = this.timerService.getCurrentTimestamp();
+            thisTrial.userAnswer = inputValue;
+            this.showNextButton = true;
+            super.handleRoundInteraction(inputValue);
             return;
         }
-
-        thisTrial.responseTime = this.timerService.getTime();
-        thisTrial.submitted = this.timerService.getCurrentTimestamp();
-        thisTrial.userAnswer = sliderValue;
-        this.showNextButton = true;
-        return;
     }
 
     completeRound() {

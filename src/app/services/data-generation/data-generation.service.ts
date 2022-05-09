@@ -58,8 +58,8 @@ export class DataGenerationService {
         const doNothingActivities = deepClone(RatingTaskActivities.DoNothing);
         const activities = shuffle(doSomethingActivities.concat(doNothingActivities));
 
-        const ratingTaskData: RatingTaskStimuli[] = activities.map((activity) => {
-            const questions = shuffle(RatingTaskQuestionList);
+        const ratingTaskStimuli: RatingTaskStimuli[] = activities.map((activity) => {
+            const questions = shuffle(deepClone(RatingTaskQuestionList));
             return {
                 activity: activity,
                 type: RatingTaskActivities.DoNothing.includes(activity) ? 'DoNothing' : 'DoSomething',
@@ -67,7 +67,7 @@ export class DataGenerationService {
             };
         });
 
-        return ratingTaskData;
+        return ratingTaskStimuli;
     }
 
     generateChoiceStimuli(activities: string[]): ChoiceTaskStimulus[] {
@@ -88,7 +88,6 @@ export class DataGenerationService {
             pairs.push({
                 firstActivity: firstActivity,
                 secondActivity: secondActivity,
-                legend: ['Strongly Choose Left', 'Strongly Choose Right'],
             });
         }
 

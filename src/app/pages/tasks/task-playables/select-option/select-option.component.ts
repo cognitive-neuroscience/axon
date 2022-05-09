@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ComponentName } from 'src/app/services/component-factory.service';
-import { Playable } from '../../task-playables/playable';
-import { TaskPlayerState } from '../../task-playables/task-player/task-player.component';
-import { Navigation } from '../navigation-buttons/navigation-buttons.component';
+import { Playable } from '../playable';
+import { TaskPlayerState } from '../task-player/task-player.component';
+import { Navigation } from '../../shared/navigation-buttons/navigation-buttons.component';
 
 interface SelectOptionMetadata {
     component: ComponentName;

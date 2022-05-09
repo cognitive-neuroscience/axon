@@ -141,7 +141,7 @@ export class EverydayChoiceTaskData extends TaskData {
     counterbalance: RatingTaskCounterBalance;
     activity: string;
     question: string;
-    userAnswer: number;
+    userAnswer: string;
     activityType: 'DoNothing' | 'DoSomething' | '';
     responseTime: number;
 }

@@ -1,0 +1,11 @@
+<div class="container-fluid task-text wrapper flex-column-center">
+    <div class="full-box">
+        <div class="option-display-container">
+            <app-option-display
+                (onSelectValue)="handleSelectOption($event)"
+                [options]="options"
+                [question]="question"
+            ></app-option-display>
+        </div>
+    </div>
+</div>
