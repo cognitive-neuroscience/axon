@@ -87,59 +87,55 @@ export const RatingTaskActivities = {
 export const RatingTaskQuestionList = [
     {
         question: 'How much do you look forward to the outcome of this activity?',
-        legend: ['Not at all', 'Very much'],
+        legend: ['Not at all', 'Neutral', 'Very much'],
     },
     {
         question: 'How much is this activity good for you?',
-        legend: ['Not at all', 'Very good'],
+        legend: ['Not at all', 'Neutral', 'Very good'],
     },
     {
         question: 'How much do you enjoy carrying out this activity?',
-        legend: ['Not at all', 'Really enjoy'],
+        legend: ['Not at all', 'Neutral', 'Really enjoy'],
     },
     {
         question: 'How much do you feel you should do this activity?',
-        legend: ["Really shouldn't", 'Really should'],
+        legend: ["Really shouldn't", 'Neutral', 'Really should'],
     },
     {
         question: 'How much do your loved ones think you should do this activity?',
-        legend: ["Really shouldn't", 'Really should'],
+        legend: ["Really shouldn't", 'Neutral', 'Really should'],
     },
     {
         question: 'How physically effortful does this activity feel to you?',
-        legend: ['Not at all', 'Very effortful'],
+        legend: ['Not at all', 'Neutral', 'Very effortful'],
     },
     {
         question: 'How mentally effortful does this activity feel to you?',
-        legend: ['Not at all', 'Very effortful'],
+        legend: ['Not at all', 'Neutral', 'Very effortful'],
     },
     {
         question: 'How negative do you feel when doing this activity?',
-        legend: ['Not at all', 'Very negative'],
+        legend: ['Not at all', 'Neutral', 'Very negative'],
     },
     {
         question: 'How hard is it to get started on this activity?',
-        legend: ['Not at all', 'Very hard'],
+        legend: ['Not at all', 'Neutral', 'Very hard'],
     },
     {
         question: 'How much do you have to plan for this activity?',
-        legend: ['None at all', 'Lots of planning'],
+        legend: ['None at all', 'Neutral', 'Lots of planning'],
     },
     {
         question: 'To what extent is this activity part of your routine?',
-        legend: ['Not at all', 'Very much'],
+        legend: ['Not at all', 'Neutral', 'Very much'],
     },
     {
         question: 'How certain are you about how this activity will turn out?',
-        legend: ['Not at all', 'Very certain'],
-    },
-    {
-        question: 'How good are you at this activity?',
-        legend: ['Not at all', 'Very good'],
+        legend: ['Not at all', 'Neutral', 'Very certain'],
     },
     {
         question: 'How much does this activity help you feel close or connected to others?',
-        legend: ['Not at all', 'Very much'],
+        legend: ['Not at all', 'Neutral', 'Very much'],
     },
     {
         question: 'How much time does it usually take to do this activity?',
@@ -147,7 +143,7 @@ export const RatingTaskQuestionList = [
     },
     {
         question: 'How much money does it take to do this activity?',
-        legend: ['Free', 'More than I can afford'],
+        legend: ['Free', 'Neutral', 'More than I can afford'],
     },
     {
         question: 'How often do you typically engage in this activity?',
@@ -155,10 +151,10 @@ export const RatingTaskQuestionList = [
     },
     {
         question: 'How much does your age interfere with your ability to complete this activity?',
-        legend: ['Not at all', 'A lot'],
+        legend: ['Not at all', 'Neutral', 'A lot'],
     },
     {
         question: 'How much does your health condition affect your ability to complete this activity?',
-        legend: ['Not at all', 'A lot'],
+        legend: ['Not at all', 'Neutral', 'A lot'],
     },
 ];

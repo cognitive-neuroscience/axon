@@ -11,7 +11,7 @@ import { PostChoiceComponent } from './unused/post-choice/post-choice.component'
 import { ChoicerComponent } from './task-playables/everyday-choice/choicer/choicer.component';
 import { RatingComponent } from './unused/rating/rating.component';
 import { ShapeGameComponent } from './unused/shape-game/shape-game.component';
-import { TaskDisplayComponent } from './shared/task-display/task-display.component';
+import { TaskDisplayComponent } from './task-playables/task-display/task-display.component';
 import { SliderComponent } from './shared/slider/slider.component';
 import { SmileyFaceComponent } from './task-playables/smiley-face/smiley-face.component';
 import { StroopComponent } from './task-playables/stroop/stroop.component';
@@ -27,7 +27,7 @@ import { RotateDirective } from './shared/Rotate.directive';
 import { ColorGameComponent } from './unused/color-game/color-game.component';
 import { EmbeddedPageComponent } from './task-playables/embedded-page/embedded-page.component';
 import { SafeResoucePipe } from 'src/app/pipes/safe.pipe';
-import { SelectOptionComponent } from './shared/select-option/select-option.component';
+import { SelectOptionComponent } from './task-playables/select-option/select-option.component';
 import { QuestionnaireComponent } from './task-playables/questionnaire/questionnaire.component';
 import { IntroDialogComponent } from './task-playables/embedded-page/intro-dialog/intro-dialog.component';
 import { ConfirmDoneDialogComponent } from './task-playables/embedded-page/confirm-done-dialog/confirm-done-dialog.component';
@@ -39,6 +39,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FaceNameAssociationComponent } from './task-playables/face-name-association/face-name-association.component';
 import { BlankComponent } from './blank/blank.component';
 import { ProbabilisticLearningTaskComponent } from './task-playables/probabilistic-learning-task/probabilistic-learning-task.component';
+import { OptionDisplayComponent } from './shared/option-display/option-display.component';
 
 @NgModule({
     declarations: [
@@ -84,6 +85,7 @@ import { ProbabilisticLearningTaskComponent } from './task-playables/probabilist
         FaceNameAssociationComponent,
         BlankComponent,
         ProbabilisticLearningTaskComponent,
+        OptionDisplayComponent,
     ],
     imports: [
         CommonModule,
