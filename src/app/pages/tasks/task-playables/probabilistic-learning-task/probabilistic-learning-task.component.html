@@ -1,8 +1,19 @@
 <div class="wrapper task-text flex-column-center">
     <div class="full-box flex-column-center" style="justify-content: space-around">
         <div class="stimuli-container" *ngIf="shouldShowStimulus && leftStimulusShown && rightStimulusShown">
-            <img style="margin-right: 300px" class="stimulus" [src]="leftStimulusShown" alt="left Stimulus" />
-            <img class="stimulus" [src]="rightStimulusShown" alt="right Stimulus" />
+            <img
+                [class.selected]="keyPressed === 'z'"
+                style="margin-right: 300px"
+                class="stimulus"
+                [src]="leftStimulusShown"
+                alt="left Stimulus"
+            />
+            <img
+                [class.selected]="keyPressed === 'm'"
+                class="stimulus"
+                [src]="rightStimulusShown"
+                alt="right Stimulus"
+            />
         </div>
 
         <ng-container *ngIf="showFixation">
@@ -11,8 +22,19 @@
 
         <div *ngIf="showFeedback" align="center">
             <div class="feedback">
-                <div *ngIf="feedback">{{ feedback | translate }}</div>
-                <div style="font-size: 2rem" *ngIf="trialScore > 0 && !isPractice">+{{ trialScore }}</div>
+                <div
+                    *ngIf="feedback"
+                    [ngClass]="{
+                        correct: this.currentTrial.selectedStimulusWasRewarded,
+                        incorrect:
+                            !this.currentTrial.selectedStimulusWasRewarded && this.currentTrial.userAnswer !== 'NA',
+                        'too-slow':
+                            !this.currentTrial.selectedStimulusWasRewarded && this.currentTrial.userAnswer === 'NA'
+                    }"
+                >
+                    {{ feedback | translate }}
+                </div>
+                <div style="font-size: 3rem; color: green" *ngIf="trialScore > 0 && !isPractice">+{{ trialScore }}</div>
             </div>
         </div>
     </div>

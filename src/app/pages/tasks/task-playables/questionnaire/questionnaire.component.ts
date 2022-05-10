@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { NzMarks } from 'ng-zorro-antd/slider';
-import { getTextForLang, throwErrIfNotDefined } from 'src/app/common/commonMethods';
+import { getTextForLang } from 'src/app/common/commonMethods';
 import { SupportedLangs } from 'src/app/models/enums';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
@@ -22,6 +22,7 @@ class Question {
         | 'input'
         | 'slider';
     radiobuttonPresentation?: 'horizontal' | 'vertical' = 'horizontal';
+    radioButtonImageOptions?: string[]; // a list of image paths to present in the questionnaire for radiobuttons
     allowMultipleSelections?: boolean; // for multiple choice select, allow multiple choices
     key: string; // unique property of the input - this is what will be used when getting the data. Mandatory for all questionTypes except divider and free text
     label?: string; // label of the input

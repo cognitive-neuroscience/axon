@@ -37,6 +37,13 @@
                             [innerHTML]="handleText(question.textContent)"
                         ></p>
                         <br />
+
+                        <div class="radiobuttons-images-container" *ngIf="question.radioButtonImageOptions">
+                            <div class="image-container" *ngFor="let imagePath of question.radioButtonImageOptions">
+                                <img class="image" [src]="imagePath" alt="image option" />
+                            </div>
+                        </div>
+
                         <mat-radio-group
                             class="{{ question.radiobuttonPresentation }}"
                             [formControlName]="question.key"
@@ -107,11 +114,6 @@
                                 >
                                     &nbsp;(This is required)
                                 </h2>
-                                <!-- <div class="w-25 slider-error error-text" style="font-size: 1rem">
-                                    <span *ngIf="questionnaire.get(question.key)?.hasError('required')">
-                                        This is required
-                                    </span>
-                                </div> -->
                             </h2>
                             <p
                                 *ngIf="question.textContent"

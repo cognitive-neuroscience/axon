@@ -176,7 +176,7 @@ button {
     }
 
     .feedback {
-        font-size: 30px;
+        font-size: 3rem;
         text-transform: uppercase;
     }
 }
@@ -282,6 +282,9 @@ html.cdk-global-scrollblock body {
         .mat-radio-label {
             flex-direction: column-reverse;
             white-space: initial;
+        }
+        .mat-radio-label-content {
+            padding-left: 0;
         }
     }
 }

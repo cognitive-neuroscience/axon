@@ -36,6 +36,7 @@ import {
     SARTTrialType,
     FaceNameAssociationStimulus,
     PLTStimulus,
+    PLTStimulusType,
 } from './stimuli-models';
 import { NBackSet } from './raw-data/nback-data-list';
 import { Color } from 'src/app/models/InternalDTOs';
@@ -451,113 +452,77 @@ export class DataGenerationService {
         const stimuli: PLTStimulus[] = [];
         switch (phase) {
             case 'training-phase':
-                stimuli.push(...this.generatePLTStimuliForTaskType('A', 'B', 20, 5, 20, 5));
-                stimuli.push(...this.generatePLTStimuliForTaskType('C', 'D', 18, 7, 17, 8));
-                stimuli.push(...this.generatePLTStimuliForTaskType('E', 'F', 15, 10, 15, 10));
+                stimuli.push(
+                    ...this.generatePLTStimuliForTaskType(50, PLTStimulusType.STIM80, 80, PLTStimulusType.STIM20, 20),
+                    ...this.generatePLTStimuliForTaskType(50, PLTStimulusType.STIM70, 70, PLTStimulusType.STIM30, 30),
+                    ...this.generatePLTStimuliForTaskType(50, PLTStimulusType.STIM60, 60, PLTStimulusType.STIM40, 40)
+                );
                 break;
             case 'practice-phase':
-                stimuli.push(...this.generatePLTStimuliForTaskType('G', 'H', 4, 1, 4, 1));
+                stimuli.push(
+                    ...this.generatePLTStimuliForTaskType(
+                        10,
+                        PLTStimulusType.PRACTICESTIM80,
+                        80,
+                        PLTStimulusType.PRACTICESTIM20,
+                        20
+                    )
+                );
                 break;
             case 'test-phase':
-                stimuli.push(...this.generatePLTStimuliForTaskType('A', 'B', 5, 0, 5, 0));
-                stimuli.push(...this.generatePLTStimuliForTaskType('C', 'D', 5, 0, 5, 0));
-                stimuli.push(...this.generatePLTStimuliForTaskType('E', 'F', 5, 0, 5, 0));
-                stimuli.push(...this.generatePLTStimuliForTaskType('A', 'C', 5, 0, 5, 0));
-                stimuli.push(...this.generatePLTStimuliForTaskType('A', 'D', 5, 0, 5, 0));
-                stimuli.push(...this.generatePLTStimuliForTaskType('A', 'E', 5, 0, 5, 0));
-                stimuli.push(...this.generatePLTStimuliForTaskType('A', 'F', 5, 0, 5, 0));
-                stimuli.push(...this.generatePLTStimuliForTaskType('B', 'C', 0, 5, 0, 5));
-                stimuli.push(...this.generatePLTStimuliForTaskType('B', 'D', 0, 5, 0, 5));
-                stimuli.push(...this.generatePLTStimuliForTaskType('B', 'E', 0, 5, 0, 5));
-                stimuli.push(...this.generatePLTStimuliForTaskType('B', 'F', 0, 5, 0, 5));
-            default:
+                stimuli.push(
+                    ...this.generatePLTStimuliForTaskType(5, PLTStimulusType.STIM80, 80, PLTStimulusType.STIM20, 20),
+                    ...this.generatePLTStimuliForTaskType(5, PLTStimulusType.STIM70, 70, PLTStimulusType.STIM30, 30),
+                    ...this.generatePLTStimuliForTaskType(5, PLTStimulusType.STIM60, 60, PLTStimulusType.STIM40, 40),
+                    ...this.generatePLTStimuliForTaskType(5, PLTStimulusType.STIM80, 80, PLTStimulusType.STIM70, 70),
+                    ...this.generatePLTStimuliForTaskType(5, PLTStimulusType.STIM80, 80, PLTStimulusType.STIM30, 30),
+                    ...this.generatePLTStimuliForTaskType(5, PLTStimulusType.STIM80, 80, PLTStimulusType.STIM60, 60),
+                    ...this.generatePLTStimuliForTaskType(5, PLTStimulusType.STIM80, 80, PLTStimulusType.STIM40, 40),
+                    ...this.generatePLTStimuliForTaskType(5, PLTStimulusType.STIM20, 20, PLTStimulusType.STIM70, 70),
+                    ...this.generatePLTStimuliForTaskType(5, PLTStimulusType.STIM20, 20, PLTStimulusType.STIM30, 30),
+                    ...this.generatePLTStimuliForTaskType(5, PLTStimulusType.STIM20, 20, PLTStimulusType.STIM60, 60),
+                    ...this.generatePLTStimuliForTaskType(5, PLTStimulusType.STIM20, 20, PLTStimulusType.STIM40, 40)
+                );
                 break;
+            default:
+                throw new Error(`phase ${phase} does not exist`);
         }
 
         return shuffle(stimuli);
     }
 
-    /**
-     * @param primaryStimName the name of the primary stimulus
-     * @param complementStimName the name of the secondary stimulus
-     * @param primaryStimLeftCorrect number of times when the primary stimulus is correct and presented on the left side of the screen
-     * @param primaryStimLeftIncorrect number of times whne the primary stimulus is incorrect and presented on the left side of the screen
-     * @param primaryStimRightCorrect number of times when the primary stimulus is correct and presented on the right side of the screen
-     * @param primaryStimRightIncorrect number of times whne the primary stimulus is incorrect and presented on the right side of the screen
-     */
     private generatePLTStimuliForTaskType(
-        primaryStimName: string,
-        complementStimName: string,
-        primaryStimLeftCorrect: number,
-        primaryStimLeftIncorrect: number,
-        primaryStimRightCorrect: number,
-        primaryStimRightIncorrect: number
+        numTrials: number,
+        firstStimName: PLTStimulusType,
+        firstStimPercentageSelected: number, // 0 - 100
+        secondStimName: PLTStimulusType,
+        secondStimPercentageSelected: number // 0 - 100
     ): PLTStimulus[] {
         const stimuli: PLTStimulus[] = [];
-
-        // generate primary stim left correct
-        stimuli.push(
-            ...this.generatePLTStimuliForTrialTypeCondition(
-                primaryStimLeftCorrect,
-                primaryStimName,
-                complementStimName,
-                'LEFT',
-                primaryStimName
-            )
-        );
-
-        // generate primary stim left incorrect
-        stimuli.push(
-            ...this.generatePLTStimuliForTrialTypeCondition(
-                primaryStimLeftIncorrect,
-                primaryStimName,
-                complementStimName,
-                'RIGHT',
-                complementStimName
-            )
-        );
-
-        // generate primary stim right incorrect
-        stimuli.push(
-            ...this.generatePLTStimuliForTrialTypeCondition(
-                primaryStimRightCorrect,
-                complementStimName,
-                primaryStimName,
-                'RIGHT',
-                primaryStimName
-            )
-        );
-
-        // generate primary stim right incorrect
-        stimuli.push(
-            ...this.generatePLTStimuliForTrialTypeCondition(
-                primaryStimRightIncorrect,
-                complementStimName,
-                primaryStimName,
-                'LEFT',
-                complementStimName
-            )
-        );
-
-        return stimuli;
-    }
-
-    private generatePLTStimuliForTrialTypeCondition(
-        numTrials: number,
-        leftStimName: string,
-        rightStimName: string,
-        leftOrRightCorrect: 'LEFT' | 'RIGHT',
-        correctStimulusName: string
-    ): PLTStimulus[] {
-        const pltStimuli: PLTStimulus[] = [];
         for (let i = 0; i < numTrials; i++) {
-            pltStimuli.push({
-                leftStimulusName: leftStimName,
-                rightStimulusName: rightStimName,
-                leftOrRightCorrect: leftOrRightCorrect,
-                correctStimulusName: correctStimulusName,
+            // randomly choose first or second
+            let leftStimulus = {
+                name: firstStimName,
+                percentage: firstStimPercentageSelected,
+            };
+            let rightStimulus = {
+                name: secondStimName,
+                percentage: secondStimPercentageSelected,
+            };
+
+            // switch the two
+            if (getRandomNumber(0, 2) === 0) [leftStimulus, rightStimulus] = [rightStimulus, leftStimulus];
+
+            stimuli.push({
+                leftStimulusName: leftStimulus.name,
+                leftStimulusRewarded: getRandomNumber(0, 100) < leftStimulus.percentage,
+                rightStimulusName: rightStimulus.name,
+                rightStimulusRewarded: getRandomNumber(0, 100) < rightStimulus.percentage,
+                expectedSelectedStimulus:
+                    leftStimulus.percentage > rightStimulus.percentage ? leftStimulus.name : rightStimulus.name,
             });
         }
-        return pltStimuli;
+
+        return stimuli;
     }
 }

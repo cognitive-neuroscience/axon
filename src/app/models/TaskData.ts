@@ -181,11 +181,14 @@ export class PLTTaskData extends TaskData {
     leftImageFileName: string;
     rightStimulusPresented: string;
     rightImageFileName: string;
-    isCorrect: boolean;
-    correctStimulus: string;
-    correctSide: 'LEFT' | 'RIGHT';
+    selectedStimulus: string;
+    selectedStimulusImageFileName: string;
+    selectedStimulusWasRewarded: boolean;
+    expectedStimulus: string;
+    expectedStimulusImageFileName: string;
     userAnswer: Key | UserResponse.NA;
-    actualAnswer: Key;
+    expectedAnswer: Key;
+    userAnswerIsExpectedAnswer: boolean;
     responseTime: number;
 }
 

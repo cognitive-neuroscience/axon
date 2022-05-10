@@ -1,12 +1,12 @@
 import { Component, HostListener } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { getRandomNumber, thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
+import { getRandomNumber, shuffle, thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { Key, TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
 import { PLTTaskData } from 'src/app/models/TaskData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
-import { PLTStimulus } from 'src/app/services/data-generation/stimuli-models';
+import { PLTStimulus, PLTStimulusType } from 'src/app/services/data-generation/stimuli-models';
 import { ImageService } from 'src/app/services/image.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { TimerService } from 'src/app/services/timer.service';
@@ -29,6 +29,21 @@ interface PLTMetadata {
             stimuli: PLTStimulus[];
         };
     };
+}
+
+interface PLTImageStimuliMap {
+    [PLTStimulusType.STIM80]: string;
+    [PLTStimulusType.STIM70]: string;
+    [PLTStimulusType.STIM60]: string;
+    [PLTStimulusType.STIM40]: string;
+    [PLTStimulusType.STIM30]: string;
+    [PLTStimulusType.STIM20]: string;
+    [PLTStimulusType.PRACTICESTIM80]: string;
+    [PLTStimulusType.PRACTICESTIM20]: string;
+}
+
+export enum PLTCache {
+    IMAGE_STIMULI_MAPPING = 'plt-image-stimuli-mapping',
 }
 
 @Component({
@@ -64,7 +79,11 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
     stimuli: PLTStimulus[];
     currentStimuliIndex: number; // index of the stimuli we are on
 
+    // cache
+    imageStimuliMap: PLTImageStimuliMap;
+
     // local state variables
+    keyPressed: string = '';
     feedback: string;
     shouldShowStimulus: boolean = false;
     leftStimulusShown: string | ArrayBuffer = null;
@@ -111,6 +130,7 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
             throw new Error(error);
         }
 
+        this.config = config;
         this.isPractice = thisOrDefault(metadata.componentConfig.isPractice, false);
         this.durationFeedbackPresented = thisOrDefault(metadata.componentConfig.durationFeedbackPresented, 500);
         this.interTrialDelay = thisOrDefault(metadata.componentConfig.interTrialDelay, 0);
@@ -134,30 +154,50 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
 
         // either the stimuli have been defined in config or we generate it here from service
         if (!this.stimuli) this.stimuli = this.dataGenService.generatePLTStimuli(this.phase);
+        this.loaderService.showLoader();
         this.subscriptions.push(
             this.imageService
                 .loadImagesAsBlobs([
-                    '/assets/images/stimuli/plt/A.jpg',
-                    '/assets/images/stimuli/plt/B.jpg',
-                    '/assets/images/stimuli/plt/C.jpg',
-                    '/assets/images/stimuli/plt/D.jpg',
-                    '/assets/images/stimuli/plt/E.jpg',
-                    '/assets/images/stimuli/plt/F.jpg',
-                    '/assets/images/stimuli/plt/G.jpg',
-                    '/assets/images/stimuli/plt/H.jpg',
+                    '/assets/images/stimuli/plt/image1.jpg',
+                    '/assets/images/stimuli/plt/image2.jpg',
+                    '/assets/images/stimuli/plt/image3.jpg',
+                    '/assets/images/stimuli/plt/image4.jpg',
+                    '/assets/images/stimuli/plt/image5.jpg',
+                    '/assets/images/stimuli/plt/image6.jpg',
+                    '/assets/images/stimuli/plt/practiceImage1.jpg',
+                    '/assets/images/stimuli/plt/practiceImage2.jpg',
                 ])
                 .subscribe(
                     (blobs) => {
                         this.imageBlobMap = {
-                            A: blobs[0],
-                            B: blobs[1],
-                            C: blobs[2],
-                            D: blobs[3],
-                            E: blobs[4],
-                            F: blobs[5],
-                            G: blobs[6],
-                            H: blobs[7],
+                            image1: blobs[0],
+                            image2: blobs[1],
+                            image3: blobs[2],
+                            image4: blobs[3],
+                            image5: blobs[4],
+                            image6: blobs[5],
+                            practiceImage1: blobs[6],
+                            practiceImage2: blobs[7],
                         };
+
+                        // if mapping does not exist, create it by randomly assigning images to stimuli
+                        let mappingInCache = this.config.getCacheValue(PLTCache.IMAGE_STIMULI_MAPPING);
+                        if (!mappingInCache) {
+                            const imageList = shuffle(['image1', 'image2', 'image3', 'image4', 'image5', 'image6']);
+                            let mapping: PLTImageStimuliMap = {
+                                [PLTStimulusType.STIM80]: imageList.pop(),
+                                [PLTStimulusType.STIM70]: imageList.pop(),
+                                [PLTStimulusType.STIM60]: imageList.pop(),
+                                [PLTStimulusType.STIM40]: imageList.pop(),
+                                [PLTStimulusType.STIM30]: imageList.pop(),
+                                [PLTStimulusType.STIM20]: imageList.pop(),
+                                [PLTStimulusType.PRACTICESTIM80]: 'practiceImage1',
+                                [PLTStimulusType.PRACTICESTIM20]: 'practiceImage2',
+                            };
+                            mappingInCache = mapping;
+                            this.config.setCacheValue(PLTCache.IMAGE_STIMULI_MAPPING, mapping);
+                        }
+                        this.imageStimuliMap = mappingInCache;
 
                         super.start();
                     },
@@ -165,6 +205,9 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
                         throw new Error('there was an error getting images');
                     }
                 )
+                .add(() => {
+                    this.loaderService.hideLoader();
+                })
         );
     }
 
@@ -179,21 +222,27 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
         this.trialScore = 0;
 
         this.taskData.push({
-            responseTime: 0,
+            score: 0,
+            trial: ++this.trialNum,
             submitted: this.timerService.getCurrentTimestamp(),
             userID: this.userID,
             studyId: this.studyId,
-            score: this.trialScore,
-            trial: ++this.trialNum,
+            isPractice: this.isPractice,
             phase: this.phase,
             leftStimulusPresented: this.currentStimulus.leftStimulusName,
+            leftImageFileName: this.imageStimuliMap[this.currentStimulus.leftStimulusName],
             rightStimulusPresented: this.currentStimulus.rightStimulusName,
-            isPractice: this.isPractice,
-            isCorrect: false,
-            correctSide: this.currentStimulus.leftOrRightCorrect,
-            correctStimulus: this.currentStimulus.correctStimulusName,
-            userAnswer: null,
-            actualAnswer: this.currentStimulus.leftOrRightCorrect === 'LEFT' ? Key.Z : Key.M,
+            rightImageFileName: this.imageStimuliMap[this.currentStimulus.rightStimulusName],
+            selectedStimulus: null,
+            selectedStimulusImageFileName: null,
+            selectedStimulusWasRewarded: false,
+            expectedStimulus: this.currentStimulus.expectedSelectedStimulus,
+            expectedStimulusImageFileName: this.imageStimuliMap[this.currentStimulus.expectedSelectedStimulus],
+            userAnswer: UserResponse.NA,
+            expectedAnswer:
+                this.currentStimulus.expectedSelectedStimulus === this.currentStimulus.leftStimulusName ? Key.Z : Key.M,
+            userAnswerIsExpectedAnswer: false,
+            responseTime: 0,
         });
 
         // show fixation
@@ -212,8 +261,8 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
     }
 
     private setStimuliUI(stimulus: PLTStimulus) {
-        const leftImage = this.imageBlobMap[stimulus.leftStimulusName];
-        const rightImage = this.imageBlobMap[stimulus.rightStimulusName];
+        const leftImage = this.imageBlobMap[this.imageStimuliMap[stimulus.leftStimulusName]];
+        const rightImage = this.imageBlobMap[this.imageStimuliMap[stimulus.rightStimulusName]];
         this.showLeftImage(leftImage);
         this.showRightImage(rightImage);
         this.shouldShowStimulus = true;
@@ -231,34 +280,49 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
     }
 
     @HostListener('window:keypress', ['$event'])
-    handleRoundInteraction(event: KeyboardEvent | null): void {
+    async handleRoundInteraction(event: KeyboardEvent | null) {
         if (!this.responseAllowed) return;
 
-        const thisTrial = this.taskData[this.taskData.length - 1];
-        thisTrial.submitted = this.timerService.getCurrentTimestamp();
-        if (this.isValidKey(event?.key)) {
-            const caseInsensitiveKey = event.key.toLocaleLowerCase();
+        this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
+        const caseInsensitiveKey = event?.key?.toLocaleLowerCase();
+        if (this.isValidKey(caseInsensitiveKey)) {
             this.cancelAllTimers();
             this.responseAllowed = false;
 
-            thisTrial.userAnswer = caseInsensitiveKey as Key;
-            thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
+            // show highlighted border
+            this.keyPressed = caseInsensitiveKey;
+            await wait(600);
+            this.keyPressed = '';
+
+            this.currentTrial.userAnswer = caseInsensitiveKey as Key;
+            this.currentTrial.userAnswerIsExpectedAnswer = caseInsensitiveKey === this.currentTrial.expectedAnswer;
+            this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
+
+            this.currentTrial.selectedStimulus =
+                caseInsensitiveKey === Key.Z
+                    ? this.currentTrial.leftStimulusPresented
+                    : this.currentTrial.rightStimulusPresented;
+            this.currentTrial.selectedStimulusImageFileName =
+                caseInsensitiveKey === Key.Z
+                    ? this.currentTrial.leftImageFileName
+                    : this.currentTrial.rightImageFileName;
 
             super.handleRoundInteraction(caseInsensitiveKey);
         } else if (event === null) {
             this.cancelAllTimers();
             // we reached max response time
-            thisTrial.responseTime = this.maxResponseTime;
-            thisTrial.userAnswer = UserResponse.NA;
-            thisTrial.isCorrect = false;
-            thisTrial.score = 0;
+            this.currentTrial.responseTime = this.maxResponseTime;
+            this.currentTrial.userAnswer = UserResponse.NA;
+            this.currentTrial.selectedStimulusWasRewarded = false;
+            this.currentTrial.score = 0;
             super.handleRoundInteraction(null);
         }
     }
 
     private isValidKey(key: string): boolean {
-        const caseInsensitiveKey = key ? key.toLocaleLowerCase() : key;
-        return caseInsensitiveKey === Key.Z || caseInsensitiveKey === Key.M;
+        if (!key) return false;
+
+        return key === Key.Z || key === Key.M;
     }
 
     async completeRound() {
@@ -268,25 +332,28 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
         this.showFixation = false;
         this.responseAllowed = false;
 
-        const thisTrial = this.taskData[this.taskData.length - 1];
-
-        switch (thisTrial.userAnswer) {
-            case thisTrial.actualAnswer:
-                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.CORRECT}`;
-                thisTrial.isCorrect = true;
-                thisTrial.score = 10;
-                break;
+        switch (this.currentTrial.userAnswer) {
             case UserResponse.NA:
                 this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}`;
                 break;
+            case this.currentTrial.expectedAnswer:
             default:
-                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.INCORRECT}`;
-                thisTrial.isCorrect = false;
-                thisTrial.score = 0;
+                if (
+                    (this.currentTrial.userAnswer === Key.Z && this.currentStimulus.leftStimulusRewarded) ||
+                    (this.currentTrial.userAnswer === Key.M && this.currentStimulus.rightStimulusRewarded)
+                ) {
+                    this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.CORRECT}`;
+                    this.currentTrial.selectedStimulusWasRewarded = true;
+                    this.currentTrial.score = 10;
+                } else {
+                    this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.INCORRECT}`;
+                    this.currentTrial.selectedStimulusWasRewarded = false;
+                    this.currentTrial.score = 0;
+                }
                 break;
         }
 
-        this.trialScore = thisTrial.score;
+        this.trialScore = this.currentTrial.score;
 
         if (
             this.showFeedbackAfterEachTrial ||

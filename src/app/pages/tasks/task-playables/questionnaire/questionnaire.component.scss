@@ -37,14 +37,6 @@
     display: flex;
     flex-direction: row;
     align-items: flex-end;
-
-    @include for-small-device-only {
-        width: 100%;
-    }
-
-    @include for-desktop-up {
-        width: 50%;
-    }
 }
 
 .vertical {
@@ -54,4 +46,18 @@
 
 .mat-error {
     font-size: 1rem !important;
+}
+
+.radiobuttons-images-container {
+    display: flex;
+    flex-direction: row;
+
+    .image-container {
+        flex-grow: 1;
+        flex-basis: 0;
+
+        .image {
+            width: 100%;
+        }
+    }
 }
