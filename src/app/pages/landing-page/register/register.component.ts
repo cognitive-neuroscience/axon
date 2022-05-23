@@ -43,8 +43,6 @@ export class RegisterComponent implements OnDestroy {
     subscriptions: Subscription[] = [];
     passwordIsVisible = false;
 
-    private readonly REGISTER_SUCCESS_STR = 'User successfully created! Login using your credentials';
-
     constructor(
         private router: Router,
         private fb: FormBuilder,
@@ -81,8 +79,15 @@ export class RegisterComponent implements OnDestroy {
                 .registerUser(email, password, Role.PARTICIPANT)
                 .subscribe(
                     (_) => {
-                        this.snackbarService.openSuccessSnackbar(this.REGISTER_SUCCESS_STR, undefined, 20000);
-                        this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
+                        this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]).then((navigated: boolean) => {
+                            if (navigated) {
+                                this.snackbarService.openSuccessSnackbar(
+                                    'User successfully created! Login using your credentials',
+                                    undefined,
+                                    20000
+                                );
+                            }
+                        });
                     },
                     (error: HttpErrorResponse) => {
                         console.error(error);

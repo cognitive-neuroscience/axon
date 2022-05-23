@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DigitSpanTaskData } from 'src/app/models/TaskData';
 import { SnackbarService } from 'src/app/services/snackbar.service';
-import { Feedback, UserResponse } from 'src/app/models/InternalDTOs';
+import { Feedback, TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
 import { TimerService } from 'src/app/services/timer.service';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { AbstractBaseTaskComponent } from '../base-task';
@@ -65,7 +65,7 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
     currentStimuliIndex: number; // index of the stimuli we are on
 
     // local state variables
-    feedback: Feedback;
+    feedback: string;
     showStimulus: boolean = false;
     digitShown: string = '';
     showFeedback: boolean = false;
@@ -78,7 +78,7 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
 
     // timers
     maxResponseTimer: any;
-    snackbarTimeout: any;
+    showHelpMessageTimer: any;
 
     get currentStimulus(): DigitSpanStimulus {
         return this.stimuli[this.currentStimuliIndex];
@@ -173,7 +173,7 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
         this.showKeypad = true;
         this.responseAllowed = true;
 
-        this.setTimer(this.delayToShowHelpMessage, () => {
+        this.setShowHelpMessageTimer(this.delayToShowHelpMessage, () => {
             if (this.isDestroyed) return;
             this.snackbarService.openInfoSnackbar(
                 'Please enter your response',
@@ -182,7 +182,7 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
             );
         });
 
-        this.setTimer(this.maxResponseTime, async () => {
+        this.setMaxResponseTimer(this.maxResponseTime, async () => {
             if (this.isDestroyed) return;
 
             this.responseAllowed = false;
@@ -226,14 +226,20 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
         return str.slice(0, str.length - 1);
     }
 
-    private setTimer(delay: number, cbFunc?: () => void) {
+    private setMaxResponseTimer(delay: number, cbFunc?: () => void) {
         this.maxResponseTimer = window.setTimeout(() => {
             if (cbFunc) cbFunc();
         }, delay);
     }
 
+    private setShowHelpMessageTimer(delay: number, cbFunc?: () => void) {
+        this.showHelpMessageTimer = window.setTimeout(() => {
+            if (cbFunc) cbFunc();
+        }, delay);
+    }
+
     private cancelAllTimers() {
-        clearTimeout(this.snackbarTimeout);
+        clearTimeout(this.showHelpMessageTimer);
         clearTimeout(this.maxResponseTimer);
         this.snackbarService.clearSnackbar();
     }
@@ -280,16 +286,18 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
 
         switch (this.currentTrial.userAnswer) {
             case this.currentTrial.actualAnswer:
-                this.feedback = Feedback.CORRECT;
+                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.CORRECT}`;
                 this.currentTrial.isCorrect = true;
                 this.currentTrial.score = 10;
                 break;
             case UserResponse.NA:
                 this.feedback =
-                    this.currentTrial.responseTime === this.maxResponseTime ? Feedback.TOOSLOW : Feedback.NORESPONSE;
+                    this.currentTrial.responseTime === this.maxResponseTime
+                        ? `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}`
+                        : `${this.TRANSLATION_PREFIX}${TranslatedFeedback.NORESPONSE}`;
                 break;
             default:
-                this.feedback = Feedback.INCORRECT;
+                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.INCORRECT}`;
                 this.currentTrial.isCorrect = false;
                 this.currentTrial.score = 0;
                 break;
@@ -298,8 +306,8 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
         // show feedback either if they are too slow, or if they don't have any response
         if (
             this.showFeedbackAfterEachTrial ||
-            this.feedback === Feedback.TOOSLOW ||
-            this.feedback === Feedback.NORESPONSE
+            this.feedback === `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}` ||
+            this.feedback === `${this.TRANSLATION_PREFIX}${TranslatedFeedback.NORESPONSE}`
         ) {
             this.showFeedback = true;
             await wait(this.durationOfFeedback);
