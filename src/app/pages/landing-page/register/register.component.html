@@ -1,14 +1,15 @@
 <div class="card-padding">
-    <h1 style="color: #3f51b5">Welcome to the sharplab</h1>
+    <h1 style="color: #3f51b5; margin: 0">Welcome to the sharplab</h1>
+    <h1 style="color: gray">Bienvenu au Labo Sharp</h1>
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>EMAIL</mat-label>
+            <mat-label>EMAIL / COURRIEL</mat-label>
             <input matInput formControlName="email" type="email" placeholder="example@domain.com" email required />
             <mat-error *ngIf="registerForm.get('email')?.hasError('required')">This is required</mat-error>
             <mat-error *ngIf="registerForm.get('email')?.hasError('email')">This must be a valid email</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>CONFIRM EMAIL</mat-label>
+            <mat-label>CONFIRM EMAIL / CONFIRMEZ VOTRE COURRIEL</mat-label>
             <input
                 matInput
                 formControlName="confirmEmail"
@@ -24,7 +25,7 @@
             <mat-error *ngIf="registerForm.hasError('emailMatchErr')">Emails must match</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>PASSWORD</mat-label>
+            <mat-label>PASSWORD / MOT DE PASSE</mat-label>
             <mat-icon style="cursor: pointer" (click)="togglePasswordVisibility()" matSuffix>{{
                 passwordIsVisible ? 'visibility' : 'visibility_off'
             }}</mat-icon>
@@ -39,7 +40,7 @@
             <mat-error *ngIf="registerForm.get('password')?.hasError('required')">This is required</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>CONFIRM PASSWORD</mat-label>
+            <mat-label>CONFIRM PASSWORD / CONFIRMEZ VOTRE MOT DE PASSE</mat-label>
             <mat-icon style="cursor: pointer" (click)="togglePasswordVisibility()" matSuffix>{{
                 passwordIsVisible ? 'visibility' : 'visibility_off'
             }}</mat-icon>
@@ -61,11 +62,12 @@
                 color="primary"
                 [disabled]="!registerForm.valid"
             >
-                REGISTER
+                REGISTER / ENREGISTREZ-VOUS
             </button>
         </div>
         <a class="btn-block mt-3 underline-on-hover" style="color: #3f51b5" (click)="navigateToLoginPage()">
-            Are you already registered? Log in
+            Are you already registered? Log in <br />
+            <span style="color: gray"> Êtes-vous déjà enregistré? Connectez-vous </span>
         </a>
     </form>
 </div>
