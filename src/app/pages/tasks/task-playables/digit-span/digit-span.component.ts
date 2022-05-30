@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DigitSpanTaskData } from 'src/app/models/TaskData';
 import { SnackbarService } from 'src/app/services/snackbar.service';
-import { Feedback, TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
+import { TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
 import { TimerService } from 'src/app/services/timer.service';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { AbstractBaseTaskComponent } from '../base-task';

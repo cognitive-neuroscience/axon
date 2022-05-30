@@ -33,7 +33,8 @@
         "feedback": {
             "correct": "Correct",
             "incorrect": "Incorrect",
-            "too-slow": "Too Slow"
+            "too-slow": "Too Slow",
+            "no-response": "No response"
         }
     }
 }
