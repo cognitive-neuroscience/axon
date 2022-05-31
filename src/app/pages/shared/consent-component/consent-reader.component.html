@@ -40,6 +40,19 @@
         </div>
     </div>
 
+    <form [formGroup]="consentForm">
+        <div *ngFor="let input of readerMetadata.metadata?.inputs">
+            <h4 class="font-weight-bold">
+                {{ getTextForLang(input.question) }}
+            </h4>
+            <mat-radio-group class="consent-radio-buttons" [formControlName]="input.key">
+                <mat-radio-button *ngFor="let option of input.options" [value]="option.value">
+                    {{ getTextForLang(option.label) }}
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </form>
+
     <div class="endMessage my-4">
         <span>{{ endMessage }}</span>
     </div>
@@ -58,7 +71,7 @@
                 </button>
             </div>
             <div class="m-2" *ngIf="readerMetadata.metadata?.buttons.accept.show">
-                <button mat-raised-button color="primary" (click)="onSubmit(true)">
+                <button [disabled]="confirmButtonDisabled" mat-raised-button color="primary" (click)="onSubmit(true)">
                     {{
                         readerMetadata.metadata?.buttons.accept.text
                             ? getTextForLang(readerMetadata.metadata?.buttons.accept.text)

@@ -1,4 +1,5 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ITranslationText } from 'src/app/models/InternalDTOs';
@@ -19,6 +20,14 @@ class ConsentForm {
     body: {
         caption: ITranslationText;
         words: ConsentTextContent[];
+    }[];
+    inputs: {
+        question: ITranslationText;
+        key: string;
+        options: {
+            label: ITranslationText;
+            value: string;
+        }[];
     }[];
     endMessage: ITranslationText;
     buttons: {
@@ -43,7 +52,9 @@ export class ConsentNavigationConfig {
     templateUrl: './consent-reader.component.html',
     styleUrls: ['./consent-reader.component.scss'],
 })
-export class ConsentReaderComponent implements AbstractBaseReaderComponent {
+export class ConsentReaderComponent implements AbstractBaseReaderComponent, OnInit {
+    consentForm: FormGroup;
+
     @Input()
     readerMetadata: ConsentNavigationConfig;
 
@@ -63,6 +74,10 @@ export class ConsentReaderComponent implements AbstractBaseReaderComponent {
         return this.getTextForLang(this.readerMetadata.metadata?.endMessage) || '';
     }
 
+    get confirmButtonDisabled(): boolean {
+        return this.consentForm.invalid;
+    }
+
     @Output()
     emitConsent: EventEmitter<boolean> = new EventEmitter();
 
@@ -70,6 +85,20 @@ export class ConsentReaderComponent implements AbstractBaseReaderComponent {
         const state = this.router.getCurrentNavigation()?.extras.state as ConsentNavigationConfig;
 
         if (state) this.readerMetadata = state;
+    }
+
+    ngOnInit(): void {
+        this.consentForm = this.getFormGroup();
+    }
+
+    private getFormGroup() {
+        const formGroup: {
+            [key: string]: FormControl;
+        } = {};
+        (this.readerMetadata?.metadata?.inputs || []).forEach((input) => {
+            formGroup[input.key] = new FormControl('', Validators.required);
+        });
+        return new FormGroup(formGroup);
     }
 
     onSubmit(response: boolean) {
