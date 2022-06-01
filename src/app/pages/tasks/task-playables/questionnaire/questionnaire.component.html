@@ -98,11 +98,11 @@
                             <h2 style="display: flex">
                                 <h2
                                     *ngIf="question.title"
-                                    class="title-text"
+                                    class="title-text responsive-title"
                                     [innerHTML]="handleText(question.title)"
                                 ></h2>
                                 <h2
-                                    class="error-text font-weight-lighter"
+                                    class="error-text font-weight-lighter responsive-title"
                                     *ngIf="questionnaire.get(question.key)?.hasError('required')"
                                 >
                                     &nbsp;(This is required)
