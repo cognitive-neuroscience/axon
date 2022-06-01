@@ -1,5 +1,4 @@
 import { Component, OnDestroy } from '@angular/core';
-import { NzMarks } from 'ng-zorro-antd/slider';
 import { throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { EverydayChoiceTaskData } from 'src/app/models/TaskData';
