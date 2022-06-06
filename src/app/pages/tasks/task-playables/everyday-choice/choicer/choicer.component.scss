@@ -1,5 +1,61 @@
 @import '/src/app/sass/mixins';
 
-.practice-hint {
-    font-size: 1rem;
+@include for-small-device-only {
+    .choice-container {
+        width: 450px;
+    }
+
+    .hint {
+        font-size: 1.2rem;
+    }
+
+    .activity,
+    .question {
+        font-size: 1.5rem;
+    }
+}
+
+@include for-small-desktop-only {
+    .choice-container {
+        width: 700px;
+    }
+
+    .hint {
+        font-size: 1.5rem;
+    }
+
+    .activity,
+    .question {
+        font-size: 2rem;
+    }
+}
+
+@include for-desktop-up {
+    .choice-container {
+        width: 800px;
+    }
+
+    .hint {
+        font-size: 1.8rem;
+    }
+
+    .activity,
+    .question {
+        font-size: 2.5rem;
+    }
+}
+
+@include for-large-desktop-up {
+    .choice-container {
+        width: 1000px;
+    }
+
+    .hint {
+        font-size: 2rem;
+    }
+
+    .activity,
+    .question {
+        font-size: 3rem;
+    }
 }
