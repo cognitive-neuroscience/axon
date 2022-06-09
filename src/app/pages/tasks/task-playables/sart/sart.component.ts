@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { StimuliProvidedType } from 'src/app/models/enums';
-import { Feedback, Key } from 'src/app/models/InternalDTOs';
+import { Feedback, Key, TranslatedFeedback } from 'src/app/models/InternalDTOs';
 import { SARTTaskData } from 'src/app/models/TaskData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
@@ -65,7 +65,7 @@ export class SartComponent extends AbstractBaseTaskComponent {
 
     // local state variables
     blockNum: number = 0;
-    feedback: Feedback;
+    feedback: string;
     showStimulus: boolean = false;
     showFeedback: boolean = false;
     showResponseCue: boolean = false;
@@ -236,16 +236,17 @@ export class SartComponent extends AbstractBaseTaskComponent {
 
         switch (thisTrial.userAnswer) {
             case thisTrial.actualAnswer:
-                this.feedback = Feedback.CORRECT;
+                this.feedback = TranslatedFeedback.CORRECT;
                 thisTrial.isCorrect = true;
                 break;
             default:
-                this.feedback = this.currentStimulus.digit === 3 ? Feedback.INCORRECT : Feedback.TOOSLOW;
+                this.feedback =
+                    this.currentStimulus.digit === 3 ? TranslatedFeedback.INCORRECT : TranslatedFeedback.TOOSLOW;
                 thisTrial.isCorrect = false;
                 break;
         }
 
-        if (this.isPractice || this.feedback === Feedback.TOOSLOW) {
+        if (this.isPractice || this.feedback === TranslatedFeedback.TOOSLOW) {
             this.showFeedback = true;
             await wait(this.durationFeedbackPresented);
             if (this.isDestroyed) return;

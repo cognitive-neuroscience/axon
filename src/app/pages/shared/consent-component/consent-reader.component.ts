@@ -1,6 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { getTextForLang } from 'src/app/common/commonMethods';
+import { SupportedLangs } from 'src/app/models/enums';
 import { ITranslationText } from 'src/app/models/InternalDTOs';
 import { AbstractBaseReaderComponent } from '../../tasks/shared/base-reader';
 
@@ -52,15 +54,15 @@ export class ConsentReaderComponent implements AbstractBaseReaderComponent {
     }
 
     get title(): string {
-        return this.getTextForLang(this.readerMetadata.metadata?.title) || '';
+        return this.getTranslation(this.readerMetadata.metadata?.title) || '';
     }
 
     get secondTitle(): string {
-        return this.getTextForLang(this.readerMetadata.metadata?.secondTitle) || '';
+        return this.getTranslation(this.readerMetadata.metadata?.secondTitle) || '';
     }
 
     get endMessage(): string {
-        return this.getTextForLang(this.readerMetadata.metadata?.endMessage) || '';
+        return this.getTranslation(this.readerMetadata.metadata?.endMessage) || '';
     }
 
     @Output()
@@ -76,23 +78,7 @@ export class ConsentReaderComponent implements AbstractBaseReaderComponent {
         this.emitConsent.next(response);
     }
 
-    getTextForLang(textObj: ITranslationText | string): string {
-        let lang = this.translateService.currentLang;
-        if (!lang) lang = 'en';
-
-        if (!textObj) {
-            // textObj is falsy
-            return '';
-        } else if (typeof textObj === 'string') {
-            // for backwards compatibility sake, textObj is just a plain string with no translation
-            return textObj;
-        } else if (!textObj[lang]) {
-            // no translation for the given language
-            const hasEnglish = !textObj['en'];
-            // also no translation for english
-            if (!hasEnglish) return '';
-        } else {
-            return textObj[lang];
-        }
+    getTranslation(textObj: ITranslationText | string): string {
+        return getTextForLang(this.translateService.currentLang as SupportedLangs, textObj);
     }
 }

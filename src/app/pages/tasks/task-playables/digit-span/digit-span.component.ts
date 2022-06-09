@@ -3,7 +3,7 @@ import { DigitSpanTaskData } from 'src/app/models/TaskData';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
 import { TimerService } from 'src/app/services/timer.service';
-import { StimuliProvidedType } from 'src/app/models/enums';
+import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
@@ -11,6 +11,7 @@ import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/common
 import { TaskPlayerState } from '../task-player/task-player.component';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DigitSpanStimulus } from 'src/app/services/data-generation/stimuli-models';
+import { TranslateService } from '@ngx-translate/core';
 
 interface DigitSpanMetadata {
     componentName: ComponentName;
@@ -76,6 +77,18 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
     showKeypad: boolean = false;
     currentLevel: 'first' | 'second' = 'first';
 
+    // translation mapping
+    translationMapping = {
+        helpMessage: {
+            en: 'Please enter your response',
+            fr: 'SVP indiquer votre réponse',
+        },
+        maxResponseMessage: {
+            en: 'Please do your best to provide your answer in the time allotted for the next trial.',
+            fr: 'SVP essayer d’indiquer votre réponse dans les délais prévus pour le prochain tour',
+        },
+    };
+
     // timers
     maxResponseTimer: any;
     showHelpMessageTimer: any;
@@ -92,7 +105,8 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
         protected snackbarService: SnackbarService,
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
-        protected loaderService: LoaderService
+        protected loaderService: LoaderService,
+        protected translateService: TranslateService
     ) {
         super(loaderService);
     }
@@ -176,7 +190,9 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
         this.setShowHelpMessageTimer(this.delayToShowHelpMessage, () => {
             if (this.isDestroyed) return;
             this.snackbarService.openInfoSnackbar(
-                'Please enter your response',
+                this.translateService.currentLang === SupportedLangs.EN
+                    ? this.translationMapping.helpMessage.en
+                    : this.translationMapping.helpMessage.fr,
                 undefined,
                 this.durationHelpMessageShown
             );
@@ -188,7 +204,10 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
             this.responseAllowed = false;
             this.showStimulus = false;
             this.showKeypad = false;
-            const message = 'Please do your best to provide your answer in the time allotted for the next trial.';
+            const message =
+                this.translateService.currentLang === SupportedLangs.EN
+                    ? this.translationMapping.maxResponseMessage.en
+                    : this.translationMapping.maxResponseMessage.fr;
             this.snackbarService.openInfoSnackbar(message, undefined, this.durationHelpMessageShown, 'center');
             await wait(this.durationHelpMessageShown);
             if (this.isDestroyed) return;
@@ -286,18 +305,18 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
 
         switch (this.currentTrial.userAnswer) {
             case this.currentTrial.actualAnswer:
-                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.CORRECT}`;
+                this.feedback = TranslatedFeedback.CORRECT;
                 this.currentTrial.isCorrect = true;
                 this.currentTrial.score = 10;
                 break;
             case UserResponse.NA:
                 this.feedback =
                     this.currentTrial.responseTime === this.maxResponseTime
-                        ? `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}`
-                        : `${this.TRANSLATION_PREFIX}${TranslatedFeedback.NORESPONSE}`;
+                        ? TranslatedFeedback.TOOSLOW
+                        : TranslatedFeedback.NORESPONSE;
                 break;
             default:
-                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.INCORRECT}`;
+                this.feedback = TranslatedFeedback.INCORRECT;
                 this.currentTrial.isCorrect = false;
                 this.currentTrial.score = 0;
                 break;
@@ -306,8 +325,8 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
         // show feedback either if they are too slow, or if they don't have any response
         if (
             this.showFeedbackAfterEachTrial ||
-            this.feedback === `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}` ||
-            this.feedback === `${this.TRANSLATION_PREFIX}${TranslatedFeedback.NORESPONSE}`
+            this.feedback === TranslatedFeedback.TOOSLOW ||
+            this.feedback === TranslatedFeedback.NORESPONSE
         ) {
             this.showFeedback = true;
             await wait(this.durationOfFeedback);

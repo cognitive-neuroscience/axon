@@ -1,8 +1,7 @@
 import { Component, HostListener } from '@angular/core';
-import { Color, Key, UserResponse } from 'src/app/models/InternalDTOs';
+import { Color, Key, TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
 import { SnackbarService } from '../../../../services/snackbar.service';
 import { TimerService } from '../../../../services/timer.service';
-import { Feedback } from '../../../../models/InternalDTOs';
 import { DemandSelectionTaskData } from '../../../../models/TaskData';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { ComponentName } from 'src/app/services/component-factory.service';
@@ -167,8 +166,6 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
     async start() {
         // even though this is done at each block, we are caching these values to be
         // used by the display component when counterbalance is required
-        this.config.setCacheValue(DemandSelectionCache.EASIER_STRING, 'easier patch');
-        this.config.setCacheValue(DemandSelectionCache.HARDER_STRING, 'harder patch');
 
         this.taskData = [];
         this.currentStimuliIndex = 0;
@@ -360,21 +357,21 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
 
         switch (thisTrial.userAnswer) {
             case thisTrial.actualAnswer:
-                this.feedback = Feedback.CORRECT;
+                this.feedback = TranslatedFeedback.CORRECT;
                 thisTrial.isCorrect = true;
                 thisTrial.score = 10;
                 break;
             case UserResponse.NA:
-                this.feedback = Feedback.TOOSLOW;
+                this.feedback = TranslatedFeedback.TOOSLOW;
                 break;
             default:
-                this.feedback = Feedback.INCORRECT;
+                this.feedback = TranslatedFeedback.INCORRECT;
                 thisTrial.isCorrect = false;
                 thisTrial.score = 0;
                 break;
         }
 
-        if (this.showFeedbackAfterEachTrial || this.feedback === Feedback.TOOSLOW) {
+        if (this.showFeedbackAfterEachTrial || this.feedback === TranslatedFeedback.TOOSLOW) {
             this.showFeedback = true;
             await wait(this.durationOfFeedback);
             if (this.isDestroyed) return;

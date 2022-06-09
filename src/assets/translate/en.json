@@ -22,6 +22,12 @@
             "study-completed": "You have completed this study"
         }
     },
+    "dialog": {
+        "buttons": {
+            "continue": "Continue",
+            "cancel": "Cancel"
+        }
+    },
     "navbar": {
         "studies": "Studies",
         "tooltip": {

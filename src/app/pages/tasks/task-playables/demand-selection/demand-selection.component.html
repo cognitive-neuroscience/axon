@@ -1,22 +1,40 @@
 <div class="container-fluid wrapper task-text flex-column-center">
     <div class="full-box flex-column-center">
         <div *ngIf="showStimulus">
-
-            <div (mouseenter)="onHoverFixation($event)" style="cursor: pointer;" *ngIf="showFixation">
-                <img src="/assets/images/stimuli/eye.png" class="fixation"/>
+            <div (mouseenter)="onHoverFixation($event)" style="cursor: pointer" *ngIf="showFixation">
+                <img src="/assets/images/stimuli/eye.png" class="fixation" />
             </div>
 
             <div *ngIf="showPatches">
-                <div class="patch-container d-flex justify-content-between" rotate [rotation]="this.currentStimulus?.rotation">
+                <div
+                    class="patch-container d-flex justify-content-between"
+                    rotate
+                    [rotation]="this.currentStimulus?.rotation"
+                >
                     <div rotate [rotation]="-this.currentStimulus?.rotation" class="patch">
-                        <img (mouseenter)="onHoverPatch($event, 'firstPatch')" *ngIf="!showDigit" class="w-100 h-100" src="{{imagePath + this.currentStimulus?.firstPatchImgName}}" alt="First Patch">
+                        <img
+                            (mouseenter)="onHoverPatch($event, 'firstPatch')"
+                            *ngIf="!showDigit"
+                            class="w-100 h-100"
+                            src="{{ imagePath + this.currentStimulus?.firstPatchImgName }}"
+                            alt="First Patch"
+                        />
                         <div *ngIf="showDigit && selectedPatch === 'firstPatch'" class="w-100 h-100 flex-column-center">
                             <span class="displayed-number" [style.color]="color">{{ digit }}</span>
                         </div>
                     </div>
                     <div rotate [rotation]="-this.currentStimulus?.rotation" class="patch">
-                        <img (mouseenter)="onHoverPatch($event, 'secondPatch')" *ngIf="!showDigit" class="w-100 h-100" src="{{imagePath + this.currentStimulus?.secondPatchImgName}}" alt="Second Patch">
-                        <div *ngIf="showDigit && selectedPatch === 'secondPatch'" class="w-100 h-100 flex-column-center">
+                        <img
+                            (mouseenter)="onHoverPatch($event, 'secondPatch')"
+                            *ngIf="!showDigit"
+                            class="w-100 h-100"
+                            src="{{ imagePath + this.currentStimulus?.secondPatchImgName }}"
+                            alt="Second Patch"
+                        />
+                        <div
+                            *ngIf="showDigit && selectedPatch === 'secondPatch'"
+                            class="w-100 h-100 flex-column-center"
+                        >
                             <span class="displayed-number" [style.color]="color">{{ digit }}</span>
                         </div>
                     </div>
@@ -26,9 +44,8 @@
 
         <div *ngIf="showFeedback">
             <div class="feedback">
-                {{feedback}}
+                {{ feedback | translate }}
             </div>
         </div>
     </div>
-
 </div>

@@ -21,6 +21,12 @@
             "study-completed": "Vous avez complété cette étude"
         }
     },
+    "dialog": {
+        "buttons": {
+            "continue": "Continuer",
+            "cancel": "Annuler"
+        }
+    },
     "navbar": {
         "studies": "Études",
         "tooltip": {
