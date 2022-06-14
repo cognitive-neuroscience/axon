@@ -5,8 +5,12 @@
         <mat-form-field appearance="outline" class="pt-1" floatLabel="always">
             <mat-label>EMAIL / COURRIEL</mat-label>
             <input matInput formControlName="email" type="email" placeholder="example@domain.com" email required />
-            <mat-error *ngIf="loginForm.get('email')?.hasError('required')">This is required</mat-error>
-            <mat-error *ngIf="loginForm.get('email')?.hasError('email')">This must be a valid email</mat-error>
+            <mat-error *ngIf="loginForm.get('email')?.hasError('required')"
+                >This is required / Ceci est requis</mat-error
+            >
+            <mat-error *ngIf="loginForm.get('email')?.hasError('email')"
+                >This must be a valid email / Ceci doit être un e-mail valide</mat-error
+            >
         </mat-form-field>
         <mat-form-field appearance="outline" floatLabel="always">
             <mat-label>PASSWORD / MOT DE PASSE</mat-label>
@@ -22,7 +26,9 @@
                 matInput
                 placeholder="my-strong-password"
             />
-            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">This is required</mat-error>
+            <mat-error *ngIf="loginForm.get('password')?.hasError('required')"
+                >This is required / Ceci est requis</mat-error
+            >
         </mat-form-field>
         <div>
             <a class="underline-on-hover" style="color: #3f51b5" (click)="navigateToForgotPassword()">

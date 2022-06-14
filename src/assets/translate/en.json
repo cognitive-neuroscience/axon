@@ -35,5 +35,11 @@
             "incorrect": "Incorrect",
             "too-slow": "Too Slow"
         }
+    },
+    "errorMessages": {
+        "required": "This is required",
+        "passwordsMustMatch": "Passwords must match",
+        "emailInvalid": "This must be a valid email",
+        "emailsMustMatch": "Emails must match"
     }
 }

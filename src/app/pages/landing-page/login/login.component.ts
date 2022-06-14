@@ -6,7 +6,7 @@ import { SnackbarService } from 'src/app/services/snackbar.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames } from 'src/app/models/enums';
-import { catchError, mergeMap, take } from 'rxjs/operators';
+import { catchError, mergeMap } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user.service';
 import { ClearanceService } from 'src/app/services/clearance.service';
 

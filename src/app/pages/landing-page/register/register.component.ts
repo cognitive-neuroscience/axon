@@ -43,7 +43,7 @@ export class RegisterComponent implements OnDestroy {
     subscriptions: Subscription[] = [];
     passwordIsVisible = false;
 
-    private readonly REGISTER_SUCCESS_STR = 'User successfully created! Login using your credentials';
+    private readonly REGISTER_SUCCESS_STR = 'User successfully registered! Login using your credentials';
 
     constructor(
         private router: Router,
