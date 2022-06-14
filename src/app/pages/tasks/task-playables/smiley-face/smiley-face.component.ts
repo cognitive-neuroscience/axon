@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { getRandomNumber, thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { Feedback, Key, UserResponse } from 'src/app/models/InternalDTOs';
-import { StimuliProvidedType } from 'src/app/models/enums';
+import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
 import { SmileyFaceTaskData } from 'src/app/models/TaskData';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
@@ -12,6 +12,7 @@ import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { ImageService } from 'src/app/services/image.service';
+import { TranslateService } from '@ngx-translate/core';
 
 interface SmileyFaceMetadata {
     componentName: ComponentName;
@@ -91,6 +92,18 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     responseAllowed: boolean = false;
     scoreForSpecificTrial: number = 0;
 
+    // mapping
+    translationMapping = {
+        SHORT: {
+            en: 'SHORT',
+            fr: 'COURT',
+        },
+        LONG: {
+            en: 'LONG',
+            fr: 'LONG',
+        },
+    };
+
     // timers
     maxResponseTimer: any;
     showStimulusTimer: any;
@@ -108,7 +121,8 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
         protected loaderService: LoaderService,
-        protected imageService: ImageService
+        protected imageService: ImageService,
+        protected translateService: TranslateService
     ) {
         super(loaderService);
     }
@@ -226,6 +240,10 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
 
     private isValidKey(key: string): boolean {
         return key === Key.Z || key === Key.M;
+    }
+
+    get hint(): string {
+        return this.translationMapping[this.currentStimulus.faceShown][this.translateService.currentLang];
     }
 
     private setTimer(timerType: 'showStimulusTimer' | 'maxResponseTimer', delay: number, cbFunc?: () => void) {

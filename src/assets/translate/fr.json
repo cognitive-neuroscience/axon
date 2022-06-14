@@ -41,5 +41,11 @@
             "too-slow": "Trop lent",
             "no-response": "Sans réponse"
         }
+    },
+    "errorMessages": {
+        "required": "Ceci est requis",
+        "passwordsMustMatch": "Les mots de passe doivent correspondre",
+        "emailInvalid": "Ceci doit être un e-mail valide",
+        "emailsMustMatch": "Les e-mails doivent correspondre"
     }
 }
