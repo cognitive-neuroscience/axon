@@ -4,10 +4,6 @@
     padding: 2% 4%;
 }
 
-.form {
-    font-size: 1rem;
-}
-
 .title-text {
     color: #3f51b5;
 }
@@ -19,13 +15,31 @@
 .slider-container {
     display: flex;
     justify-content: center;
-    margin: 4rem 0;
+    margin: 6rem 0;
 
     .slider-inner-container {
         width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+}
+
+.responsive-title {
+    @include for-small-device-only {
+        font-size: 1rem;
+    }
+
+    @include for-small-desktop-only {
+        font-size: 1.5rem;
+    }
+
+    @include for-desktop-up {
+        font-size: 1.8rem;
+    }
+
+    @include for-large-desktop-up {
+        font-size: 2rem;
     }
 }
 
