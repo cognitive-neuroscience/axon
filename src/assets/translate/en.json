@@ -6,7 +6,6 @@
         "instruction": "Click the red button to view the consent form. Once you provide consent, you will be able to click the blue button to start (or continue) the study.",
         "progress-descriptor": "The progress bar will tell you how far along you are.",
         "warning": "Once you finish a game, please make sure to click \"NEXT\" until you reach the start of the next game. If you do not do this, you will have to restart the task.",
-        "progress-status": "completed",
         "title": "Your Studies",
         "consent-warning": "You must read and accept the consent form below before starting the study",
         "progress-message": {

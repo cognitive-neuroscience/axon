@@ -2,9 +2,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { ParticipantRouteNames, Role, RouteNames, SupportedLangs } from 'src/app/models/enums';
+import { ParticipantRouteNames, Role, RouteNames } from 'src/app/models/enums';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
@@ -50,8 +49,7 @@ export class RegisterComponent implements OnDestroy {
         private userService: UserService,
         private snackbarService: SnackbarService,
         private loaderService: LoaderService,
-        private clearanceService: ClearanceService,
-        private translateService: TranslateService
+        private clearanceService: ClearanceService
     ) {}
 
     registerForm = this.fb.group(
