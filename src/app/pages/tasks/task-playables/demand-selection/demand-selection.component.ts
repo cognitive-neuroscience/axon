@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { Color, Key, TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { DemandSelectionTaskData } from 'src/app/models/TaskData';
 import { StimuliProvidedType } from 'src/app/models/enums';
@@ -107,19 +107,19 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
     translationMapping = {
         'HARDER PATCH': {
             en: 'HARDER PATCH',
-            fr: 'LA PATCH PLUS DIFFICILE',
+            fr: 'LA PARCELLE PLUS DIFFICILE',
         },
         'EASIER PATCH': {
             en: 'EASIER PATCH',
-            fr: 'LA PATCH PLUS FACILE',
+            fr: 'LA PARCELLE PLUS FACILE',
         },
         bullseyeHelpMessage: {
-            en: '',
-            fr: '',
+            en: 'Please move your cursor to the bullseye for the patches to appear',
+            fr: 'Déplacez votre curseur vers le centre de la cible pour faire apparaître les parcelles',
         },
         choosePatchHelpMessage: {
-            en: '',
-            fr: '',
+            en: 'Please choose a patch by moving your cursor to its location',
+            fr: 'Veuillez choisir une parcelle en déplaçant votre curseur à son emplacement',
         },
     };
 
@@ -272,7 +272,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         this.setHelpMessageTimer(
             this.delayToShowHelpMessage,
             this.durationHelpMessageShown,
-            'Please move your cursor to the bullseye for the patches to appear'
+            this.translationMapping.bullseyeHelpMessage[this.translateService.currentLang]
         );
     }
 
@@ -287,7 +287,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         this.setHelpMessageTimer(
             this.delayToShowHelpMessage,
             this.durationHelpMessageShown,
-            'Please choose a patch by moving your cursor to its location'
+            this.translationMapping.choosePatchHelpMessage[this.translateService.currentLang]
         );
     }
 

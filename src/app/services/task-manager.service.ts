@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Study } from '../models/Study';
 import { StudyService } from './study.service';
-import { SnackbarService } from './snackbar.service';
+import { SnackbarService } from './snackbar/snackbar.service';
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
 import { SessionStorageService } from './sessionStorage.service';

@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { NBackTaskData } from 'src/app/models/TaskData';
-import { SnackbarService } from '../../../../services/snackbar.service';
+import { SnackbarService } from '../../../../services/snackbar/snackbar.service';
 import { Key, TranslatedFeedback } from 'src/app/models/InternalDTOs';
 import { TimerService } from '../../../../services/timer.service';
 import { UserResponse } from '../../../../models/InternalDTOs';

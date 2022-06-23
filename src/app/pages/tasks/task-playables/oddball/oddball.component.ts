@@ -10,7 +10,7 @@ import { DataGenerationService } from 'src/app/services/data-generation/data-gen
 import { OddballTargetStimulus } from 'src/app/services/data-generation/raw-data/oddball-image-list';
 import { OddballStimulus } from 'src/app/services/data-generation/stimuli-models';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { TaskPlayerState } from '../task-player/task-player.component';

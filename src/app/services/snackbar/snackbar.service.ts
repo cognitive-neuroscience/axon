@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
-import { SnackbarData } from '../models/InternalDTOs';
-import { SnackbarType, SupportedLangs } from '../models/enums';
+import { SnackbarData } from '../../models/InternalDTOs';
+import { SnackbarType, SupportedLangs } from '../../models/enums';
 import { TranslateService } from '@ngx-translate/core';
+import { SnackbarComponent } from './snackbar.component';
 
 @Injectable({
     providedIn: 'root',
@@ -10,7 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class SnackbarService {
     constructor(private _snackbar: MatSnackBar, private translateService: TranslateService) {}
 
-    public openInfoSnackbar(message: string, action?: string, duration?: number, verticalPos?: 'center') {
+    public openInfoSnackbar(message: string[] | string, action?: string, duration?: number, verticalPos?: 'center') {
         let panelClasses = ['snack-bar', 'snack-bar-info'];
         if (verticalPos && verticalPos === 'center') {
             panelClasses.push('center-snackbar');
@@ -24,7 +25,7 @@ export class SnackbarService {
     }
 
     // action doesn't do anything right now, kept in case we want to implement later
-    public openSuccessSnackbar(message: string, action?: string, duration?: number, verticalPos?: 'center') {
+    public openSuccessSnackbar(message: string[] | string, action?: string, duration?: number, verticalPos?: 'center') {
         let panelClasses = ['snack-bar', 'snack-bar-success'];
         if (verticalPos && verticalPos === 'center') {
             panelClasses.push('center-snackbar');
@@ -34,7 +35,7 @@ export class SnackbarService {
     }
 
     // action doesn't do anything right now, kept in case we want to implement later
-    public openErrorSnackbar(message: string, action?: string, duration?: number, verticalPos?: 'center') {
+    public openErrorSnackbar(message: string[] | string, action?: string, duration?: number, verticalPos?: 'center') {
         let panelClasses = ['snack-bar', 'snack-bar-error'];
         if (verticalPos && verticalPos === 'center') {
             panelClasses.push('center-snackbar');
@@ -50,15 +51,12 @@ export class SnackbarService {
         verticalPos: MatSnackBarVerticalPosition = 'bottom',
         horizontalPos: MatSnackBarHorizontalPosition = 'center'
     ): void {
-        this._snackbar.open(
-            data.message,
-            this.translateService.currentLang === SupportedLangs.EN ? 'Close' : 'Fermer',
-            {
-                panelClass: panelClasses,
-                duration: duration,
-                verticalPosition: verticalPos,
-                horizontalPosition: horizontalPos,
-            }
-        );
+        this._snackbar.openFromComponent(SnackbarComponent, {
+            data: data.message,
+            panelClass: panelClasses,
+            duration: duration,
+            verticalPosition: verticalPos,
+            horizontalPosition: horizontalPos,
+        });
     }
 }

@@ -2,11 +2,11 @@ import { Component, OnDestroy } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames } from 'src/app/models/enums';
-import { catchError, mergeMap, take } from 'rxjs/operators';
+import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames, SupportedLangs } from 'src/app/models/enums';
+import { catchError, mergeMap } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user.service';
 import { ClearanceService } from 'src/app/services/clearance.service';
 
@@ -16,7 +16,6 @@ import { ClearanceService } from 'src/app/services/clearance.service';
     styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnDestroy {
-    private readonly LOGIN_SUCCESS_STR = 'Successfully logged in!';
     passwordIsVisible = false;
     subscriptions: Subscription[] = [];
 
@@ -65,7 +64,9 @@ export class LoginComponent implements OnDestroy {
             )
             .subscribe(
                 (user) => {
-                    this.snackbarService.openSuccessSnackbar(this.LOGIN_SUCCESS_STR);
+                    this.snackbarService.openSuccessSnackbar(
+                        user.lang === SupportedLangs.EN ? 'Successfully logged in!' : 'Connexion réussie!'
+                    );
                     this.handleNavigate(user.role);
                 },
                 (err) => {

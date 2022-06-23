@@ -1,18 +1,18 @@
-import { Component, OnInit, HostListener } from "@angular/core";
-import { Router } from "@angular/router";
-import { ParticipantDataService } from "src/app/services/study-data.service";
-import { TaskManagerService } from "../../../../services/task-manager.service";
-import { AuthService } from "../../../../services/auth.service";
-import { SnackbarService } from "../../../../services/snackbar.service";
-import { TaskData, TaskNames } from "../../../../models/TaskData";
-import { pracSet } from "./stimuli_practice";
-import { taskSet } from "./stimuli_task";
-import { Observable, of } from "rxjs";
-import { map } from "rxjs/operators";
-import { Key, UserResponse } from "src/app/models/InternalDTOs";
-import { TimerService } from "src/app/services/timer.service";
-import { getRandomNumber, wait } from "src/app/common/commonMethods";
-import { environment } from "src/environments/environment";
+import { Component, OnInit, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
+import { ParticipantDataService } from 'src/app/services/study-data.service';
+import { TaskManagerService } from '../../../../services/task-manager.service';
+import { AuthService } from '../../../../services/auth.service';
+import { SnackbarService } from '../../../../services/snackbar/snackbar.service';
+import { TaskData, TaskNames } from '../../../../models/TaskData';
+import { pracSet } from './stimuli_practice';
+import { taskSet } from './stimuli_task';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Key, UserResponse } from 'src/app/models/InternalDTOs';
+import { TimerService } from 'src/app/services/timer.service';
+import { getRandomNumber, wait } from 'src/app/common/commonMethods';
+import { environment } from 'src/environments/environment';
 
 class PostChoiceTask extends TaskData {
     ratingType: string;
@@ -24,9 +24,9 @@ class PostChoiceTask extends TaskData {
 declare function setFullScreen(): any;
 
 @Component({
-    selector: "app-post-choice-task",
-    templateUrl: "./post-choice.component.html",
-    styleUrls: ["./post-choice.component.scss"],
+    selector: 'app-post-choice-task',
+    templateUrl: './post-choice.component.html',
+    styleUrls: ['./post-choice.component.scss'],
 })
 export class PostChoiceComponent implements OnInit {
     isScored: boolean | number = false;
@@ -42,9 +42,9 @@ export class PostChoiceComponent implements OnInit {
     durationHelpMessageShown: number = 10000;
 
     step: number = 1;
-    currentActivity: string = "";
+    currentActivity: string = '';
     currentSet: string[];
-    ratingType: string = "";
+    ratingType: string = '';
     partOneComplete: boolean = false;
     partTwoComplete: boolean = false;
 
@@ -60,7 +60,7 @@ export class PostChoiceComponent implements OnInit {
     feedbackShown: boolean = false;
     snackbarTimeout: any;
 
-    @HostListener("window:keypress", ["$event"])
+    @HostListener('window:keypress', ['$event'])
     onKeyPress(event: KeyboardEvent) {
         if (this.isResponseAllowed && this.isValidKey(event.key)) {
             this.cancelHelpMessage();
@@ -144,7 +144,7 @@ export class PostChoiceComponent implements OnInit {
         this.isResponseAllowed = true;
 
         this.showHelpMessage(
-            "Please make the rating by pressing the corresponding number key",
+            'Please make the rating by pressing the corresponding number key',
             this.delayToShowHelpMessage,
             this.durationHelpMessageShown
         );
@@ -153,7 +153,7 @@ export class PostChoiceComponent implements OnInit {
         this.sTimeout = setTimeout(() => {
             if (!this.feedbackShown) {
                 // If no response during response window, showing a reminder to respond in time next trial
-                const message = "Please do your best to provide your answer in the time allotted for the next trial.";
+                const message = 'Please do your best to provide your answer in the time allotted for the next trial.';
                 this.snackbarService.openInfoSnackbar(message, undefined, this.interTrialDelay);
                 this.showFeedback();
             }
@@ -162,7 +162,7 @@ export class PostChoiceComponent implements OnInit {
 
     private showHelpMessage(helpMessage: string, delay: number, duration: number) {
         this.snackbarTimeout = setTimeout(() => {
-            this.snackbarService.openErrorSnackbar(helpMessage, "", duration);
+            this.snackbarService.openErrorSnackbar(helpMessage, '', duration);
         }, delay);
     }
 
@@ -197,7 +197,7 @@ export class PostChoiceComponent implements OnInit {
         this.data.push({
             trial: this.currentTrial,
             userID: null,
-            ratingType: this.partOneComplete ? "frequency" : "effort",
+            ratingType: this.partOneComplete ? 'frequency' : 'effort',
             userAnswer: UserResponse.NA,
             activity: this.currentActivity,
             responseTime: 0,
@@ -296,9 +296,9 @@ export class PostChoiceComponent implements OnInit {
 
     reset() {
         this.timerService.clearTimer();
-        this.currentActivity = "";
+        this.currentActivity = '';
         this.feedbackShown = false;
-        this.ratingType = "NA";
+        this.ratingType = 'NA';
     }
 
     startGameInFullScreen() {

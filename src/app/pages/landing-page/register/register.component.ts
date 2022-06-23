@@ -2,11 +2,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { ParticipantRouteNames, Role, RouteNames } from 'src/app/models/enums';
+import { ParticipantRouteNames, Role, RouteNames, SupportedLangs } from 'src/app/models/enums';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { UserService } from 'src/app/services/user.service';
 
 function fieldsMatchingValidator(
@@ -49,7 +50,8 @@ export class RegisterComponent implements OnDestroy {
         private userService: UserService,
         private snackbarService: SnackbarService,
         private loaderService: LoaderService,
-        private clearanceService: ClearanceService
+        private clearanceService: ClearanceService,
+        private translateService: TranslateService
     ) {}
 
     registerForm = this.fb.group(
@@ -82,7 +84,10 @@ export class RegisterComponent implements OnDestroy {
                         this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]).then((navigated: boolean) => {
                             if (navigated) {
                                 this.snackbarService.openSuccessSnackbar(
-                                    'User successfully created! Login using your credentials',
+                                    [
+                                        'Your username was successfully registered! Now, please login using the username and password you just created',
+                                        'Votre nom d’utilisateur a été enregistré avec succès! Connectez-vous maintenant en utilisant le nom d’utilisateur et le mot de passe que vous venez de créer',
+                                    ],
                                     undefined,
                                     20000
                                 );

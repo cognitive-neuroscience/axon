@@ -13,12 +13,12 @@ export class ConfirmationDialogMessage {
 }
 
 export class SnackbarData {
-    message: string;
+    message: string[] | string;
     action: string;
     type: SnackbarType;
     snackbarRef: MatSnackBar;
 
-    constructor(msg: string, act: string, type: SnackbarType) {
+    constructor(msg: string[] | string, act: string, type: SnackbarType) {
         this.message = msg;
         this.action = act;
         this.type = type;

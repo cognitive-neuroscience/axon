@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SnackbarService } from '../../../services/snackbar.service';
+import { SnackbarService } from '../../../services/snackbar/snackbar.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
 import { Observable, Subscription, throwError } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
