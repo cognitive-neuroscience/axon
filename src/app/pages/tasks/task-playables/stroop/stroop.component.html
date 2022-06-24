@@ -3,7 +3,7 @@
         <div *ngIf="showStimulus">
             <div [style.color]="color">
                 <div style="font-size: 65px; text-transform: uppercase">
-                    {{ text }}
+                    {{ getTranslationMapping(text) }}
                 </div>
             </div>
         </div>
@@ -13,7 +13,7 @@
         </div>
 
         <div class="feedback" *ngIf="showFeedback" align="center">
-            <span>{{ feedback }}</span>
+            <span>{{ feedback | translate }}</span>
             <br />
             <span *ngIf="showScoreAfterEachTrial && scoreForSpecificTrial > 0"> +{{ scoreForSpecificTrial }} </span>
         </div>

@@ -1,0 +1,15 @@
+.snackbar-container {
+    display: flex;
+    align-items: center;
+
+    .snackbar:not(:last-child) {
+        margin-bottom: 1rem;
+    }
+
+    .text-content {
+        flex-grow: 1;
+    }
+
+    .action {
+    }
+}

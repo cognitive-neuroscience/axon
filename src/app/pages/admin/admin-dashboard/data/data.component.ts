@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { ParticipantDataService } from 'src/app/services/study-data.service';
 import { DataTableFormat } from './data-table/data-table.component';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { ParticipantData } from 'src/app/models/TaskData';
 import { TaskType } from 'src/app/models/enums';
 import { LoaderService } from 'src/app/services/loader/loader.service';

@@ -6,7 +6,6 @@
         "instruction": "Click the red button to view the consent form. Once you provide consent, you will be able to click the blue button to start (or continue) the study.",
         "progress-descriptor": "The progress bar will tell you how far along you are.",
         "warning": "Once you finish a game, please make sure to click \"NEXT\" until you reach the start of the next game. If you do not do this, you will have to restart the task.",
-        "progress-status": "completed",
         "title": "Your Studies",
         "consent-warning": "You must read and accept the consent form below before starting the study",
         "progress-message": {
@@ -22,6 +21,12 @@
             "study-completed": "You have completed this study"
         }
     },
+    "dialog": {
+        "buttons": {
+            "continue": "Continue",
+            "cancel": "Cancel"
+        }
+    },
     "navbar": {
         "studies": "Studies",
         "tooltip": {
@@ -33,7 +38,20 @@
         "feedback": {
             "correct": "Correct",
             "incorrect": "Incorrect",
-            "too-slow": "Too Slow"
+            "too-slow": "Too Slow",
+            "no-response": "No response"
         }
+    },
+    "errorMessages": {
+        "required": "This is required",
+        "passwordsMustMatch": "Passwords must match",
+        "emailInvalid": "This must be a valid email",
+        "emailsMustMatch": "Emails must match",
+        "unansweredQuestions": "There are still invalid/unanswered questions above. Please review your responses above to make sure you have answered each of the questions.",
+        "minValidation": "Must be above",
+        "maxValidation": "Must be below"
+    },
+    "buttons": {
+        "submit": "submit"
     }
 }

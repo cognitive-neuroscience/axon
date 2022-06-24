@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { ParticipantRouteNames, Role, RouteNames } from 'src/app/models/enums';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { UserService } from 'src/app/services/user.service';
 
 function fieldsMatchingValidator(
@@ -42,8 +42,6 @@ function fieldsMatchingValidator(
 export class RegisterComponent implements OnDestroy {
     subscriptions: Subscription[] = [];
     passwordIsVisible = false;
-
-    private readonly REGISTER_SUCCESS_STR = 'User successfully created! Login using your credentials';
 
     constructor(
         private router: Router,
@@ -81,8 +79,18 @@ export class RegisterComponent implements OnDestroy {
                 .registerUser(email, password, Role.PARTICIPANT)
                 .subscribe(
                     (_) => {
-                        this.snackbarService.openSuccessSnackbar(this.REGISTER_SUCCESS_STR, undefined, 20000);
-                        this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
+                        this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]).then((navigated: boolean) => {
+                            if (navigated) {
+                                this.snackbarService.openSuccessSnackbar(
+                                    [
+                                        'Your username was successfully registered! Now, please login using the username and password you just created',
+                                        'Votre nom d’utilisateur a été enregistré avec succès! Connectez-vous maintenant en utilisant le nom d’utilisateur et le mot de passe que vous venez de créer',
+                                    ],
+                                    undefined,
+                                    20000
+                                );
+                            }
+                        });
                     },
                     (error: HttpErrorResponse) => {
                         console.error(error);

@@ -13,12 +13,12 @@ export class ConfirmationDialogMessage {
 }
 
 export class SnackbarData {
-    message: string;
+    message: string[] | string;
     action: string;
     type: SnackbarType;
     snackbarRef: MatSnackBar;
 
-    constructor(msg: string, act: string, type: SnackbarType) {
+    constructor(msg: string[] | string, act: string, type: SnackbarType) {
         this.message = msg;
         this.action = act;
         this.type = type;
@@ -61,10 +61,10 @@ export enum Feedback {
 }
 
 export enum TranslatedFeedback {
-    CORRECT = 'correct',
-    INCORRECT = 'incorrect',
-    TOOSLOW = 'too-slow',
-    NORESPONSE = 'no-response',
+    CORRECT = `tasks.feedback.correct`,
+    INCORRECT = 'tasks.feedback.incorrect',
+    TOOSLOW = 'tasks.feedback.too-slow',
+    NORESPONSE = 'tasks.feedback.no-response',
 }
 
 // an enum representing the semantic answer given by the user that gets uploaded to the database

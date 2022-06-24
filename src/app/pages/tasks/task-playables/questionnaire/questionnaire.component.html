@@ -23,9 +23,9 @@
                                     >{{ handleText(option.label) }}</mat-option
                                 >
                             </mat-select>
-                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')"
-                                >This is required</mat-error
-                            >
+                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')">{{
+                                'errorMessages.required' | translate
+                            }}</mat-error>
                         </mat-form-field>
                     </div>
 
@@ -61,9 +61,9 @@
                         <mat-form-field class="w-50 d-block">
                             <mat-label>{{ handleText(question.label) }}</mat-label>
                             <textarea rows="4" [formControlName]="question.key" matInput type="text"></textarea>
-                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')"
-                                >This is required</mat-error
-                            >
+                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')">{{
+                                'errorMessages.required' | translate
+                            }}</mat-error>
                         </mat-form-field>
                     </div>
 
@@ -81,14 +81,18 @@
                                 [formControlName]="question.key"
                                 [type]="question.validation?.isNumeric ? 'number' : 'text'"
                             />
-                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')"
-                                >This is required</mat-error
-                            >
+                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')">{{
+                                'errorMessages.required' | translate
+                            }}</mat-error>
                             <mat-error *ngIf="questionnaire.get(question.key)?.hasError('min')"
-                                >Must be above {{ question.validation.min }}</mat-error
+                                >{{ 'errorMessages.minValidation' | translate }}&nbsp;{{
+                                    question.validation.min
+                                }}</mat-error
                             >
                             <mat-error *ngIf="questionnaire.get(question.key)?.hasError('max')"
-                                >Must be below {{ question.validation.max }}</mat-error
+                                >{{ 'errorMessages.maxValidation' | translate }}&nbsp;{{
+                                    question.validation.max
+                                }}</mat-error
                             >
                         </mat-form-field>
                     </div>
@@ -105,13 +109,8 @@
                                     class="error-text font-weight-lighter responsive-title"
                                     *ngIf="questionnaire.get(question.key)?.hasError('required')"
                                 >
-                                    &nbsp;(This is required)
+                                    &nbsp;({{ 'errorMessages.required' | translate }})
                                 </h2>
-                                <!-- <div class="w-25 slider-error error-text" style="font-size: 1rem">
-                                    <span *ngIf="questionnaire.get(question.key)?.hasError('required')">
-                                        This is required
-                                    </span>
-                                </div> -->
                             </h2>
                             <p
                                 *ngIf="question.textContent"
@@ -146,19 +145,19 @@
                 </ng-container>
             </ng-container>
             <div style="color: red; font-size: 1rem; padding: 10px 0" *ngIf="!questionnaire.valid">
-                <span
-                    >There are still invalid/unanswered questions above. Please review your responses above to make sure
-                    you have answered each of the questions.
+                <span>
+                    {{ 'errorMessages.unansweredQuestions' | translate }}
                 </span>
             </div>
             <button
                 (click)="onSubmit()"
                 class="w-25 mb-5"
+                style="text-transform: uppercase"
                 [disabled]="!questionnaire.valid || wasClicked"
                 color="primary"
                 mat-raised-button
             >
-                Submit
+                {{ 'buttons.submit' | translate }}
             </button>
         </form>
     </div>

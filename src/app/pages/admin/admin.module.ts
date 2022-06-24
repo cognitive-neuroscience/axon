@@ -20,6 +20,7 @@ import { CreateModifyStudyComponent } from './admin-dashboard/studies/create-mod
 import { ViewInfoDisplaysComponent } from './admin-dashboard/study-components/view-info-displays/view-info-displays.component';
 import { ViewComponentsTableComponent } from './admin-dashboard/study-components/shared/view-components-table/view-components-table.component';
 import { ViewConsentsComponent } from './admin-dashboard/study-components/view-consents/view-consents.component';
+import { AlterMetadataDialogComponent } from './admin-dashboard/study-components/view-tasks/alter-metadata-dialog/alter-metadata-dialog.component';
 
 @NgModule({
     declarations: [
@@ -37,6 +38,7 @@ import { ViewConsentsComponent } from './admin-dashboard/study-components/view-c
         ViewInfoDisplaysComponent,
         ViewComponentsTableComponent,
         ViewConsentsComponent,
+        AlterMetadataDialogComponent,
     ],
     imports: [
         CommonModule,

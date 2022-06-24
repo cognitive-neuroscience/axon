@@ -272,15 +272,15 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
 
         switch (thisTrial.userAnswer) {
             case thisTrial.actualAnswer:
-                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.CORRECT}`;
+                this.feedback = TranslatedFeedback.CORRECT;
                 thisTrial.isCorrect = true;
                 thisTrial.score = 10;
                 break;
             case UserResponse.NA:
-                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}`;
+                this.feedback = TranslatedFeedback.TOOSLOW;
                 break;
             default:
-                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.INCORRECT}`;
+                this.feedback = TranslatedFeedback.INCORRECT;
                 thisTrial.isCorrect = false;
                 thisTrial.score = 0;
                 break;
@@ -288,10 +288,7 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
 
         this.trialScore = thisTrial.score;
 
-        if (
-            this.showFeedbackAfterEachTrial ||
-            this.feedback === `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}`
-        ) {
+        if (this.showFeedbackAfterEachTrial || this.feedback === TranslatedFeedback.TOOSLOW) {
             this.showFeedback = true;
             await wait(this.durationFeedbackPresented);
             if (this.isDestroyed) return;

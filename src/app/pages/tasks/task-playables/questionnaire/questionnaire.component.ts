@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { NzMarks } from 'ng-zorro-antd/slider';
-import { getTextForLang, throwErrIfNotDefined } from 'src/app/common/commonMethods';
+import { getTextForLang } from 'src/app/common/commonMethods';
 import { SupportedLangs } from 'src/app/models/enums';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';

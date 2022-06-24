@@ -1,10 +1,10 @@
 import { Component, HostListener } from '@angular/core';
 import { StroopTaskData } from '../../../../models/TaskData';
-import { SnackbarService } from '../../../../services/snackbar.service';
-import { Key } from 'src/app/models/InternalDTOs';
-import { StimuliProvidedType } from 'src/app/models/enums';
+import { SnackbarService } from '../../../../services/snackbar/snackbar.service';
+import { Key, TranslatedFeedback } from 'src/app/models/InternalDTOs';
+import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
 import { TimerService } from '../../../../services/timer.service';
-import { UserResponse, Feedback } from '../../../../models/InternalDTOs';
+import { UserResponse } from '../../../../models/InternalDTOs';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { StroopStimulus } from 'src/app/services/data-generation/stimuli-models';
@@ -12,6 +12,7 @@ import { TaskPlayerState } from '../task-player/task-player.component';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
+import { TranslateService } from '@ngx-translate/core';
 
 interface StroopTaskMetadata {
     componentName: ComponentName;
@@ -68,7 +69,7 @@ export class StroopComponent extends AbstractBaseTaskComponent {
     currentStimuliIndex: number; // index of the stimuli we are on
 
     // local state variables
-    feedback: Feedback;
+    feedback: string;
     showStimulus: boolean = false;
     text: string;
     color: string;
@@ -78,6 +79,13 @@ export class StroopComponent extends AbstractBaseTaskComponent {
     trialScore: number = 0;
     responseAllowed: boolean = false;
     scoreForSpecificTrial: number = 0;
+
+    // translation mapping
+    translationMap = {
+        red: 'rouge',
+        blue: 'bleu',
+        green: 'vert',
+    };
 
     // timers
     maxResponseTimer: any;
@@ -90,7 +98,8 @@ export class StroopComponent extends AbstractBaseTaskComponent {
         protected snackbarService: SnackbarService,
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
-        protected loaderService: LoaderService
+        protected loaderService: LoaderService,
+        protected translateService: TranslateService
     ) {
         super(loaderService);
     }
@@ -192,6 +201,15 @@ export class StroopComponent extends AbstractBaseTaskComponent {
         return key === Key.NUMONE || key === Key.NUMTWO || key === Key.NUMTHREE;
     }
 
+    getTranslationMapping(color: string): string {
+        const language = this.translateService.currentLang;
+        if (language === SupportedLangs.FR) {
+            return this.translationMap[color];
+        } else {
+            return color;
+        }
+    }
+
     @HostListener('window:keypress', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
         const thisTrial = this.taskData[this.taskData.length - 1];
@@ -236,24 +254,24 @@ export class StroopComponent extends AbstractBaseTaskComponent {
 
         switch (thisTrial.userAnswer) {
             case thisTrial.actualAnswer:
-                this.feedback = Feedback.CORRECT;
+                this.feedback = TranslatedFeedback.CORRECT;
                 thisTrial.isCorrect = true;
                 thisTrial.score = 10;
 
                 this.scoreForSpecificTrial = 10;
                 break;
             case UserResponse.NA:
-                this.feedback = Feedback.TOOSLOW;
+                this.feedback = TranslatedFeedback.TOOSLOW;
                 break;
             default:
-                this.feedback = Feedback.INCORRECT;
+                this.feedback = TranslatedFeedback.INCORRECT;
                 thisTrial.isCorrect = false;
                 thisTrial.score = 0;
                 this.scoreForSpecificTrial = 0;
                 break;
         }
 
-        if (this.showFeedbackAfterEachTrial || this.feedback === Feedback.TOOSLOW) {
+        if (this.showFeedbackAfterEachTrial || this.feedback === TranslatedFeedback.TOOSLOW) {
             this.showFeedback = true;
             await wait(this.durationOfFeedback);
             if (this.isDestroyed) return;

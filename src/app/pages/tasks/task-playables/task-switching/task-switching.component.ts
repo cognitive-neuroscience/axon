@@ -1,8 +1,8 @@
 import { Component, HostListener } from '@angular/core';
-import { Color, Key, UserResponse, Feedback } from '../../../../models/InternalDTOs';
+import { Color, Key, UserResponse, TranslatedFeedback } from '../../../../models/InternalDTOs';
 import { TaskSwitchingTaskData } from '../../../../models/TaskData';
 import { TimerService } from '../../../../services/timer.service';
-import { StimuliProvidedType } from 'src/app/models/enums';
+import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { ComponentName } from 'src/app/services/component-factory.service';
@@ -10,6 +10,7 @@ import { TaskSwitchingStimulus } from 'src/app/services/data-generation/stimuli-
 import { TaskPlayerState } from '../task-player/task-player.component';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
+import { TranslateService } from '@ngx-translate/core';
 
 interface TaskSwitchingMetadata {
     componentName: ComponentName;
@@ -94,7 +95,8 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
     constructor(
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
-        protected loaderService: LoaderService
+        protected loaderService: LoaderService,
+        private translateService: TranslateService
     ) {
         super(loaderService);
     }
@@ -245,23 +247,23 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
 
         switch (thisTrial.userAnswer) {
             case thisTrial.actualAnswer:
-                this.feedback = Feedback.CORRECT;
+                this.feedback = TranslatedFeedback.CORRECT;
                 thisTrial.isCorrect = true;
                 thisTrial.score = 10;
                 break;
             case UserResponse.NA: // too slow
-                this.feedback = Feedback.TOOSLOW;
+                this.feedback = TranslatedFeedback.TOOSLOW;
                 break;
             default:
                 // incorrect
-                this.feedback = Feedback.INCORRECT;
+                this.feedback = TranslatedFeedback.INCORRECT;
                 thisTrial.isCorrect = false;
                 thisTrial.score = 0;
                 break;
         }
 
         // we want to show 'Too slow' every time
-        if (this.showFeedbackAfterEachTrial || this.feedback === Feedback.TOOSLOW) {
+        if (this.showFeedbackAfterEachTrial || this.feedback === TranslatedFeedback.TOOSLOW) {
             this.showFeedback = true;
             await wait(this.durationOfFeedback);
             this.showFeedback = false;
@@ -313,5 +315,11 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
                 this.handleComplete();
             }
         }
+    }
+
+    get reminderImagePath(): string {
+        return this.translateService.currentLang === SupportedLangs.EN
+            ? '/assets/images/instructions/taskswitching/reminder.png'
+            : '/assets/images/instructions/taskswitching/reminder_fr.jpg';
     }
 }

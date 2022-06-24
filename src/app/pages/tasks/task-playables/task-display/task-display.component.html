@@ -26,7 +26,11 @@
                         section.sectionType === 'image-small'
                     "
                 >
-                    <img class="{{ section.sectionType }}" [src]="section.imagePath" alt="Instruction Image" />
+                    <img
+                        class="{{ section.sectionType }}"
+                        [src]="getTranslation(section.imagePath)"
+                        alt="Instruction Image"
+                    />
                 </div>
             </ng-container>
         </div>
