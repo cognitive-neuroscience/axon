@@ -85,7 +85,11 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                     async (user) => {
                         if (user) {
                             await this.startGameInFullScreen();
-                            this._snackbarService.openSuccessSnackbar('Registered: ' + this.workerId);
+                            this._snackbarService.openSuccessSnackbar(
+                                this.translateService.currentLang === SupportedLangs.FR
+                                    ? 'Votre ID a été enregistré avec succès!: ' + this.workerId
+                                    : 'Regisrered ID successfully: ' + this.workerId
+                            );
                             this._taskManager.initStudy(this.studyId);
                         }
                     },
