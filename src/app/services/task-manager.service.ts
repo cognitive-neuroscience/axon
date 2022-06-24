@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Study } from '../models/Study';
 import { StudyService } from './study.service';
-import { SnackbarService } from './snackbar.service';
+import { SnackbarService } from './snackbar/snackbar.service';
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
 import { SessionStorageService } from './sessionStorage.service';
 import { map, mergeMap, take, tap } from 'rxjs/operators';
-import { ParticipantRouteNames, RouteNames } from '../models/enums';
+import { ParticipantRouteNames, RouteNames, SupportedLangs } from '../models/enums';
 import { StudyTask, Task } from '../models/Task';
 import {
     SharplabTaskConfig,
@@ -20,6 +20,7 @@ import { objIsEmpty } from '../common/commonMethods';
 import { StudyUserService } from './study-user.service';
 import { LoaderService } from './loader/loader.service';
 import { StudyUser } from '../models/Login';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
     providedIn: 'root',
@@ -52,7 +53,8 @@ export class TaskManagerService implements CanClear {
         private studyUserService: StudyUserService,
         private sessionStorageService: SessionStorageService,
         private taskService: TaskService,
-        private loaderService: LoaderService
+        private loaderService: LoaderService,
+        private translateService: TranslateService
     ) {}
 
     /**
@@ -175,7 +177,11 @@ export class TaskManagerService implements CanClear {
                         this.router.navigate([
                             `${ParticipantRouteNames.DASHBOARD_BASEROUTE}/${ParticipantRouteNames.STUDIES_SUBROUTE}`,
                         ]);
-                        this.snackbarService.openSuccessSnackbar('Completed Study!');
+                        this.snackbarService.openSuccessSnackbar(
+                            this.translateService.currentLang === SupportedLangs.FR
+                                ? 'Vous avez complété cette étude!'
+                                : 'Study complete!'
+                        );
                     },
                     (err) => {
                         this.snackbarService.openErrorSnackbar('there was an error');

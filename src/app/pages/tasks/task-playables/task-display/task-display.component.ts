@@ -11,7 +11,7 @@ import { SupportedLangs } from 'src/app/models/enums';
 
 export interface DisplaySection {
     sectionType: 'text' | 'image-horizontal' | 'image-square' | 'image-small';
-    imagePath?: string;
+    imagePath?: string | ITranslationText;
     imageAlignment?: 'left' | 'center' | 'right';
     textContent?: string | ITranslationText;
     injection: 'counterbalance' | 'counterbalance-alternative' | 'cached-string';
@@ -113,8 +113,8 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
         }
     }
 
-    private getTitle(titleObj: ITranslationText | string): string {
-        return getTextForLang(this.translateService.currentLang as SupportedLangs, titleObj);
+    getTranslation(translationObj: ITranslationText | string): string {
+        return getTextForLang(this.translateService.currentLang as SupportedLangs, translationObj);
     }
 
     configure(metadata: TaskDisplayComponentMetadata, config: TaskPlayerState): void {
@@ -123,7 +123,7 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
         this.skippable = thisOrDefault(metadata.componentConfig.skippable, false);
         this.cacheKey = thisOrDefault(metadata.componentConfig.skippableCacheKey, '');
 
-        this.title = this.getTitle(metadata.componentConfig.title);
+        this.title = this.getTranslation(metadata.componentConfig.title);
         this.subtitle = thisOrDefault(metadata.componentConfig.subtitle, '');
         this.displaySections = thisOrDefault(metadata.componentConfig.sections, []);
         this.timerMode = thisOrDefault(!!metadata.componentConfig.timerConfig, false);

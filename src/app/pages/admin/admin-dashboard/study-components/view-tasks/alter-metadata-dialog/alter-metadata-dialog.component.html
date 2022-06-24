@@ -1,0 +1,38 @@
+<div>
+    <div class="m-3" style="overflow-y: auto; max-height: 80vh">
+        <div>
+            <h3 class="font-weight-bold mb-0">{{ taskTitle }}</h3>
+            <span style="color: gray">{{ taskDescription }}</span>
+            <hr />
+        </div>
+        <div class="flex-column">
+            <div class="mb-3">
+                <mat-checkbox [(ngModel)]="modifyMetadata">Modify metadata</mat-checkbox>
+                <br />
+                <span style="color: gray"
+                    >This flag is optional. This is meant for testing purposes only and changes made will not be
+                    saved</span
+                >
+            </div>
+            <ng-container *ngIf="modifyMetadata">
+                <div class="my-4">
+                    <mat-form-field style="width: 100%">
+                        <mat-label>Metadata</mat-label>
+                        <textarea
+                            [(ngModel)]="taskConfig"
+                            style="font-family: monospace"
+                            rows="20"
+                            multiple
+                            matInput
+                        ></textarea>
+                    </mat-form-field>
+                </div>
+            </ng-container>
+            <div>
+                <button (click)="runTask()" [disabled]="hasJsonError" color="primary" mat-raised-button>
+                    {{ hasJsonError ? 'Invalid JSON' : 'Run ' + taskTitle }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ParticipantRouteNames, RouteNames } from 'src/app/models/enums';
+import { TranslateService } from '@ngx-translate/core';
+import { ParticipantRouteNames, RouteNames, SupportedLangs } from 'src/app/models/enums';
 import { EmailService } from 'src/app/services/email.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 
 @Component({
     selector: 'app-send-reset-password',
@@ -17,7 +18,8 @@ export class SendResetPasswordComponent implements OnInit {
         private emailService: EmailService,
         private snackbarService: SnackbarService,
         private router: Router,
-        private loaderService: LoaderService
+        private loaderService: LoaderService,
+        private translateService: TranslateService
     ) {}
 
     ngOnInit(): void {}
@@ -31,7 +33,10 @@ export class SendResetPasswordComponent implements OnInit {
                     (ok) => {
                         if (ok) {
                             this.snackbarService.openSuccessSnackbar(
-                                'reset email sent to ' + this.email,
+                                [
+                                    'an email with a temporary password has been sent to ' + this.email,
+                                    'un courriel avec un mot de passe temporaire a été envoyé à' + this.email,
+                                ],
                                 undefined,
                                 5000
                             );

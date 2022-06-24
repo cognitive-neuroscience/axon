@@ -5,15 +5,15 @@
 
     <div class="title my-4">
         <h2 class="mat-h2">
-            <b>{{ title }}</b>
+            <b>{{ getTranslation(title) }}</b>
         </h2>
     </div>
 
     <div class="summary">
         <ng-container *ngFor="let block of readerMetadata.metadata.summary">
             <p>
-                <b>{{ getTextForLang(block.caption) }}&nbsp;</b>
-                <span class="my-1" *ngFor="let wordBlock of block.words">{{ getTextForLang(wordBlock) }}</span>
+                <b>{{ getTranslation(block.caption) }}&nbsp;</b>
+                <span class="my-1" *ngFor="let wordBlock of block.words">{{ getTranslation(wordBlock) }}</span>
             </p>
         </ng-container>
     </div>
@@ -27,14 +27,14 @@
     <div class="body">
         <div class="my-4" *ngFor="let block of readerMetadata.metadata?.body">
             <h4>
-                <b>{{ getTextForLang(block.caption) }}</b>
+                <b>{{ getTranslation(block.caption) }}</b>
             </h4>
             <ng-container *ngFor="let wordblock of block.words">
                 <p
                     class="{{ wordblock.indent ? 'indent-' + wordblock.indent : '' }} {{
                         wordblock.en === '' && wordblock.fr === '' ? 'my-4' : 'my-1'
                     }}"
-                    [innerHTML]="getTextForLang(wordblock)"
+                    [innerHTML]="getTranslation(wordblock)"
                 ></p>
             </ng-container>
         </div>
@@ -48,24 +48,24 @@
         <div class="d-flex flex-row align-items-center justify-content-around">
             <div class="m-2" *ngIf="readerMetadata.metadata?.buttons.reject.show">
                 <button mat-raised-button color="warn" (click)="onSubmit(false)">
+                    <mat-icon> clear </mat-icon>
                     {{
                         readerMetadata.metadata?.buttons.reject.text
-                            ? getTextForLang(readerMetadata.metadata?.buttons.reject.text)
+                            ? getTranslation(readerMetadata.metadata?.buttons.reject.text)
                             : 'DECLINE'
                     }}
                     &nbsp;
-                    <mat-icon> clear </mat-icon>
                 </button>
             </div>
             <div class="m-2" *ngIf="readerMetadata.metadata?.buttons.accept.show">
                 <button mat-raised-button color="primary" (click)="onSubmit(true)">
+                    <mat-icon> check </mat-icon>
                     {{
                         readerMetadata.metadata?.buttons.accept.text
-                            ? getTextForLang(readerMetadata.metadata?.buttons.accept.text)
+                            ? getTranslation(readerMetadata.metadata?.buttons.accept.text)
                             : 'ACCEPT'
                     }}
                     &nbsp;
-                    <mat-icon> check </mat-icon>
                 </button>
             </div>
         </div>

@@ -8,7 +8,7 @@ import {
     ComponentName,
     GenericComponentsList,
 } from 'src/app/services/component-factory.service';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
 import { ParticipantDataService } from 'src/app/services/study-data.service';
 import { Navigation } from '../../shared/navigation-buttons/navigation-buttons.component';

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SnackbarService } from '../../../services/snackbar.service';
+import { SnackbarService } from '../../../services/snackbar/snackbar.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
 import { Observable, Subscription, throwError } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
@@ -85,7 +85,11 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                     async (user) => {
                         if (user) {
                             await this.startGameInFullScreen();
-                            this._snackbarService.openSuccessSnackbar('Registered: ' + this.workerId);
+                            this._snackbarService.openSuccessSnackbar(
+                                this.translateService.currentLang === SupportedLangs.FR
+                                    ? 'Votre ID a été enregistré avec succès!: ' + this.workerId
+                                    : 'Regisrered ID successfully: ' + this.workerId
+                            );
                             this._taskManager.initStudy(this.studyId);
                         }
                     },

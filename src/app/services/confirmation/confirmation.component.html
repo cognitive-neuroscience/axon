@@ -11,7 +11,11 @@
         </span>
     </div>
     <div class="d-flex justify-content-between">
-        <button color="primary" mat-raised-button (click)="onConfirm()" style="width: 45%">Continue</button>
-        <button color="warn" mat-raised-button (click)="onCancel()" style="width: 45%">Cancel</button>
+        <button color="primary" mat-raised-button (click)="onConfirm()" style="width: 45%">
+            {{ 'dialog.buttons.continue' | translate }}
+        </button>
+        <button color="warn" mat-raised-button (click)="onCancel()" style="width: 45%">
+            {{ 'dialog.buttons.cancel' | translate }}
+        </button>
     </div>
 </div>

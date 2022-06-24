@@ -1,9 +1,8 @@
 import { Component, HostListener } from '@angular/core';
-import { Color, Key, UserResponse } from 'src/app/models/InternalDTOs';
-import { SnackbarService } from '../../../../services/snackbar.service';
-import { TimerService } from '../../../../services/timer.service';
-import { Feedback } from '../../../../models/InternalDTOs';
-import { DemandSelectionTaskData } from '../../../../models/TaskData';
+import { Color, Key, TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
+import { TimerService } from 'src/app/services/timer.service';
+import { DemandSelectionTaskData } from 'src/app/models/TaskData';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import {
@@ -15,6 +14,7 @@ import { AbstractBaseTaskComponent } from '../base-task';
 import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
+import { TranslateService } from '@ngx-translate/core';
 
 interface DemandSelectionMetadata {
     componentName: ComponentName;
@@ -28,6 +28,7 @@ interface DemandSelectionMetadata {
         skippable: boolean;
         delayToShowHelpMessage: number;
         probOfShiftFirstPatch: number;
+        setCounterBalancePatchStringInMemory: 'none' | 'counterbalance' | 'counterbalance-alternative';
         durationHelpMessageShown: number;
         probOfShiftSecondPatch: number;
         oddEvenColor: Color;
@@ -44,8 +45,7 @@ export enum DemandSelectionCache {
     BLOCK_NUM = 'demandselection-block-num',
     USED_STIMS_ARRAY = 'demandselection-used-stims-array',
     NUM_CORRECT = 'demandselection-num-correct',
-    HARDER_STRING = 'demandselection-harder-string',
-    EASIER_STRING = 'demandselection-easier-string',
+    PATCH_STRING_PRESENTED = 'demandselection-patch-string-presented',
     SHOULD_SKIP = 'demandselection-should-skip',
 }
 
@@ -80,6 +80,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
     private oddEvenColor: Color;
     private ltGtColor: Color;
     private counterbalanceMode: 'none' | 'counterbalance' | 'counterbalance-alternative';
+    private setCounterBalancePatchStringInMemory: 'none' | 'counterbalance' | 'counterbalance-alternative';
     thresholdForRepeat: number = 0.8; // currently hardcoded, can change this if required in the future
 
     // high level variables
@@ -102,6 +103,26 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
     showStimulus: boolean = false;
     selectedPatch: 'firstPatch' | 'secondPatch';
 
+    // translation mapping
+    translationMapping = {
+        'HARDER PATCH': {
+            en: 'HARDER PATCH',
+            fr: 'LA PARCELLE PLUS DIFFICILE',
+        },
+        'EASIER PATCH': {
+            en: 'EASIER PATCH',
+            fr: 'LA PARCELLE PLUS FACILE',
+        },
+        bullseyeHelpMessage: {
+            en: 'Please move your cursor to the bullseye for the patches to appear',
+            fr: 'Déplacez votre curseur vers le centre de la cible pour faire apparaître les parcelles',
+        },
+        choosePatchHelpMessage: {
+            en: 'Please choose a patch by moving your cursor to its location',
+            fr: 'Veuillez choisir une parcelle en déplaçant votre curseur à son emplacement',
+        },
+    };
+
     // timers
     maxResponseTimer: any;
     showHelpMessageTimer: any;
@@ -116,7 +137,8 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         protected snackbarService: SnackbarService,
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
-        protected loaderService: LoaderService
+        protected loaderService: LoaderService,
+        protected translateService: TranslateService
     ) {
         super(loaderService);
     }
@@ -150,6 +172,10 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         this.config = config;
         this.isPractice = thisOrDefault(metadata.componentConfig.isPractice, false);
         this.interTrialDelay = thisOrDefault(metadata.componentConfig.interTrialDelay, 0);
+        this.setCounterBalancePatchStringInMemory = thisOrDefault(
+            metadata.componentConfig.setCounterBalancePatchStringInMemory,
+            'none'
+        );
         this.showFeedbackAfterEachTrial = thisOrDefault(metadata.componentConfig.showFeedbackAfterEachTrial, false);
         this.durationHelpMessageShown = thisOrDefault(metadata.componentConfig.durationHelpMessageShown, 6000);
         this.durationOfFeedback = thisOrDefault(metadata.componentConfig.durationOfFeedback, 0);
@@ -167,12 +193,39 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
     async start() {
         // even though this is done at each block, we are caching these values to be
         // used by the display component when counterbalance is required
-        this.config.setCacheValue(DemandSelectionCache.EASIER_STRING, 'easier patch');
-        this.config.setCacheValue(DemandSelectionCache.HARDER_STRING, 'harder patch');
 
         this.taskData = [];
         this.currentStimuliIndex = 0;
         this.blockNum = this.config.getCacheValue(DemandSelectionCache.BLOCK_NUM) || 1; // set to 1 if not defined
+
+        // store the correct string in memory to be presented to the user
+        switch (this.setCounterBalancePatchStringInMemory) {
+            case 'counterbalance':
+                const counterbalancePatchStringInMemory =
+                    this.translationMapping[this.counterbalance][this.translateService.currentLang];
+                this.config.setCacheValue(
+                    DemandSelectionCache.PATCH_STRING_PRESENTED,
+                    counterbalancePatchStringInMemory
+                );
+                break;
+            case 'counterbalance-alternative':
+                const counterbalanceAlternative =
+                    this.counterbalance === DemandSelectionCounterbalance.SELECTEASYPATCH
+                        ? DemandSelectionCounterbalance.SELECTHARDPATCH
+                        : DemandSelectionCounterbalance.SELECTEASYPATCH;
+
+                const counterbalanceAltPatchStringInMemory =
+                    this.translationMapping[counterbalanceAlternative][this.translateService.currentLang];
+                this.config.setCacheValue(
+                    DemandSelectionCache.PATCH_STRING_PRESENTED,
+                    counterbalanceAltPatchStringInMemory
+                );
+                break;
+            case 'none':
+            default:
+                this.config.setCacheValue(DemandSelectionCache.PATCH_STRING_PRESENTED, '');
+                break;
+        }
 
         if (!this.stimuli) {
             // grab the previously used stimuli in order to make sure we don't repeat
@@ -186,6 +239,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
                     // already set
                     break;
                 case 'counterbalance-alternative':
+                    // if counterbalance-alternative, then flip the two
                     this.counterbalance =
                         this.counterbalance === DemandSelectionCounterbalance.SELECTEASYPATCH
                             ? DemandSelectionCounterbalance.SELECTHARDPATCH
@@ -218,7 +272,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         this.setHelpMessageTimer(
             this.delayToShowHelpMessage,
             this.durationHelpMessageShown,
-            'Please move your cursor to the bullseye for the patches to appear'
+            this.translationMapping.bullseyeHelpMessage[this.translateService.currentLang]
         );
     }
 
@@ -233,7 +287,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         this.setHelpMessageTimer(
             this.delayToShowHelpMessage,
             this.durationHelpMessageShown,
-            'Please choose a patch by moving your cursor to its location'
+            this.translationMapping.choosePatchHelpMessage[this.translateService.currentLang]
         );
     }
 
@@ -289,6 +343,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         // Give participant max time to respond to stimuli
         this.setMaxResponseTimer(this.maxResponseTime, () => {
             this.responseAllowed = false;
+            if (this.isDestroyed) return;
             this.handleRoundInteraction(null);
         });
     }
@@ -304,6 +359,7 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
 
     private setHelpMessageTimer(delay: number, duration: number, message: string, cbFunc?: () => void) {
         this.showHelpMessageTimer = setTimeout(() => {
+            if (this.isDestroyed) return;
             this.snackbarService.openInfoSnackbar(message, '', duration);
             if (cbFunc) cbFunc();
         }, delay);
@@ -360,21 +416,21 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
 
         switch (thisTrial.userAnswer) {
             case thisTrial.actualAnswer:
-                this.feedback = Feedback.CORRECT;
+                this.feedback = TranslatedFeedback.CORRECT;
                 thisTrial.isCorrect = true;
                 thisTrial.score = 10;
                 break;
             case UserResponse.NA:
-                this.feedback = Feedback.TOOSLOW;
+                this.feedback = TranslatedFeedback.TOOSLOW;
                 break;
             default:
-                this.feedback = Feedback.INCORRECT;
+                this.feedback = TranslatedFeedback.INCORRECT;
                 thisTrial.isCorrect = false;
                 thisTrial.score = 0;
                 break;
         }
 
-        if (this.showFeedbackAfterEachTrial || this.feedback === Feedback.TOOSLOW) {
+        if (this.showFeedbackAfterEachTrial || this.feedback === TranslatedFeedback.TOOSLOW) {
             this.showFeedback = true;
             await wait(this.durationOfFeedback);
             if (this.isDestroyed) return;

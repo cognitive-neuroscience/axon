@@ -10,7 +10,7 @@ import { DataGenerationService } from 'src/app/services/data-generation/data-gen
 import { OddballTargetStimulus } from 'src/app/services/data-generation/raw-data/oddball-image-list';
 import { OddballStimulus } from 'src/app/services/data-generation/stimuli-models';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { TaskPlayerState } from '../task-player/task-player.component';
@@ -265,25 +265,24 @@ export class OddballComponent extends AbstractBaseTaskComponent {
         this.responseAllowed = false;
 
         const thisTrial = this.taskData[this.taskData.length - 1];
-        const prefix = 'tasks.feedback.';
 
         switch (thisTrial.userAnswer) {
             case thisTrial.actualAnswer:
-                this.feedback = `${prefix}${TranslatedFeedback.CORRECT}`;
+                this.feedback = TranslatedFeedback.CORRECT;
                 thisTrial.isCorrect = true;
                 thisTrial.score = 10;
                 break;
             case UserResponse.NA:
-                this.feedback = `${prefix}${TranslatedFeedback.TOOSLOW}`;
+                this.feedback = TranslatedFeedback.TOOSLOW;
                 break;
             default:
-                this.feedback = `${prefix}${TranslatedFeedback.INCORRECT}`;
+                this.feedback = TranslatedFeedback.INCORRECT;
                 thisTrial.isCorrect = false;
                 thisTrial.score = 0;
                 break;
         }
 
-        if (this.showFeedbackAfterEachTrial || this.feedback === `${prefix}${TranslatedFeedback.TOOSLOW}`) {
+        if (this.showFeedbackAfterEachTrial || this.feedback === TranslatedFeedback.TOOSLOW) {
             this.showFeedback = true;
             await wait(this.durationOfFeedback);
             if (this.isDestroyed) return;

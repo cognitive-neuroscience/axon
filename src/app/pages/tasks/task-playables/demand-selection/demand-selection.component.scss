@@ -1,4 +1,4 @@
-@import "../../../../sass/mixins";
+@import '../../../../sass/mixins';
 
 .fixation {
     height: 60px;
@@ -28,23 +28,6 @@
 }
 
 .patch {
-    @include for-small-device-only {
-        width: 80px;
-        height: 80px;
-    }
-
-    @include for-small-desktop-only {
-        width: 100px;
-        height: 100px;
-    }
-
-    @include for-desktop-up {
-        width: 140px;
-        height: 140px;
-    }
-
-    @include for-large-desktop-up {
-        width: 160px;
-        height: 160px;
-    }
+    width: 100px;
+    height: 100px;
 }

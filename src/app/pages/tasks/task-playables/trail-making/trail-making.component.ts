@@ -3,7 +3,7 @@ import { MatButton } from '@angular/material/button';
 import { TrailMakingTaskData } from 'src/app/models/TaskData';
 import { TimerService } from '../../../../services/timer.service';
 import { StimuliProvidedType } from 'src/app/models/enums';
-import { SnackbarService } from '../../../../services/snackbar.service';
+import { SnackbarService } from '../../../../services/snackbar/snackbar.service';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { TaskPlayerState } from '../task-player/task-player.component';
 import { TrailMakingStimulus, TrailMakingTrialType } from 'src/app/services/data-generation/stimuli-models';

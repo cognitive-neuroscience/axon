@@ -9,7 +9,7 @@
         </div>
         <div class="slider-container">
             <ng-container *ngIf="showSlider">
-                <div *ngIf="isPractice" class="text-center py-3">
+                <div *ngIf="isPractice" class="text-center hint py-3">
                     Please use your mouse to drag the cursor to the spot on the scale that corresponds to your answer.
                 </div>
                 <app-slider
@@ -17,13 +17,14 @@
                     [marks]="currentSliderMarks"
                     (sliderValueSelected)="handleRoundInteraction($event)"
                 ></app-slider>
-                <div class="button-container pt-5">
+                <div class="flex-row-space-around" style="margin-top: 7rem">
                     <button
+                        class="next-button-text"
+                        style="padding: 0.25rem 1rem"
                         (click)="completeRound()"
                         *ngIf="showNextButton"
                         mat-raised-button
                         color="primary"
-                        class="d-block ml-auto"
                     >
                         Next &nbsp;
                         <mat-icon>arrow_forward</mat-icon>

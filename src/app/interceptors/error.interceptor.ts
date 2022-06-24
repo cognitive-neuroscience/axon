@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { RouteNames } from '../models/enums';
-import { SnackbarService } from '../services/snackbar.service';
+import { SnackbarService } from '../services/snackbar/snackbar.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {

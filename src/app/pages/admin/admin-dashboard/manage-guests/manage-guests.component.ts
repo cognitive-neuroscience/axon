@@ -6,7 +6,7 @@ import { mergeMap } from 'rxjs/operators';
 import { User } from 'src/app/models/Login';
 import { ConfirmationService } from 'src/app/services/confirmation/confirmation.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { UserService } from 'src/app/services/user.service';
 import { CreateGuestDialogComponent } from './create-guest-dialog/create-guest-dialog.component';
 

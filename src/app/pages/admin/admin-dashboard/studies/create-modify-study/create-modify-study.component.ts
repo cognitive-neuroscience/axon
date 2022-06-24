@@ -9,7 +9,7 @@ import { map, take } from 'rxjs/operators';
 import { AdminRouteNames, Platform, TaskType } from 'src/app/models/enums';
 import { Study } from 'src/app/models/Study';
 import { Task } from 'src/app/models/Task';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { StudyService } from 'src/app/services/study.service';
 import { TaskService } from 'src/app/services/task.service';
 import { UserService } from 'src/app/services/user.service';
