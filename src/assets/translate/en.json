@@ -40,6 +40,10 @@
             "incorrect": "Incorrect",
             "too-slow": "Too Slow",
             "no-response": "No response"
+        },
+        "finger-tapping": {
+            "begin-tapping": "Begin Tapping",
+            "continue-tapping": "Continue Tapping"
         }
     },
     "errorMessages": {
