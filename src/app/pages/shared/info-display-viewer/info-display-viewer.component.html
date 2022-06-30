@@ -6,6 +6,7 @@
 
     <ng-container *ngFor="let section of sections">
         <div class="my-4">
+            <hr *ngIf="section.hr" />
             <h2 *ngIf="section.header" class="title-text" [innerHTML]="section.header"></h2>
             <p
                 *ngIf="section.textContent"
