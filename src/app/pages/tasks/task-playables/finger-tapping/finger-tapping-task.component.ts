@@ -122,6 +122,7 @@ export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
         this.responseAllowed = true;
 
         this.maxResponseTimer = window.setTimeout(() => {
+            if (this.isDestroyed) return;
             this.handleRoundInteraction(null);
         }, this.maxResponseTime);
     }
