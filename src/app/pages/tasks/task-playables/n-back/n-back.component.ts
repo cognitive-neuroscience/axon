@@ -19,6 +19,7 @@ interface NBackMetadata {
     componentConfig: {
         isPractice: boolean;
         maxResponseTime: number;
+        skippable: boolean;
         interTrialDelay: number;
         showFeedbackAfterEachTrial: boolean;
         showScoreAfterEachTrial: boolean;
@@ -34,6 +35,7 @@ interface NBackMetadata {
 
 export enum NBackCache {
     TOTAL_SCORE = 'nback-total-score',
+    SHOULD_SKIP = 'nback-should-skip',
 }
 
 @Component({
@@ -59,6 +61,8 @@ export class NBackComponent extends AbstractBaseTaskComponent {
     private durationOfFeedback: number;
     private durationFixationPresented: number;
     private numTrials: number;
+    private skippable: boolean;
+    private thresholdForRepeat: number = 0.8;
 
     // high level variables
     counterbalance: number;
@@ -115,6 +119,7 @@ export class NBackComponent extends AbstractBaseTaskComponent {
         }
 
         this.config = config;
+        this.skippable = thisOrDefault(metadata.componentConfig.skippable, false);
         this.isPractice = thisOrDefault(metadata.componentConfig.isPractice, false);
         this.durationFixationPresented = thisOrDefault(metadata.componentConfig.durationFixationPresented, 0);
         this.interTrialDelay = thisOrDefault(metadata.componentConfig.interTrialDelay, 0);
@@ -134,11 +139,7 @@ export class NBackComponent extends AbstractBaseTaskComponent {
 
         // either the stimuli has been defined in config or we generate it here from service
         if (!this.stimuli) {
-            this.stimuli = this.dataGenService.generateNBackStimuli(
-                this.isPractice,
-                this.numTrials,
-                this.counterbalance
-            );
+            this.stimuli = this.dataGenService.generateNBackStimuli(this.numTrials, this.counterbalance);
         }
         super.start();
     }
@@ -260,8 +261,16 @@ export class NBackComponent extends AbstractBaseTaskComponent {
             const totalScore = this.taskData.reduce((acc, currVal) => {
                 return acc + currVal.score;
             }, 0);
+
             // this will replace the previous block (i.e. the practice block)
             this.config.setCacheValue(NBackCache.TOTAL_SCORE, totalScore);
+
+            const numCorrect = this.taskData.reduce((acc, currVal) => {
+                return acc + (currVal.isCorrect ? 1 : 0);
+            }, 0);
+
+            const shouldSkip = numCorrect / this.numTrials >= this.thresholdForRepeat;
+            this.config.setCacheValue(NBackCache.SHOULD_SKIP, shouldSkip);
             super.decideToRepeat();
             return;
         } else {
@@ -270,6 +279,21 @@ export class NBackComponent extends AbstractBaseTaskComponent {
             if (this.isDestroyed) return;
             this.beginRound();
             return;
+        }
+    }
+
+    afterInit() {
+        if (this.skippable) {
+            const shouldSkip = this.config.getCacheValue(NBackCache.SHOULD_SKIP) as boolean;
+            if (shouldSkip === undefined) return;
+            // no cached value, do not skip
+            else if (shouldSkip) {
+                // loader is shown on component init (from the base task constructor)
+                // and is supposed to show for 2 seconds. We need to manually cancel that
+                // as the component is marked as destroyed (and timeout is cancelled)
+                this.loaderService.hideLoader();
+                this.handleComplete();
+            }
         }
     }
 }
