@@ -11,6 +11,7 @@ import { TaskPlayerState } from '../task-player/task-player.component';
 import { Playable, IOnComplete } from '../playable';
 import { Subject } from 'rxjs';
 import { Navigation } from '../../shared/navigation-buttons/navigation-buttons.component';
+import { ITranslationText } from 'src/app/models/InternalDTOs';
 
 class Question {
     questionType:
@@ -24,10 +25,10 @@ class Question {
     radiobuttonPresentation?: 'horizontal' | 'vertical' = 'horizontal';
     allowMultipleSelections?: boolean; // for multiple choice select, allow multiple choices
     key: string; // unique property of the input - this is what will be used when getting the data. Mandatory for all questionTypes except divider and free text
-    label?: string; // label of the input
-    title?: string; // title of the input - shown above the input itself
-    textContent?: string; // explanatory text below the title
-    legend?: string[]; // legend for slider, slider values are spaced out automatically
+    label?: string | ITranslationText; // label of the input
+    title?: string | ITranslationText; // title of the input - shown above the input itself
+    textContent?: string | ITranslationText; // explanatory text below the title
+    legend?: (string | ITranslationText)[]; // legend for slider, slider values are spaced out automatically
     validation?: {
         required?: boolean;
         isNumeric?: boolean;
@@ -37,7 +38,7 @@ class Question {
         minLength?: number;
     };
     multipleChoiceOptions?: {
-        label: string;
+        label: string | ITranslationText;
         value: any;
     }[];
 }
@@ -95,7 +96,7 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
         return this.handleText(this.metadata?.componentConfig?.title);
     }
 
-    handleText(text: string): string {
+    handleText(text: string | ITranslationText): string {
         return getTextForLang(this.translateService.currentLang as SupportedLangs, text);
     }
 
@@ -148,7 +149,7 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
         this.questionnaire.controls[key].setValue(value);
     }
 
-    getSliderMarks(legend: string[]): NzMarks {
+    getSliderMarks(legend: (string | ITranslationText)[]): NzMarks {
         const tempMarks: NzMarks = {};
         if (!legend || legend.length == 0) {
             return {};
@@ -157,7 +158,7 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
         const tickIncrement = 100 / (legend.length - 1);
 
         for (let i = 0; i < legend.length; i++) {
-            tempMarks[index] = legend[i];
+            tempMarks[index] = this.handleText(legend[i]);
             index += tickIncrement;
         }
 
