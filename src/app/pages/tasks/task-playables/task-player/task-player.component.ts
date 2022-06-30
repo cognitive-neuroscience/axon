@@ -186,7 +186,6 @@ export class TaskPlayerComponent implements OnDestroy {
     handleOnComplete(onComplete: IOnComplete) {
         this.subscription.unsubscribe();
         this.viewContainer.clear();
-        if (this.state.mode === 'test') console.log(onComplete);
         const shouldSetTaskAsComplete = !this.userService.isCrowdsourcedUser && this.hasCompletedAllBlocks();
 
         if (onComplete.taskData && this.state.mode === 'actual') {
@@ -211,6 +210,7 @@ export class TaskPlayerComponent implements OnDestroy {
                     this.loaderService.hideLoader();
                 });
         } else {
+            console.log(onComplete);
             onComplete.navigation === Navigation.NEXT ? this.renderNextStep() : this.renderPreviousStep();
         }
     }

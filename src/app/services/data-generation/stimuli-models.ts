@@ -47,7 +47,6 @@ export class NBackStimulus {
 }
 
 export class NBackStimuliSet {
-    practice: NBackStimulus[];
     1: NBackStimulus[];
     2: NBackStimulus[];
     3: NBackStimulus[];

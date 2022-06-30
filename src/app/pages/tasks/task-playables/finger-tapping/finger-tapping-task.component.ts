@@ -115,10 +115,6 @@ export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
         }, this.durationFixationPresented);
     }
 
-    private isValidKey(key: string): boolean {
-        return key === Key.Q || key === Key.P;
-    }
-
     async beginRound() {
         this.timerService.clearTimer();
         this.timerService.startTimer();
@@ -130,11 +126,41 @@ export class FingerTappingTaskComponent extends AbstractBaseTaskComponent {
         }, this.maxResponseTime);
     }
 
-    @HostListener('window:keypress', ['$event'])
+    @HostListener('document:keydown.tab', ['$event'])
+    handleTabPressed(event: KeyboardEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (this.responseAllowed) {
+            const responseTime = this.timerService.stopTimerAndGetTime();
+
+            this.taskData.push({
+                trial: ++this.trialNum,
+                userID: this.userID,
+                submitted: this.timerService.getCurrentTimestamp(),
+                isPractice: this.isPractice,
+                isCorrect: event.key !== this.lastKeyPressed,
+                studyId: this.studyId,
+                block: this.blockNum,
+                dominantHand: this.handedness,
+                handUsed: this.useHand,
+                timeFromLastKeyPress: responseTime,
+                keyPressed: event.key as Key,
+            });
+            // for first press of the game lastKey will be null
+            if (this.lastKeyPressed !== event.key) {
+                this.flashFixation();
+                this.lastKeyPressed = event.key as Key;
+            }
+            this.timerService.startTimer();
+        }
+    }
+
+    @HostListener('document:keypress', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
         if (event === null) {
             super.handleRoundInteraction(null);
-        } else if (this.responseAllowed && this.isValidKey(event.key)) {
+        } else if (this.responseAllowed) {
             const responseTime = this.timerService.stopTimerAndGetTime();
 
             this.taskData.push({
