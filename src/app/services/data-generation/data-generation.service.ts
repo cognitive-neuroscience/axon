@@ -257,10 +257,8 @@ export class DataGenerationService {
     }
 
     generateNBackStimuli(numTrials: number, counterbalance: number): NBackStimulus[] {
-        const nbackSets = Object.keys(NBackSet);
-
         // subtract 1 because one set is the practice set
-        if (counterbalance < 1 || counterbalance > nbackSets.length - 1) throw new Error('No such nback group exists');
+        if (!NBackSet[counterbalance]) throw new Error('No such nback group exists');
         const selectedSet = NBackSet[counterbalance] as NBackStimulus[];
         if (numTrials > selectedSet.length) throw new Error('number of trials greater than number of stroop trials');
         return selectedSet.slice(0, numTrials);

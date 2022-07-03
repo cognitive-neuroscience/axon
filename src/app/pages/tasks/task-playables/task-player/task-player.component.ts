@@ -188,6 +188,8 @@ export class TaskPlayerComponent implements OnDestroy {
         this.viewContainer.clear();
         const shouldSetTaskAsComplete = !this.userService.isCrowdsourcedUser && this.hasCompletedAllBlocks();
 
+        if (this.userService.user.role === Role.ADMIN) console.log(onComplete);
+
         if (onComplete.taskData && this.state.mode === 'actual') {
             this.loaderService.showLoader();
             this.handleUploadData(onComplete.taskData)
@@ -210,7 +212,6 @@ export class TaskPlayerComponent implements OnDestroy {
                     this.loaderService.hideLoader();
                 });
         } else {
-            console.log(onComplete);
             onComplete.navigation === Navigation.NEXT ? this.renderNextStep() : this.renderPreviousStep();
         }
     }

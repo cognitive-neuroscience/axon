@@ -66,7 +66,7 @@ export class NBackComponent extends AbstractBaseTaskComponent {
 
     // high level variables
     counterbalance: number;
-    taskData: NBackTaskData[];
+    taskData: NBackTaskData[] = [];
     stimuli: NBackStimulus[];
     currentStimuliIndex: number; // index of the stimuli we are on
 
@@ -171,7 +171,6 @@ export class NBackComponent extends AbstractBaseTaskComponent {
         });
 
         this.setTimer(this.maxResponseTime, () => {
-            this.responseAllowed = false;
             this.showStimulus = false;
 
             this.handleRoundInteraction(null);
@@ -204,22 +203,23 @@ export class NBackComponent extends AbstractBaseTaskComponent {
 
     @HostListener('window:keydown', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
-        this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
-
-        if (event === null) {
-            // max time out
-            this.cancelAllTimers();
-            this.currentTrial.userAnswer = UserResponse.NA;
-            this.currentTrial.score = 0;
-            this.currentTrial.responseTime = this.maxResponseTime;
-            this.currentTrial.isCorrect = false;
-            super.handleRoundInteraction(null);
-        } else if (this.responseAllowed && this.isValidKey(event.key)) {
-            this.cancelAllTimers();
+        if (event === null || (this.responseAllowed && this.isValidKey(event.key))) {
             this.responseAllowed = false;
-            this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
-            this.currentTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.NO : UserResponse.YES;
-            super.handleRoundInteraction(event.key);
+            this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
+            this.cancelAllTimers();
+
+            if (event === null) {
+                // max time out
+                this.currentTrial.userAnswer = UserResponse.NA;
+                this.currentTrial.score = 0;
+                this.currentTrial.responseTime = this.maxResponseTime;
+                this.currentTrial.isCorrect = false;
+                super.handleRoundInteraction(null);
+            } else {
+                this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
+                this.currentTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.NO : UserResponse.YES;
+                super.handleRoundInteraction(event.key);
+            }
         }
     }
 
