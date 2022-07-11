@@ -11,6 +11,9 @@ export enum Navigation {
     styleUrls: ['./navigation-buttons.component.scss'],
 })
 export class NavigationButtonsComponent implements OnInit {
+    @Input()
+    allowMultipleClicks: boolean = false;
+
     wasClicked: boolean = false;
 
     @Input()
@@ -21,6 +24,10 @@ export class NavigationButtonsComponent implements OnInit {
 
     @Input()
     nextDisabled: boolean = false;
+
+    get disableNext(): boolean {
+        return this.nextDisabled || (this.wasClicked && !this.allowMultipleClicks);
+    }
 
     private _isStart: boolean = false;
 
@@ -47,10 +54,8 @@ export class NavigationButtonsComponent implements OnInit {
     onNext: EventEmitter<Navigation> = new EventEmitter();
 
     handleNext() {
-        if (!this.wasClicked) {
-            this.onNext.next(Navigation.NEXT);
-            this.wasClicked = true;
-        }
+        if (!this.wasClicked) this.wasClicked = true;
+        this.onNext.next(Navigation.NEXT);
     }
 
     handlePrevious() {

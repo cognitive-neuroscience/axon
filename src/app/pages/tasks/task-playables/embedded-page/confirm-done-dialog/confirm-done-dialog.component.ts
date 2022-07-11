@@ -22,7 +22,7 @@ export class ConfirmDoneDialogComponent implements OnInit {
     }
 
     onConfirmWord() {
-        if (this.enteredWord === this.completionWord) {
+        if (this.enteredWord.toLocaleUpperCase() === this.completionWord) {
             this.dialogRef.close(true);
         } else {
             this.snackbarService.openInfoSnackbar(

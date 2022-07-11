@@ -12,7 +12,8 @@
 
     <app-navigation-buttons
         class="w-100"
-        previousDisabled="true"
+        [previousDisabled]="true"
+        [allowMultipleClicks]="true"
         [warn]="true"
         forwardButtonText="DO NOT CLICK THIS UNTIL YOU SEE THE ABOVE CODE WORD"
         (onNext)="proceed()"
