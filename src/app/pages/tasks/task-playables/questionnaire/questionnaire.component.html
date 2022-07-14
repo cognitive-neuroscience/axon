@@ -126,7 +126,10 @@
                         </div>
                     </div>
 
-                    <div class="my-5" *ngSwitchCase="'displayText'">
+                    <div
+                        *ngSwitchCase="'displayText'"
+                        class="my-5 {{ question.indent ? 'indent-' + question.indent : '' }}"
+                    >
                         <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
                         <p
                             *ngIf="question.textContent"
