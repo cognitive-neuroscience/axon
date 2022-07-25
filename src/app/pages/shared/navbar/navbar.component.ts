@@ -7,6 +7,7 @@ import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames, SupportedLang
 import { AuthService } from 'src/app/services/auth.service';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
+import { SessionStorageService } from 'src/app/services/sessionStorage.service';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -40,7 +41,8 @@ export class NavbarComponent implements OnInit {
         private loaderService: LoaderService,
         private snackbarService: SnackbarService,
         private translateService: TranslateService,
-        private clearanceService: ClearanceService
+        private clearanceService: ClearanceService,
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit(): void {}
@@ -77,6 +79,7 @@ export class NavbarComponent implements OnInit {
     logout() {
         this.loaderService.showLoader();
         this.clearanceService.clearServices();
+        this.sessionStorageService.clearSessionStorage(true);
         this.authService
             .logout()
             .subscribe(

@@ -180,11 +180,14 @@ export class DataComponent implements OnInit {
 
         this.studyUserService.getStudyUsersForStudy(study.id).subscribe(
             (studyUsers) => {
-                let studyUsersDataTable: DataTableFormat[] = studyUsers.map((data) => {
-                    delete data.study;
+                let studyUsersDataTable: DataTableFormat[] = studyUsers.map((studyUser) => {
+                    const consentInputs = { ...(studyUser.data || {}) };
+                    delete studyUser.study;
+                    delete studyUser.data;
                     return {
                         fields: {
-                            ...data,
+                            ...studyUser,
+                            ...consentInputs,
                         },
                         expandable: [],
                     };

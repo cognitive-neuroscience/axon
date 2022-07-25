@@ -37,14 +37,14 @@ export class ConsentPageComponent implements OnInit {
 
     ngOnInit(): void {}
 
-    onEmitConsent(consent: boolean) {
+    onEmitConsent(consentData: Record<string, string>) {
         const message =
             this.translateService.currentLang === SupportedLangs.EN
                 ? 'Are you sure you want to accept?'
                 : 'Êtes-vous certain(e) de vouloir accepter?';
 
         if (this.data.mode === 'actual') {
-            if (consent) {
+            if (consentData) {
                 this.confirmationService
                     .openConfirmationDialog(message)
                     .pipe(take(1))

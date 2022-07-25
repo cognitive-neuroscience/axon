@@ -21,7 +21,7 @@ export class ConsentDialogComponent implements OnInit {
 
     ngOnInit(): void {}
 
-    onEmitConsent($event: boolean) {
+    onEmitConsent($event: Record<string, string> | null) {
         const message =
             this.translateService.currentLang === SupportedLangs.EN
                 ? 'Are you sure you want to accept?'

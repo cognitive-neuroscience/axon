@@ -34,4 +34,5 @@ export class StudyUser {
     hasAcceptedConsent: boolean;
     study?: Study;
     lang: SupportedLangs;
+    data?: Record<string, any>;
 }

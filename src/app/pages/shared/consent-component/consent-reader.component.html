@@ -40,6 +40,19 @@
         </div>
     </div>
 
+    <div *ngIf="!userIsCrowdsourcedUser && readerMetadata.metadata?.inputs">
+        <form [formGroup]="inputsFormGroup">
+            <div class="my-4" *ngFor="let input of readerMetadata.metadata?.inputs">
+                <label for="">{{ getTranslation(input.label) }}</label>
+                <mat-radio-group class="options-container" [formControlName]="input.key">
+                    <mat-radio-button *ngFor="let option of input.options" [value]="option.value">{{
+                        getTranslation(option.textContent)
+                    }}</mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </form>
+    </div>
+
     <div class="endMessage my-4">
         <span>{{ endMessage }}</span>
     </div>
@@ -58,7 +71,12 @@
                 </button>
             </div>
             <div class="m-2" *ngIf="readerMetadata.metadata?.buttons.accept.show">
-                <button mat-raised-button color="primary" (click)="onSubmit(true)">
+                <button
+                    [disabled]="!userIsCrowdsourcedUser && inputsFormGroup?.invalid"
+                    mat-raised-button
+                    color="primary"
+                    (click)="onSubmit(true)"
+                >
                     <mat-icon> check </mat-icon>
                     {{
                         readerMetadata.metadata?.buttons.accept.text
@@ -68,6 +86,9 @@
                     &nbsp;
                 </button>
             </div>
+        </div>
+        <div *ngIf="!userIsCrowdsourcedUser && inputsFormGroup?.invalid" class="my-4" style="color: red">
+            {{ 'errorMessages.unansweredQuestions' | translate }}
         </div>
     </div>
 </div>

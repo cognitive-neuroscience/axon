@@ -1,13 +1,24 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { getTextForLang } from 'src/app/common/commonMethods';
 import { SupportedLangs } from 'src/app/models/enums';
 import { ITranslationText } from 'src/app/models/InternalDTOs';
+import { UserService } from 'src/app/services/user.service';
 import { AbstractBaseReaderComponent } from '../../tasks/shared/base-reader';
 
 interface ConsentTextContent extends ITranslationText {
     indent?: number;
+}
+
+interface ConsentFormInput {
+    label: ITranslationText;
+    key: string;
+    options: {
+        textContent: ITranslationText;
+        value: string;
+    }[];
 }
 
 class ConsentForm {
@@ -22,6 +33,7 @@ class ConsentForm {
         caption: ITranslationText;
         words: ConsentTextContent[];
     }[];
+    inputs?: ConsentFormInput[];
     endMessage: ITranslationText;
     buttons: {
         reject: {
@@ -45,9 +57,24 @@ export class ConsentNavigationConfig {
     templateUrl: './consent-reader.component.html',
     styleUrls: ['./consent-reader.component.scss'],
 })
-export class ConsentReaderComponent implements AbstractBaseReaderComponent {
+export class ConsentReaderComponent implements AbstractBaseReaderComponent, OnInit {
     @Input()
     readerMetadata: ConsentNavigationConfig;
+
+    inputsFormGroup: FormGroup;
+
+    ngOnInit() {
+        if (this.readerMetadata && this.readerMetadata.metadata.inputs) {
+            const formGroup: {
+                [key: string]: FormControl;
+            } = {};
+            for (let input of this.readerMetadata.metadata.inputs) {
+                formGroup[input.key] = new FormControl('', Validators.required);
+            }
+
+            this.inputsFormGroup = new FormGroup(formGroup);
+        }
+    }
 
     get imgPath(): string {
         return this.readerMetadata.metadata?.imgPath || '';
@@ -65,17 +92,32 @@ export class ConsentReaderComponent implements AbstractBaseReaderComponent {
         return this.getTranslation(this.readerMetadata.metadata?.endMessage) || '';
     }
 
-    @Output()
-    emitConsent: EventEmitter<boolean> = new EventEmitter();
+    get userIsCrowdsourcedUser(): boolean {
+        return this.userService.isCrowdsourcedUser;
+    }
 
-    constructor(private router: Router, private translateService: TranslateService) {
+    @Output()
+    emitConsent: EventEmitter<Record<string, string>> = new EventEmitter();
+
+    constructor(private router: Router, private translateService: TranslateService, private userService: UserService) {
         const state = this.router.getCurrentNavigation()?.extras.state as ConsentNavigationConfig;
 
         if (state) this.readerMetadata = state;
     }
 
     onSubmit(response: boolean) {
-        this.emitConsent.next(response);
+        if (!response) {
+            this.emitConsent.next(null);
+        } else {
+            const jsonResponse = {};
+
+            Object.keys(this.inputsFormGroup?.controls || {}).forEach((key) => {
+                const value = this.inputsFormGroup.controls[key].value;
+                jsonResponse[key] = value;
+            });
+
+            this.emitConsent.next(jsonResponse);
+        }
     }
 
     getTranslation(textObj: ITranslationText | string): string {
