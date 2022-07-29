@@ -2,10 +2,10 @@
     <!-- Start Practice Round -->
     <div *ngIf="showStimulus" class="full-box flex-column-center">
         <div class="activity-container flex-column-center">
-            <span class="activity">{{ activityShown }}</span>
+            <span class="activity">{{ getTranslation(activityShown) }}</span>
         </div>
         <div class="question-container flex-column-center">
-            <span class="question">{{ questionShown }}</span>
+            <span class="question">{{ getTranslation(questionShown) }}</span>
         </div>
         <div class="slider-container">
             <ng-container *ngIf="showSlider">

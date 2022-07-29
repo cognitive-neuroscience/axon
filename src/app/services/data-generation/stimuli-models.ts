@@ -1,17 +1,17 @@
-import { Color } from 'src/app/models/InternalDTOs';
+import { Color, ITranslationText } from 'src/app/models/InternalDTOs';
 
 export interface RatingTaskStimuli {
-    activity: string;
+    activity: ITranslationText;
     type: 'DoNothing' | 'DoSomething';
     questions: {
-        question: string;
-        legend: string[]; // automatically low to high endorsement by default
+        question: ITranslationText;
+        legend: ITranslationText[]; // automatically low to high endorsement by default
     }[];
 }
 
 export interface ChoiceTaskStimulus {
-    firstActivity: string;
-    secondActivity: string;
+    firstActivity: ITranslationText;
+    secondActivity: ITranslationText;
 }
 
 export interface OddballStimulus {

@@ -1,6 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
-import { StimuliProvidedType } from 'src/app/models/enums';
+import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
+import { ITranslationText } from 'src/app/models/InternalDTOs';
 import { EverydayChoiceTaskData } from 'src/app/models/TaskData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
@@ -52,7 +54,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     private durationOutOftimeMessageShown: number;
 
     // shared state variables
-    ratingTaskActivities: string[];
+    ratingTaskActivities: ITranslationText[];
 
     // high level variables
     taskData: EverydayChoiceTaskData[];
@@ -65,10 +67,22 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     showInput: boolean = false;
     trialNum: number = 0;
 
-    activitiesShown: { label: string; value: string }[] = [];
+    activitiesShown: { label: ITranslationText; value: ITranslationText }[] = [];
 
     maxResponseTimer: any;
     showHelpMessageTimer: any;
+
+    // translation mapping
+    translationMapping = {
+        helpMessage: {
+            en: 'Please make the rating by clicking the button corresponding to the activity you would like to select',
+            fr: 'SVP.......',
+        },
+        maxResponseMessage: {
+            en: 'Please do your best to provide your answer in the time allotted for the next trial.',
+            fr: 'SVP essayer d’indiquer votre réponse dans les délais prévus pour le prochain tour',
+        },
+    };
 
     get currentStimulus(): ChoiceTaskStimulus {
         return this.stimuli[this.currentStimuliIndex];
@@ -78,7 +92,8 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         protected snackbarService: SnackbarService,
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
-        protected loaderService: LoaderService
+        protected loaderService: LoaderService,
+        private translateService: TranslateService
     ) {
         super(loaderService);
     }
@@ -145,7 +160,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         if (this.maxResponseTime !== undefined) {
             this.setTimer(
                 'maxResponseTimer',
-                'Please do your best to provide your answer in the time allotted for the next trial',
+                this.translationMapping.maxResponseMessage[this.translateService.currentLang as SupportedLangs],
                 this.maxResponseTime,
                 this.durationOutOftimeMessageShown,
                 async () => {
@@ -159,7 +174,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         if (this.delayToShowHelpMessage !== undefined) {
             this.setTimer(
                 'helpMessageTimer',
-                'Please make the rating by clicking the button corresponding to the activity you would like to select',
+                this.translationMapping.helpMessage[this.translateService.currentLang as SupportedLangs],
                 this.delayToShowHelpMessage,
                 this.durationHelpMessageShown
             );
