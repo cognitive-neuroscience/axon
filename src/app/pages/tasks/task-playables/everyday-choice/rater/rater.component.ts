@@ -203,7 +203,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         if (this.delayToShowHelpMessage !== undefined) {
             this.setTimer(
                 'helpMessageTimer',
-                this.translationMapping[this.translateService.currentLang as SupportedLangs],
+                this.translationMapping.helpMessage[this.translateService.currentLang as SupportedLangs],
                 this.delayToShowHelpMessage,
                 this.durationHelpMessageShown
             );
