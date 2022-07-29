@@ -38,7 +38,7 @@ import {
     PLTStimulus,
 } from './stimuli-models';
 import { NBackSet } from './raw-data/nback-data-list';
-import { Color } from 'src/app/models/InternalDTOs';
+import { Color, ITranslationText } from 'src/app/models/InternalDTOs';
 import { DemandSelectionImageNames } from './raw-data/demand-selection-image-list';
 import { DigitSpanStimuli } from './raw-data/digit-span-list';
 import { TrailMakingSet } from './raw-data/trail-making-list';
@@ -70,10 +70,9 @@ export class DataGenerationService {
         return ratingTaskStimuli;
     }
 
-    generateChoiceStimuli(activities: string[]): ChoiceTaskStimulus[] {
+    generateChoiceStimuli(activities: ITranslationText[]): ChoiceTaskStimulus[] {
         if (!activities.length || activities.length <= 2)
             throw new Error('At least two activities are needed to make a pair list');
-        if (new Set<string>(activities).size !== activities.length) throw new Error('Cannot have duplicate activities');
 
         const shuffledActivities = shuffle(activities);
         const pairs: ChoiceTaskStimulus[] = [];

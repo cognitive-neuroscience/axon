@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
-import { throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
+import { getTextForLang, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { RatingTaskStimuli } from 'src/app/services/data-generation/stimuli-models';
 import { AbstractBaseTaskComponent } from '../../base-task';
@@ -9,8 +9,10 @@ import { TaskPlayerState } from '../../task-player/task-player.component';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { NzMarks } from 'ng-zorro-antd/slider';
 import { ComponentName } from 'src/app/services/component-factory.service';
-import { StimuliProvidedType } from 'src/app/models/enums';
+import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
 import { EverydayChoiceTaskData } from 'src/app/models/TaskData';
+import { ITranslationText } from 'src/app/models/InternalDTOs';
+import { TranslateService } from '@ngx-translate/core';
 
 export enum RatingTaskCounterBalance {
     LOWTOHIGHENDORSEMENT = 'LOWTOHIGH',
@@ -81,11 +83,23 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
 
     currentSliderMarks: NzMarks = {}; // set slider legend
 
-    activityShown: string = '';
-    questionShown: string = '';
+    activityShown: ITranslationText = null;
+    questionShown: ITranslationText = null;
 
     maxResponseTimer: any;
     showHelpMessageTimer: any;
+
+    // translation mapping
+    translationMapping = {
+        helpMessage: {
+            en: 'Please make the rating by adjusting the slider and clicking next',
+            fr: 'SVP.......',
+        },
+        maxResponseMessage: {
+            en: 'Please do your best to provide your answer in the time allotted for the next trial.',
+            fr: 'SVP essayer d’indiquer votre réponse dans les délais prévus pour le prochain tour',
+        },
+    };
 
     get currentStimulus(): RatingTaskStimuli {
         return this.stimuli[this.currentStimuliIndex];
@@ -120,7 +134,8 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         protected snackbarService: SnackbarService,
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
-        protected loaderService: LoaderService
+        protected loaderService: LoaderService,
+        private translateService: TranslateService
     ) {
         super(loaderService);
     }
@@ -152,8 +167,8 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
             userID: this.userID,
             counterbalance: this.counterbalance,
             userAnswer: null,
-            question: this.currentStimulus.questions[this.currentQuestionIndex].question,
-            activity: this.currentStimulus.activity,
+            question: this.currentStimulus.questions[this.currentQuestionIndex].question.en,
+            activity: this.currentStimulus.activity.en,
             activityType: this.currentStimulus.type,
             responseTime: null,
             submitted: this.timerService.getCurrentTimestamp(),
@@ -174,7 +189,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         if (this.maxResponseTime !== undefined) {
             this.setTimer(
                 'maxResponseTimer',
-                'Please do your best to provide your answer in the time allotted for the next trial',
+                this.translationMapping.maxResponseMessage[this.translateService.currentLang as SupportedLangs],
                 this.maxResponseTime,
                 this.durationOutOftimeMessageShown,
                 async () => {
@@ -188,7 +203,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         if (this.delayToShowHelpMessage !== undefined) {
             this.setTimer(
                 'helpMessageTimer',
-                'Please make the rating by adjusting the slider and clicking next',
+                this.translationMapping.helpMessage[this.translateService.currentLang as SupportedLangs],
                 this.delayToShowHelpMessage,
                 this.durationHelpMessageShown
             );
@@ -206,7 +221,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         const tickIncrement = 100 / (stimulusQuestion.legend.length - 1);
 
         for (let i = 0; i < stimulusQuestion.legend.length; i++) {
-            tempMarks[index] = stimulusQuestion.legend[i];
+            tempMarks[index] = stimulusQuestion.legend[i][this.translateService.currentLang];
             index += tickIncrement;
         }
 
@@ -287,6 +302,10 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         } else {
             throw new Error('Invalid Timer type, could not set timer');
         }
+    }
+
+    getTranslation(text: ITranslationText): string {
+        return getTextForLang(this.translateService.currentLang as SupportedLangs, text);
     }
 
     private cancelAllTimers() {
