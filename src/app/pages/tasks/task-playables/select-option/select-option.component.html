@@ -4,7 +4,7 @@
             <app-option-display
                 (onSelectValue)="handleSelectOption($event)"
                 [options]="options"
-                [question]="question"
+                [question]="handleTranslate(question)"
             ></app-option-display>
         </div>
     </div>

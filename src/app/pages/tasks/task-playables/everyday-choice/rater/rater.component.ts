@@ -23,6 +23,7 @@ export enum RatingTaskCounterBalance {
 export interface RaterTaskMetadata {
     componentName: ComponentName;
     componentConfig: {
+        numTrials: number;
         isPractice: boolean;
         maxResponseTime: number;
         interTrialDelay: number;
@@ -40,7 +41,8 @@ export interface RaterTaskMetadata {
 }
 
 export enum RaterCache {
-    NEW_ACTIVITIES = 'rater-new-activities',
+    ACTIVITIES_FOR_CHOICER = 'rater-activities-for-choicer',
+    STIMULI = 'rater-stimuli',
 }
 
 @Component({
@@ -58,6 +60,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
 
     // config variables variables
     isPractice: boolean = false;
+    private numTrials: number;
     private maxResponseTime: number;
     private interTrialDelay: number; // In milliseconds
     private interActivityDelay: number; // In milliseconds
@@ -114,6 +117,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         }
 
         this.config = config;
+        this.numTrials = metadata.componentConfig.numTrials || 13;
         this.isPractice = metadata.componentConfig.isPractice || false;
         this.maxResponseTime = metadata.componentConfig.maxResponseTime || undefined;
         this.interTrialDelay = metadata.componentConfig.interTrialDelay || 0;
@@ -144,11 +148,27 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         this.taskData = [];
         // either the stimuli has been defined in config or we generate it here
         if (!this.stimuli) {
-            this.stimuli = this.dataGenService.generateRatingStimuli(this.numDoSomethingActivities);
+            const raterActivitiesInConfig = this.config.getCacheValue(RaterCache.STIMULI);
+
+            // use activities in config if it exists; otherwise generate our own
+            const raterActivities = (
+                raterActivitiesInConfig
+                    ? raterActivitiesInConfig
+                    : this.dataGenService.generateRatingStimuli(this.numDoSomethingActivities)
+            ) as RatingTaskStimuli[];
+
+            this.stimuli = raterActivities.slice(0, this.numTrials);
             this.config.setCacheValue(
-                RaterCache.NEW_ACTIVITIES,
-                this.stimuli.map((x) => x.activity)
-            ); // we want to share the activities with the choice task
+                RaterCache.STIMULI,
+                raterActivities.slice(this.numTrials, raterActivities.length)
+            );
+
+            const activitiesForChoicerInConfig =
+                this.config.getCacheValue(RaterCache.ACTIVITIES_FOR_CHOICER) || ([] as ITranslationText[]);
+            this.config.setCacheValue(
+                RaterCache.ACTIVITIES_FOR_CHOICER,
+                activitiesForChoicerInConfig.concat(this.stimuli.map((x) => x.activity))
+            );
         }
         this.currentStimuliIndex = 0;
         this.currentQuestionIndex = 0;

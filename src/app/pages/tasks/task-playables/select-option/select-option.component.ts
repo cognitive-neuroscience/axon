@@ -4,6 +4,10 @@ import { ComponentName } from 'src/app/services/component-factory.service';
 import { Playable } from '../playable';
 import { TaskPlayerState } from '../task-player/task-player.component';
 import { Navigation } from '../../shared/navigation-buttons/navigation-buttons.component';
+import { ITranslationText } from 'src/app/models/InternalDTOs';
+import { getTextForLang } from 'src/app/common/commonMethods';
+import { TranslateService } from '@ngx-translate/core';
+import { SupportedLangs } from 'src/app/models/enums';
 
 interface SelectOptionMetadata {
     component: ComponentName;
@@ -11,8 +15,8 @@ interface SelectOptionMetadata {
         question: string;
         cacheKey: string;
         options: {
-            label: string;
-            value: any;
+            label: ITranslationText;
+            value: string | number | boolean | ITranslationText;
         }[];
     };
 }
@@ -25,18 +29,22 @@ interface SelectOptionMetadata {
 export class SelectOptionComponent implements Playable {
     config: TaskPlayerState;
 
-    question: string = '';
+    question: ITranslationText | string = '';
     cacheKey: string = '';
     options: {
         label: string;
         value: any;
     }[] = [];
 
-    constructor() {}
+    constructor(private translateService: TranslateService) {}
 
     handleSelectOption(selectedOption: string) {
         this.config.setCacheValue(this.cacheKey, selectedOption);
         this.handleComplete(Navigation.NEXT);
+    }
+
+    handleTranslate(text: ITranslationText | string): string {
+        return getTextForLang(this.translateService.currentLang as SupportedLangs, text);
     }
 
     onComplete = new Subject<{ navigation: Navigation }>();
@@ -50,7 +58,10 @@ export class SelectOptionComponent implements Playable {
 
         this.question = metadata.componentConfig.question;
         this.cacheKey = metadata.componentConfig.cacheKey;
-        this.options = metadata.componentConfig.options;
+        this.options = metadata.componentConfig.options.map((option) => ({
+            label: this.handleTranslate(option.label),
+            value: typeof option.value === 'object' ? this.handleTranslate(option.value) : option.value,
+        }));
     }
 
     afterInit(): void {}

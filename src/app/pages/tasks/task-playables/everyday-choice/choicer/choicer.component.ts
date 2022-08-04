@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
-import { ITranslationText } from 'src/app/models/InternalDTOs';
+import { ITranslationText, UserResponse } from 'src/app/models/InternalDTOs';
 import { EverydayChoiceTaskData } from 'src/app/models/TaskData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
@@ -67,7 +67,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     showInput: boolean = false;
     trialNum: number = 0;
 
-    activitiesShown: { label: ITranslationText; value: ITranslationText }[] = [];
+    activitiesShown: { label: string; value: string }[] = [];
 
     maxResponseTimer: any;
     showHelpMessageTimer: any;
@@ -106,7 +106,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
             throw new Error('values not defined, cannot start study');
         }
 
-        this.ratingTaskActivities = config.getCacheValue(RaterCache.NEW_ACTIVITIES);
+        this.ratingTaskActivities = config.getCacheValue(RaterCache.ACTIVITIES_FOR_CHOICER);
         this.isPractice = metadata.componentConfig.isPractice || false;
         this.interTrialDelay = metadata.componentConfig.interTrialDelay || 0;
         this.maxResponseTime = metadata.componentConfig.maxResponseTime || undefined;
@@ -138,8 +138,8 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
             userID: this.userID,
             counterbalance: RatingTaskCounterBalance.NA,
             userAnswer: null,
-            question: '',
-            activity: `${this.currentStimulus.firstActivity} VS ${this.currentStimulus.secondActivity}`,
+            question: UserResponse.NA,
+            activity: `${this.currentStimulus.firstActivity.en} VS ${this.currentStimulus.secondActivity.en}`,
             activityType: '',
             responseTime: null,
             submitted: this.timerService.getCurrentTimestamp(),
@@ -184,12 +184,12 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     private setStimuliUI(stimulus: ChoiceTaskStimulus) {
         this.activitiesShown = [
             {
-                label: stimulus.firstActivity,
-                value: stimulus.firstActivity,
+                label: stimulus.firstActivity[this.translateService.currentLang as SupportedLangs],
+                value: stimulus.firstActivity.en,
             },
             {
-                label: stimulus.secondActivity,
-                value: stimulus.secondActivity,
+                label: stimulus.secondActivity[this.translateService.currentLang as SupportedLangs],
+                value: stimulus.secondActivity.en,
             },
         ];
     }

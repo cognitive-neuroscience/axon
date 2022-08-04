@@ -1,6 +1,6 @@
 <div class="flex-column-center h-100">
     <div class="h-100 uppercase instructions">
-        <div class="font-weight-bold uppercase mb-5">{{ getTranslatedText(question) }}</div>
+        <div class="font-weight-bold uppercase mb-5">{{ question }}</div>
 
         <div class="button-container">
             <button
@@ -10,7 +10,7 @@
                 mat-raised-button
                 color="primary"
             >
-                {{ getTranslatedText(option.label) }}
+                {{ option.label }}
             </button>
         </div>
     </div>
