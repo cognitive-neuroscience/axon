@@ -71,8 +71,7 @@ export class DataGenerationService {
     }
 
     generateChoiceStimuli(activities: ITranslationText[]): ChoiceTaskStimulus[] {
-        if (!activities.length || activities.length <= 2)
-            throw new Error('At least two activities are needed to make a pair list');
+        if (!activities.length || activities.length <= 2) throw new Error('At least three activities are needed');
 
         const shuffledActivities = shuffle(activities);
         const pairs: ChoiceTaskStimulus[] = [];
