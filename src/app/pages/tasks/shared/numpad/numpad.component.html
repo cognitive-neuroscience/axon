@@ -29,9 +29,9 @@
             DEL
         </div>
         <div class="keypadButton" (click)="addNumber('0')">0</div>
-        <div class="keypadButton keypad-button-text" (click)="onSubmit()">SUBMIT</div>
+        <div style="background-color: green" class="keypadButton keypad-button-text" (click)="onSubmit()">SUBMIT</div>
     </div>
-    <div style="margin: 70px 5px 5px 5px">
-        <button class="btn btn-danger w-100" style="padding: 10px 0px" (click)="onSkip()">Skip</button>
+    <div>
+        <button class="btn w-100 mt-5 keypad-button-text skip" (click)="onSkip()">SKIP</button>
     </div>
 </div>
