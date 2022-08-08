@@ -113,7 +113,8 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     }
 
     get currentTrial(): SmileyFaceTaskData {
-        return this.taskData[this.taskData.length - 1];
+        // will return null if taskData is not defined or if it has length of 0
+        return this.taskData?.length > 0 ? this.taskData[this.taskData.length - 1] : null;
     }
 
     constructor(
@@ -267,26 +268,29 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
 
     @HostListener('window:keypress', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
-        this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
-        if (this.responseAllowed && this.isValidKey(event.key)) {
-            this.cancelAllTimers();
-            this.responseAllowed = false;
-            this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
-            this.currentTrial.userAnswer = event.key === Key.Z ? UserResponse.SHORT : UserResponse.LONG;
-            this.currentTrial.keyPressed = event.key === Key.Z ? Key.Z : Key.M;
+        if (this.currentTrial?.submitted) {
+            this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
+            const caseInsensitiveKey = event?.key ? event.key.toLocaleLowerCase() : null;
+            if (this.responseAllowed && this.isValidKey(caseInsensitiveKey)) {
+                this.cancelAllTimers();
+                this.responseAllowed = false;
+                this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
+                this.currentTrial.userAnswer = caseInsensitiveKey === Key.Z ? UserResponse.SHORT : UserResponse.LONG;
+                this.currentTrial.keyPressed = caseInsensitiveKey === Key.Z ? Key.Z : Key.M;
 
-            super.handleRoundInteraction(event.key);
-        } else if (event === null) {
-            this.cancelAllTimers();
-            // max time out
-            this.responseAllowed = false;
-            this.currentTrial.responseTime = this.maxResponseTime;
-            this.currentTrial.userAnswer = UserResponse.NA;
-            this.currentTrial.keyPressed = Key.NONE;
-            this.currentTrial.score = 0;
-            this.currentTrial.isCorrect = false;
+                super.handleRoundInteraction(caseInsensitiveKey);
+            } else if (event === null) {
+                this.cancelAllTimers();
+                // max time out
+                this.responseAllowed = false;
+                this.currentTrial.responseTime = this.maxResponseTime;
+                this.currentTrial.userAnswer = UserResponse.NA;
+                this.currentTrial.keyPressed = Key.NONE;
+                this.currentTrial.score = 0;
+                this.currentTrial.isCorrect = false;
 
-            super.handleRoundInteraction(null);
+                super.handleRoundInteraction(null);
+            }
         }
     }
 
