@@ -133,6 +133,11 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         return this.stimuli[this.currentStimuliIndex];
     }
 
+    get currentTrial(): DemandSelectionTaskData {
+        // will return null if taskData is not defined or if it has length of 0
+        return this.taskData?.length > 0 ? this.taskData[this.taskData.length - 1] : null;
+    }
+
     constructor(
         protected snackbarService: SnackbarService,
         protected timerService: TimerService,
@@ -379,26 +384,26 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
     handleRoundInteraction(event: KeyboardEvent) {
         if (this.taskData?.length > 0) {
             // guard against case where we have not selected our first patch
-            const thisTrial = this.taskData[this.taskData.length - 1];
-            thisTrial.submitted = this.timerService.getCurrentTimestamp();
+            this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
 
             if (event === null) {
                 this.clearHelpMessage();
                 this.clearMaxResponseTimer();
-                thisTrial.userAnswer = UserResponse.NA;
-                thisTrial.score = 0;
-                thisTrial.isCorrect = false;
-                thisTrial.respondToNumberResponseTime = this.maxResponseTime;
+                this.currentTrial.userAnswer = UserResponse.NA;
+                this.currentTrial.score = 0;
+                this.currentTrial.isCorrect = false;
+                this.currentTrial.respondToNumberResponseTime = this.maxResponseTime;
                 super.handleRoundInteraction(null);
             } else if (this.responseAllowed && this.isValidKey(event.key)) {
                 this.clearHelpMessage();
                 this.clearMaxResponseTimer();
-                thisTrial.respondToNumberResponseTime = this.timerService.stopTimerAndGetTime();
+                this.currentTrial.respondToNumberResponseTime = this.timerService.stopTimerAndGetTime();
                 const selectedColor = this.currentStimulus[this.selectedPatch];
                 if (selectedColor === this.oddEvenColor) {
-                    thisTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.ODD : UserResponse.EVEN;
+                    this.currentTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.ODD : UserResponse.EVEN;
                 } else {
-                    thisTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.LESSER : UserResponse.GREATER;
+                    this.currentTrial.userAnswer =
+                        event.key === Key.ARROWLEFT ? UserResponse.LESSER : UserResponse.GREATER;
                 }
                 super.handleRoundInteraction(event.key);
             }
@@ -412,21 +417,19 @@ export class DemandSelectionComponent extends AbstractBaseTaskComponent {
         this.showDigit = false;
         this.responseAllowed = false;
 
-        const thisTrial = this.taskData[this.taskData.length - 1];
-
-        switch (thisTrial.userAnswer) {
-            case thisTrial.actualAnswer:
+        switch (this.currentTrial.userAnswer) {
+            case this.currentTrial.actualAnswer:
                 this.feedback = TranslatedFeedback.CORRECT;
-                thisTrial.isCorrect = true;
-                thisTrial.score = 10;
+                this.currentTrial.isCorrect = true;
+                this.currentTrial.score = 10;
                 break;
             case UserResponse.NA:
                 this.feedback = TranslatedFeedback.TOOSLOW;
                 break;
             default:
                 this.feedback = TranslatedFeedback.INCORRECT;
-                thisTrial.isCorrect = false;
-                thisTrial.score = 0;
+                this.currentTrial.isCorrect = false;
+                this.currentTrial.score = 0;
                 break;
         }
 

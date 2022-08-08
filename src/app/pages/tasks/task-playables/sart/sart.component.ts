@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { StimuliProvidedType } from 'src/app/models/enums';
-import { Feedback, Key, TranslatedFeedback } from 'src/app/models/InternalDTOs';
+import { Key, TranslatedFeedback } from 'src/app/models/InternalDTOs';
 import { SARTTaskData } from 'src/app/models/TaskData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
@@ -80,7 +80,8 @@ export class SartComponent extends AbstractBaseTaskComponent {
     }
 
     get currentTrial(): SARTTaskData {
-        return this.taskData[this.taskData.length - 1];
+        // will return null if taskData is not defined or if it has length of 0
+        return this.taskData?.length > 0 ? this.taskData[this.taskData.length - 1] : null;
     }
 
     constructor(
@@ -199,29 +200,26 @@ export class SartComponent extends AbstractBaseTaskComponent {
     }
 
     private isValidKey(key: string): boolean {
-        if (!key) return false;
         return key === Key.ARROWLEFT;
     }
 
     @HostListener('window:keydown', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
-        if (this.responseAllowed && this.isValidKey(event.key)) {
-            const thisTrial = this.taskData[this.taskData.length - 1];
-            thisTrial.submitted = this.timerService.getCurrentTimestamp();
+        if (this.responseAllowed && this.isValidKey(event?.key)) {
+            this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
             this.cancelAllTimers();
             this.responseAllowed = false;
 
-            thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
-            thisTrial.userAnswer = SARTTrialType.GO; // the user made a response and have therefore indicated a GO trial
+            this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
+            this.currentTrial.userAnswer = SARTTrialType.GO; // the user made a response and have therefore indicated a GO trial
             super.handleRoundInteraction(null);
         } else if (event === null) {
-            const thisTrial = this.taskData[this.taskData.length - 1];
-            thisTrial.submitted = this.timerService.getCurrentTimestamp();
+            this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
             this.cancelAllTimers();
             this.responseAllowed = false;
-            thisTrial.userAnswer = SARTTrialType.NOGO; // by not responding, the user has indicated a NOGO trial
+            this.currentTrial.userAnswer = SARTTrialType.NOGO; // by not responding, the user has indicated a NOGO trial
             // max time out
-            thisTrial.responseTime = this.maxResponseTime;
+            this.currentTrial.responseTime = this.maxResponseTime;
             super.handleRoundInteraction(null);
         }
     }
