@@ -96,11 +96,15 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
     translationMapping = {
         helpMessage: {
             en: 'Please make the rating by adjusting the slider and clicking next',
-            fr: 'SVP.......',
+            fr: 'Veuillez utiliser votre souris pour placer le curseur à l’endroit de l’échelle qui correspond à votre réponse.',
         },
         maxResponseMessage: {
             en: 'Please do your best to provide your answer in the time allotted for the next trial.',
             fr: 'SVP essayer d’indiquer votre réponse dans les délais prévus pour le prochain tour',
+        },
+        practiceHelpMessage: {
+            en: 'Please use your mouse to drag the cursor to the spot on the scale that corresponds to your answer.',
+            fr: '...',
         },
     };
 
@@ -142,6 +146,10 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         private translateService: TranslateService
     ) {
         super(loaderService);
+    }
+
+    get practiceHelpMessage(): string {
+        return this.translationMapping.practiceHelpMessage[this.translateService.currentLang];
     }
 
     start() {
