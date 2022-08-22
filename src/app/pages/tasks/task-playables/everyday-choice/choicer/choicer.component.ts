@@ -84,7 +84,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         },
         practiceHelpMessage: {
             en: 'To make your choice, use the buttons below to tell us which activity you would prefer',
-            fr: '...',
+            fr: 'Pour faire votre choix, utilisez les boutons ci-dessous pour nous indiquer quelle activité vous préférez.',
         },
     };
 

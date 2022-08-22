@@ -104,7 +104,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         },
         practiceHelpMessage: {
             en: 'Please use your mouse to drag the cursor to the spot on the scale that corresponds to your answer.',
-            fr: '...',
+            fr: "Veuillez utiliser votre souris pour déplacer le curseur à la position de l'échelle qui correspond à votre réponse.",
         },
     };
 
