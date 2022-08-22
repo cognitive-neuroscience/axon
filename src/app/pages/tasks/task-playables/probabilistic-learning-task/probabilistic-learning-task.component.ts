@@ -342,11 +342,11 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
                     (this.currentTrial.userAnswer === Key.Z && this.currentStimulus.leftStimulusRewarded) ||
                     (this.currentTrial.userAnswer === Key.M && this.currentStimulus.rightStimulusRewarded)
                 ) {
-                    this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.CORRECT}`;
+                    this.feedback = TranslatedFeedback.CORRECT;
                     this.currentTrial.selectedStimulusWasRewarded = true;
                     this.currentTrial.score = 10;
                 } else {
-                    this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.INCORRECT}`;
+                    this.feedback = TranslatedFeedback.INCORRECT;
                     this.currentTrial.selectedStimulusWasRewarded = false;
                     this.currentTrial.score = 0;
                 }
