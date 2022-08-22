@@ -63,7 +63,6 @@
                 <button
                     (click)="openConsentDialog(studyUser)"
                     style="min-width: 240px"
-                    class="w-25"
                     mat-raised-button
                     color="accent"
                 >
@@ -72,7 +71,6 @@
                 <button
                     (click)="startOrContinueStudy(studyUser)"
                     [disabled]="!studyUser.hasAcceptedConsent || studyIsDone(studyUser) || !studyUser.study.started"
-                    class="w-25"
                     style="min-width: 240px"
                     mat-raised-button
                     color="primary"

@@ -5,8 +5,13 @@ import { Task } from '../../../../../models/Task';
 import { Observable, Subscription } from 'rxjs';
 import { Platform, RouteNames, TaskType } from '../../../../../models/enums';
 import { map } from 'rxjs/operators';
-import { TaskPlayerNavigationConfig } from 'src/app/pages/tasks/task-playables/task-player/task-player.component';
+import {
+    SharplabTaskConfig,
+    TaskPlayerNavigationConfig,
+} from 'src/app/pages/tasks/task-playables/task-player/task-player.component';
 import { ViewComponentsTableModel } from '../shared/view-components-table/view-components-table.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AlterMetadataDialogComponent } from './alter-metadata-dialog/alter-metadata-dialog.component';
 
 @Component({
     selector: 'app-view-tasks',
@@ -16,7 +21,7 @@ import { ViewComponentsTableModel } from '../shared/view-components-table/view-c
 export class ViewTasksComponent implements OnDestroy {
     subscriptions: Subscription[] = [];
 
-    constructor(private router: Router, private taskService: TaskService) {}
+    constructor(private router: Router, private taskService: TaskService, private dialog: MatDialog) {}
 
     get NABTasksForTable(): Observable<ViewComponentsTableModel<Task>> {
         return this.taskService.tasks.pipe(
@@ -44,12 +49,24 @@ export class ViewTasksComponent implements OnDestroy {
     }
 
     run(task: Task) {
-        const navigationConfig: TaskPlayerNavigationConfig = {
-            metadata: task.config,
-            mode: 'test',
-        };
+        const dialogRef = this.dialog.open(AlterMetadataDialogComponent, {
+            width: '80%',
+            data: task,
+        });
 
-        this.router.navigate([`${RouteNames.TASKPLAYER}`], { state: navigationConfig });
+        this.subscriptions.push(
+            dialogRef.afterClosed().subscribe((data: SharplabTaskConfig | null) => {
+                // dialog was exited
+                if (data === undefined) return;
+
+                const navigationConfig: TaskPlayerNavigationConfig = {
+                    metadata: data === null ? task.config : data,
+                    mode: 'test',
+                };
+
+                this.router.navigate([`${RouteNames.TASKPLAYER}`], { state: navigationConfig });
+            })
+        );
     }
 
     get experimentalTasksForTable(): Observable<ViewComponentsTableModel<Task>> {

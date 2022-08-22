@@ -24,6 +24,7 @@ import { SharedModule } from './pages/shared/shared.module';
 import { NotFoundComponent } from './pages/landing-page/not-found/not-found.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { SnackbarComponent } from './services/snackbar/snackbar.component';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, '../assets/translate/', '.json');
@@ -43,6 +44,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         ResetPasswordLoginComponent,
         StudyBackgroundComponent,
         NotFoundComponent,
+        SnackbarComponent,
     ],
     imports: [
         BrowserModule,

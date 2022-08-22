@@ -1,13 +1,14 @@
 import { Component, OnDestroy } from '@angular/core';
-import { NzMarks } from 'ng-zorro-antd/slider';
+import { TranslateService } from '@ngx-translate/core';
 import { throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
-import { StimuliProvidedType } from 'src/app/models/enums';
+import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
+import { ITranslationText, UserResponse } from 'src/app/models/InternalDTOs';
 import { EverydayChoiceTaskData } from 'src/app/models/TaskData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { ChoiceTaskStimulus } from 'src/app/services/data-generation/stimuli-models';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../../base-task';
 import { TaskPlayerState } from '../../task-player/task-player.component';
@@ -53,7 +54,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     private durationOutOftimeMessageShown: number;
 
     // shared state variables
-    ratingTaskActivities: string[];
+    ratingTaskActivities: ITranslationText[];
 
     // high level variables
     taskData: EverydayChoiceTaskData[];
@@ -71,6 +72,22 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     maxResponseTimer: any;
     showHelpMessageTimer: any;
 
+    // translation mapping
+    translationMapping = {
+        helpMessage: {
+            en: 'Please make the rating by clicking the button corresponding to the activity you would like to select',
+            fr: 'Veuillez utiliser votre souris pour placer le curseur à l’endroit de l’échelle qui correspond à votre réponse.',
+        },
+        maxResponseMessage: {
+            en: 'Please do your best to provide your answer in the time allotted for the next trial.',
+            fr: 'SVP essayer d’indiquer votre réponse dans les délais prévus pour le prochain tour',
+        },
+        practiceHelpMessage: {
+            en: 'To make your choice, use the buttons below to tell us which activity you would prefer',
+            fr: 'Pour faire votre choix, utilisez les boutons ci-dessous pour nous indiquer quelle activité vous préférez.',
+        },
+    };
+
     get currentStimulus(): ChoiceTaskStimulus {
         return this.stimuli[this.currentStimuliIndex];
     }
@@ -79,7 +96,8 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         protected snackbarService: SnackbarService,
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
-        protected loaderService: LoaderService
+        protected loaderService: LoaderService,
+        private translateService: TranslateService
     ) {
         super(loaderService);
     }
@@ -92,7 +110,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
             throw new Error('values not defined, cannot start study');
         }
 
-        this.ratingTaskActivities = config.getCacheValue(RaterCache.NEW_ACTIVITIES);
+        this.ratingTaskActivities = config.getCacheValue(RaterCache.ACTIVITIES_FOR_CHOICER);
         this.isPractice = metadata.componentConfig.isPractice || false;
         this.interTrialDelay = metadata.componentConfig.interTrialDelay || 0;
         this.maxResponseTime = metadata.componentConfig.maxResponseTime || undefined;
@@ -103,6 +121,10 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
 
         if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
             this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
+    }
+
+    get practiceHelpMessage(): string {
+        return this.translationMapping.practiceHelpMessage[this.translateService.currentLang];
     }
 
     start() {
@@ -124,8 +146,8 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
             userID: this.userID,
             counterbalance: RatingTaskCounterBalance.NA,
             userAnswer: null,
-            question: '',
-            activity: `${this.currentStimulus.firstActivity} VS ${this.currentStimulus.secondActivity}`,
+            question: UserResponse.NA,
+            activity: `${this.currentStimulus.firstActivity.en} VS ${this.currentStimulus.secondActivity.en}`,
             activityType: '',
             responseTime: null,
             submitted: this.timerService.getCurrentTimestamp(),
@@ -146,7 +168,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         if (this.maxResponseTime !== undefined) {
             this.setTimer(
                 'maxResponseTimer',
-                'Please do your best to provide your answer in the time allotted for the next trial',
+                this.translationMapping.maxResponseMessage[this.translateService.currentLang as SupportedLangs],
                 this.maxResponseTime,
                 this.durationOutOftimeMessageShown,
                 async () => {
@@ -160,7 +182,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         if (this.delayToShowHelpMessage !== undefined) {
             this.setTimer(
                 'helpMessageTimer',
-                'Please make the rating by clicking the button corresponding to the activity you would like to select',
+                this.translationMapping.helpMessage[this.translateService.currentLang as SupportedLangs],
                 this.delayToShowHelpMessage,
                 this.durationHelpMessageShown
             );
@@ -170,12 +192,12 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     private setStimuliUI(stimulus: ChoiceTaskStimulus) {
         this.activitiesShown = [
             {
-                label: stimulus.firstActivity,
-                value: stimulus.firstActivity,
+                label: stimulus.firstActivity[this.translateService.currentLang as SupportedLangs],
+                value: stimulus.firstActivity.en,
             },
             {
-                label: stimulus.secondActivity,
-                value: stimulus.secondActivity,
+                label: stimulus.secondActivity[this.translateService.currentLang as SupportedLangs],
+                value: stimulus.secondActivity.en,
             },
         ];
     }

@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { NBackTaskData } from 'src/app/models/TaskData';
-import { SnackbarService } from '../../../../services/snackbar.service';
+import { SnackbarService } from '../../../../services/snackbar/snackbar.service';
 import { Key, TranslatedFeedback } from 'src/app/models/InternalDTOs';
 import { TimerService } from '../../../../services/timer.service';
 import { UserResponse } from '../../../../models/InternalDTOs';
@@ -19,6 +19,7 @@ interface NBackMetadata {
     componentConfig: {
         isPractice: boolean;
         maxResponseTime: number;
+        skippable: boolean;
         interTrialDelay: number;
         showFeedbackAfterEachTrial: boolean;
         showScoreAfterEachTrial: boolean;
@@ -34,6 +35,7 @@ interface NBackMetadata {
 
 export enum NBackCache {
     TOTAL_SCORE = 'nback-total-score',
+    SHOULD_SKIP = 'nback-should-skip',
 }
 
 @Component({
@@ -59,10 +61,12 @@ export class NBackComponent extends AbstractBaseTaskComponent {
     private durationOfFeedback: number;
     private durationFixationPresented: number;
     private numTrials: number;
+    private skippable: boolean;
+    private thresholdForRepeat: number = 0.8;
 
     // high level variables
     counterbalance: number;
-    taskData: NBackTaskData[];
+    taskData: NBackTaskData[] = [];
     stimuli: NBackStimulus[];
     currentStimuliIndex: number; // index of the stimuli we are on
 
@@ -87,7 +91,8 @@ export class NBackComponent extends AbstractBaseTaskComponent {
     }
 
     get currentTrial(): NBackTaskData {
-        return this.taskData[this.taskData.length - 1];
+        // will return null if taskData is not defined or if it has length of 0
+        return this.taskData?.length > 0 ? this.taskData[this.taskData.length - 1] : null;
     }
 
     constructor(
@@ -115,6 +120,7 @@ export class NBackComponent extends AbstractBaseTaskComponent {
         }
 
         this.config = config;
+        this.skippable = thisOrDefault(metadata.componentConfig.skippable, false);
         this.isPractice = thisOrDefault(metadata.componentConfig.isPractice, false);
         this.durationFixationPresented = thisOrDefault(metadata.componentConfig.durationFixationPresented, 0);
         this.interTrialDelay = thisOrDefault(metadata.componentConfig.interTrialDelay, 0);
@@ -134,11 +140,7 @@ export class NBackComponent extends AbstractBaseTaskComponent {
 
         // either the stimuli has been defined in config or we generate it here from service
         if (!this.stimuli) {
-            this.stimuli = this.dataGenService.generateNBackStimuli(
-                this.isPractice,
-                this.numTrials,
-                this.counterbalance
-            );
+            this.stimuli = this.dataGenService.generateNBackStimuli(this.numTrials, this.counterbalance);
         }
         super.start();
     }
@@ -170,7 +172,6 @@ export class NBackComponent extends AbstractBaseTaskComponent {
         });
 
         this.setTimer(this.maxResponseTime, () => {
-            this.responseAllowed = false;
             this.showStimulus = false;
 
             this.handleRoundInteraction(null);
@@ -203,22 +204,22 @@ export class NBackComponent extends AbstractBaseTaskComponent {
 
     @HostListener('window:keydown', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
-        this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
-
-        if (event === null) {
-            // max time out
-            this.cancelAllTimers();
-            this.currentTrial.userAnswer = UserResponse.NA;
-            this.currentTrial.score = 0;
-            this.currentTrial.responseTime = this.maxResponseTime;
-            this.currentTrial.isCorrect = false;
-            super.handleRoundInteraction(null);
-        } else if (this.responseAllowed && this.isValidKey(event.key)) {
-            this.cancelAllTimers();
-            this.responseAllowed = false;
-            this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
-            this.currentTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.NO : UserResponse.YES;
-            super.handleRoundInteraction(event.key);
+        if (this.currentTrial?.submitted) {
+            this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
+            if (this.responseAllowed && this.isValidKey(event?.key)) {
+                this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
+                this.cancelAllTimers();
+                this.currentTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.NO : UserResponse.YES;
+                super.handleRoundInteraction(event.key);
+            } else if (event === null) {
+                // max time out
+                this.cancelAllTimers();
+                this.currentTrial.userAnswer = UserResponse.NA;
+                this.currentTrial.score = 0;
+                this.currentTrial.responseTime = this.maxResponseTime;
+                this.currentTrial.isCorrect = false;
+                super.handleRoundInteraction(null);
+            }
         }
     }
 
@@ -229,24 +230,21 @@ export class NBackComponent extends AbstractBaseTaskComponent {
 
         switch (this.currentTrial.userAnswer) {
             case this.currentTrial.actualAnswer:
-                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.CORRECT}`;
+                this.feedback = TranslatedFeedback.CORRECT;
                 this.currentTrial.isCorrect = true;
                 this.currentTrial.score = 10;
                 break;
             case UserResponse.NA:
-                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}`;
+                this.feedback = TranslatedFeedback.TOOSLOW;
                 break;
             default:
-                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.INCORRECT}`;
+                this.feedback = TranslatedFeedback.INCORRECT;
                 this.currentTrial.isCorrect = false;
                 this.currentTrial.score = 0;
                 break;
         }
 
-        if (
-            this.showFeedbackAfterEachTrial ||
-            this.feedback === `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}`
-        ) {
+        if (this.showFeedbackAfterEachTrial || this.feedback === TranslatedFeedback.TOOSLOW) {
             this.showFeedback = true;
             await wait(this.durationOfFeedback);
             if (this.isDestroyed) return;
@@ -263,8 +261,16 @@ export class NBackComponent extends AbstractBaseTaskComponent {
             const totalScore = this.taskData.reduce((acc, currVal) => {
                 return acc + currVal.score;
             }, 0);
+
             // this will replace the previous block (i.e. the practice block)
             this.config.setCacheValue(NBackCache.TOTAL_SCORE, totalScore);
+
+            const numCorrect = this.taskData.reduce((acc, currVal) => {
+                return acc + (currVal.isCorrect ? 1 : 0);
+            }, 0);
+
+            const shouldSkip = numCorrect / this.numTrials >= this.thresholdForRepeat;
+            this.config.setCacheValue(NBackCache.SHOULD_SKIP, shouldSkip);
             super.decideToRepeat();
             return;
         } else {
@@ -273,6 +279,21 @@ export class NBackComponent extends AbstractBaseTaskComponent {
             if (this.isDestroyed) return;
             this.beginRound();
             return;
+        }
+    }
+
+    afterInit() {
+        if (this.skippable) {
+            const shouldSkip = this.config.getCacheValue(NBackCache.SHOULD_SKIP) as boolean;
+            if (shouldSkip === undefined) return;
+            // no cached value, do not skip
+            else if (shouldSkip) {
+                // loader is shown on component init (from the base task constructor)
+                // and is supposed to show for 2 seconds. We need to manually cancel that
+                // as the component is marked as destroyed (and timeout is cancelled)
+                this.loaderService.hideLoader();
+                this.handleComplete();
+            }
         }
     }
 }

@@ -248,17 +248,14 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
                 this.currentTrial.isCorrect = true;
                 break;
             case UserResponse.NA:
-                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}`;
+                this.feedback = TranslatedFeedback.TOOSLOW;
                 break;
             default:
                 this.currentTrial.isCorrect = false;
                 break;
         }
 
-        if (
-            this.phase === 'test-phase' &&
-            this.feedback === `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}`
-        ) {
+        if (this.phase === 'test-phase' && this.feedback === TranslatedFeedback.TOOSLOW) {
             this.showFeedback = true;
             await wait(this.durationOfFeedback);
             if (this.isDestroyed) return;

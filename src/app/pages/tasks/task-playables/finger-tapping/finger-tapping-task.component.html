@@ -2,7 +2,10 @@
     <div class="full-box flex-column-space-between">
         <div *ngIf="showStimulus" class="w-100 p-4 uppercase" align="center">
             <h1 style="font-size: 4rem; line-height: normal">
-                {{ lastKeyPressed ? 'Continue Tapping' : 'Begin Tapping' }}
+                {{
+                    (lastKeyPressed ? 'tasks.finger-tapping.continue-tapping' : 'tasks.finger-tapping.begin-tapping')
+                        | translate
+                }}
             </h1>
         </div>
 

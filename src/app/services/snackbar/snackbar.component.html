@@ -1,0 +1,10 @@
+<div class="snackbar-container">
+    <div class="text-content">
+        <div class="snackbar" *ngFor="let text of textList">
+            {{ text }}
+        </div>
+    </div>
+    <div class="action">
+        <button (click)="closeSnackbar()" mat-button color="warn" style="color: white">{{ closeAction }}</button>
+    </div>
+</div>

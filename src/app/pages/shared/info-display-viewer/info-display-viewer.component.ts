@@ -1,4 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { getTextForLang } from 'src/app/common/commonMethods';
+import { SupportedLangs } from 'src/app/models/enums';
+import { ITranslationText } from 'src/app/models/InternalDTOs';
 
 export interface InfoDisplayViewerMetadata {
     title?: string;
@@ -6,9 +10,10 @@ export interface InfoDisplayViewerMetadata {
 }
 
 export interface InfoDisplayViewerSection {
-    header: string;
-    indent: boolean;
-    textContent: string;
+    header?: string;
+    indent?: boolean;
+    hr?: boolean;
+    textContent?: string;
 }
 
 @Component({
@@ -20,7 +25,7 @@ export class InfoDisplayViewerComponent implements OnInit {
     @Input()
     readerMetadata: InfoDisplayViewerMetadata;
 
-    constructor() {}
+    constructor(private translateService: TranslateService) {}
 
     get title(): string {
         return this.readerMetadata?.title || '';
@@ -28,6 +33,10 @@ export class InfoDisplayViewerComponent implements OnInit {
 
     get sections(): InfoDisplayViewerSection[] {
         return this.readerMetadata?.sections || [];
+    }
+
+    getTranslation(textObj: ITranslationText | string): string {
+        return getTextForLang(this.translateService.currentLang as SupportedLangs, textObj);
     }
 
     ngOnInit(): void {}

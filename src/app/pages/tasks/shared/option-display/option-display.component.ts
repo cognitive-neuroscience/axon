@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ITranslationText } from 'src/app/models/InternalDTOs';
 
 @Component({
     selector: 'app-option-display',
@@ -7,7 +8,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class OptionDisplayComponent implements OnInit {
     @Input()
-    question: string;
+    question: string | ITranslationText;
 
     @Input()
     options: {
@@ -17,8 +18,6 @@ export class OptionDisplayComponent implements OnInit {
 
     @Output()
     onSelectValue: EventEmitter<string> = new EventEmitter();
-
-    constructor() {}
 
     handleSelectOption(value: string) {
         this.onSelectValue.emit(value);

@@ -1,16 +1,17 @@
 <div class="info-display-container">
     <h1 *ngIf="title" class="mat-h1 my-3 title-text">
-        <b>{{ title }}</b>
+        <b>{{ getTranslation(title) }}</b>
         <hr />
     </h1>
 
     <ng-container *ngFor="let section of sections">
         <div class="my-4">
-            <h2 *ngIf="section.header" class="title-text" [innerHTML]="section.header"></h2>
+            <hr *ngIf="section.hr" />
+            <h2 *ngIf="section.header" class="title-text" [innerHTML]="getTranslation(section.header)"></h2>
             <p
                 *ngIf="section.textContent"
                 class="sub-text {{ section.indent ? 'indent-' + section.indent : '' }}"
-                [innerHTML]="section.textContent"
+                [innerHTML]="getTranslation(section.textContent)"
             ></p>
         </div>
     </ng-container>

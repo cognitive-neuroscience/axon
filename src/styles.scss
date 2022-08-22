@@ -126,7 +126,7 @@ button {
 
 .wrapper {
     @include for-small-device-only {
-        min-height: 445px;
+        min-height: 540px;
         overflow-y: auto;
     }
 
@@ -257,12 +257,24 @@ td.mat-footer-cell {
 }
 
 .ant-slider-mark-text {
-    white-space: nowrap;
-    transform: translate3d(-50%, 15px, 0px) !important;
     color: #3f51b5;
-    font-size: 20px;
-    width: 20%;
-    white-space: normal;
+    width: 25%;
+
+    @include for-small-device-only {
+        font-size: 1rem;
+    }
+
+    @include for-small-desktop-only {
+        font-size: 1.5rem;
+    }
+
+    @include for-desktop-up {
+        font-size: 1.8rem;
+    }
+
+    @include for-large-desktop-up {
+        font-size: 2rem;
+    }
 }
 
 // fix due to issue with drag and drop not working inside of mat dialog

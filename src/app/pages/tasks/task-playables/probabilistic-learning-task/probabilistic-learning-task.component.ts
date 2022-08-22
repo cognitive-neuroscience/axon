@@ -334,7 +334,7 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
 
         switch (this.currentTrial.userAnswer) {
             case UserResponse.NA:
-                this.feedback = `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}`;
+                this.feedback = TranslatedFeedback.TOOSLOW;
                 break;
             case this.currentTrial.expectedAnswer:
             default:
@@ -355,10 +355,7 @@ export class ProbabilisticLearningTaskComponent extends AbstractBaseTaskComponen
 
         this.trialScore = this.currentTrial.score;
 
-        if (
-            this.showFeedbackAfterEachTrial ||
-            this.feedback === `${this.TRANSLATION_PREFIX}${TranslatedFeedback.TOOSLOW}`
-        ) {
+        if (this.showFeedbackAfterEachTrial || this.feedback === TranslatedFeedback.TOOSLOW) {
             this.showFeedback = true;
             await wait(this.durationFeedbackPresented);
             if (this.isDestroyed) return;

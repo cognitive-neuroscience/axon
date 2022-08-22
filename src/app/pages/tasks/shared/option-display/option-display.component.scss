@@ -7,15 +7,33 @@
 
 .button-container {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     flex-wrap: wrap;
 }
 
 .option-button {
     white-space: normal;
-    font-size: 1.5rem;
-    padding: 1rem;
-    margin: 1rem;
+    padding: 0.25rem 0.75rem;
     flex: 1 1 0;
-    max-width: 300px;
+    margin-bottom: 1rem; // for when the row of buttons overflows
+
+    @include for-small-device-only {
+        font-size: 1rem;
+        max-width: 200px;
+    }
+
+    @include for-small-desktop-only {
+        font-size: 1.5rem;
+        max-width: 200px;
+    }
+
+    @include for-desktop-up {
+        font-size: 1.8rem;
+        max-width: 250px;
+    }
+
+    @include for-large-desktop-up {
+        font-size: 2rem;
+        max-width: 300px;
+    }
 }

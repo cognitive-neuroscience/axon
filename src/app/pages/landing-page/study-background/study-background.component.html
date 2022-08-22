@@ -1,33 +1,40 @@
 <div style="padding-top: 2rem">
     <div class="text-center">
         <img style="width: 80px" src="/assets/logo/lablogo.png" alt="Sharplab Logo" />
-        <div class="w-75 mx-auto">
-            <h2 style="color: #3f51b5" class="welcome-header">Welcome to the Sharplab</h2>
-        </div>
     </div>
 
     <app-info-display-viewer *ngIf="studyBackground" [readerMetadata]="studyBackground"></app-info-display-viewer>
 
     <div style="padding: 2% 4%" *ngIf="!studyBackground">
-        <h1 class="mat-h1" style="color: #3f51b5">This study currently has no info.</h1>
+        <h1 class="mat-h1" style="color: #3f51b5">There is currently no summary for this study</h1>
         <div class="sub-text">
             You can still register for it by clicking the buttons below. <b>Register</b> if you have never done a study
             with us, or <b>sign in</b> if you have previously completed a study with us.
         </div>
+        <hr />
+        <h1 class="mat-h1" style="color: #6b6b6b">Il n'y a pas de sommaire pour cette étude actuellement</h1>
+        <div class="sub-text" style="color: #6b6b6b">
+            Vous pouvez encore vous y inscrire en cliquant sur les boutons ci-dessous. <b>Inscrivez-vous</b> si vous
+            n'avez jamais fait d'étude avec nous, ou <b>connectez-vous</b> si vous avez déjà terminé une étude avec nous
+        </div>
     </div>
 
     <div class="button-container">
-        <button
-            style="margin-bottom: 15px; color: #3f51b5"
-            (click)="navigate('register')"
-            class="w-25 button"
-            color="secondary"
-            mat-raised-button
-        >
-            First time signing up for a study? Click here to register
-        </button>
-        <button (click)="navigate('login')" class="w-25 button" color="primary" mat-raised-button>
-            Already have an account? Click here to login
-        </button>
+        <mat-card style="width: 400px" class="mb-3">
+            <a (click)="navigate('register')" class="underline-on-hover">
+                <span style="color: #3f51b5"> First time signing up for a study? Click here to <b>register</b> </span>
+                <br />
+                <span style="color: #6b6b6b">
+                    Première fois que vous vous inscrivez à une étude? Cliquez ici pour vous <b>enregistrer</b>
+                </span>
+            </a>
+        </mat-card>
+        <mat-card style="width: 400px" class="mb-3">
+            <a (click)="navigate('login')" class="underline-on-hover">
+                <span style="color: #3f51b5"> Already have an account? Click here to <b>login</b> </span>
+                <br />
+                <span style="color: #6b6b6b"> Vous avez déjà un compte? Cliquez ici pour vous <b>identifier</b> </span>
+            </a>
+        </mat-card>
     </div>
 </div>

@@ -6,7 +6,7 @@ import { wait } from 'src/app/common/commonMethods';
 import { StudyUser } from 'src/app/models/Login';
 import { ConsentNavigationConfig } from 'src/app/pages/shared/consent-component/consent-reader.component';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { StudyUserService } from 'src/app/services/study-user.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
 import { TaskService } from 'src/app/services/task.service';
@@ -98,13 +98,14 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
                         .open(ConsentDialogComponent, { width: '80%', height: '80%', data: config, autoFocus: false })
                         .afterClosed();
                 }),
-                mergeMap((consented: boolean) => {
+                mergeMap((consentData: Record<string, string>) => {
                     this.loaderService.showLoader();
                     const newStudyUser: StudyUser = {
                         ...studyUser,
+                        data: consentData,
                         hasAcceptedConsent: true,
                     };
-                    return consented ? this.studyUserService.updateStudyUser(newStudyUser) : of(null);
+                    return consentData ? this.studyUserService.updateStudyUser(newStudyUser) : of(null);
                 }),
                 mergeMap((_res) => {
                     return this.studyUserService.getStudyUsers(true);

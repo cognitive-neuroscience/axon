@@ -1,18 +1,18 @@
-import { Component, OnInit, HostListener } from "@angular/core";
-import { Router } from "@angular/router";
-import { ParticipantDataService } from "src/app/services/study-data.service";
-import { TaskManagerService } from "../../../../services/task-manager.service";
-import { AuthService } from "../../../../services/auth.service";
-import { SnackbarService } from "../../../../services/snackbar.service";
-import { TaskData, TaskNames } from "../../../../models/TaskData";
-import { pracSet } from "./stimuli_practice";
-import { taskSet } from "./stimuli_task";
-import { Observable, of } from "rxjs";
-import { map } from "rxjs/operators";
-import { Key, UserResponse } from "src/app/models/InternalDTOs";
-import { TimerService } from "src/app/services/timer.service";
-import { getRandomNumber, wait } from "src/app/common/commonMethods";
-import { environment } from "src/environments/environment";
+import { Component, OnInit, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
+import { ParticipantDataService } from 'src/app/services/study-data.service';
+import { TaskManagerService } from '../../../../services/task-manager.service';
+import { AuthService } from '../../../../services/auth.service';
+import { SnackbarService } from '../../../../services/snackbar/snackbar.service';
+import { TaskData, TaskNames } from '../../../../models/TaskData';
+import { pracSet } from './stimuli_practice';
+import { taskSet } from './stimuli_task';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Key, UserResponse } from 'src/app/models/InternalDTOs';
+import { TimerService } from 'src/app/services/timer.service';
+import { getRandomNumber, wait } from 'src/app/common/commonMethods';
+import { environment } from 'src/environments/environment';
 
 declare function setFullScreen(): any;
 
@@ -25,9 +25,9 @@ class RatingTask extends TaskData {
 }
 
 @Component({
-    selector: "app-rating-task",
-    templateUrl: "./rating.component.html",
-    styleUrls: ["./rating.component.scss"],
+    selector: 'app-rating-task',
+    templateUrl: './rating.component.html',
+    styleUrls: ['./rating.component.scss'],
 })
 export class RatingComponent implements OnInit {
     isScored: boolean | number = false;
@@ -40,7 +40,7 @@ export class RatingComponent implements OnInit {
     durationHelpMessageShown: number = 10000;
 
     step: number = 1;
-    currentActivity: string = "";
+    currentActivity: string = '';
     currentSet: string[];
     partOneComplete: boolean = false;
 
@@ -59,7 +59,7 @@ export class RatingComponent implements OnInit {
     sTimeout: any;
     snackbarTimeout: any;
 
-    @HostListener("window:keypress", ["$event"])
+    @HostListener('window:keypress', ['$event'])
     onKeyPress(event: KeyboardEvent) {
         if (this.isResponseAllowed && this.isValidKey(event.key)) {
             this.cancelHelpMessage();
@@ -134,7 +134,7 @@ export class RatingComponent implements OnInit {
         // This is the delay between showing the stimulus and showing the feedback
         this.sTimeout = setTimeout(() => {
             // If no response during response window, showing a reminder to respond in time next trial
-            const message = "Please do your best to provide your answer in the time allotted for the next trial.";
+            const message = 'Please do your best to provide your answer in the time allotted for the next trial.';
             this.snackbarService.openInfoSnackbar(message, undefined, this.interTrialDelay);
             this.showFeedback();
         }, this.maxResponseTime);
@@ -143,7 +143,7 @@ export class RatingComponent implements OnInit {
         this.isResponseAllowed = true;
 
         this.showHelpMessage(
-            "Please make the rating by pressing the corresponding number key",
+            'Please make the rating by pressing the corresponding number key',
             this.delayToShowHelpMessage,
             this.durationHelpMessageShown
         );
@@ -164,7 +164,7 @@ export class RatingComponent implements OnInit {
 
     private showHelpMessage(helpMessage: string, delay: number, duration: number) {
         this.snackbarTimeout = setTimeout(() => {
-            this.snackbarService.openErrorSnackbar(helpMessage, "", duration);
+            this.snackbarService.openErrorSnackbar(helpMessage, '', duration);
         }, delay);
     }
 
@@ -203,11 +203,11 @@ export class RatingComponent implements OnInit {
             ratingType:
                 this.counterbalance == 0
                     ? this.partOneComplete
-                        ? "should"
-                        : "like"
+                        ? 'should'
+                        : 'like'
                     : this.partOneComplete
-                    ? "like"
-                    : "should",
+                    ? 'like'
+                    : 'should',
             userAnswer: UserResponse.NA,
             activity: this.currentActivity,
             responseTime: 0,
@@ -305,7 +305,7 @@ export class RatingComponent implements OnInit {
 
     reset() {
         this.timerService.clearTimer();
-        this.currentActivity = "";
+        this.currentActivity = '';
     }
 
     startGameInFullScreen() {

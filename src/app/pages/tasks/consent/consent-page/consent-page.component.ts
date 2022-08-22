@@ -1,8 +1,9 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { take } from 'rxjs/operators';
-import { AdminRouteNames, ParticipantRouteNames } from 'src/app/models/enums';
+import { AdminRouteNames, ParticipantRouteNames, SupportedLangs } from 'src/app/models/enums';
 import { ConsentNavigationConfig } from 'src/app/pages/shared/consent-component/consent-reader.component';
 import { ConfirmationService } from 'src/app/services/confirmation/confirmation.service';
 import { SessionStorageService } from 'src/app/services/sessionStorage.service';
@@ -20,7 +21,8 @@ export class ConsentPageComponent implements OnInit {
         private taskManager: TaskManagerService,
         private router: Router,
         private sessionStorageService: SessionStorageService,
-        private location: Location
+        private location: Location,
+        private translateService: TranslateService
     ) {
         const params = this.router.getCurrentNavigation()?.extras?.state as ConsentNavigationConfig;
         if (params) {
@@ -35,11 +37,16 @@ export class ConsentPageComponent implements OnInit {
 
     ngOnInit(): void {}
 
-    onEmitConsent(consent: boolean) {
+    onEmitConsent(consentData: Record<string, string>) {
+        const message =
+            this.translateService.currentLang === SupportedLangs.EN
+                ? 'Are you sure you want to accept?'
+                : 'Êtes-vous certain(e) de vouloir accepter?';
+
         if (this.data.mode === 'actual') {
-            if (consent) {
+            if (consentData) {
                 this.confirmationService
-                    .openConfirmationDialog('Are you sure you want to accept?')
+                    .openConfirmationDialog(message)
                     .pipe(take(1))
                     .subscribe((ok) => {
                         if (ok) {
@@ -47,11 +54,13 @@ export class ConsentPageComponent implements OnInit {
                         }
                     });
             } else {
+                const message =
+                    this.translateService.currentLang === SupportedLangs.EN
+                        ? 'Are you sure you want to decline?'
+                        : 'Êtes-vous certain(e) de vouloir refuser?';
+
                 this.confirmationService
-                    .openConfirmationDialog(
-                        'Are you sure you want to decline?',
-                        'You will not be allowed to register again'
-                    )
+                    .openConfirmationDialog(message)
                     .pipe(take(1))
                     .subscribe((ok) => {
                         if (ok) {

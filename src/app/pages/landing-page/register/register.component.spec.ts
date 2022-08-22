@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MaterialModule } from 'src/app/modules/material/material.module';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { UserService } from 'src/app/services/user.service';
 import { RegisterComponent } from './register.component';
 

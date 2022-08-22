@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { map, mergeMap, take } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames, SupportedLangs } from 'src/app/models/enums';
 import { AuthService } from 'src/app/services/auth.service';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SessionStorageService } from 'src/app/services/sessionStorage.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -40,7 +41,8 @@ export class NavbarComponent implements OnInit {
         private loaderService: LoaderService,
         private snackbarService: SnackbarService,
         private translateService: TranslateService,
-        private clearanceService: ClearanceService
+        private clearanceService: ClearanceService,
+        private sessionStorageService: SessionStorageService
     ) {}
 
     ngOnInit(): void {}
@@ -77,12 +79,15 @@ export class NavbarComponent implements OnInit {
     logout() {
         this.loaderService.showLoader();
         this.clearanceService.clearServices();
+        this.sessionStorageService.clearSessionStorage(true);
         this.authService
             .logout()
             .subscribe(
                 () => {
                     this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
-                    this.snackbarService.openSuccessSnackbar('Successfully logged out');
+                    this.snackbarService.openSuccessSnackbar(
+                        this.translateService.currentLang === SupportedLangs.FR ? 'Déconnecté' : 'You are logged out'
+                    );
                 },
                 (_err) => {
                     this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);

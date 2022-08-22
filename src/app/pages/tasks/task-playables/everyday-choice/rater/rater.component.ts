@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
-import { throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
+import { getTextForLang, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { RatingTaskStimuli } from 'src/app/services/data-generation/stimuli-models';
 import { AbstractBaseTaskComponent } from '../../base-task';
@@ -9,8 +9,10 @@ import { TaskPlayerState } from '../../task-player/task-player.component';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { NzMarks } from 'ng-zorro-antd/slider';
 import { ComponentName } from 'src/app/services/component-factory.service';
-import { StimuliProvidedType } from 'src/app/models/enums';
+import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
 import { EverydayChoiceTaskData } from 'src/app/models/TaskData';
+import { ITranslationText } from 'src/app/models/InternalDTOs';
+import { TranslateService } from '@ngx-translate/core';
 
 export enum RatingTaskCounterBalance {
     LOWTOHIGHENDORSEMENT = 'LOWTOHIGH',
@@ -21,6 +23,7 @@ export enum RatingTaskCounterBalance {
 export interface RaterTaskMetadata {
     componentName: ComponentName;
     componentConfig: {
+        numTrials: number;
         isPractice: boolean;
         maxResponseTime: number;
         interTrialDelay: number;
@@ -38,7 +41,8 @@ export interface RaterTaskMetadata {
 }
 
 export enum RaterCache {
-    NEW_ACTIVITIES = 'rater-new-activities',
+    ACTIVITIES_FOR_CHOICER = 'rater-activities-for-choicer',
+    STIMULI = 'rater-stimuli',
 }
 
 @Component({
@@ -56,6 +60,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
 
     // config variables variables
     isPractice: boolean = false;
+    private numTrials: number;
     private maxResponseTime: number;
     private interTrialDelay: number; // In milliseconds
     private interActivityDelay: number; // In milliseconds
@@ -81,11 +86,27 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
 
     currentSliderMarks: NzMarks = {}; // set slider legend
 
-    activityShown: string = '';
-    questionShown: string = '';
+    activityShown: ITranslationText = null;
+    questionShown: ITranslationText = null;
 
     maxResponseTimer: any;
     showHelpMessageTimer: any;
+
+    // translation mapping
+    translationMapping = {
+        helpMessage: {
+            en: 'Please make the rating by adjusting the slider and clicking next',
+            fr: 'Veuillez utiliser votre souris pour placer le curseur à l’endroit de l’échelle qui correspond à votre réponse.',
+        },
+        maxResponseMessage: {
+            en: 'Please do your best to provide your answer in the time allotted for the next trial.',
+            fr: 'SVP essayer d’indiquer votre réponse dans les délais prévus pour le prochain tour',
+        },
+        practiceHelpMessage: {
+            en: 'Please use your mouse to drag the cursor to the spot on the scale that corresponds to your answer.',
+            fr: "Veuillez utiliser votre souris pour déplacer le curseur à la position de l'échelle qui correspond à votre réponse.",
+        },
+    };
 
     get currentStimulus(): RatingTaskStimuli {
         return this.stimuli[this.currentStimuliIndex];
@@ -100,6 +121,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         }
 
         this.config = config;
+        this.numTrials = metadata.componentConfig.numTrials || 13;
         this.isPractice = metadata.componentConfig.isPractice || false;
         this.maxResponseTime = metadata.componentConfig.maxResponseTime || undefined;
         this.interTrialDelay = metadata.componentConfig.interTrialDelay || 0;
@@ -120,20 +142,41 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         protected snackbarService: SnackbarService,
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
-        protected loaderService: LoaderService
+        protected loaderService: LoaderService,
+        private translateService: TranslateService
     ) {
         super(loaderService);
+    }
+
+    get practiceHelpMessage(): string {
+        return this.translationMapping.practiceHelpMessage[this.translateService.currentLang];
     }
 
     start() {
         this.taskData = [];
         // either the stimuli has been defined in config or we generate it here
         if (!this.stimuli) {
-            this.stimuli = this.dataGenService.generateRatingStimuli(this.numDoSomethingActivities);
+            const raterActivitiesInConfig = this.config.getCacheValue(RaterCache.STIMULI);
+
+            // use activities in config if it exists; otherwise generate our own
+            const raterActivities = (
+                raterActivitiesInConfig
+                    ? raterActivitiesInConfig
+                    : this.dataGenService.generateRatingStimuli(this.numDoSomethingActivities)
+            ) as RatingTaskStimuli[];
+
+            this.stimuli = raterActivities.slice(0, this.numTrials);
             this.config.setCacheValue(
-                RaterCache.NEW_ACTIVITIES,
-                this.stimuli.map((x) => x.activity)
-            ); // we want to share the activities with the choice task
+                RaterCache.STIMULI,
+                raterActivities.slice(this.numTrials, raterActivities.length)
+            );
+
+            const activitiesForChoicerInConfig =
+                this.config.getCacheValue(RaterCache.ACTIVITIES_FOR_CHOICER) || ([] as ITranslationText[]);
+            this.config.setCacheValue(
+                RaterCache.ACTIVITIES_FOR_CHOICER,
+                activitiesForChoicerInConfig.concat(this.stimuli.map((x) => x.activity))
+            );
         }
         this.currentStimuliIndex = 0;
         this.currentQuestionIndex = 0;
@@ -152,8 +195,8 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
             userID: this.userID,
             counterbalance: this.counterbalance,
             userAnswer: null,
-            question: this.currentStimulus.questions[this.currentQuestionIndex].question,
-            activity: this.currentStimulus.activity,
+            question: this.currentStimulus.questions[this.currentQuestionIndex].question.en,
+            activity: this.currentStimulus.activity.en,
             activityType: this.currentStimulus.type,
             responseTime: null,
             submitted: this.timerService.getCurrentTimestamp(),
@@ -174,7 +217,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         if (this.maxResponseTime !== undefined) {
             this.setTimer(
                 'maxResponseTimer',
-                'Please do your best to provide your answer in the time allotted for the next trial',
+                this.translationMapping.maxResponseMessage[this.translateService.currentLang as SupportedLangs],
                 this.maxResponseTime,
                 this.durationOutOftimeMessageShown,
                 async () => {
@@ -188,7 +231,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         if (this.delayToShowHelpMessage !== undefined) {
             this.setTimer(
                 'helpMessageTimer',
-                'Please make the rating by adjusting the slider and clicking next',
+                this.translationMapping.helpMessage[this.translateService.currentLang as SupportedLangs],
                 this.delayToShowHelpMessage,
                 this.durationHelpMessageShown
             );
@@ -206,7 +249,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         const tickIncrement = 100 / (stimulusQuestion.legend.length - 1);
 
         for (let i = 0; i < stimulusQuestion.legend.length; i++) {
-            tempMarks[index] = stimulusQuestion.legend[i];
+            tempMarks[index] = stimulusQuestion.legend[i][this.translateService.currentLang];
             index += tickIncrement;
         }
 
@@ -287,6 +330,10 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         } else {
             throw new Error('Invalid Timer type, could not set timer');
         }
+    }
+
+    getTranslation(text: ITranslationText): string {
+        return getTextForLang(this.translateService.currentLang as SupportedLangs, text);
     }
 
     private cancelAllTimers() {

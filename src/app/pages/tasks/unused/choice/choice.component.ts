@@ -1,18 +1,18 @@
-import { Component, OnInit, HostListener, OnDestroy } from "@angular/core";
-import { Router } from "@angular/router";
-import { ParticipantDataService } from "src/app/services/study-data.service";
-import { TaskManagerService } from "../../../../services/task-manager.service";
-import { AuthService } from "../../../../services/auth.service";
-import { SnackbarService } from "../../../../services/snackbar.service";
-import { Observable, of } from "rxjs";
-import { map } from "rxjs/operators";
-import { Key, UserResponse } from "src/app/models/InternalDTOs";
-import { TaskData, TaskNames } from "../../../../models/TaskData";
-import { pracSet } from "./stimuli_task";
-import { activityList } from "./activityList";
-import { TimerService } from "src/app/services/timer.service";
-import { getRandomNumber, wait } from "src/app/common/commonMethods";
-import { environment } from "src/environments/environment";
+import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { ParticipantDataService } from 'src/app/services/study-data.service';
+import { TaskManagerService } from '../../../../services/task-manager.service';
+import { AuthService } from '../../../../services/auth.service';
+import { SnackbarService } from '../../../../services/snackbar/snackbar.service';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Key, UserResponse } from 'src/app/models/InternalDTOs';
+import { TaskData, TaskNames } from '../../../../models/TaskData';
+import { pracSet } from './stimuli_task';
+import { activityList } from './activityList';
+import { TimerService } from 'src/app/services/timer.service';
+import { getRandomNumber, wait } from 'src/app/common/commonMethods';
+import { environment } from 'src/environments/environment';
 
 class ChoiceTask extends TaskData {
     activityLeft: string;
@@ -28,9 +28,9 @@ export class ActivityPair {
 declare function setFullScreen(): any;
 
 @Component({
-    selector: "app-choice-task",
-    templateUrl: "./choice.component.html",
-    styleUrls: ["./choice.component.scss"],
+    selector: 'app-choice-task',
+    templateUrl: './choice.component.html',
+    styleUrls: ['./choice.component.scss'],
 })
 export class ChoiceComponent implements OnInit, OnDestroy {
     isScored: boolean | number = false;
@@ -44,8 +44,8 @@ export class ChoiceComponent implements OnInit, OnDestroy {
     step: number = 1;
     currentSet: ActivityPair[]; //the stimulus set of choice pairs currently used (can be practice or task)
     currentActivityPair: ActivityPair;
-    currentActivityLeft: string = "";
-    currentActivityRight: string = "";
+    currentActivityLeft: string = '';
+    currentActivityRight: string = '';
 
     isPractice: boolean = false;
     isStimulus: boolean = false;
@@ -58,7 +58,7 @@ export class ChoiceComponent implements OnInit, OnDestroy {
     sTimeout: number;
     snackbarTimeout: number;
 
-    @HostListener("window:keypress", ["$event"])
+    @HostListener('window:keypress', ['$event'])
     onKeyPress(event: KeyboardEvent) {
         if (this.isResponseAllowed && this.isValidKey(event.key)) {
             this.cancelHelpMessage();
@@ -132,7 +132,7 @@ export class ChoiceComponent implements OnInit, OnDestroy {
         // This is the delay between showing the stimulus and showing the feedback
         this.sTimeout = window.setTimeout(() => {
             // If no response during response window, showing a reminder to respond in time next trial
-            const message = "Please do your best to provide your answer in the time allotted for the next trial.";
+            const message = 'Please do your best to provide your answer in the time allotted for the next trial.';
             this.snackbarService.openInfoSnackbar(message, undefined, this.interTrialDelay);
             this.showFeedback();
         }, this.maxResponseTime);
@@ -141,7 +141,7 @@ export class ChoiceComponent implements OnInit, OnDestroy {
         this.isResponseAllowed = true;
 
         this.showHelpMessage(
-            "Please make the rating by pressing the corresponding number key",
+            'Please make the rating by pressing the corresponding number key',
             this.delayToShowHelpMessage,
             this.durationHelpMessageShown
         );
@@ -163,7 +163,7 @@ export class ChoiceComponent implements OnInit, OnDestroy {
     private showHelpMessage(helpMessage: string, delay: number, duration: number) {
         //, duration: number
         this.snackbarTimeout = window.setTimeout(() => {
-            this.snackbarService.openInfoSnackbar(helpMessage, "", duration);
+            this.snackbarService.openInfoSnackbar(helpMessage, '', duration);
         }, delay);
     }
 
@@ -173,9 +173,9 @@ export class ChoiceComponent implements OnInit, OnDestroy {
     }
 
     generatedRandomActivityPairs(activities: string[]): ActivityPair[] {
-        if (activities.length <= 1) throw new Error("At least two activities are needed to make a pair list");
+        if (activities.length <= 1) throw new Error('At least two activities are needed to make a pair list');
         if (activities.length == 2) return [new ActivityPair(activities[0], activities[1])];
-        if (new Set<string>(activities).size !== activities.length) throw new Error("Cannot have duplicate activities");
+        if (new Set<string>(activities).size !== activities.length) throw new Error('Cannot have duplicate activities');
 
         // copy the array and shuffle the elements inside to get random pairs
         const shuffledActivities = this.shuffleStimulus([...activities]);
@@ -303,8 +303,8 @@ export class ChoiceComponent implements OnInit, OnDestroy {
 
     reset() {
         this.timerService.clearTimer();
-        this.currentActivityLeft = "";
-        this.currentActivityRight = "";
+        this.currentActivityLeft = '';
+        this.currentActivityRight = '';
     }
 
     startGameInFullScreen() {

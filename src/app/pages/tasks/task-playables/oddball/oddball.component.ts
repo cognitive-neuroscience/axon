@@ -10,7 +10,7 @@ import { DataGenerationService } from 'src/app/services/data-generation/data-gen
 import { OddballTargetStimulus } from 'src/app/services/data-generation/raw-data/oddball-image-list';
 import { OddballStimulus } from 'src/app/services/data-generation/stimuli-models';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { TaskPlayerState } from '../task-player/task-player.component';
@@ -95,6 +95,11 @@ export class OddballComponent extends AbstractBaseTaskComponent {
     // timers
     maxResponseTimer: any;
     showStimulusTimer: any;
+
+    get currentTrial(): OddballTaskData {
+        // will return null if taskData is not defined or if it has length of 0
+        return this.taskData?.length > 0 ? this.taskData[this.taskData.length - 1] : null;
+    }
 
     get currentStimulus(): OddballStimulus {
         return this.stimuli[this.currentStimuliIndex];
@@ -238,24 +243,26 @@ export class OddballComponent extends AbstractBaseTaskComponent {
      */
     @HostListener('window:keypress', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
-        const thisTrial = this.taskData[this.taskData.length - 1];
-        thisTrial.submitted = this.timerService.getCurrentTimestamp();
-        if (this.responseAllowed && this.isValidKey(event.key)) {
-            this.cancelAllTimers();
-            this.responseAllowed = false;
+        if (this.currentTrial?.submitted) {
+            this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
+            const caseInsensitiveKey = event?.key ? event.key.toLocaleLowerCase() : null;
+            if (this.responseAllowed && this.isValidKey(caseInsensitiveKey)) {
+                this.cancelAllTimers();
+                this.responseAllowed = false;
 
-            thisTrial.userAnswer = event.key;
-            thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
+                this.currentTrial.userAnswer = caseInsensitiveKey;
+                this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
 
-            super.handleRoundInteraction(event);
-        } else if (event === null) {
-            this.cancelAllTimers();
-            // we reached max response time
-            thisTrial.responseTime = this.maxResponseTime;
-            thisTrial.userAnswer = UserResponse.NA;
-            thisTrial.isCorrect = false;
-            thisTrial.score = 0;
-            super.handleRoundInteraction(null);
+                super.handleRoundInteraction(event);
+            } else if (event === null) {
+                this.cancelAllTimers();
+                // we reached max response time
+                this.currentTrial.responseTime = this.maxResponseTime;
+                this.currentTrial.userAnswer = UserResponse.NA;
+                this.currentTrial.isCorrect = false;
+                this.currentTrial.score = 0;
+                super.handleRoundInteraction(null);
+            }
         }
     }
 
@@ -265,25 +272,24 @@ export class OddballComponent extends AbstractBaseTaskComponent {
         this.responseAllowed = false;
 
         const thisTrial = this.taskData[this.taskData.length - 1];
-        const prefix = 'tasks.feedback.';
 
         switch (thisTrial.userAnswer) {
             case thisTrial.actualAnswer:
-                this.feedback = `${prefix}${TranslatedFeedback.CORRECT}`;
+                this.feedback = TranslatedFeedback.CORRECT;
                 thisTrial.isCorrect = true;
                 thisTrial.score = 10;
                 break;
             case UserResponse.NA:
-                this.feedback = `${prefix}${TranslatedFeedback.TOOSLOW}`;
+                this.feedback = TranslatedFeedback.TOOSLOW;
                 break;
             default:
-                this.feedback = `${prefix}${TranslatedFeedback.INCORRECT}`;
+                this.feedback = TranslatedFeedback.INCORRECT;
                 thisTrial.isCorrect = false;
                 thisTrial.score = 0;
                 break;
         }
 
-        if (this.showFeedbackAfterEachTrial || this.feedback === `${prefix}${TranslatedFeedback.TOOSLOW}`) {
+        if (this.showFeedbackAfterEachTrial || this.feedback === TranslatedFeedback.TOOSLOW) {
             this.showFeedback = true;
             await wait(this.durationOfFeedback);
             if (this.isDestroyed) return;

@@ -3,7 +3,7 @@ import { getRandomNumber, thisOrDefault, throwErrIfNotDefined, wait } from 'src/
 import { Feedback, Key, UserResponse } from 'src/app/models/InternalDTOs';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { SmileyFaceTaskData } from 'src/app/models/TaskData';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { TaskPlayerState } from '../task-player/task-player.component';
@@ -12,6 +12,7 @@ import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { ImageService } from 'src/app/services/image.service';
+import { TranslateService } from '@ngx-translate/core';
 
 interface SmileyFaceMetadata {
     componentName: ComponentName;
@@ -91,6 +92,18 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     responseAllowed: boolean = false;
     scoreForSpecificTrial: number = 0;
 
+    // mapping
+    translationMapping = {
+        SHORT: {
+            en: 'SHORT',
+            fr: 'COURT',
+        },
+        LONG: {
+            en: 'LONG',
+            fr: 'LONG',
+        },
+    };
+
     // timers
     maxResponseTimer: any;
     showStimulusTimer: any;
@@ -100,7 +113,8 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
     }
 
     get currentTrial(): SmileyFaceTaskData {
-        return this.taskData[this.taskData.length - 1];
+        // will return null if taskData is not defined or if it has length of 0
+        return this.taskData?.length > 0 ? this.taskData[this.taskData.length - 1] : null;
     }
 
     constructor(
@@ -108,7 +122,8 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
         protected loaderService: LoaderService,
-        protected imageService: ImageService
+        protected imageService: ImageService,
+        protected translateService: TranslateService
     ) {
         super(loaderService);
     }
@@ -228,6 +243,10 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
         return key === Key.Z || key === Key.M;
     }
 
+    get hint(): string {
+        return this.translationMapping[this.currentStimulus.faceShown][this.translateService.currentLang];
+    }
+
     private setTimer(timerType: 'showStimulusTimer' | 'maxResponseTimer', delay: number, cbFunc?: () => void) {
         if (timerType === 'showStimulusTimer') {
             this.showStimulusTimer = setTimeout(() => {
@@ -249,26 +268,29 @@ export class SmileyFaceComponent extends AbstractBaseTaskComponent {
 
     @HostListener('window:keypress', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
-        this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
-        if (this.responseAllowed && this.isValidKey(event.key)) {
-            this.cancelAllTimers();
-            this.responseAllowed = false;
-            this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
-            this.currentTrial.userAnswer = event.key === Key.Z ? UserResponse.SHORT : UserResponse.LONG;
-            this.currentTrial.keyPressed = event.key === Key.Z ? Key.Z : Key.M;
+        if (this.currentTrial?.submitted) {
+            this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
+            const caseInsensitiveKey = event?.key ? event.key.toLocaleLowerCase() : null;
+            if (this.responseAllowed && this.isValidKey(caseInsensitiveKey)) {
+                this.cancelAllTimers();
+                this.responseAllowed = false;
+                this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
+                this.currentTrial.userAnswer = caseInsensitiveKey === Key.Z ? UserResponse.SHORT : UserResponse.LONG;
+                this.currentTrial.keyPressed = caseInsensitiveKey === Key.Z ? Key.Z : Key.M;
 
-            super.handleRoundInteraction(event.key);
-        } else if (event === null) {
-            this.cancelAllTimers();
-            // max time out
-            this.responseAllowed = false;
-            this.currentTrial.responseTime = this.maxResponseTime;
-            this.currentTrial.userAnswer = UserResponse.NA;
-            this.currentTrial.keyPressed = Key.NONE;
-            this.currentTrial.score = 0;
-            this.currentTrial.isCorrect = false;
+                super.handleRoundInteraction(caseInsensitiveKey);
+            } else if (event === null) {
+                this.cancelAllTimers();
+                // max time out
+                this.responseAllowed = false;
+                this.currentTrial.responseTime = this.maxResponseTime;
+                this.currentTrial.userAnswer = UserResponse.NA;
+                this.currentTrial.keyPressed = Key.NONE;
+                this.currentTrial.score = 0;
+                this.currentTrial.isCorrect = false;
 
-            super.handleRoundInteraction(null);
+                super.handleRoundInteraction(null);
+            }
         }
     }
 

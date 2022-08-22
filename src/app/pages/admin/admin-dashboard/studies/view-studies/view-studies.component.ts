@@ -3,7 +3,7 @@ import { Study } from '../../../../../models/Study';
 import { StudyService } from '../../../../../services/study.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationService } from '../../../../../services/confirmation/confirmation.service';
-import { SnackbarService } from '../../../../../services/snackbar.service';
+import { SnackbarService } from '../../../../../services/snackbar/snackbar.service';
 import { Observable, of, Subscription } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
 import { UserService } from 'src/app/services/user.service';

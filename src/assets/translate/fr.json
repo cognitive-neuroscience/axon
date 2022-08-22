@@ -21,6 +21,12 @@
             "study-completed": "Vous avez complété cette étude"
         }
     },
+    "dialog": {
+        "buttons": {
+            "continue": "Continuer",
+            "cancel": "Annuler"
+        }
+    },
     "navbar": {
         "studies": "Études",
         "tooltip": {
@@ -32,7 +38,24 @@
         "feedback": {
             "correct": "Correct",
             "incorrect": "Incorrect",
-            "too-slow": "Trop lent"
+            "too-slow": "Trop lent",
+            "no-response": "Sans réponse"
+        },
+        "finger-tapping": {
+            "begin-tapping": "Commencez à appuyer",
+            "continue-tapping": "Continuez à appuyer"
         }
+    },
+    "errorMessages": {
+        "required": "Une réponse est requise",
+        "passwordsMustMatch": "Les mots de passe doivent correspondre",
+        "emailInvalid": "Ceci doit être un e-mail valide",
+        "emailsMustMatch": "Les e-mails doivent correspondre",
+        "unansweredQuestions": "Il manque certaines réponses ou certaines réponses sont invalides. Veuillez réviser vos réponses ci-dessus pour vous assurer que vous avez répondu à chacune des questions.",
+        "minValidation": "Doit être supérieur à",
+        "maxValidation": "Doit être inférieur à"
+    },
+    "buttons": {
+        "submit": "soumettre"
     }
 }

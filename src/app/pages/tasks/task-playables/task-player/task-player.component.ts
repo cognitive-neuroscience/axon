@@ -8,7 +8,7 @@ import {
     ComponentName,
     GenericComponentsList,
 } from 'src/app/services/component-factory.service';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
 import { ParticipantDataService } from 'src/app/services/study-data.service';
 import { Navigation } from '../../shared/navigation-buttons/navigation-buttons.component';
@@ -186,8 +186,9 @@ export class TaskPlayerComponent implements OnDestroy {
     handleOnComplete(onComplete: IOnComplete) {
         this.subscription.unsubscribe();
         this.viewContainer.clear();
-        if (this.state.mode === 'test') console.log(onComplete);
         const shouldSetTaskAsComplete = !this.userService.isCrowdsourcedUser && this.hasCompletedAllBlocks();
+
+        if (this.userService.user.role === Role.ADMIN) console.log(onComplete);
 
         if (onComplete.taskData && this.state.mode === 'actual') {
             this.loaderService.showLoader();

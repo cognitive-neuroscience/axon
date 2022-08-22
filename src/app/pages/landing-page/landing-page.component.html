@@ -1,9 +1,15 @@
-<div class="login d-flex flex-column align-items-center justify-content-center">
-    <mat-card class="card shadow-lg">
+<div class="login flex-column-center">
+    <mat-card class="card shadow-lg" style="overflow: auto; max-height: 90%">
         <router-outlet></router-outlet>
-        <div class="mt-5 text-center">
+        <div class="mt-4" style="padding: 0 1rem">
             <span class="error-text"
                 >For any questions/concerns/password problems, please contact <b>sharplab.neuro@mcgill.ca</b></span
+            >
+            <br />
+            <br />
+            <span class="error-text"
+                >Pour toute question ou pour des difficultés avec votre mot de passe, SVP contactez
+                sharplab.neuro@mcgill.ca <b>sharplab.neuro@mcgill.ca</b></span
             >
         </div>
     </mat-card>

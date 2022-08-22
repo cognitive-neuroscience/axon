@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { SnackbarService } from 'src/app/services/snackbar.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 
 @Component({
     selector: 'app-confirm-done-dialog',
@@ -22,7 +22,7 @@ export class ConfirmDoneDialogComponent implements OnInit {
     }
 
     onConfirmWord() {
-        if (this.enteredWord === this.completionWord) {
+        if (this.enteredWord.toLocaleUpperCase() === this.completionWord) {
             this.dialogRef.close(true);
         } else {
             this.snackbarService.openInfoSnackbar(

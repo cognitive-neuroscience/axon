@@ -39,7 +39,7 @@ import {
     PLTStimulusType,
 } from './stimuli-models';
 import { NBackSet } from './raw-data/nback-data-list';
-import { Color } from 'src/app/models/InternalDTOs';
+import { Color, ITranslationText } from 'src/app/models/InternalDTOs';
 import { DemandSelectionImageNames } from './raw-data/demand-selection-image-list';
 import { DigitSpanStimuli } from './raw-data/digit-span-list';
 import { TrailMakingSet } from './raw-data/trail-making-list';
@@ -71,10 +71,8 @@ export class DataGenerationService {
         return ratingTaskStimuli;
     }
 
-    generateChoiceStimuli(activities: string[]): ChoiceTaskStimulus[] {
-        if (!activities.length || activities.length <= 2)
-            throw new Error('At least two activities are needed to make a pair list');
-        if (new Set<string>(activities).size !== activities.length) throw new Error('Cannot have duplicate activities');
+    generateChoiceStimuli(activities: ITranslationText[]): ChoiceTaskStimulus[] {
+        if (!activities.length || activities.length <= 2) throw new Error('At least three activities are needed');
 
         const shuffledActivities = shuffle(activities);
         const pairs: ChoiceTaskStimulus[] = [];
@@ -257,21 +255,12 @@ export class DataGenerationService {
         return trials;
     }
 
-    generateNBackStimuli(isPractice: boolean, numTrials: number, counterbalance: number): NBackStimulus[] {
-        const nbackSets = Object.keys(NBackSet);
-
+    generateNBackStimuli(numTrials: number, counterbalance: number): NBackStimulus[] {
         // subtract 1 because one set is the practice set
-        if (counterbalance < 1 || counterbalance > nbackSets.length - 1) throw new Error('No such nback group exists');
-        if (isPractice) {
-            if (numTrials > NBackSet.practice.length)
-                throw new Error('number of trials greater than number of practice trials');
-            return NBackSet.practice.slice(0, numTrials);
-        } else {
-            const selectedSet = NBackSet[counterbalance] as NBackStimulus[];
-            if (numTrials > selectedSet.length)
-                throw new Error('number of trials greater than number of stroop trials');
-            return selectedSet.slice(0, numTrials);
-        }
+        if (!NBackSet[counterbalance]) throw new Error('No such nback group exists');
+        const selectedSet = NBackSet[counterbalance] as NBackStimulus[];
+        if (numTrials > selectedSet.length) throw new Error('number of trials greater than number of stroop trials');
+        return selectedSet.slice(0, numTrials);
     }
 
     // start of demand selection data generation

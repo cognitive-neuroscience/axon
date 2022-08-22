@@ -1,41 +1,51 @@
 <div class="card-padding">
-    <h1 style="color: #3f51b5">Welcome to the Sharplab</h1>
+    <h1 style="color: #3f51b5; margin: 0">Welcome to the Sharp Lab</h1>
+    <h1 style="color: gray">Bienvenue au Labo Sharp</h1>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <mat-form-field appearance="outline" class="pt-1" floatLabel="always">
-            <mat-label>EMAIL</mat-label>
+            <mat-label>EMAIL / COURRIEL</mat-label>
             <input matInput formControlName="email" type="email" placeholder="example@domain.com" email required />
-            <mat-error *ngIf="loginForm.get('email')?.hasError('required')">This is required</mat-error>
-            <mat-error *ngIf="loginForm.get('email')?.hasError('email')">This must be a valid email</mat-error>
+            <mat-error *ngIf="loginForm.get('email')?.hasError('required')"
+                >This is required / Ceci est requis</mat-error
+            >
+            <mat-error *ngIf="loginForm.get('email')?.hasError('email')"
+                >This must be a valid email / Ceci doit être un e-mail valide</mat-error
+            >
         </mat-form-field>
         <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>PASSWORD</mat-label>
+            <mat-label>PASSWORD / MOT DE PASSE</mat-label>
             <mat-icon style="cursor: pointer" (click)="togglePasswordVisibility()" matSuffix>{{
                 passwordIsVisible ? 'visibility' : 'visibility_off'
             }}</mat-icon>
             <input
                 type="text"
+                required
                 formControlName="password"
                 #password
                 [type]="passwordIsVisible ? 'text' : 'password'"
                 matInput
                 placeholder="my-strong-password"
             />
-            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">This is required</mat-error>
+            <mat-error *ngIf="loginForm.get('password')?.hasError('required')"
+                >This is required / Ceci est requis</mat-error
+            >
         </mat-form-field>
         <div>
             <a class="underline-on-hover" style="color: #3f51b5" (click)="navigateToForgotPassword()">
-                Forgot your password?
+                Forgot your password? <br />
+                <span style="color: gray"> Avez-vous oublié votre mot de passe? </span>
             </a>
         </div>
 
         <div matRipple matRippleColor="#ffffff33" class="mt-3">
-            <button type="submit" class="btn-block py-2" mat-flat-button color="primary">LOG IN</button>
+            <button type="submit" class="btn-block py-2 mb-3" mat-flat-button color="primary">
+                LOG IN / CONNEXION
+            </button>
         </div>
     </form>
-    <div style="text-align: center; font-size: 1rem" class="my-2">or</div>
     <div matRipple matRippleColor="#ffffff33">
         <button class="btn-block py-2" style="color: #3f51b5" mat-stroked-button (click)="navigateToRegister()">
-            REGISTER
+            REGISTER / ENREGISTREZ-VOUS
         </button>
     </div>
 </div>

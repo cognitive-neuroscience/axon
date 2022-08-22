@@ -1,25 +1,23 @@
 <div class="container-fluid wrapper task-text flex-column-center">
     <div class="full-box flex-column-center">
-
         <div *ngIf="showStimulus">
-            <div style="font-size: 100px;" [style.color]="color">
-                {{digit}}
+            <div style="font-size: 100px" [style.color]="color">
+                {{ digit }}
             </div>
         </div>
 
         <div *ngIf="showFixation">
-            <i class="material-icons" style="font-size: 80px;">add</i>
+            <i class="material-icons" style="font-size: 80px">add</i>
         </div>
 
         <div *ngIf="showFeedback">
             <div class="feedback">
-                {{feedback}}
+                {{ feedback | translate }}
             </div>
         </div>
 
         <div *ngIf="showHint" class="instructions-reminder">
-            <img style="width: 80%; max-width: 1100px;" src="/assets/images/instructions/taskswitching/reminder.png" alt="Instructions Reminder">
+            <img style="width: 80%; max-width: 1100px" [src]="reminderImagePath" alt="Instructions Reminder" />
         </div>
-
     </div>
 </div>

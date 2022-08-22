@@ -1,11 +1,24 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { getTextForLang } from 'src/app/common/commonMethods';
+import { SupportedLangs } from 'src/app/models/enums';
 import { ITranslationText } from 'src/app/models/InternalDTOs';
+import { UserService } from 'src/app/services/user.service';
 import { AbstractBaseReaderComponent } from '../../tasks/shared/base-reader';
 
 interface ConsentTextContent extends ITranslationText {
     indent?: number;
+}
+
+interface ConsentFormInput {
+    label: ITranslationText;
+    key: string;
+    options: {
+        textContent: ITranslationText;
+        value: string;
+    }[];
 }
 
 class ConsentForm {
@@ -20,6 +33,7 @@ class ConsentForm {
         caption: ITranslationText;
         words: ConsentTextContent[];
     }[];
+    inputs?: ConsentFormInput[];
     endMessage: ITranslationText;
     buttons: {
         reject: {
@@ -43,56 +57,70 @@ export class ConsentNavigationConfig {
     templateUrl: './consent-reader.component.html',
     styleUrls: ['./consent-reader.component.scss'],
 })
-export class ConsentReaderComponent implements AbstractBaseReaderComponent {
+export class ConsentReaderComponent implements AbstractBaseReaderComponent, OnInit {
     @Input()
     readerMetadata: ConsentNavigationConfig;
+
+    inputsFormGroup: FormGroup;
+
+    ngOnInit() {
+        if (this.readerMetadata && this.readerMetadata.metadata.inputs) {
+            const formGroup: {
+                [key: string]: FormControl;
+            } = {};
+            for (let input of this.readerMetadata.metadata.inputs) {
+                formGroup[input.key] = new FormControl('', Validators.required);
+            }
+
+            this.inputsFormGroup = new FormGroup(formGroup);
+        }
+    }
 
     get imgPath(): string {
         return this.readerMetadata.metadata?.imgPath || '';
     }
 
     get title(): string {
-        return this.getTextForLang(this.readerMetadata.metadata?.title) || '';
+        return this.getTranslation(this.readerMetadata.metadata?.title) || '';
     }
 
     get secondTitle(): string {
-        return this.getTextForLang(this.readerMetadata.metadata?.secondTitle) || '';
+        return this.getTranslation(this.readerMetadata.metadata?.secondTitle) || '';
     }
 
     get endMessage(): string {
-        return this.getTextForLang(this.readerMetadata.metadata?.endMessage) || '';
+        return this.getTranslation(this.readerMetadata.metadata?.endMessage) || '';
+    }
+
+    get userIsCrowdsourcedUser(): boolean {
+        return this.userService.isCrowdsourcedUser;
     }
 
     @Output()
-    emitConsent: EventEmitter<boolean> = new EventEmitter();
+    emitConsent: EventEmitter<Record<string, string>> = new EventEmitter();
 
-    constructor(private router: Router, private translateService: TranslateService) {
+    constructor(private router: Router, private translateService: TranslateService, private userService: UserService) {
         const state = this.router.getCurrentNavigation()?.extras.state as ConsentNavigationConfig;
 
         if (state) this.readerMetadata = state;
     }
 
     onSubmit(response: boolean) {
-        this.emitConsent.next(response);
+        if (!response) {
+            this.emitConsent.next(null);
+        } else {
+            const jsonResponse = {};
+
+            Object.keys(this.inputsFormGroup?.controls || {}).forEach((key) => {
+                const value = this.inputsFormGroup.controls[key].value;
+                jsonResponse[key] = value;
+            });
+
+            this.emitConsent.next(jsonResponse);
+        }
     }
 
-    getTextForLang(textObj: ITranslationText | string): string {
-        let lang = this.translateService.currentLang;
-        if (!lang) lang = 'en';
-
-        if (!textObj) {
-            // textObj is falsy
-            return '';
-        } else if (typeof textObj === 'string') {
-            // for backwards compatibility sake, textObj is just a plain string with no translation
-            return textObj;
-        } else if (!textObj[lang]) {
-            // no translation for the given language
-            const hasEnglish = !textObj['en'];
-            // also no translation for english
-            if (!hasEnglish) return '';
-        } else {
-            return textObj[lang];
-        }
+    getTranslation(textObj: ITranslationText | string): string {
+        return getTextForLang(this.translateService.currentLang as SupportedLangs, textObj);
     }
 }
