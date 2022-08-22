@@ -70,7 +70,7 @@ export class LoginComponent implements OnDestroy {
                     this.handleNavigate(user.role);
                 },
                 (err) => {
-                    this.snackbarService.openErrorSnackbar(err.message);
+                    this.snackbarService.openErrorSnackbar(err?.message || 'There was an error');
                 }
             )
             .add(() => {

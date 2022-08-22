@@ -10,7 +10,7 @@
         <div class="slider-container">
             <ng-container *ngIf="showSlider">
                 <div *ngIf="isPractice" class="text-center hint py-3">
-                    Please use your mouse to drag the cursor to the spot on the scale that corresponds to your answer.
+                    {{ practiceHelpMessage }}
                 </div>
                 <app-slider
                     [shouldReverseLegend]="shouldReverse"
