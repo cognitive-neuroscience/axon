@@ -2,14 +2,14 @@
     <div class="full-box flex-column-center" style="justify-content: space-around">
         <div class="stimuli-container" *ngIf="shouldShowStimulus && leftStimulusShown && rightStimulusShown">
             <img
-                [class.selected]="keyPressed === 'z'"
+                [class.selected]="highlightKey === 'z'"
                 style="margin-right: 300px"
                 class="stimulus"
                 [src]="leftStimulusShown"
                 alt="left Stimulus"
             />
             <img
-                [class.selected]="keyPressed === 'm'"
+                [class.selected]="highlightKey === 'm'"
                 class="stimulus"
                 [src]="rightStimulusShown"
                 alt="right Stimulus"
@@ -23,7 +23,7 @@
         <div *ngIf="showFeedback" align="center">
             <div class="feedback">
                 <div
-                    *ngIf="feedback"
+                    *ngIf="showFeedback"
                     [ngClass]="{
                         correct: this.currentTrial.selectedStimulusWasRewarded,
                         incorrect:
@@ -34,7 +34,13 @@
                 >
                     {{ feedback | translate }}
                 </div>
-                <div style="font-size: 3rem; color: green" *ngIf="trialScore > 0 && !isPractice">+{{ trialScore }}</div>
+                <div
+                    [ngClass]="{ correct: this.currentTrial.score > 0, incorrect: this.currentTrial.score === 0 }"
+                    style="font-size: 4rem"
+                    *ngIf="showFeedback && feedback !== 'tasks.feedback.too-slow'"
+                >
+                    +{{ trialScore }}
+                </div>
             </div>
         </div>
     </div>

@@ -489,7 +489,6 @@ export class DataGenerationService {
     ): PLTStimulus[] {
         const stimuli: PLTStimulus[] = [];
         for (let i = 0; i < numTrials; i++) {
-            // randomly choose first or second
             let leftStimulus = {
                 name: firstStimName,
                 percentage: firstStimPercentageSelected,
@@ -499,7 +498,7 @@ export class DataGenerationService {
                 percentage: secondStimPercentageSelected,
             };
 
-            // switch the two
+            // randomly switch the two
             if (getRandomNumber(0, 2) === 0) [leftStimulus, rightStimulus] = [rightStimulus, leftStimulus];
 
             stimuli.push({

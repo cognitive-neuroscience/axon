@@ -31,7 +31,7 @@ export interface ComponentMetadata {
 
 export interface SharplabTaskConfig {
     taskConfig: {
-        counterBalanceGroups?: CounterBalanceGroup;
+        [key: string]: any;
     };
     metadata: ComponentMetadata[];
 }
@@ -45,6 +45,7 @@ export class TaskPlayerState {
     };
     counterBalanceGroups?: CounterBalanceGroup;
     counterbalanceNumber?: number;
+    taskConfig: { [key: string]: any } = {};
 
     public setCacheValue(key: string, value: any) {
         this.data[key] = value;
@@ -133,6 +134,9 @@ export class TaskPlayerComponent implements OnDestroy {
                 this.state.counterbalanceNumber = getRandomNumber(1, groupKeys.length + 1); // generate rand num from 1 - groupKeys
                 this.state.counterBalanceGroups = { ...counterBalanceGroups };
             }
+        }
+        if (Object.keys(taskMetadataConfig.taskConfig).length > 0) {
+            this.state.taskConfig = { ...taskMetadataConfig.taskConfig };
         }
 
         this.steps = taskMetadataConfig.metadata;
