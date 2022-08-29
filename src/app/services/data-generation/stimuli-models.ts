@@ -140,9 +140,21 @@ export enum FaceNameAssociationTaskTrialtype {
     INTACT = 'INTACT',
 }
 
+export enum PLTStimulusType {
+    STIM20 = 'stim20',
+    STIM30 = 'stim30',
+    STIM40 = 'stim40',
+    STIM60 = 'stim60',
+    STIM70 = 'stim70',
+    STIM80 = 'stim80',
+    PRACTICESTIM80 = 'practiceStim80',
+    PRACTICESTIM20 = 'practiceStim20',
+}
+
 export class PLTStimulus {
-    leftStimulusName: string;
-    rightStimulusName: string;
-    correctStimulusName: string;
-    leftOrRightCorrect: 'LEFT' | 'RIGHT';
+    leftStimulusName: PLTStimulusType;
+    rightStimulusName: PLTStimulusType;
+    leftStimulusRewarded: boolean;
+    rightStimulusRewarded: boolean;
+    expectedSelectedStimulus: PLTStimulusType;
 }

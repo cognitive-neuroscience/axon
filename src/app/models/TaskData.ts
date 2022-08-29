@@ -178,12 +178,17 @@ export class PLTTaskData extends TaskData {
     isPractice: boolean;
     phase: 'practice-phase' | 'training-phase' | 'test-phase';
     leftStimulusPresented: string;
+    leftImageFileName: string;
     rightStimulusPresented: string;
-    isCorrect: boolean;
-    correctStimulus: string;
-    correctSide: 'LEFT' | 'RIGHT';
+    rightImageFileName: string;
+    selectedStimulus: string;
+    selectedStimulusImageFileName: string;
+    selectedStimulusWasRewarded: boolean;
+    expectedStimulus: string;
+    expectedStimulusImageFileName: string;
     userAnswer: Key | UserResponse.NA;
-    actualAnswer: Key;
+    expectedAnswer: Key;
+    userAnswerIsExpectedAnswer: boolean;
     responseTime: number;
 }
 
