@@ -1,15 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, of, Subscription } from 'rxjs';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { wait } from 'src/app/common/commonMethods';
-import { StudyUser } from 'src/app/models/Login';
+import { StudyUser, User } from 'src/app/models/Login';
 import { ConsentNavigationConfig } from 'src/app/pages/shared/consent-component/consent-reader.component';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { StudyUserService } from 'src/app/services/study-user.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
 import { TaskService } from 'src/app/services/task.service';
+import { UserService } from 'src/app/services/user.service';
 import { ConsentDialogComponent } from './consent-dialog/consent-dialog.component';
 declare function setFullScreen(): any;
 
@@ -27,7 +28,8 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
         private taskService: TaskService,
         private snackbar: SnackbarService,
         private taskManager: TaskManagerService,
-        private loaderService: LoaderService
+        private loaderService: LoaderService,
+        private userService: UserService
     ) {}
 
     ngOnInit(): void {
@@ -53,6 +55,10 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
                     : []
             )
         );
+    }
+
+    get userId(): Observable<number> {
+        return this.userService.userAsync.pipe(map((x) => x.id));
     }
 
     getProgress(studyUser: StudyUser): number {
