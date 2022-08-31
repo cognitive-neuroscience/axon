@@ -65,6 +65,7 @@ export enum TranslatedFeedback {
     INCORRECT = 'tasks.feedback.incorrect',
     TOOSLOW = 'tasks.feedback.too-slow',
     NORESPONSE = 'tasks.feedback.no-response',
+    YOUWON = 'tasks.feedback.you-won',
 }
 
 // an enum representing the semantic answer given by the user that gets uploaded to the database
