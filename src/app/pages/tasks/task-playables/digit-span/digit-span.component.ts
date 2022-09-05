@@ -48,6 +48,7 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
      */
 
     // config variables variables
+    private version: number = 1;
     isPractice: boolean = false;
     private maxResponseTime: number;
     private interTrialDelay: number; // In milliseconds
@@ -130,6 +131,7 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
         }
 
         this.config = config;
+        this.version = thisOrDefault(config?.taskConfig?.version, 1);
         this.isPractice = thisOrDefault(metadata.componentConfig.isPractice, false);
         this.durationFixationPresented = thisOrDefault(metadata.componentConfig.durationFixationPresented, 500);
         this.interTrialDelay = thisOrDefault(metadata.componentConfig.interTrialDelay, 0);
@@ -151,7 +153,11 @@ export class DigitSpanComponent extends AbstractBaseTaskComponent {
 
         // either the stimuli has been defined in config or we generate it here from service
         if (!this.stimuli) {
-            this.stimuli = this.dataGenService.generateDigitSpanStimuli(this.isPractice, this.useForwardSequence);
+            this.stimuli = this.dataGenService.generateDigitSpanStimuli(
+                this.isPractice,
+                this.version,
+                this.useForwardSequence
+            );
         }
         super.start();
     }

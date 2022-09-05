@@ -23,3 +23,11 @@
     justify-content: center;
     font-size: 1.5rem;
 }
+
+.skip {
+    background-color: #d28800;
+    color: white;
+    &:hover {
+        color: black;
+    }
+}

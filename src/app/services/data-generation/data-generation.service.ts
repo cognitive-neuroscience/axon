@@ -371,15 +371,17 @@ export class DataGenerationService {
         return stimuli;
     }
 
-    generateDigitSpanStimuli(isPractice: boolean, useForwardSequence: boolean): DigitSpanStimulus[] {
+    generateDigitSpanStimuli(
+        isPractice: boolean,
+        versionNumber: number,
+        useForwardSequence: boolean
+    ): DigitSpanStimulus[] {
         if (isPractice) {
-            return useForwardSequence
-                ? DigitSpanStimuli.practice.forwardSequence
-                : DigitSpanStimuli.practice.backwardSequence;
+            return DigitSpanStimuli.practice[useForwardSequence ? 'forwardSequence' : 'backwardSequence'];
         } else {
-            return useForwardSequence
-                ? DigitSpanStimuli.actual.forwardSequence
-                : DigitSpanStimuli.actual.backwardSequence;
+            return DigitSpanStimuli.actual[versionNumber === 1 ? 'version1' : 'version2'][
+                useForwardSequence ? 'forwardSequence' : 'backwardSequence'
+            ];
         }
     }
 
