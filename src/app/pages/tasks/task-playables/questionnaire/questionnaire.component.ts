@@ -23,6 +23,7 @@ class Question {
         | 'input'
         | 'slider';
     radiobuttonPresentation?: 'horizontal' | 'vertical' = 'horizontal';
+    radioButtonImageOptions?: string[]; // a list of image paths to present in the questionnaire for radiobuttons
     indent?: number; // amount of indentation for the given text
     allowMultipleSelections?: boolean; // for multiple choice select, allow multiple choices
     key: string; // unique property of the input - this is what will be used when getting the data. Mandatory for all questionTypes except divider and free text

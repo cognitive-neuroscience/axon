@@ -39,7 +39,8 @@
             "correct": "Correct",
             "incorrect": "Incorrect",
             "too-slow": "Trop lent",
-            "no-response": "Sans réponse"
+            "no-response": "Sans réponse",
+            "you-won": "Vous avez gagné!"
         },
         "finger-tapping": {
             "begin-tapping": "Commencez à appuyer",

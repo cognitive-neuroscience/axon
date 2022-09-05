@@ -91,7 +91,8 @@ export class NBackComponent extends AbstractBaseTaskComponent {
     }
 
     get currentTrial(): NBackTaskData {
-        return this.taskData[this.taskData.length - 1];
+        // will return null if taskData is not defined or if it has length of 0
+        return this.taskData?.length > 0 ? this.taskData[this.taskData.length - 1] : null;
     }
 
     constructor(
@@ -203,22 +204,21 @@ export class NBackComponent extends AbstractBaseTaskComponent {
 
     @HostListener('window:keydown', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
-        if (event === null || (this.responseAllowed && this.isValidKey(event.key))) {
-            this.responseAllowed = false;
+        if (this.currentTrial?.submitted) {
             this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
-            this.cancelAllTimers();
-
-            if (event === null) {
+            if (this.responseAllowed && this.isValidKey(event?.key)) {
+                this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
+                this.cancelAllTimers();
+                this.currentTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.NO : UserResponse.YES;
+                super.handleRoundInteraction(event.key);
+            } else if (event === null) {
                 // max time out
+                this.cancelAllTimers();
                 this.currentTrial.userAnswer = UserResponse.NA;
                 this.currentTrial.score = 0;
                 this.currentTrial.responseTime = this.maxResponseTime;
                 this.currentTrial.isCorrect = false;
                 super.handleRoundInteraction(null);
-            } else {
-                this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
-                this.currentTrial.userAnswer = event.key === Key.ARROWLEFT ? UserResponse.NO : UserResponse.YES;
-                super.handleRoundInteraction(event.key);
             }
         }
     }

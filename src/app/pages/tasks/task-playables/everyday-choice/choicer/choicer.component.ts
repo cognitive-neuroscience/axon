@@ -76,11 +76,15 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     translationMapping = {
         helpMessage: {
             en: 'Please make the rating by clicking the button corresponding to the activity you would like to select',
-            fr: 'SVP.......',
+            fr: 'Veuillez utiliser votre souris pour placer le curseur à l’endroit de l’échelle qui correspond à votre réponse.',
         },
         maxResponseMessage: {
             en: 'Please do your best to provide your answer in the time allotted for the next trial.',
             fr: 'SVP essayer d’indiquer votre réponse dans les délais prévus pour le prochain tour',
+        },
+        practiceHelpMessage: {
+            en: 'To make your choice, use the buttons below to tell us which activity you would prefer',
+            fr: 'Pour faire votre choix, utilisez les boutons ci-dessous pour nous indiquer quelle activité vous préférez.',
         },
     };
 
@@ -117,6 +121,10 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
 
         if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
             this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
+    }
+
+    get practiceHelpMessage(): string {
+        return this.translationMapping.practiceHelpMessage[this.translateService.currentLang];
     }
 
     start() {

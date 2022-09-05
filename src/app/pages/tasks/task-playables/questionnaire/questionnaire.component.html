@@ -37,6 +37,13 @@
                             [innerHTML]="handleText(question.textContent)"
                         ></p>
                         <br />
+
+                        <div class="radiobuttons-images-container" *ngIf="question.radioButtonImageOptions">
+                            <div class="image-container" *ngFor="let imagePath of question.radioButtonImageOptions">
+                                <img class="image" [src]="imagePath" alt="image option" />
+                            </div>
+                        </div>
+
                         <mat-radio-group
                             class="{{ question.radiobuttonPresentation }}"
                             [formControlName]="question.key"

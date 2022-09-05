@@ -39,7 +39,8 @@
             "correct": "Correct",
             "incorrect": "Incorrect",
             "too-slow": "Too Slow",
-            "no-response": "No response"
+            "no-response": "No response",
+            "you-won": "You won!"
         },
         "finger-tapping": {
             "begin-tapping": "Begin Tapping",

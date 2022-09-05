@@ -4,7 +4,7 @@
         <div class="choice-container">
             <ng-container *ngIf="showInput">
                 <div *ngIf="isPractice" class="text-center py-3 hint">
-                    To make your choice, use the buttons below to tell us which activity you would prefer
+                    {{ practiceHelpMessage }}
                 </div>
 
                 <app-option-display
