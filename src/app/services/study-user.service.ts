@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { StudyUser, User } from '../models/Login';
+import { StudyUser, StudyUserSummary, User } from '../models/Login';
 import { CanClear } from './clearance.service';
 import { TimerService } from './timer.service';
 
@@ -70,6 +70,10 @@ export class StudyUserService implements CanClear {
 
     getStudyUsersForStudy(studyId: number): Observable<StudyUser[]> {
         return this.http.get<StudyUser[]>(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}/${studyId}`);
+    }
+
+    getStudyUserSummary(): Observable<StudyUserSummary[]> {
+        return this.http.get<StudyUserSummary[]>(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}/summary`);
     }
 
     clearService() {

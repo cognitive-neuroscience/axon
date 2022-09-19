@@ -1,7 +1,19 @@
 <div>
     <div class="d-flex justify-content-between">
-        <h2 class="mb-5">Your Studies</h2>
+        <h1 class="mb-5">Your Studies</h1>
         <div>
+            <button
+                (click)="downloadStudyUsers()"
+                [disabled]="!(isAdmin | async)"
+                mat-raised-button
+                matTooltip="this button downloads a file containing all account holding user IDs and the study IDs of the studies they are participating in"
+                #tooltip="matTooltip"
+                color="secondary"
+                class="mr-3"
+            >
+                Download User Studies Summary
+                <mat-icon>download</mat-icon>
+            </button>
             <button mat-raised-button color="primary" [disabled]="!(isAdmin | async)" (click)="navigateToCreateStudy()">
                 Create new study <mat-icon style="margin-left: 10px">add_box</mat-icon>
             </button>
