@@ -58,7 +58,7 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
     }
 
     get userId(): Observable<number> {
-        return this.userService.userAsync.pipe(map((x) => x.id));
+        return this.userService.userAsync.pipe(map((x) => x?.id || null));
     }
 
     getProgress(studyUser: StudyUser): number {
