@@ -14,6 +14,10 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { CreateModifyStudyComponent } from '../create-modify-study/create-modify-study.component';
 import { TaskService } from 'src/app/services/task.service';
 import { Task } from 'src/app/models/Task';
+import { StudyUserService } from 'src/app/services/study-user.service';
+import * as FileSaver from 'file-saver';
+import { LoaderService } from 'src/app/services/loader/loader.service';
+import { FileService } from 'src/app/services/file.service';
 
 @Component({
     selector: 'app-view-studies',
@@ -38,7 +42,10 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
         private snackbarService: SnackbarService,
         private userService: UserService,
         private router: Router,
-        private taskService: TaskService
+        private taskService: TaskService,
+        private studyUserService: StudyUserService,
+        private loaderService: LoaderService,
+        private fileService: FileService
     ) {}
 
     studies: Observable<Study[]>;
@@ -125,6 +132,16 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
                     }
                 })
         );
+    }
+
+    downloadStudyUsers() {
+        this.loaderService.showLoader();
+        this.studyUserService
+            .getStudyUserSummary()
+            .subscribe((res) => {
+                this.fileService.exportAsJSONFile(res, 'userStudiesSummary');
+            })
+            .add(() => this.loaderService.hideLoader());
     }
 
     showCopiedMessage(copyLinkFor: string) {

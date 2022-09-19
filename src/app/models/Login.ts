@@ -36,3 +36,8 @@ export class StudyUser {
     lang: SupportedLangs;
     data?: Record<string, any>;
 }
+
+export class StudyUserSummary {
+    userId: number;
+    studies: number[];
+}

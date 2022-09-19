@@ -2,7 +2,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Component, Input, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { ExcelService } from '../../../../../services/excel.service';
+import { FileService } from '../../../../../services/file.service';
 import { LoaderService } from '../../../../../services/loader/loader.service';
 
 export class DataTableFormat {
@@ -73,14 +73,14 @@ export class DataTableComponent implements OnInit, AfterViewInit {
     }
 
     download() {
-        this.excelService.exportAsExcel(this.tableData, this.fileName);
+        this.fileService.exportAsExcel(this.tableData, this.fileName);
     }
 
     isValid(): boolean {
         return !!this.tableData && this.tableData.length > 0;
     }
 
-    constructor(private excelService: ExcelService, private loaderService: LoaderService) {}
+    constructor(private fileService: FileService, private loaderService: LoaderService) {}
 
     ngOnInit(): void {
         this.dataSource = new MatTableDataSource();
