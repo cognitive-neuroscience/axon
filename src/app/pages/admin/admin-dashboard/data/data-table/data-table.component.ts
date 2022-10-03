@@ -73,7 +73,7 @@ export class DataTableComponent implements OnInit, AfterViewInit {
     }
 
     download() {
-        this.fileService.exportAsExcel(this.tableData, this.fileName);
+        this.fileService.exportAsCSV(this.tableData, this.fileName);
     }
 
     isValid(): boolean {
