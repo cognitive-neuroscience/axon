@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { NzMarks } from 'ng-zorro-antd/slider';
 import { getTextForLang } from 'src/app/common/commonMethods';
@@ -60,7 +60,7 @@ interface QuestionnaireMetadata {
 })
 export class QuestionnaireComponent implements Playable, OnDestroy {
     metadata: QuestionnaireMetadata;
-    questionnaire: FormGroup;
+    questionnaire: UntypedFormGroup;
     wasClicked = false;
     isVisible = false;
     taskData: any[];
@@ -102,9 +102,9 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
         return getTextForLang(this.translateService.currentLang as SupportedLangs, text);
     }
 
-    getFormGroup(metadata: QuestionnaireMetadata): FormGroup {
+    getFormGroup(metadata: QuestionnaireMetadata): UntypedFormGroup {
         const formGroup: {
-            [key: string]: FormControl;
+            [key: string]: UntypedFormControl;
         } = {};
         metadata.componentConfig.questions.forEach((question) => {
             if (question.questionType !== 'divider' && question.questionType !== 'displayText') {
@@ -123,11 +123,11 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
                 }
 
                 formGroup[question.key] =
-                    validatorFnArr.length > 0 ? new FormControl('', validatorFnArr) : new FormControl('');
+                    validatorFnArr.length > 0 ? new UntypedFormControl('', validatorFnArr) : new UntypedFormControl('');
             }
         });
 
-        return new FormGroup(formGroup);
+        return new UntypedFormGroup(formGroup);
     }
 
     private keysExistAndAreUnique(metadata: QuestionnaireMetadata): boolean {

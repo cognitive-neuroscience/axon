@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy } from '@angular/core';
-import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ParticipantRouteNames, Role, RouteNames } from 'src/app/models/enums';
@@ -45,7 +45,7 @@ export class RegisterComponent implements OnDestroy {
 
     constructor(
         private router: Router,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private userService: UserService,
         private snackbarService: SnackbarService,
         private loaderService: LoaderService,

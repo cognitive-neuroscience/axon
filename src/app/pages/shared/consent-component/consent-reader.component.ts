@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { getTextForLang } from 'src/app/common/commonMethods';
@@ -61,18 +61,18 @@ export class ConsentReaderComponent implements AbstractBaseReaderComponent, OnIn
     @Input()
     readerMetadata: ConsentNavigationConfig;
 
-    inputsFormGroup: FormGroup;
+    inputsFormGroup: UntypedFormGroup;
 
     ngOnInit() {
         if (this.readerMetadata && this.readerMetadata.metadata.inputs) {
             const formGroup: {
-                [key: string]: FormControl;
+                [key: string]: UntypedFormControl;
             } = {};
             for (let input of this.readerMetadata.metadata.inputs) {
-                formGroup[input.key] = new FormControl('', Validators.required);
+                formGroup[input.key] = new UntypedFormControl('', Validators.required);
             }
 
-            this.inputsFormGroup = new FormGroup(formGroup);
+            this.inputsFormGroup = new UntypedFormGroup(formGroup);
         }
     }
 

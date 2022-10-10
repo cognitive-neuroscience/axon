@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { RouteNames, SupportedLangs } from 'src/app/models/enums';
@@ -44,7 +44,7 @@ export class ResetPasswordLoginComponent {
     );
 
     constructor(
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private router: Router,
         private userService: UserService,
         private snackbarService: SnackbarService,

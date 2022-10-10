@@ -3,7 +3,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames, SupportedLangs } from 'src/app/models/enums';
 import { catchError, mergeMap } from 'rxjs/operators';
@@ -82,7 +82,7 @@ export class LoginComponent implements OnDestroy {
         private authService: AuthService,
         private router: Router,
         private snackbarService: SnackbarService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private loaderService: LoaderService,
         private userService: UserService,
         private clearanceService: ClearanceService
