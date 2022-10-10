@@ -1,7 +1,7 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -22,7 +22,7 @@ import { UserService } from 'src/app/services/user.service';
 export class CreateModifyStudyComponent implements OnInit {
     mode: 'EDIT' | 'CREATE' = 'CREATE';
 
-    studyForm: FormGroup;
+    studyForm: UntypedFormGroup;
 
     selectedTasks: Task[];
 
@@ -32,7 +32,7 @@ export class CreateModifyStudyComponent implements OnInit {
 
     constructor(
         private userService: UserService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private taskService: TaskService,
         private studyService: StudyService,
         private router: Router,

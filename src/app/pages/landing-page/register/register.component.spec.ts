@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MaterialModule } from 'src/app/modules/material/material.module';
@@ -40,7 +40,7 @@ describe('RegisterComponent', () => {
                 { provide: UserService, useValue: mockUserService },
                 { provide: LoaderService, useValue: mockLoaderService },
                 { provide: SnackbarService, useValue: mockSnackbarService },
-                FormBuilder,
+                UntypedFormBuilder,
             ],
         }).compileComponents();
     });
