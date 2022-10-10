@@ -19,7 +19,7 @@
     "classlist.js": "^1.1.20150312",
     "file-saver": "^2.0.2",
     "jwt-decode": "^3.0.0-beta.2",
-    "ng-zorro-antd": "^11.4.1",
+    "ng-zorro-antd": "^12.1.1",
     "rxjs": "~6.6.2",
     "tslib": "^2.0.0",
     "web-animations-js": "^2.3.2",
