@@ -87,3 +87,25 @@
 .indent-3 {
     margin-left: 9rem;
 }
+
+.font-size {
+    &-sm {
+        font-size: 1rem;
+        line-height: normal;
+    }
+
+    &-md {
+        font-size: 1.5rem;
+        line-height: normal;
+    }
+
+    &-lg {
+        font-size: 2rem;
+        line-height: normal;
+    }
+
+    &-xl {
+        font-size: 2.5rem;
+        line-height: normal;
+    }
+}

@@ -23,6 +23,10 @@ class Question {
         | 'input'
         | 'slider';
     radiobuttonPresentation?: 'horizontal' | 'vertical' = 'horizontal';
+    styles?: {
+        'title-font-size'?: 'sm' | 'md' | 'lg' | 'xl';
+        'text-content-font-size'?: 'sm' | 'md' | 'lg' | 'xl';
+    };
     radioButtonImageOptions?: string[]; // a list of image paths to present in the questionnaire for radiobuttons
     indent?: number; // amount of indentation for the given text
     allowMultipleSelections?: boolean; // for multiple choice select, allow multiple choices
