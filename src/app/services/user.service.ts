@@ -108,7 +108,7 @@ export class UserService implements CanClear {
                         role: Role.PARTICIPANT,
                         createdAt: crowdsourcedUser.registerDate,
                         changePasswordRequired: false,
-                        lang: SupportedLangs.NONE,
+                        lang: crowdsourcedUser.lang || SupportedLangs.NONE,
                     };
                     this._userBehaviorSubject.next(user);
                 },

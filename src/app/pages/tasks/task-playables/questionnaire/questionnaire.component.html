@@ -30,10 +30,18 @@
                     </div>
 
                     <div class="my-5" *ngSwitchCase="'radiobuttons'">
-                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
+                        <h2
+                            *ngIf="question.title"
+                            class="title-text {{
+                                question.styles?.['title-font-size'] ? 'font-size-' + question.styles?.['title-font-size'] : ''
+                            }}"
+                            [innerHTML]="handleText(question.title)"
+                        ></h2>
                         <p
                             *ngIf="question.textContent"
-                            class="sub-text"
+                            class="sub-text {{
+                                question.styles?.['text-content-font-size'] ? 'font-size-' + question.styles?.['text-content-font-size'] : ''
+                            }}"
                             [innerHTML]="handleText(question.textContent)"
                         ></p>
                         <br />
@@ -137,7 +145,11 @@
                         *ngSwitchCase="'displayText'"
                         class="my-5 {{ question.indent ? 'indent-' + question.indent : '' }}"
                     >
-                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
+                        <h2
+                            *ngIf="question.title"
+                            class="title-text {{ question.styles?.['title-font-size'] ? 'font-size-' + question.styles?.['title-font-size'] : '' }}"
+                            [innerHTML]="handleText(question.title)"
+                        ></h2>
                         <p
                             *ngIf="question.textContent"
                             class="sub-text"
