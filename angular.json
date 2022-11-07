@@ -55,6 +55,14 @@
                                     "maximumError": "10kb"
                                 }
                             ]
+                        },
+                        "development": {
+                            "optimization": false,
+                            "buildOptimizer": false,
+                            "vendorChunk": true,
+                            "extractLicenses": false,
+                            "sourceMap": true,
+                            "namedChunks": true
                         }
                     }
                 },
@@ -67,6 +75,9 @@
                     "configurations": {
                         "production": {
                             "browserTarget": "axon:build:production"
+                        },
+                        "development": {
+                            "browserTarget": "axon:build:development"
                         }
                     }
                 },

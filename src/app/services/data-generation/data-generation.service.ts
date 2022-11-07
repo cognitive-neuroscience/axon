@@ -61,9 +61,12 @@ export class DataGenerationService {
 
         const ratingTaskStimuli: RatingTaskStimuli[] = activities.map((activity) => {
             const questions = shuffle(deepClone(RatingTaskQuestionList));
+            const isDoNothingActivity =
+                RatingTaskActivities.DoNothing.findIndex((x) => x.en === activity.en && x.fr === activity.fr) >= 0;
+
             return {
                 activity: activity,
-                type: RatingTaskActivities.DoNothing.includes(activity) ? 'DoNothing' : 'DoSomething',
+                type: isDoNothingActivity ? 'DoNothing' : 'DoSomething',
                 questions: questions,
             };
         });
