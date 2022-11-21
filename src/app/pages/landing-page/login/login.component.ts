@@ -9,6 +9,7 @@ import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames, SupportedLang
 import { catchError, mergeMap } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user.service';
 import { ClearanceService } from 'src/app/services/clearance.service';
+import { HttpStatusCode } from '@angular/common/http';
 
 @Component({
     selector: 'app-login',
@@ -69,8 +70,15 @@ export class LoginComponent implements OnDestroy {
                     );
                     this.handleNavigate(user.role);
                 },
-                (err) => {
-                    this.snackbarService.openErrorSnackbar(err?.message || 'There was an error');
+                (err: { status: HttpStatusCode; message: string }) => {
+                    if (err?.status === HttpStatusCode.UnprocessableEntity && err?.message === 'user does not exist') {
+                        this.snackbarService.openErrorSnackbar([
+                            'This email is not registered',
+                            "Ce courriel n'est pas enregistré",
+                        ]);
+                    } else {
+                        this.snackbarService.openErrorSnackbar(err?.message || 'There was an error');
+                    }
                 }
             )
             .add(() => {

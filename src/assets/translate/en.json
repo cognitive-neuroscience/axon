@@ -13,6 +13,7 @@
             "status": "completed",
             "in-progress": "study in progress"
         },
+        "contact-us-message": "Questions? Please email us at",
         "buttons": {
             "start-study": "Start study",
             "continue-study": "Continue study",

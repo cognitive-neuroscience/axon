@@ -68,6 +68,14 @@
                 >Passwords must match / Les mots de passe doivent correspondre
             </mat-error>
         </mat-form-field>
+        <a
+            class="btn-block mb-3 underline-on-hover"
+            style="color: #3f51b5; font-size: 1.2rem; line-height: normal"
+            (click)="navigateToLoginPage()"
+        >
+            Are you already registered? Log in <br />
+            <span style="color: gray"> Êtes-vous déjà enregistré? Connectez-vous </span>
+        </a>
         <div matRipple matRippleColor="#ffffff33">
             <button
                 type="submit"
@@ -79,9 +87,5 @@
                 REGISTER / ENREGISTREZ-VOUS
             </button>
         </div>
-        <a class="btn-block mt-3 underline-on-hover" style="color: #3f51b5" (click)="navigateToLoginPage()">
-            Are you already registered? Log in <br />
-            <span style="color: gray"> Êtes-vous déjà enregistré? Connectez-vous </span>
-        </a>
     </form>
 </div>
