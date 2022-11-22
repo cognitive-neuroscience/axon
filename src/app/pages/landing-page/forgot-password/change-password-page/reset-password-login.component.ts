@@ -32,6 +32,7 @@ function passwordMatchingValidator(control: AbstractControl): ValidationErrors |
 })
 export class ResetPasswordLoginComponent {
     passwordIsVisible = false;
+    tempPasswordIsVisible = false;
 
     resetPasswordForm = this.fb.group(
         {
@@ -52,6 +53,10 @@ export class ResetPasswordLoginComponent {
     ) {}
 
     togglePasswordVisibility() {
+        this.passwordIsVisible = !this.passwordIsVisible;
+    }
+
+    toggleTempPasswordVisibility() {
         this.passwordIsVisible = !this.passwordIsVisible;
     }
 
