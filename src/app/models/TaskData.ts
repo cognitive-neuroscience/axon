@@ -144,6 +144,7 @@ export class EverydayChoiceTaskData extends TaskData {
     userAnswer: string;
     activityType: 'DoNothing' | 'DoSomething' | '';
     responseTime: number;
+    choiceTaskStimulusSet: 'first' | 'second' | '';
 }
 
 export class SARTTaskData extends TaskData {

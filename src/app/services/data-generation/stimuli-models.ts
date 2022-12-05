@@ -12,6 +12,7 @@ export interface RatingTaskStimuli {
 export interface ChoiceTaskStimulus {
     firstActivity: ITranslationText;
     secondActivity: ITranslationText;
+    set: 'first' | 'second';
 }
 
 export interface OddballStimulus {
