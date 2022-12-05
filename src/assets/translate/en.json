@@ -18,7 +18,7 @@
             "start-study": "Start study",
             "continue-study": "Continue study",
             "view-consent": "View consent",
-            "study-not-started": "Sharplab has not started this study",
+            "study-not-started": "Study is closed",
             "study-completed": "You have completed this study"
         }
     },

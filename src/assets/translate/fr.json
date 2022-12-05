@@ -18,7 +18,7 @@
             "start-study": "Commencer étude",
             "continue-study": "Continuer étude",
             "view-consent": "Formulaire de consentement",
-            "study-not-started": "Sharplab n'a pas commencé cette étude",
+            "study-not-started": "L’étude est fermée",
             "study-completed": "Vous avez complété cette étude"
         }
     },
