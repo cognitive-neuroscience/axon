@@ -78,7 +78,7 @@ export class DataGenerationService {
         if (!activities.length || activities.length <= 2) throw new Error('At least three activities are needed');
 
         const shuffledActivities = shuffle(activities);
-        const pairs: ChoiceTaskStimulus[] = [];
+        const firstSetPairs: ChoiceTaskStimulus[] = [];
 
         for (let i = 0; i < shuffledActivities.length; i++) {
             let firstActivity = shuffledActivities[i];
@@ -87,13 +87,29 @@ export class DataGenerationService {
             const shouldSwitch = getRandomNumber(0, 2) === 1;
             if (shouldSwitch) [firstActivity, secondActivity] = [secondActivity, firstActivity];
 
-            pairs.push({
+            firstSetPairs.push({
                 firstActivity: firstActivity,
                 secondActivity: secondActivity,
+                set: 'first',
             });
         }
 
-        return shuffle(pairs);
+        const secondSetPairs: ChoiceTaskStimulus[] = [];
+        for (let i = 0; i < shuffledActivities.length; i++) {
+            let firstActivity = shuffledActivities[i];
+            let secondActivity = shuffledActivities[(i + 2) % shuffledActivities.length];
+
+            const shouldSwitch = getRandomNumber(0, 2) === 1;
+            if (shouldSwitch) [firstActivity, secondActivity] = [secondActivity, firstActivity];
+
+            secondSetPairs.push({
+                firstActivity: firstActivity,
+                secondActivity: secondActivity,
+                set: 'second',
+            });
+        }
+
+        return [...shuffle(firstSetPairs), ...shuffle(secondSetPairs)];
     }
 
     // start of oddball data generation

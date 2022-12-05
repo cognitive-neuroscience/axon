@@ -153,6 +153,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
             studyId: this.studyId,
+            choiceTaskStimulusSet: this.currentStimulus.set || '',
         });
 
         this.setStimuliUI(this.currentStimulus);

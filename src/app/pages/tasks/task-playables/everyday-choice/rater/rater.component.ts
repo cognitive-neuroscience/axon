@@ -202,6 +202,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
             studyId: this.studyId,
+            choiceTaskStimulusSet: '',
         });
 
         this.setStimuliUI(this.currentStimulus);
