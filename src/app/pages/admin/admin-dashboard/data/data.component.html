@@ -9,13 +9,24 @@
 
     <button
         [disabled]="!(isAdmin | async)"
-        class="select-button"
+        color="primary"
         style="width: 200px"
-        mat-button
+        mat-flat-button
         [matMenuTriggerFor]="studyTasks"
     >
-        Select Data
-        <mat-icon>dehaze</mat-icon>
+        select data
+        <mat-icon>keyboard_arrow_down</mat-icon>
+    </button>
+
+    <button
+        (click)="downloadAllCSVs(study)"
+        [disabled]="!(isAdmin | async)"
+        color="accent"
+        style="width: 200px; margin-left: 15px"
+        mat-flat-button
+    >
+        download all
+        <mat-icon>download</mat-icon>
     </button>
 
     <hr />

@@ -34,14 +34,36 @@ export class FileService {
     // }
 
     exportAsCSV(tableData: DataTableFormat[], csvFileName: string): void {
+        // old version:
+
+        // convert json to a workable worksheet
+        // const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(sheetFormattedTableData);
+        // create new workbook
+        // const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+        // add worksheet to workbook
+        // XLSX.utils.book_append_sheet(workbook, worksheet);
+        // XLSX.writeFile(workbook, `${csvFileName}${this.CSV_EXTENSION}`, { bookType: 'csv' });
+
+        // new version: utilize getCSVString
+        const csv = this.getCSVString(tableData);
+        const csvBlob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+        FileSaver.saveAs(csvBlob, `${csvFileName}${this.CSV_EXTENSION}`);
+    }
+
+    getCSVString(tableData: DataTableFormat[]): string {
         const sheetFormattedTableData = tableData.reduce((acc, curVal) => {
             return acc.concat([{ ...curVal.fields }, ...curVal.expandable]);
         }, []);
 
+        // convert json to a workable worksheet
         const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(sheetFormattedTableData);
+        // create new workbook
         const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+        // add worksheet to workbook
         XLSX.utils.book_append_sheet(workbook, worksheet);
-        XLSX.writeFile(workbook, `${csvFileName}${this.CSV_EXTENSION}`, { bookType: 'csv' });
+
+        return XLSX.write(workbook, { bookType: 'csv', type: 'string' });
     }
 
     exportAsJSONFile(json: { [key: string]: any }, fileName: string) {
