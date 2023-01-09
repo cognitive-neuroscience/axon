@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { DateTime } from 'luxon';
 import { StudyService } from '../../../../services/study.service';
 import { Study } from '../../../../models/Study';
-import { catchError, mergeMap, take } from 'rxjs/operators';
+import { catchError, map, mergeMap, take } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { ParticipantDataService } from 'src/app/services/study-data.service';
@@ -13,6 +13,10 @@ import { ParticipantData } from 'src/app/models/TaskData';
 import { TaskType } from 'src/app/models/enums';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { StudyUserService } from 'src/app/services/study-user.service';
+import { FileService } from 'src/app/services/file.service';
+import * as JSZip from 'jszip';
+import { CrowdsourcedUser, StudyUser } from 'src/app/models/Login';
+import * as FileSaver from 'file-saver';
 
 @Component({
     selector: 'app-data',
@@ -36,7 +40,8 @@ export class DataComponent implements OnInit {
         private studyUserService: StudyUserService,
         private studyDataService: ParticipantDataService,
         private snackbarService: SnackbarService,
-        private loaderService: LoaderService
+        private loaderService: LoaderService,
+        private fileService: FileService
     ) {}
 
     ngOnInit(): void {
@@ -110,7 +115,11 @@ export class DataComponent implements OnInit {
 
                 dataTableFormat = this.formatDates(dataTableFormat);
                 this.tableData = dataTableFormat;
-                this.fileName = `TASKDATA_${study.internalName}_${studyTask.task.name}`;
+                this.fileName = `STUDY_${study.id}_INDEX_${indexSelected}_TASK_${
+                    studyTask.task.name
+                }_DATE_${new Date().toLocaleDateString()}`;
+            })
+            .add(() => {
                 this.loaderService.hideLoader();
             });
     }
@@ -134,7 +143,6 @@ export class DataComponent implements OnInit {
                 // TODO: make a more extensible check in the future rather than just
                 // hard coding the value. If we change dueDate to due_date for example, we will
                 // have to change this hard coded string
-                value = row[key].time;
                 row[key] = row[key].time;
             }
 
@@ -178,31 +186,133 @@ export class DataComponent implements OnInit {
     getStudyUsersForStudy(study: Study) {
         this.loaderService.showLoader();
 
-        this.studyUserService.getStudyUsersForStudy(study.id).subscribe(
-            (studyUsers) => {
-                let studyUsersDataTable: DataTableFormat[] = studyUsers.map((studyUser) => {
-                    const consentInputs = { ...(studyUser.data || {}) };
-                    delete studyUser.study;
-                    delete studyUser.data;
-                    return {
-                        fields: {
-                            ...studyUser,
-                            ...consentInputs,
-                        },
-                        expandable: [],
-                    };
-                });
-                studyUsersDataTable = this.formatDates(studyUsersDataTable);
+        this.studyUserService
+            .getStudyUsersForStudy(study.id)
+            .subscribe(
+                (studyUsers) => {
+                    let studyUsersDataTable: DataTableFormat[] = studyUsers.map((studyUser) => {
+                        const consentInputs = { ...(studyUser.data || {}) };
+                        delete studyUser.study;
+                        delete studyUser.data;
+                        return {
+                            fields: {
+                                ...studyUser,
+                                ...consentInputs,
+                            },
+                            expandable: [],
+                        };
+                    });
+                    studyUsersDataTable = this.formatDates(studyUsersDataTable);
 
-                this.tableData = studyUsersDataTable;
-                this.fileName = `TASKDATA_${study.internalName}_ACCOUNT_HOLDERS`;
+                    this.tableData = studyUsersDataTable;
+                    this.fileName = `TASKDATA_${study.internalName}_ACCOUNT_HOLDERS`;
+                },
+                (err) => {
+                    this.snackbarService.openErrorSnackbar(err.message);
+                }
+            )
+            .add(() => {
                 this.loaderService.hideLoader();
-            },
-            (err) => {
+            });
+    }
+
+    downloadAllCSVs(study: Study) {
+        const getDataObservables: Observable<any>[] = [
+            ...study.tasks.map((studyTask) => this.studyDataService.getParticipantData(study.id, studyTask.taskOrder)),
+            this.userService.getCrowdsourcedUsersByStudyId(study.id),
+            this.studyUserService.getStudyUsersForStudy(study.id),
+        ];
+
+        this.loaderService.showLoader();
+
+        forkJoin(getDataObservables)
+            .pipe(
+                take(1),
+                map((res) => {
+                    const zip = new JSZip();
+
+                    // add participant data to zip
+                    for (let i = 0; i < study.tasks.length; i++) {
+                        let dataTableFormat: DataTableFormat[] = [];
+                        const participantData = res[i] as ParticipantData[];
+                        const studyTask = study.tasks[i];
+
+                        if (studyTask.task.taskType === TaskType.QUESTIONNAIRE) {
+                            dataTableFormat = participantData.map((data) => {
+                                // if it's a questionnaire, only the first element in the array is populated
+                                // so grab the keys
+                                return {
+                                    fields: {
+                                        userId: data.userId,
+                                        studyId: data.studyId,
+                                        taskOrder: data.taskOrder,
+                                        submittedAt: data.submittedAt,
+                                        participantType: data.participantType,
+                                        ...data.data[0],
+                                    },
+                                    expandable: [],
+                                };
+                            });
+                        } else {
+                            dataTableFormat = participantData.map((data) => {
+                                return {
+                                    fields: {
+                                        userId: data.userId,
+                                        studyId: data.studyId,
+                                        taskOrder: data.taskOrder,
+                                        submittedAt: data.submittedAt,
+                                        participantType: data.participantType,
+                                    },
+                                    expandable: [...data.data],
+                                };
+                            });
+                        }
+
+                        dataTableFormat = this.formatDates(dataTableFormat);
+                        const fileName = `${i}_TASK_${studyTask.task.name}.csv`;
+                        zip.file(fileName, this.fileService.getCSVString(dataTableFormat));
+                    }
+
+                    // add crowdsourced users to zip
+                    const crowdsourcedUsers = res[study.tasks.length] as CrowdsourcedUser[];
+                    let crowdsourcedUsersDataTable: DataTableFormat[] = crowdsourcedUsers.map((data) => {
+                        return {
+                            fields: {
+                                ...data,
+                            },
+                            expandable: [],
+                        };
+                    });
+                    crowdsourcedUsersDataTable = this.formatDates(crowdsourcedUsersDataTable);
+                    zip.file(`CROWDSOURCED_USERS.csv`, this.fileService.getCSVString(crowdsourcedUsersDataTable));
+
+                    // add study users to zip
+                    const studyUsers = res[study.tasks.length + 1] as StudyUser[];
+                    let studyUsersDataTable: DataTableFormat[] = studyUsers.map((studyUser) => {
+                        const consentInputs = { ...(studyUser.data || {}) };
+                        delete studyUser.study;
+                        delete studyUser.data;
+                        return {
+                            fields: {
+                                ...studyUser,
+                                ...consentInputs,
+                            },
+                            expandable: [],
+                        };
+                    });
+                    studyUsersDataTable = this.formatDates(studyUsersDataTable);
+                    zip.file(`ACCOUNT_HOLDERS.csv`, this.fileService.getCSVString(studyUsersDataTable));
+                    return zip;
+                })
+            )
+            .subscribe((zippedFile) => {
+                zippedFile.generateAsync({ type: 'blob' }).then((zipped) => {
+                    FileSaver.saveAs(zipped, `STUDY_${study.id}_${new Date().toLocaleDateString()}.zip`);
+                });
+            })
+            .add(() => {
                 this.loaderService.hideLoader();
-                this.snackbarService.openErrorSnackbar(err.message);
-            }
-        );
+            });
     }
 
     // returns the dateTime or null if invalid
