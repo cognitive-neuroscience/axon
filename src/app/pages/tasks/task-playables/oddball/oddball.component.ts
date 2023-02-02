@@ -4,7 +4,7 @@ import { take } from 'rxjs/operators';
 import { getRandomNumber, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { Key, TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
-import { OddballTaskData } from 'src/app/models/TaskData';
+import { OddballTaskData } from 'src/app/models/ParticipantData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { OddballTargetStimulus } from 'src/app/services/data-generation/raw-data/oddball-image-list';

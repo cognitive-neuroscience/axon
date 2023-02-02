@@ -3,14 +3,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import { wait } from 'src/app/common/commonMethods';
-import { StudyUser, User } from 'src/app/models/Login';
+import { HttpStatus } from 'src/app/models/Auth';
+import { StudyUser } from 'src/app/models/StudyUser';
 import { ConsentNavigationConfig } from 'src/app/pages/shared/consent-component/consent-reader.component';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { StudyUserService } from 'src/app/services/study-user.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
-import { TaskService } from 'src/app/services/task.service';
-import { UserService } from 'src/app/services/user.service';
+import { UserStateService } from 'src/app/services/user-state-service';
 import { ConsentDialogComponent } from './consent-dialog/consent-dialog.component';
 declare function setFullScreen(): any;
 
@@ -25,47 +25,50 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
     constructor(
         private studyUserService: StudyUserService,
         private dialog: MatDialog,
-        private taskService: TaskService,
         private snackbar: SnackbarService,
         private taskManager: TaskManagerService,
         private loaderService: LoaderService,
-        private userService: UserService
+        private userStateService: UserStateService
     ) {}
 
     ngOnInit(): void {
-        this._studyUsers = this.studyUserService.studyUsers;
+        this.studyUserService.getOrUpdateStudyUsers().subscribe(() => {});
     }
-
-    private _studyUsers: Observable<StudyUser[]>;
 
     /**
      * the HTML template queries studyUsers a lot, so we use an
      * observable buffer instead of calling getStudyUsers() as that will
      * spam HTTP requests
      */
-    get studyUsers(): Observable<StudyUser[]> {
-        return this._studyUsers.pipe(
-            map((studyUsers) =>
-                studyUsers
-                    ? studyUsers.sort((a, b) => {
-                          const dateA = Date.parse(a.registerDate);
-                          const dateB = Date.parse(b.registerDate);
-                          return dateB - dateA;
-                      })
-                    : []
-            )
-        );
+    get studyUsers(): StudyUser[] {
+        return this.studyUserService.studyUsers.sort((a, b) => {
+            const aIsDone = this.studyIsDone(a);
+            const bIsDone = this.studyIsDone(b);
+
+            const dateA = Date.parse(a.registerDate);
+            const dateB = Date.parse(b.registerDate);
+
+            if (aIsDone && bIsDone) {
+                return dateB - dateA;
+            } else if (aIsDone && !bIsDone) {
+                return 1;
+            } else if (!aIsDone && bIsDone) {
+                return -1;
+            } else {
+                return dateB - dateA;
+            }
+        });
     }
 
-    get userId(): Observable<number> {
-        return this.userService.userAsync.pipe(map((x) => x?.id || null));
+    get userId(): number {
+        return this.userStateService.userValue?.id || null;
     }
 
     getProgress(studyUser: StudyUser): number {
         if (studyUser.study) {
             return studyUser.currentTaskIndex === 0
                 ? 0
-                : Math.ceil((studyUser.currentTaskIndex / studyUser.study.tasks.length) * 100);
+                : Math.ceil((studyUser.currentTaskIndex / (studyUser.study.studyTasks || []).length) * 100);
         } else {
             return 0;
         }
@@ -73,7 +76,7 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
 
     studyIsDone(studyUser: StudyUser): boolean {
         if (studyUser?.study) {
-            return studyUser.currentTaskIndex === studyUser.study.tasks.length;
+            return studyUser.currentTaskIndex === (studyUser.study.studyTasks || []).length;
         }
     }
 
@@ -82,7 +85,7 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
             return 'participant-studies-page.buttons.study-not-started';
         } else if (studyUser.currentTaskIndex === 0) {
             return 'participant-studies-page.buttons.start-study';
-        } else if (studyUser.currentTaskIndex === studyUser.study.tasks.length) {
+        } else if (studyUser.currentTaskIndex === (studyUser.study.studyTasks || []).length) {
             return 'participant-studies-page.buttons.study-completed';
         } else {
             return 'participant-studies-page.buttons.continue-study';
@@ -90,36 +93,33 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
     }
 
     openConsentDialog(studyUser: StudyUser) {
-        this.loaderService.showLoader();
-        this.taskService
-            .getTaskByTaskId(studyUser.study.consent)
+        const config: ConsentNavigationConfig = {
+            metadata: studyUser.study.consent.config.metadata[0].componentConfig,
+            mode: 'actual',
+        };
+        this.dialog
+            .open(ConsentDialogComponent, {
+                width: '80%',
+                height: '80%',
+                data: config,
+                autoFocus: false,
+            })
+            .afterClosed()
             .pipe(
-                mergeMap((task) => {
-                    const config: ConsentNavigationConfig = {
-                        metadata: task.config.metadata[0].componentConfig,
-                        mode: 'actual',
-                    };
-                    this.loaderService.hideLoader();
-                    return this.dialog
-                        .open(ConsentDialogComponent, { width: '80%', height: '80%', data: config, autoFocus: false })
-                        .afterClosed();
-                }),
-                mergeMap((consentData: Record<string, string>) => {
-                    this.loaderService.showLoader();
-                    const newStudyUser: StudyUser = {
+                mergeMap((consentData: Record<string, string> | undefined) => {
+                    // consentData is undefined if the user exited the dialog or did not consent
+                    const updatedStudyUser: StudyUser = {
                         ...studyUser,
                         data: consentData,
                         hasAcceptedConsent: true,
                     };
-                    return consentData ? this.studyUserService.updateStudyUser(newStudyUser) : of(null);
-                }),
-                mergeMap((_res) => {
-                    return this.studyUserService.getStudyUsers(true);
+                    this.loaderService.showLoader();
+                    return consentData ? this.studyUserService.updateStudyUser(updatedStudyUser) : of(null);
                 })
             )
             .subscribe(
                 (_res) => {},
-                (err) => {
+                (err: HttpStatus) => {
                     this.snackbar.openErrorSnackbar(err.message);
                 }
             )
@@ -133,7 +133,7 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
             this.loaderService.showLoader();
             await this.startGameInFullScreen();
             this.loaderService.hideLoader();
-            this.taskManager.initStudy(studyUser.studyId);
+            this.taskManager.initStudy(studyUser.study.id);
         } else {
             this.snackbar.openErrorSnackbar('you must view and accept the consent form before starting');
         }

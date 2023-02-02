@@ -28,7 +28,7 @@ export class ConsentPageComponent implements OnInit {
         if (params) {
             this.data = params;
         } else {
-            const currentlyRunningStudyId = this.sessionStorageService.getCurrentlyRunningStudyIdFromSessionStorage();
+            const currentlyRunningStudyId = this.sessionStorageService.getCurrentlyRunningStudyIdInSessionStorage();
             currentlyRunningStudyId !== null
                 ? this.taskManager.initStudy(parseInt(currentlyRunningStudyId))
                 : this.location.back();

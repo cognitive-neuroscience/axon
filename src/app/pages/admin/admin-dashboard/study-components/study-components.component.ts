@@ -1,35 +1,27 @@
-import { Component, OnInit } from "@angular/core";
-import { MatTabChangeEvent } from "@angular/material/tabs";
-import { Observable } from "rxjs";
-import { SessionStorageService } from "src/app/services/sessionStorage.service";
-import { TaskService } from "src/app/services/task.service";
-import { UserService } from "src/app/services/user.service";
+import { Component, OnInit } from '@angular/core';
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import { Observable } from 'rxjs';
+import { SessionStorageService } from 'src/app/services/sessionStorage.service';
+import { TaskService } from 'src/app/services/task.service';
+import { UserStateService } from 'src/app/services/user-state-service';
 
 @Component({
-    selector: "app-study-components",
-    templateUrl: "./study-components.component.html",
-    styleUrls: ["./study-components.component.scss"],
+    selector: 'app-study-components',
+    templateUrl: './study-components.component.html',
+    styleUrls: ['./study-components.component.scss'],
 })
 export class StudyComponentsComponent implements OnInit {
-    private readonly rememberedTab = "rememberedTabIndex";
+    private readonly rememberedTab = 'rememberedTabIndex';
     public selectedTabIndex = 0;
 
-    constructor(
-        private userService: UserService,
-        private taskService: TaskService,
-        private sSS: SessionStorageService
-    ) {}
+    constructor(private sSS: SessionStorageService, private taskService: TaskService) {}
 
     ngOnInit(): void {
-        const retrievedTab = this.sSS.getValueByKeyFromSessionStorage(this.rememberedTab);
+        const retrievedTab = this.sSS.getKVPInSessionStorage(this.rememberedTab);
         if (retrievedTab !== null) {
             this.selectedTabIndex = parseInt(retrievedTab);
         }
-        if (!this.taskService.hasTasks) this.taskService.update();
-    }
-
-    get isAdmin(): Observable<boolean> {
-        return this.userService.userIsAdmin;
+        this.taskService.getOrUpdateTasks().subscribe((a) => {});
     }
 
     saveTabPref(matTabChange: MatTabChangeEvent) {

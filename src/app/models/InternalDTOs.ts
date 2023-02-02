@@ -94,3 +94,8 @@ export interface ITranslationText {
     en: string;
     fr: string;
 }
+
+export class NullTime {
+    Valid: boolean;
+    Time: string;
+}

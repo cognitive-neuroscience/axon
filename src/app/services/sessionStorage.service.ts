@@ -7,27 +7,35 @@ export class SessionStorageService {
     private STUDYID_FOR_REGISTRATION = 'STUDYID_FOR_REGISTRATION';
     private STUDYID_FOR_CURRENTLY_RUNNING_STUDY = 'STUDYID_FOR_CURRENTLY_RUNNING_STUDY';
     private IS_CROWDSOURCED_USER = 'IS_CROWDSOURCED_USER';
+    private USER_ID_KEY_STRING = 'USER_ID';
+
+    setUserIdInSessionStorage(userId: string): void {
+        sessionStorage.setItem(this.USER_ID_KEY_STRING, userId);
+    }
+    getUserIdInSessionStorage(): string | null {
+        return sessionStorage.getItem(this.USER_ID_KEY_STRING);
+    }
 
     setStudyIdToRegisterInSessionStorage(code: string): void {
         sessionStorage.setItem(this.STUDYID_FOR_REGISTRATION, code);
     }
-
-    getStudyIdToRegisterFromSessionStorage(): string | null {
+    getStudyIdToRegisterInSessionStorage(): string | null {
         return sessionStorage.getItem(this.STUDYID_FOR_REGISTRATION);
+    }
+    removeStudyIdToRegisterInSessionStorage(): void {
+        sessionStorage.removeItem(this.STUDYID_FOR_REGISTRATION);
     }
 
     setCurrentlyRunningStudyIdInSessionStorage(id: string): void {
         sessionStorage.setItem(this.STUDYID_FOR_CURRENTLY_RUNNING_STUDY, id);
     }
-
-    getCurrentlyRunningStudyIdFromSessionStorage(): string | null {
+    getCurrentlyRunningStudyIdInSessionStorage(): string | null {
         return sessionStorage.getItem(this.STUDYID_FOR_CURRENTLY_RUNNING_STUDY);
     }
 
     setIsCrowdsourcedUser(bool: boolean): void {
         sessionStorage.setItem(this.IS_CROWDSOURCED_USER, String(bool));
     }
-
     getIsCrowdsourcedUser(): boolean {
         const isCrowdsourcedUser = sessionStorage.getItem(this.IS_CROWDSOURCED_USER);
         // return true if isCrowdsourcedUser is true, and false otherwise (even if its null)
@@ -37,8 +45,7 @@ export class SessionStorageService {
     setKVPInSessionStorage(key: string, value: string): void {
         sessionStorage.setItem(key, value);
     }
-
-    getValueByKeyFromSessionStorage(key: string): string {
+    getKVPInSessionStorage(key: string): string {
         return sessionStorage.getItem(key);
     }
 
@@ -47,7 +54,7 @@ export class SessionStorageService {
             sessionStorage.clear();
         } else {
             // make sure we remove all KVPs except for the study id that we want the user to join
-            const registerStudyId = this.getStudyIdToRegisterFromSessionStorage();
+            const registerStudyId = this.getStudyIdToRegisterInSessionStorage();
             sessionStorage.clear();
             this.setStudyIdToRegisterInSessionStorage(registerStudyId);
         }

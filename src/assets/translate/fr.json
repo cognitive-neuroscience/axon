@@ -1,6 +1,6 @@
 {
     "participant-studies-page": {
-        "greeting": "Bienvenue!",
+        "greeting": "Bienvenue",
         "introduction": "Ceci est la plateforme de recherche en ligne gérée par Dre Sharp, neurologue à l'Université McGill.",
         "descriptor": "Vous trouverez ci-dessous les étude(s) auxquelles vous êtes inscrit.e.s.",
         "instruction": "Cliquez sur le bouton rouge pour visualiser le formulaire de consentement. Une fois que vous aurez consenti, vous pourrez cliquer sur le bouton bleu pour démarrer l'étude.",

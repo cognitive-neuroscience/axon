@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { thisOrDefault, throwErrIfNotDefined } from 'src/app/common/commonMethods';
 import { Key } from 'src/app/models/InternalDTOs';
-import { FingerTappingTaskData } from 'src/app/models/TaskData';
+import { FingerTappingTaskData } from 'src/app/models/ParticipantData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { TimerService } from 'src/app/services/timer.service';

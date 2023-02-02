@@ -1,10 +1,10 @@
-import { Subject } from "rxjs";
-import { TaskData } from "src/app/models/TaskData";
-import { Navigation } from "../shared/navigation-buttons/navigation-buttons.component";
+import { Subject } from 'rxjs';
+import { BaseParticipantData } from 'src/app/models/ParticipantData';
+import { Navigation } from '../shared/navigation-buttons/navigation-buttons.component';
 
 export interface IOnComplete {
     navigation: Navigation;
-    taskData?: TaskData[];
+    taskData?: BaseParticipantData[];
 }
 
 export interface Playable {

@@ -1,21 +1,22 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, of, Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { User } from 'src/app/models/Login';
+import { HttpStatus } from 'src/app/models/Auth';
+import { Role } from 'src/app/models/enums';
+import { User } from 'src/app/models/User';
 import { ConfirmationService } from 'src/app/services/confirmation/confirmation.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { UserService } from 'src/app/services/user.service';
-import { CreateGuestDialogComponent } from './create-guest-dialog/create-guest-dialog.component';
+import { CreateUserDialogComponent } from './create-user-dialog/create-user-dialog.component';
 
 @Component({
-    selector: 'app-manage-guests',
-    templateUrl: './manage-guests.component.html',
-    styleUrls: ['./manage-guests.component.scss'],
+    selector: 'app-manage-users',
+    templateUrl: './manage-users.component.html',
+    styleUrls: ['./manage-users.component.scss'],
 })
-export class ManageGuestsComponent implements OnInit, OnDestroy {
+export class ManageUsersComponent implements OnInit, OnDestroy {
     constructor(
         private userService: UserService,
         private dialog: MatDialog,
@@ -24,45 +25,54 @@ export class ManageGuestsComponent implements OnInit, OnDestroy {
         private loaderService: LoaderService
     ) {}
 
-    guests: Observable<User[]>;
+    get guests(): User[] {
+        return this.userService.usersValue.filter((x) => x.role === Role.GUEST);
+    }
+    get organizationMembers(): User[] {
+        return this.userService.usersValue.filter((x) => x.role === Role.ORGANIZATION_MEMBER);
+    }
 
     subscriptions: Subscription[] = [];
-
+    displayedColumnsForOrgMembers = ['id', 'name', 'email'];
     displayedColumnsForGuests = ['email', 'password', 'action'];
 
     ngOnInit(): void {
-        this.guests = this.userService.guests;
-        if (!this.userService.hasGuests) this.userService.updateGuests();
+        const sub = this.userService.getOrUpdateUsers().subscribe(() => {});
+        this.subscriptions.push(sub);
     }
 
     openCreateGuestModal() {
-        const dialogRef = this.dialog.open(CreateGuestDialogComponent, { width: '30%' });
+        const dialogRef = this.dialog.open(CreateUserDialogComponent, { width: '30%' });
         this.subscriptions.push(
             dialogRef.afterClosed().subscribe((data: User) => {
-                if (data) this._createGuest(data);
+                if (data) this._createUser(data);
             })
         );
     }
 
-    private _createGuest(user: User) {
+    private _createUser(user: User) {
         this.loaderService.showLoader();
-        this.subscriptions.push(
-            this.userService.createGuest(user.email, 'guest').subscribe(
-                (_data) => {
-                    this.loaderService.hideLoader();
-                    this.userService.updateGuests();
-                    this.snackbarService.openSuccessSnackbar('Successfully created new guest');
-                },
-                (err: HttpErrorResponse) => {
-                    this.loaderService.hideLoader();
-                    let errMsg = err.error?.message;
-                    if (!errMsg) {
-                        errMsg = 'Could not create guest';
-                    }
-                    this.snackbarService.openErrorSnackbar(err.error?.message || err.message);
+        const sub = this.userService.createUser(user).subscribe(
+            (_data) => {
+                this.loaderService.hideLoader();
+                // this.userService.updateGuests();
+                this.snackbarService.openSuccessSnackbar('Successfully created new guest');
+            },
+            (err: HttpStatus) => {
+                this.loaderService.hideLoader();
+                switch (err.status) {
+                    case 409:
+                        this.snackbarService.openErrorSnackbar(
+                            'A user with this email already exists. Please contact the developer.'
+                        );
+                        break;
+                    default:
+                        this.snackbarService.openErrorSnackbar(err.message);
+                        break;
                 }
-            )
+            }
         );
+        this.subscriptions.push(sub);
     }
 
     deleteGuest(guest: User) {
@@ -79,7 +89,6 @@ export class ManageGuestsComponent implements OnInit, OnDestroy {
                     (data) => {
                         this.loaderService.hideLoader();
                         if (data) {
-                            this.userService.updateGuests();
                             this.snackbarService.openSuccessSnackbar('Successfully deleted ' + guest.email);
                         }
                     },

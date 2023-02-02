@@ -7,14 +7,14 @@ import { SnackbarService } from '../../../../services/snackbar/snackbar.service'
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Key, UserResponse } from 'src/app/models/InternalDTOs';
-import { TaskData, TaskNames } from '../../../../models/TaskData';
+import { BaseParticipantData, TaskNames } from '../../../../models/ParticipantData';
 import { pracSet } from './stimuli_task';
 import { activityList } from './activityList';
 import { TimerService } from 'src/app/services/timer.service';
 import { getRandomNumber, wait } from 'src/app/common/commonMethods';
 import { environment } from 'src/environments/environment';
 
-class ChoiceTask extends TaskData {
+class ChoiceTask extends BaseParticipantData {
     activityLeft: string;
     activityRight: string;
     userAnswer: string;

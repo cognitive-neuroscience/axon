@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { ParticipantData, TaskData } from '../models/TaskData';
+import { ParticipantData, BaseParticipantData } from '../models/ParticipantData';
 import { Observable } from 'rxjs';
 import { TimerService } from './timer.service';
 import { ParticipantType } from '../models/enums';
@@ -10,17 +10,17 @@ import { ParticipantType } from '../models/enums';
     providedIn: 'root',
 })
 export class ParticipantDataService {
-    private readonly RESOURCE_PATH = '/studydata';
+    private readonly RESOURCE_PATH = '/participantdata';
 
     constructor(private http: HttpClient, private timerService: TimerService) {}
 
     // TaskData polymorphic object used for all task data
-    uploadTaskData(
+    createParticipantData(
         userId: string,
         studyId: number,
         taskOrder: number,
         isCrowdsourcedUser: boolean,
-        taskData: TaskData[] | { [key: string]: any }[]
+        taskData: BaseParticipantData[] | { [key: string]: any }[]
     ): Observable<HttpResponse<any>> {
         const participantData: ParticipantData = {
             userId: userId,

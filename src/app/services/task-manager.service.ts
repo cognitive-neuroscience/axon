@@ -5,22 +5,25 @@ import { SnackbarService } from './snackbar/snackbar.service';
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
 import { SessionStorageService } from './sessionStorage.service';
-import { map, mergeMap, take, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap, take, tap } from 'rxjs/operators';
 import { ParticipantRouteNames, RouteNames, SupportedLangs } from '../models/enums';
-import { StudyTask, Task } from '../models/Task';
+import { Task } from '../models/Task';
 import {
     SharplabTaskConfig,
     TaskPlayerNavigationConfig,
 } from '../pages/tasks/task-playables/task-player/task-player.component';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { TaskService } from './task.service';
 import { ConsentNavigationConfig } from '../pages/shared/consent-component/consent-reader.component';
 import { CanClear } from './clearance.service';
 import { objIsEmpty } from '../common/commonMethods';
 import { StudyUserService } from './study-user.service';
 import { LoaderService } from './loader/loader.service';
-import { StudyUser } from '../models/Login';
 import { TranslateService } from '@ngx-translate/core';
+import { StudyUser } from '../models/StudyUser';
+import { StudyTask } from '../models/StudyTask';
+import { UserStateService } from './user-state-service';
+import { CrowdSourcedUserService } from './crowdsourced-user.service';
 
 @Injectable({
     providedIn: 'root',
@@ -38,7 +41,7 @@ export class TaskManagerService implements CanClear {
     }
 
     get currentStudyTask(): StudyTask {
-        return this._study ? this._study.tasks[this._currentTaskIndex] : null;
+        return this._study ? this._study.studyTasks[this._currentTaskIndex] : null;
     }
 
     get hasStudy(): boolean {
@@ -49,12 +52,13 @@ export class TaskManagerService implements CanClear {
         private studyService: StudyService,
         private snackbarService: SnackbarService,
         private router: Router,
-        private userService: UserService,
+        private crowdSourcedUserService: CrowdSourcedUserService,
         private studyUserService: StudyUserService,
         private sessionStorageService: SessionStorageService,
         private taskService: TaskService,
         private loaderService: LoaderService,
-        private translateService: TranslateService
+        private translateService: TranslateService,
+        private userStateService: UserStateService
     ) {}
 
     /**
@@ -70,16 +74,17 @@ export class TaskManagerService implements CanClear {
     initStudy(studyId: number) {
         this.loaderService.showLoader();
         this.sessionStorageService.setCurrentlyRunningStudyIdInSessionStorage(studyId.toString());
-        this.userService
-            .getUser()
+        this.userStateService
+            .getOrUpdateUserState()
             .pipe(
-                take(1),
                 mergeMap((_user) =>
-                    this.userService.isCrowdsourcedUser ? of(null) : this.studyUserService.getStudyUsers(true)
+                    this.userStateService.isCrowdsourcedUser
+                        ? of(null)
+                        : this.studyUserService.getOrUpdateStudyUsers(true)
                 ),
                 mergeMap((studyUsers: null | StudyUser[]) => {
                     if (studyUsers) {
-                        const studyUser = studyUsers.find((studyUser) => studyUser.studyId === studyId);
+                        const studyUser = studyUsers.find((studyUser) => studyUser.study.id === studyId);
                         if (!studyUser.hasAcceptedConsent) throw new Error('user has not accepted consent');
                         this._currentTaskIndex = studyUser.currentTaskIndex;
                     } else {
@@ -90,8 +95,8 @@ export class TaskManagerService implements CanClear {
                 }),
                 mergeMap((res) => {
                     this._study = res.body;
-                    return this.userService.isCrowdsourcedUser
-                        ? this.taskService.getTaskByTaskId(res.body.consent)
+                    return this.userStateService.isCrowdsourcedUser
+                        ? this.taskService.getTaskByTaskId(res.body.consent.id)
                         : of(null);
                 })
             )
@@ -128,15 +133,14 @@ export class TaskManagerService implements CanClear {
         });
     }
 
-    handleErr(): void {
-        this.sessionStorageService.clearSessionStorage();
-        if (this.userService.isCrowdsourcedUser) {
+    handleErr(errText?: string): void {
+        if (this.userStateService.isCrowdsourcedUser) {
             this.router.navigate([ParticipantRouteNames.CROWDSOURCEPARTICIPANT_REGISTER_BASEROUTE]);
         } else {
             this.router.navigate([ParticipantRouteNames.DASHBOARD_BASEROUTE]);
         }
         this.snackbarService.openErrorSnackbar(
-            'There was an error. Please contact sharplab.neuro@mcgill.ca',
+            errText || 'Task Manager Error. Please contact sharplab.neuro@mcgill.ca',
             undefined,
             15000
         );
@@ -160,7 +164,7 @@ export class TaskManagerService implements CanClear {
     }
 
     private _routeToFinalPage(completionCode: string): void {
-        if (this.userService.isCrowdsourcedUser) {
+        if (this.userStateService.isCrowdsourcedUser) {
             this.loaderService.showLoader();
             this.router
                 .navigate(['/complete'], { state: { completionCode: completionCode } })
@@ -171,7 +175,7 @@ export class TaskManagerService implements CanClear {
         } else {
             this.loaderService.showLoader();
             this.studyUserService
-                .getStudyUsers(true)
+                .getOrUpdateStudyUsers(true)
                 .subscribe(
                     () => {
                         this.router.navigate([
@@ -202,42 +206,48 @@ export class TaskManagerService implements CanClear {
         // currentTaskIndex is incremented in the setTaskAsComplete method for account holders
         // this functionality is kept separate as there are cases where we want to set as complete before
         // the user officially finishes the task (when the last block is finished, not when the user hits next)
-        if (this.userService.isCrowdsourcedUser) ++this._currentTaskIndex;
+        if (this.userStateService.isCrowdsourcedUser) ++this._currentTaskIndex;
 
         this._handleNext();
     }
 
     // only for account holders because their current task index is saved in the db
     setTaskAsComplete(): Observable<boolean> {
-        return this.studyUserService.studyUsers.pipe(
-            take(1),
-            map((studyUsers) => studyUsers.find((studyUser) => studyUser.studyId === this.study.id)),
-            mergeMap((studyUser) => {
-                return this.studyUserService.incrementStudyUserTaskIndex(studyUser);
-            }),
-            tap((res) => {
-                this._currentTaskIndex = res.body.currentTaskIndex;
-            }),
-            map((res) => res.ok)
+        const studyUserForThisStudy = this.studyUserService.studyUsers.find(
+            (studyUser) => studyUser.study.id === this.study.id
         );
+        if (!studyUserForThisStudy) return of(false);
+
+        return this.studyUserService
+            .updateStudyUser({
+                ...studyUserForThisStudy,
+                currentTaskIndex: studyUserForThisStudy.currentTaskIndex + 1,
+            })
+            .pipe(
+                tap((res) => (this._currentTaskIndex = res.currentTaskIndex)),
+                map(() => true),
+                catchError(() => of(false))
+            );
     }
 
     private _handleNext() {
-        const totalTasks = this.study.tasks.length;
+        const totalTasks = this.study.studyTasks.length;
         // route to next task if there is still another task to go to
         if (this._currentTaskIndex < totalTasks) {
             this._routeToTask(this.currentStudyTask);
             return;
         } else {
-            if (this.userService.isCrowdsourcedUser) {
-                this.userService.markCompletion(this.study.id).subscribe(
-                    (completionCode: string) => {
-                        this._routeToFinalPage(completionCode);
-                    },
-                    (_err) => {
-                        this.handleErr();
-                    }
-                );
+            if (this.userStateService.isCrowdsourcedUser) {
+                this.crowdSourcedUserService
+                    .setComplete(this.userStateService.currentlyLoggedInUserId, this.study.id)
+                    .subscribe(
+                        (crowdSourcedUser) => {
+                            this._routeToFinalPage(crowdSourcedUser.completionCode);
+                        },
+                        (_err) => {
+                            this.handleErr();
+                        }
+                    );
             } else {
                 this._routeToFinalPage(null);
             }

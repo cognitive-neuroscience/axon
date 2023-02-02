@@ -1,6 +1,6 @@
 import { Component, ElementRef, Renderer2 } from '@angular/core';
 import { MatButton } from '@angular/material/button';
-import { TrailMakingTaskData } from 'src/app/models/TaskData';
+import { TrailMakingTaskData } from 'src/app/models/ParticipantData';
 import { TimerService } from '../../../../services/timer.service';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { SnackbarService } from '../../../../services/snackbar/snackbar.service';

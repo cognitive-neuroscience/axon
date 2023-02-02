@@ -2,25 +2,19 @@
 
 <div *ngIf="studyExists" class="container-fluid p-4">
     <div class="d-flex flex-column">
-        <h2>Participant data for {{ study?.internalName || study?.externalName }}</h2>
+        <h1>Internal Name: {{ study?.internalName || '' }}</h1>
         <h2 style="color: rgb(110, 110, 110); margin: 0">External name: {{ study?.externalName }}</h2>
         <h2 style="color: rgb(110, 110, 110)">Study ID: {{ study?.id }}</h2>
     </div>
 
-    <button
-        [disabled]="!(isAdmin | async)"
-        color="primary"
-        style="width: 200px"
-        mat-flat-button
-        [matMenuTriggerFor]="studyTasks"
-    >
+    <button [disabled]="isGuest" color="primary" style="width: 200px" mat-flat-button [matMenuTriggerFor]="studyTasks">
         select data
         <mat-icon>keyboard_arrow_down</mat-icon>
     </button>
 
     <button
         (click)="downloadAllCSVs(study)"
-        [disabled]="!(isAdmin | async)"
+        [disabled]="isGuest"
         color="accent"
         style="width: 200px; margin-left: 15px"
         mat-flat-button
@@ -33,7 +27,7 @@
 
     <mat-menu #studyTasks="matMenu">
         <button
-            *ngFor="let studyTask of study.tasks; let i = index"
+            *ngFor="let studyTask of study.studyTasks; let i = index"
             mat-menu-item
             (click)="getAndDisplayData(study, i)"
         >
@@ -44,5 +38,5 @@
         <button (click)="getStudyUsersForStudy(study)" mat-menu-item>Accountholding Participants</button>
     </mat-menu>
 
-    <app-data-table *ngIf="isAdmin | async" [fileName]="fileName" [tableData]="tableData"></app-data-table>
+    <app-data-table *ngIf="!isGuest" [fileName]="fileName" [tableData]="tableData"></app-data-table>
 </div>

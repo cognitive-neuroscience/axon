@@ -4,6 +4,7 @@ import { StudyUserService } from './study-user.service';
 import { StudyService } from './study.service';
 import { TaskManagerService } from './task-manager.service';
 import { TaskService } from './task.service';
+import { UserStateService } from './user-state-service';
 import { UserService } from './user.service';
 
 export interface CanClear {
@@ -26,6 +27,7 @@ export class ClearanceService {
         this.userService.clearService();
         this.studyUserService.clearService();
         this.sessionStorageService.clearSessionStorage();
+        this.userStateService.clearService();
     }
 
     constructor(
@@ -34,6 +36,7 @@ export class ClearanceService {
         private taskService: TaskService,
         private userService: UserService,
         private sessionStorageService: SessionStorageService,
-        private studyUserService: StudyUserService
+        private studyUserService: StudyUserService,
+        private userStateService: UserStateService
     ) {}
 }

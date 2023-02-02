@@ -64,6 +64,11 @@
     font-size: 12px;
 }
 
+.max-height {
+    overflow-y: auto;
+    max-height: 500px;
+}
+
 .colored-row:nth-child(2n + 1) {
     background-color: #e8e8e896;
 }

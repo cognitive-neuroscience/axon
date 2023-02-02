@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { RouteNames } from 'src/app/models/enums';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SessionStorageService } from 'src/app/services/sessionStorage.service';
@@ -35,34 +34,32 @@ export class StudyBackgroundComponent implements OnInit, OnDestroy {
         const studyIdFromURL = this.activatedRoute.snapshot.paramMap.get('id');
         const parsedNum = parseInt(studyIdFromURL);
 
-        if (!isNaN(parsedNum)) {
-            this.subscriptions.push(
-                this.studyService
-                    .getStudyById(parsedNum)
-                    .subscribe(
-                        (task) => {
-                            if (task.status === 204) {
-                                this.router.navigate([`${RouteNames.LANDINGPAGE_NOTFOUND}`]);
-                                return;
-                            } else {
-                                // save the id in session storage so that the user can register for it later
-                                this.sessionStorageService.setStudyIdToRegisterInSessionStorage(studyIdFromURL);
-                                this.studyBackground =
-                                    Object.keys(task.body.config).length === 0 ? null : task.body.config;
-                            }
-                        },
-                        (_err) => {
-                            this.router.navigate([`${RouteNames.LANDINGPAGE_NOTFOUND}`]);
-                        }
-                    )
-                    .add(() => {
-                        this.loader.hideLoader();
-                    })
-            );
-        } else {
-            // handle case with invalid url param
-            this.router.navigate([`${RouteNames.LANDINGPAGE_NOTFOUND}`]);
+        if (isNaN(parsedNum)) {
+            this.router.navigate([`not-found`]);
         }
+
+        this.subscriptions.push(
+            this.studyService
+                .getStudyById(parsedNum)
+                .subscribe(
+                    (task) => {
+                        if (task.status === 204) {
+                            this.router.navigate([`${RouteNames.LANDINGPAGE_NOTFOUND}`]);
+                            return;
+                        } else {
+                            // save the id in session storage so that the user can register for it later
+                            this.sessionStorageService.setStudyIdToRegisterInSessionStorage(studyIdFromURL);
+                            this.studyBackground = Object.keys(task.body.config).length === 0 ? null : task.body.config;
+                        }
+                    },
+                    (_err) => {
+                        this.router.navigate([`${RouteNames.LANDINGPAGE_NOTFOUND}`]);
+                    }
+                )
+                .add(() => {
+                    this.loader.hideLoader();
+                })
+        );
     }
 
     navigate(routeTo: 'login' | 'register') {

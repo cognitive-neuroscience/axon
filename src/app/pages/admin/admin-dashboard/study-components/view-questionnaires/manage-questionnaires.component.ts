@@ -18,25 +18,23 @@ export class ManageQuestionnairesComponent {
 
     subscriptions: Subscription[] = [];
 
-    get questionnairesForTable(): Observable<ViewComponentsTableModel<Task>> {
-        return this.taskService.tasks.pipe(
-            map((tasks) => (tasks ? tasks.filter((task) => task.taskType === TaskType.QUESTIONNAIRE) : [])),
-            map((tasks) => ({
-                tableConfig: [
-                    {
-                        columnHeader: 'Name',
-                        columnKey: 'name',
-                    },
-                    {
-                        columnHeader: 'Description',
-                        columnKey: 'description',
-                    },
-                ],
-                tableData: tasks,
-                msgOnEmpty: 'No questionnaires',
-                tableTitle: '',
-            }))
-        );
+    get questionnairesForTable(): ViewComponentsTableModel<Task> {
+        const questionnaires = this.taskService.tasksValue.filter((task) => task.taskType === TaskType.QUESTIONNAIRE);
+        return {
+            tableConfig: [
+                {
+                    columnHeader: 'Name',
+                    columnKey: 'name',
+                },
+                {
+                    columnHeader: 'Description',
+                    columnKey: 'description',
+                },
+            ],
+            tableData: questionnaires,
+            msgOnEmpty: 'No questionnaires',
+            tableTitle: '',
+        };
     }
 
     previewQuestionnaire(questionnaire: Task) {

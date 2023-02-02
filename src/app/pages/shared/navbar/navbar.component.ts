@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
-import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames, SupportedLangs } from 'src/app/models/enums';
+import { Role, SupportedLangs } from 'src/app/models/enums';
+import { Organization } from 'src/app/models/Organization';
 import { AuthService } from 'src/app/services/auth.service';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { SessionStorageService } from 'src/app/services/sessionStorage.service';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
+import { UserStateService } from 'src/app/services/user-state-service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -17,32 +17,59 @@ import { UserService } from 'src/app/services/user.service';
     styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit {
-    ADMIN_STUDIES_ROUTE = `/${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.STUDIES_SUBROUTE}`;
-    ADMIN_COMPONENTS_ROUTE = `/${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.COMPONENTS_SUBROUTE}`;
-    ADMIN_GUESTS_ROUTE = `/${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.GUESTS_SUBROUTE}`;
+    ADMIN_STUDIES_ROUTE = `/admin-dashboard/studies`;
+    ADMIN_COMPONENTS_ROUTE = `/admin-dashboard/components`;
+    ADMIN_USERS_ROUTE = `/admin-dashboard/users`;
 
-    PARTICIPANT_STUDIES_ROUTE = `/${ParticipantRouteNames.DASHBOARD_BASEROUTE}/${ParticipantRouteNames.STUDIES_SUBROUTE}`;
-    PARTICIPANT_PROFILE_ROUTE = `/${ParticipantRouteNames.DASHBOARD_BASEROUTE}/${ParticipantRouteNames.PROFILE_SUBROUTE}`;
+    ORG_MEMBER_STUDIES_ROUTE = `/organization-member-dashboard/studies`;
+    ORG_MEMBER_COMPONENTS_ROUTE = `/organization-member-dashboard/components`;
 
-    get showAdminDashboard(): Observable<boolean> {
-        return this.userService.userAsync.pipe(
-            map((user) => (user ? user.role === Role.ADMIN || user.role === Role.GUEST : false))
-        );
+    PARTICIPANT_STUDIES_ROUTE = `/participant-dashboard/studies`;
+    PARTICIPANT_PROFILE_ROUTE = `/participant-dashboard/profile`;
+
+    get showAdminNavbar(): boolean {
+        return this.userStateService.userIsAdmin;
     }
 
-    get isAdmin(): Observable<boolean> {
-        return this.userService.userIsAdmin;
+    get showOrgMemberNavbar(): boolean {
+        return this.userStateService.userIsOrgMember || this.userStateService.userIsGuest;
+    }
+
+    get role(): string {
+        switch (this.userStateService.userValue?.role) {
+            case Role.ADMIN:
+                return '(ADMIN)';
+            case Role.GUEST:
+                return '(GUEST)';
+            case Role.ORGANIZATION_MEMBER:
+                return '(MEMBER)';
+            case Role.PARTICIPANT:
+                return '(PARTICIPANT)';
+            default:
+                return '';
+        }
+    }
+
+    get showParticipantNavbar(): boolean {
+        return this.userStateService.userIsParticipant;
+    }
+
+    get isAdmin(): boolean {
+        return this.userStateService.userIsAdmin;
+    }
+
+    get organization(): Organization {
+        return this.userStateService.userOrganization;
     }
 
     constructor(
-        private router: Router,
+        private clearanceService: ClearanceService,
         private userService: UserService,
         private authService: AuthService,
         private loaderService: LoaderService,
         private snackbarService: SnackbarService,
         private translateService: TranslateService,
-        private clearanceService: ClearanceService,
-        private sessionStorageService: SessionStorageService
+        private userStateService: UserStateService
     ) {}
 
     ngOnInit(): void {}
@@ -51,13 +78,12 @@ export class NavbarComponent implements OnInit {
         this.loaderService.showLoader();
         const newLang = this.currentLang === SupportedLangs.FR ? SupportedLangs.EN : SupportedLangs.FR;
 
-        this.userService
-            .getUser()
+        this.userStateService
+            .getOrUpdateUserState()
             .pipe(
                 mergeMap((user) => {
-                    return this.userService.patchUser({ ...user, lang: newLang });
-                }),
-                mergeMap((_res) => this.userService.getUser(true))
+                    return this.userService.updateUser({ ...user, lang: newLang });
+                })
             )
             .subscribe(
                 (_res) => {
@@ -77,25 +103,7 @@ export class NavbarComponent implements OnInit {
     }
 
     logout() {
-        this.loaderService.showLoader();
         this.clearanceService.clearServices();
-        this.sessionStorageService.clearSessionStorage(true);
-        this.authService
-            .logout()
-            .subscribe(
-                () => {
-                    this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
-                    this.snackbarService.openSuccessSnackbar(
-                        this.translateService.currentLang === SupportedLangs.FR ? 'Déconnecté' : 'You are logged out'
-                    );
-                },
-                (_err) => {
-                    this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]);
-                    this.snackbarService.openErrorSnackbar('Logged out but encountered issues clearing cookies');
-                }
-            )
-            .add(() => {
-                this.loaderService.hideLoader();
-            });
+        this.authService.logout();
     }
 }

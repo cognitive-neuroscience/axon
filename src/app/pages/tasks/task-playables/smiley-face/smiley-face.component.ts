@@ -2,7 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { getRandomNumber, thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { Feedback, Key, UserResponse } from 'src/app/models/InternalDTOs';
 import { StimuliProvidedType } from 'src/app/models/enums';
-import { SmileyFaceTaskData } from 'src/app/models/TaskData';
+import { SmileyFaceTaskData } from 'src/app/models/ParticipantData';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../base-task';

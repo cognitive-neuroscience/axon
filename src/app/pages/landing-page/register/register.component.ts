@@ -1,12 +1,14 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, OnDestroy } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ParticipantRouteNames, Role, RouteNames } from 'src/app/models/enums';
+import { HttpStatus } from 'src/app/models/Auth';
+import { ParticipantRouteNames, Role, RouteNames, SupportedLangs } from 'src/app/models/enums';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
+import { TimerService } from 'src/app/services/timer.service';
 import { UserService } from 'src/app/services/user.service';
 
 function fieldsMatchingValidator(
@@ -49,7 +51,8 @@ export class RegisterComponent implements OnDestroy {
         private userService: UserService,
         private snackbarService: SnackbarService,
         private loaderService: LoaderService,
-        private clearanceService: ClearanceService
+        private clearanceService: ClearanceService,
+        private timerService: TimerService
     ) {}
 
     registerForm = this.fb.group(
@@ -76,7 +79,17 @@ export class RegisterComponent implements OnDestroy {
 
         this.subscriptions.push(
             this.userService
-                .registerUser(email, password, Role.PARTICIPANT)
+                .createUser({
+                    email,
+                    password,
+                    name: '',
+                    createdAt: this.timerService.getCurrentTimestamp(),
+                    id: 0,
+                    role: Role.PARTICIPANT,
+                    changePasswordRequired: false,
+                    lang: SupportedLangs.EN,
+                    organization: null,
+                })
                 .subscribe(
                     (_) => {
                         this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]).then((navigated: boolean) => {
@@ -92,9 +105,20 @@ export class RegisterComponent implements OnDestroy {
                             }
                         });
                     },
-                    (error: HttpErrorResponse) => {
+                    (error: HttpStatus) => {
+                        switch (error.status) {
+                            case HttpStatusCode.Conflict:
+                                this.snackbarService.openErrorSnackbar(
+                                    'A user with this email already exists. Please log in or select "Forgot your password?" and follow the steps to reset your password"',
+                                    undefined,
+                                    20000
+                                );
+                                break;
+
+                            default:
+                                break;
+                        }
                         console.error(error);
-                        this.snackbarService.openErrorSnackbar(error.message);
                     }
                 )
                 .add(() => {

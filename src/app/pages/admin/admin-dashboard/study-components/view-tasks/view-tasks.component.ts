@@ -23,29 +23,26 @@ export class ViewTasksComponent implements OnDestroy {
 
     constructor(private router: Router, private taskService: TaskService, private dialog: MatDialog) {}
 
-    get NABTasksForTable(): Observable<ViewComponentsTableModel<Task>> {
-        return this.taskService.tasks.pipe(
-            map((tasks) =>
-                tasks
-                    ? tasks.filter((task) => task.taskType === TaskType.NAB && task.fromPlatform === Platform.PSHARPLAB)
-                    : []
-            ),
-            map((tasks) => ({
-                tableConfig: [
-                    {
-                        columnHeader: 'Name',
-                        columnKey: 'name',
-                    },
-                    {
-                        columnHeader: 'Description',
-                        columnKey: 'description',
-                    },
-                ],
-                tableData: tasks,
-                msgOnEmpty: 'No NAB Tasks',
-                tableTitle: 'Neuropsych Battery (NAB)',
-            }))
+    get NABTasksForTable(): ViewComponentsTableModel<Task> {
+        const NABTasks = this.taskService.tasksValue.filter(
+            (task) => task.taskType === TaskType.NAB && task.fromPlatform === Platform.PSHARPLAB
         );
+
+        return {
+            tableConfig: [
+                {
+                    columnHeader: 'Name',
+                    columnKey: 'name',
+                },
+                {
+                    columnHeader: 'Description',
+                    columnKey: 'description',
+                },
+            ],
+            tableData: NABTasks,
+            msgOnEmpty: 'No NAB Tasks',
+            tableTitle: 'Neuropsych Battery (NAB)',
+        };
     }
 
     run(task: Task) {
@@ -69,31 +66,26 @@ export class ViewTasksComponent implements OnDestroy {
         );
     }
 
-    get experimentalTasksForTable(): Observable<ViewComponentsTableModel<Task>> {
-        return this.taskService.tasks.pipe(
-            map((tasks) =>
-                tasks
-                    ? tasks.filter(
-                          (task) => task.taskType === TaskType.EXPERIMENTAL && task.fromPlatform === Platform.PSHARPLAB
-                      )
-                    : []
-            ),
-            map((tasks) => ({
-                tableConfig: [
-                    {
-                        columnHeader: 'Name',
-                        columnKey: 'name',
-                    },
-                    {
-                        columnHeader: 'Description',
-                        columnKey: 'description',
-                    },
-                ],
-                tableData: tasks,
-                msgOnEmpty: 'No NAB Tasks',
-                tableTitle: 'Experimental Tasks',
-            }))
+    get experimentalTasksForTable(): ViewComponentsTableModel<Task> {
+        const experimentalTasks = this.taskService.tasksValue.filter(
+            (task) => task.taskType === TaskType.EXPERIMENTAL && task.fromPlatform === Platform.PSHARPLAB
         );
+
+        return {
+            tableConfig: [
+                {
+                    columnHeader: 'Name',
+                    columnKey: 'name',
+                },
+                {
+                    columnHeader: 'Description',
+                    columnKey: 'description',
+                },
+            ],
+            tableData: experimentalTasks,
+            msgOnEmpty: 'No NAB Tasks',
+            tableTitle: 'Experimental Tasks',
+        };
     }
 
     ngOnDestroy() {

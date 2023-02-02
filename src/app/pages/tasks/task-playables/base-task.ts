@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { wait } from 'src/app/common/commonMethods';
-import { TaskData } from 'src/app/models/TaskData';
+import { BaseParticipantData } from 'src/app/models/ParticipantData';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { Navigation } from '../shared/navigation-buttons/navigation-buttons.component';
 import { Playable, IOnComplete } from './playable';
@@ -16,7 +16,7 @@ export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
     config: TaskPlayerState;
 
     // base task local state variables
-    taskData: TaskData[];
+    taskData: BaseParticipantData[];
     onComplete: Subject<IOnComplete> = new Subject();
     isDestroyed = false;
     showLoaderOnInitDuration = 2000;

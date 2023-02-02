@@ -5,6 +5,7 @@ import { ParticipantRouteNames, RouteNames, SupportedLangs } from 'src/app/model
 import { EmailService } from 'src/app/services/email.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
     selector: 'app-send-reset-password',
@@ -15,7 +16,7 @@ export class SendResetPasswordComponent implements OnInit {
     email: string = '';
 
     constructor(
-        private emailService: EmailService,
+        private userService: UserService,
         private snackbarService: SnackbarService,
         private router: Router,
         private loaderService: LoaderService,
@@ -27,7 +28,7 @@ export class SendResetPasswordComponent implements OnInit {
     handleSubmit() {
         if (this.email.length > 0) {
             this.loaderService.showLoader();
-            this.emailService
+            this.userService
                 .sendForgotPasswordEmail(this.email)
                 .subscribe(
                     (ok) => {

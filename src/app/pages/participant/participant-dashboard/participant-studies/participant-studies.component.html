@@ -1,9 +1,9 @@
 <div>
     <div class="mb-4">
-        <h1 class="study-id-display">User ID: {{ userId | async }}</h1>
+        <h1 class="study-id-display">User ID: {{ userId }}</h1>
     </div>
     <div class="mb-4 intro">
-        <p>{{ 'participant-studies-page.greeting' | translate }}</p>
+        <p>{{ 'participant-studies-page.greeting' | translate }}!</p>
 
         <p>{{ 'participant-studies-page.introduction' | translate }}</p>
 
@@ -26,7 +26,7 @@
 
     <div>
         <div
-            *ngFor="let studyUser of studyUsers | async"
+            *ngFor="let studyUser of studyUsers"
             class="participant-study {{ studyIsDone(studyUser) ? 'complete' : '' }}"
         >
             <h2 class="{{ studyIsDone(studyUser) ? 'complete' : '' }}">

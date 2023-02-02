@@ -1,5 +1,7 @@
-import { NullTime } from './Login';
-import { StudyTask } from './Task';
+import { NullTime } from './InternalDTOs';
+import { StudyTask } from './StudyTask';
+import { Task } from './Task';
+import { User } from './User';
 
 export class Study {
     id: number;
@@ -8,9 +10,10 @@ export class Study {
     internalName: string;
     externalName: string;
     started: boolean;
-    description: string;
     canEdit: boolean;
-    consent: number;
+    consent: Task;
+    owner: Partial<User>;
+    description: string;
     config: any; // json metadata
-    tasks: StudyTask[];
+    studyTasks: StudyTask[];
 }

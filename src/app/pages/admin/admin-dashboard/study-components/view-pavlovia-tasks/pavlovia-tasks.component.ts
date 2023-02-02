@@ -16,64 +16,56 @@ import { ViewComponentsTableModel } from '../shared/view-components-table/view-c
 export class PavloviaTasksComponent {
     constructor(private taskService: TaskService, private router: Router) {}
 
-    get NABPavloviaTasksForTable(): Observable<ViewComponentsTableModel<Task>> {
-        return this.taskService.tasks.pipe(
-            map((tasks) =>
-                tasks
-                    ? tasks.filter((task) => task.taskType === TaskType.NAB && task.fromPlatform === Platform.PAVLOVIA)
-                    : []
-            ),
-            map((tasks) => ({
-                tableConfig: [
-                    {
-                        columnHeader: 'Name',
-                        columnKey: 'name',
-                    },
-                    {
-                        columnHeader: 'Description',
-                        columnKey: 'description',
-                    },
-                    {
-                        columnHeader: 'URL',
-                        columnKey: 'externalURL',
-                    },
-                ],
-                tableData: tasks,
-                msgOnEmpty: 'No pavlovia NAB Tasks',
-                tableTitle: 'Neuropsych Battery (NAB)',
-            }))
+    get NABPavloviaTasksForTable(): ViewComponentsTableModel<Task> {
+        const pavloviaTasks = this.taskService.tasksValue.filter(
+            (task) => task.taskType === TaskType.NAB && task.fromPlatform === Platform.PAVLOVIA
         );
+
+        return {
+            tableConfig: [
+                {
+                    columnHeader: 'Name',
+                    columnKey: 'name',
+                },
+                {
+                    columnHeader: 'Description',
+                    columnKey: 'description',
+                },
+                {
+                    columnHeader: 'URL',
+                    columnKey: 'externalURL',
+                },
+            ],
+            tableData: pavloviaTasks,
+            msgOnEmpty: 'No pavlovia NAB Tasks',
+            tableTitle: 'Neuropsych Battery (NAB)',
+        };
     }
 
-    get experimentalPavloviaTasksForTable(): Observable<ViewComponentsTableModel<Task>> {
-        return this.taskService.tasks.pipe(
-            map((tasks) =>
-                tasks
-                    ? tasks.filter(
-                          (task) => task.taskType === TaskType.EXPERIMENTAL && task.fromPlatform === Platform.PAVLOVIA
-                      )
-                    : []
-            ),
-            map((tasks) => ({
-                tableConfig: [
-                    {
-                        columnHeader: 'Name',
-                        columnKey: 'name',
-                    },
-                    {
-                        columnHeader: 'Description',
-                        columnKey: 'description',
-                    },
-                    {
-                        columnHeader: 'URL',
-                        columnKey: 'externalURL',
-                    },
-                ],
-                tableData: tasks,
-                msgOnEmpty: 'No questionnaires',
-                tableTitle: 'Experimental Tasks',
-            }))
+    get experimentalPavloviaTasksForTable(): ViewComponentsTableModel<Task> {
+        const pavloviaTasks = this.taskService.tasksValue.filter(
+            (task) => task.taskType === TaskType.EXPERIMENTAL && task.fromPlatform === Platform.PAVLOVIA
         );
+
+        return {
+            tableConfig: [
+                {
+                    columnHeader: 'Name',
+                    columnKey: 'name',
+                },
+                {
+                    columnHeader: 'Description',
+                    columnKey: 'description',
+                },
+                {
+                    columnHeader: 'URL',
+                    columnKey: 'externalURL',
+                },
+            ],
+            tableData: pavloviaTasks,
+            msgOnEmpty: 'No questionnaires',
+            tableTitle: 'Experimental Tasks',
+        };
     }
 
     run(task: Task) {

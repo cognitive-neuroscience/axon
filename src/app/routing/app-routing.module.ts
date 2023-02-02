@@ -19,34 +19,34 @@ const routes: Routes = [
         path: '',
         component: LandingPageComponent,
         children: [
-            { path: '', redirectTo: RouteNames.LANDINGPAGE_LOGIN_BASEROUTE, pathMatch: 'full' },
-            { path: RouteNames.LANDINGPAGE_LOGIN_BASEROUTE, component: LoginComponent },
-            { path: RouteNames.LANDINGPAGE_REGISTER_BASEROUTE, component: RegisterComponent },
-            { path: RouteNames.LANDINGPAGE_FORGOT_PASSWORD_BASEROUTE, component: SendResetPasswordComponent },
+            { path: '', redirectTo: 'login', pathMatch: 'full' },
+            { path: 'login', component: LoginComponent },
+            { path: 'register', component: RegisterComponent },
+            { path: 'send-reset-email', component: SendResetPasswordComponent },
             {
-                path: RouteNames.LANDINGPAGE_RESET_PASSWORD_BASEROUTE,
+                path: 'reset',
                 component: ResetPasswordLoginComponent,
             },
         ],
     },
     {
-        path: ParticipantRouteNames.CROWDSOURCEPARTICIPANT_REGISTER_BASEROUTE,
+        path: 'crowdsource-participant',
         component: CrowdSourceLoginComponent,
     },
     {
-        path: RouteNames.CONSENT,
+        path: 'consent',
         component: ConsentPageComponent,
     },
     {
-        path: RouteNames.TASKPLAYER,
+        path: 'playtask',
         component: TaskPlayerComponent,
     },
     {
-        path: RouteNames.LANDINGPAGE_STUDIES_BASEROUTE,
+        path: 'studies',
         children: [
             {
                 path: '',
-                redirectTo: `/${RouteNames.LANDINGPAGE_NOTFOUND}`, // "/" sets the absolute path, /#/studies without an ID is not a valid URL
+                redirectTo: `/not-found`, // "/" sets the absolute path, /#/studies without an ID is not a valid URL
                 pathMatch: 'full',
             },
             {

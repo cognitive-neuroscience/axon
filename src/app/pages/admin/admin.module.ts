@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { AdminRoutingModule } from './admin-routing.module';
 import { DataComponent } from './admin-dashboard/data/data.component';
-import { ManageGuestsComponent } from './admin-dashboard/manage-guests/manage-guests.component';
+import { ManageUsersComponent } from './admin-dashboard/manage-users/manage-users.component';
 import { StudiesComponent } from './admin-dashboard/studies/studies.component';
 import { StudyComponentsComponent } from './admin-dashboard/study-components/study-components.component';
 import { ViewTasksComponent } from './admin-dashboard/study-components/view-tasks/view-tasks.component';
@@ -21,6 +21,7 @@ import { ViewInfoDisplaysComponent } from './admin-dashboard/study-components/vi
 import { ViewComponentsTableComponent } from './admin-dashboard/study-components/shared/view-components-table/view-components-table.component';
 import { ViewConsentsComponent } from './admin-dashboard/study-components/view-consents/view-consents.component';
 import { AlterMetadataDialogComponent } from './admin-dashboard/study-components/view-tasks/alter-metadata-dialog/alter-metadata-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
     declarations: [
@@ -29,7 +30,7 @@ import { AlterMetadataDialogComponent } from './admin-dashboard/study-components
         ViewStudiesComponent,
         CreateModifyStudyComponent,
         DataComponent,
-        ManageGuestsComponent,
+        ManageUsersComponent,
         StudyComponentsComponent,
         ViewTasksComponent,
         PavloviaTasksComponent,
@@ -49,6 +50,7 @@ import { AlterMetadataDialogComponent } from './admin-dashboard/study-components
         TaskModule,
         FormsModule,
         ReactiveFormsModule,
+        TranslateModule,
     ],
 })
 export class AdminModule {}
