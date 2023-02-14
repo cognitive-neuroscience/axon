@@ -38,7 +38,7 @@ export class StudyService implements CanClear {
 
         if (this.hasStudiesValue && !forceUpdate) return of(this.studiesValue);
 
-        return this._getAllStudiesForOrganization(this.userStateService.userOrganization.id).pipe(
+        return this._getAllStudiesForOrganization(this.userStateService.userOrganization?.id).pipe(
             take(1),
             tap((studies) => {
                 this.updateStudiesState(studies);
