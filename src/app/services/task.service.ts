@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Task } from '../models/Task';
 import { environment } from 'src/environments/environment';
-import { mergeMap, take, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { CanClear } from './clearance.service';
 
 @Injectable({

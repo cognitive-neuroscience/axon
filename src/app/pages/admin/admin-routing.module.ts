@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CanActivateRouteGuard } from 'src/app/guards/CanActivateRouteGuard';
 import { Role } from 'src/app/models/enums';
+import { ProfileComponent } from '../shared/profile/profile.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { DataComponent } from './admin-dashboard/data/data.component';
 import { ManageUsersComponent } from './admin-dashboard/manage-users/manage-users.component';
@@ -29,6 +30,7 @@ const routes: Routes = [
             },
             { path: 'components', component: StudyComponentsComponent },
             { path: 'users', component: ManageUsersComponent },
+            { path: 'profile', component: ProfileComponent },
         ],
     },
 ];

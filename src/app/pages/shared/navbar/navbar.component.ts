@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { Role, SupportedLangs } from 'src/app/models/enums';
 import { Organization } from 'src/app/models/Organization';
 import { AuthService } from 'src/app/services/auth.service';
@@ -20,9 +19,11 @@ export class NavbarComponent implements OnInit {
     ADMIN_STUDIES_ROUTE = `/admin-dashboard/studies`;
     ADMIN_COMPONENTS_ROUTE = `/admin-dashboard/components`;
     ADMIN_USERS_ROUTE = `/admin-dashboard/users`;
+    ADMIN_PROFILE_ROUTE = `/admin-dashboard/profile`;
 
     ORG_MEMBER_STUDIES_ROUTE = `/organization-member-dashboard/studies`;
     ORG_MEMBER_COMPONENTS_ROUTE = `/organization-member-dashboard/components`;
+    ORG_MEMBER_PROFILE_ROUTE = `/organization-member-dashboard/profile`;
 
     PARTICIPANT_STUDIES_ROUTE = `/participant-dashboard/studies`;
     PARTICIPANT_PROFILE_ROUTE = `/participant-dashboard/profile`;
@@ -38,13 +39,13 @@ export class NavbarComponent implements OnInit {
     get role(): string {
         switch (this.userStateService.userValue?.role) {
             case Role.ADMIN:
-                return '(ADMIN)';
+                return 'ADMIN';
             case Role.GUEST:
-                return '(GUEST)';
+                return 'GUEST';
             case Role.ORGANIZATION_MEMBER:
-                return '(MEMBER)';
+                return 'MEMBER';
             case Role.PARTICIPANT:
-                return '(PARTICIPANT)';
+                return 'PARTICIPANT';
             default:
                 return '';
         }
@@ -104,6 +105,6 @@ export class NavbarComponent implements OnInit {
 
     logout() {
         this.clearanceService.clearServices();
-        this.authService.logout();
+        this.authService.logout(true);
     }
 }

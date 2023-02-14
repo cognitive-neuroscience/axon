@@ -1,0 +1,88 @@
+<div class="container-fluid">
+    <div>
+        <h2 class="mb-5">Your Profile</h2>
+
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="mb-4">
+            <mat-form-field appearance="fill" class="responsive-input-width d-block mb-3">
+                <mat-label>Name</mat-label>
+                <input required formControlName="name" matInput />
+                <mat-error *ngIf="profileForm.get('name')?.hasError('required')"
+                    >This is required / Ceci est requis</mat-error
+                >
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="responsive-input-width d-block mb-3">
+                <mat-label>Email</mat-label>
+                <input required email formControlName="email" matInput />
+                <mat-error *ngIf="profileForm.get('email')?.hasError('email')"
+                    >This must be a valid email / Ceci doit être un e-mail valide</mat-error
+                >
+                <mat-error *ngIf="profileForm.get('email')?.hasError('required')"
+                    >This is required / Ceci est requis</mat-error
+                >
+            </mat-form-field>
+
+            <button [disabled]="!profileForm.valid" color="primary" mat-raised-button type="submit">
+                Update Profile
+            </button>
+        </form>
+        <div class="responsive-input-width">
+            <mat-accordion>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Update Password</mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <form>
+                        <mat-form-field appearance="fill" class="w-100 d-block">
+                            <mat-label>Current Password</mat-label>
+                            <input
+                                type="password"
+                                [ngModelOptions]="{ standalone: true }"
+                                [(ngModel)]="currPassword"
+                                matInput
+                                required
+                            />
+                            <mat-error *ngIf="currPassword === ''">This is required / Ceci est requis</mat-error>
+                        </mat-form-field>
+                        <mat-form-field appearance="fill" class="w-100 d-block">
+                            <mat-label>New Password</mat-label>
+                            <input
+                                type="password"
+                                [ngModelOptions]="{ standalone: true }"
+                                [(ngModel)]="newPassword"
+                                matInput
+                                required
+                            />
+                            <mat-error *ngIf="newPassword == ''">This is required / Ceci est requis</mat-error>
+                        </mat-form-field>
+                        <mat-form-field appearance="fill" class="w-100 d-block">
+                            <mat-label>Repeat New Password</mat-label>
+                            <input
+                                type="password"
+                                [ngModelOptions]="{ standalone: true }"
+                                [(ngModel)]="repeatNewPassword"
+                                matInput
+                                required
+                            />
+                            <mat-error *ngIf="repeatNewPassword == ''">This is required / Ceci est requis</mat-error>
+                            <mat-hint
+                                style="color: red"
+                                *ngIf="repeatNewPassword.length > 0 && newPassword !== repeatNewPassword"
+                                >Passwords must match / Les mots de passe doivent correspondre
+                            </mat-hint>
+                        </mat-form-field>
+                        <button
+                            [disabled]="currPassword === '' || newPassword === '' || newPassword !== repeatNewPassword"
+                            color="primary"
+                            mat-raised-button
+                            type="button"
+                            (click)="onUpdateUserPassword()"
+                        >
+                            Update Password
+                        </button>
+                    </form>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+    </div>
+</div>

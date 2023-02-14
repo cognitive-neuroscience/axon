@@ -10,13 +10,13 @@
     <hr />
     <div>
         <div [formGroup]="studyForm">
-            <mat-form-field class="w-50 d-block">
+            <mat-form-field appearance="fill" class="w-50 d-block">
                 <mat-label>External Study Name</mat-label>
                 <input required formControlName="externalName" matInput type="text" placeholder="My study" />
                 <mat-error *ngIf="studyForm.get('externalName')?.hasError('required')">This is required</mat-error>
                 <mat-error *ngIf="studyForm.get('externalName')?.hasError('maxlength')">Max 255 characters</mat-error>
             </mat-form-field>
-            <mat-form-field class="w-50 d-block">
+            <mat-form-field appearance="fill" class="w-50 d-block">
                 <mat-label>Internal Study Name</mat-label>
                 <input
                     formControlName="internalName"
@@ -28,12 +28,12 @@
                 <mat-error *ngIf="studyForm.get('internalName')?.hasError('required')">This is required</mat-error>
                 <mat-error *ngIf="studyForm.get('internalName')?.hasError('maxlength')">Max 255 characters</mat-error>
             </mat-form-field>
-            <mat-form-field class="w-50 d-block">
+            <mat-form-field appearance="fill" class="w-50 d-block">
                 <mat-label>Description (optional)</mat-label>
                 <textarea rows="4" formControlName="description" matInput type="text"></textarea>
                 <mat-error *ngIf="studyForm.get('description')?.hasError('maxlength')">Max 500 characters</mat-error>
             </mat-form-field>
-            <mat-form-field class="w-50">
+            <mat-form-field appearance="fill" class="w-50">
                 <mat-label>Consent For Study</mat-label>
                 <mat-select required formControlName="consent" [compareWith]="compareConsentFn">
                     <mat-option *ngFor="let consentForm of consentForms" [value]="consentForm">{{
@@ -46,7 +46,7 @@
             <hr />
 
             <mat-label class="d-block">Build Your Study</mat-label>
-            <mat-form-field class="select-task">
+            <mat-form-field appearance="fill" class="select-task">
                 <mat-label>Sharplab Tasks</mat-label>
                 <mat-select
                     [disabled]="study && !study.canEdit"
@@ -70,7 +70,7 @@
                     </mat-optgroup>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field class="select-task">
+            <mat-form-field appearance="fill" class="select-task">
                 <mat-label>Questionnaires</mat-label>
                 <mat-select
                     [disabled]="study && !study.canEdit"
@@ -84,7 +84,7 @@
                     >
                 </mat-select>
             </mat-form-field>
-            <mat-form-field class="select-task">
+            <mat-form-field appearance="fill" class="select-task">
                 <mat-label>Pavlovia Tasks</mat-label>
                 <mat-select
                     [disabled]="study && !study.canEdit"
@@ -108,7 +108,7 @@
                     </mat-optgroup>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field class="select-task">
+            <mat-form-field appearance="fill" class="select-task">
                 <mat-label>Info Displays</mat-label>
                 <mat-select
                     [disabled]="study && !study.canEdit"

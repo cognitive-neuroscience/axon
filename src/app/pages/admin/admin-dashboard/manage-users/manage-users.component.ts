@@ -34,7 +34,7 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
 
     subscriptions: Subscription[] = [];
     displayedColumnsForOrgMembers = ['id', 'name', 'email'];
-    displayedColumnsForGuests = ['email', 'password', 'action'];
+    displayedColumnsForGuests = ['id', 'name', 'email', 'action'];
 
     ngOnInit(): void {
         const sub = this.userService.getOrUpdateUsers().subscribe(() => {});

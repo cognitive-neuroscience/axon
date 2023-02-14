@@ -178,9 +178,7 @@ export class TaskManagerService implements CanClear {
                 .getOrUpdateStudyUsers(true)
                 .subscribe(
                     () => {
-                        this.router.navigate([
-                            `${ParticipantRouteNames.DASHBOARD_BASEROUTE}/${ParticipantRouteNames.STUDIES_SUBROUTE}`,
-                        ]);
+                        this.router.navigate([`participant-dashboard/studies`]);
                         this.snackbarService.openSuccessSnackbar(
                             this.translateService.currentLang === SupportedLangs.FR
                                 ? 'Vous avez complété cette étude!'
@@ -238,6 +236,7 @@ export class TaskManagerService implements CanClear {
             return;
         } else {
             if (this.userStateService.isCrowdsourcedUser) {
+                this.loaderService.showLoader();
                 this.crowdSourcedUserService
                     .setComplete(this.userStateService.currentlyLoggedInUserId, this.study.id)
                     .subscribe(
@@ -247,7 +246,8 @@ export class TaskManagerService implements CanClear {
                         (_err) => {
                             this.handleErr();
                         }
-                    );
+                    )
+                    .add(() => this.loaderService.hideLoader());
             } else {
                 this._routeToFinalPage(null);
             }

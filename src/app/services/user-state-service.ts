@@ -76,7 +76,7 @@ export class UserStateService implements CanClear {
             this.snackbarService.openErrorSnackbar(
                 'Login session ID not found. Please contact sharplab.neuro@mcgill.ca'
             );
-            this.authService.logout();
+            this.authService.logout(false);
             return of(null);
         }
 

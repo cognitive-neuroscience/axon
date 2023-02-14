@@ -7,6 +7,7 @@ import { CreateModifyStudyComponent } from '../admin/admin-dashboard/studies/cre
 import { StudiesComponent } from '../admin/admin-dashboard/studies/studies.component';
 import { ViewStudiesComponent } from '../admin/admin-dashboard/studies/view-studies/view-studies.component';
 import { StudyComponentsComponent } from '../admin/admin-dashboard/study-components/study-components.component';
+import { ProfileComponent } from '../shared/profile/profile.component';
 import { OrganizationMemberDashboardComponent } from './organization-member-dashboard/organization-member-dashboard.component';
 
 const routes: Routes = [
@@ -27,6 +28,7 @@ const routes: Routes = [
                 ],
             },
             { path: 'components', component: StudyComponentsComponent },
+            { path: 'profile', component: ProfileComponent },
         ],
     },
 ];

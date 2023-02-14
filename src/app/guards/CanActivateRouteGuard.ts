@@ -20,7 +20,7 @@ export class CanActivateRouteGuard implements CanActivate {
         state: RouterStateSnapshot
     ): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
         return this.userStateService.getOrUpdateUserState().pipe(
-            map((user) => user.role),
+            map((user) => user?.role),
             map((userRole) => {
                 if (!userRole) {
                     this.snackbarService.openErrorSnackbar('forbidden');

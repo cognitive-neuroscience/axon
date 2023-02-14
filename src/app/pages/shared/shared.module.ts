@@ -7,10 +7,11 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { InfoDisplayViewerComponent } from './info-display-viewer/info-display-viewer.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
-    declarations: [NavbarComponent, ConsentReaderComponent, InfoDisplayViewerComponent],
+    declarations: [NavbarComponent, ConsentReaderComponent, InfoDisplayViewerComponent, ProfileComponent],
     imports: [CommonModule, MaterialModule, RouterModule, TranslateModule, FormsModule, ReactiveFormsModule],
-    exports: [NavbarComponent, ConsentReaderComponent, InfoDisplayViewerComponent],
+    exports: [NavbarComponent, ConsentReaderComponent, InfoDisplayViewerComponent, ProfileComponent],
 })
 export class SharedModule {}

@@ -45,16 +45,20 @@ export class AuthService {
         });
     }
 
-    logout() {
+    logout(showLogoutMessage = false) {
         this.loaderService.showLoader();
         this.sessionStorageService.clearSessionStorage(true);
         return this.http
             .delete<HttpResponse<any>>(`${environment.apiBaseURL}${this.AUTH_RESOURCE_PATH}/logout`)
             .subscribe(
                 () => {
-                    this.snackbarService.openSuccessSnackbar(
-                        this.translateService.currentLang === SupportedLangs.FR ? 'Déconnecté' : 'You are logged out'
-                    );
+                    if (showLogoutMessage) {
+                        this.snackbarService.openSuccessSnackbar(
+                            this.translateService.currentLang === SupportedLangs.FR
+                                ? 'Déconnecté'
+                                : 'You are logged out'
+                        );
+                    }
                 },
                 (_err) => {
                     this.snackbarService.openErrorSnackbar('Logged out but encountered issues clearing cookies');

@@ -118,6 +118,7 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                                     '',
                                     15000
                                 );
+                                break;
                             default:
                                 console.error(err);
                                 this._snackbarService.openErrorSnackbar(

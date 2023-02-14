@@ -2,7 +2,7 @@
     <div>
         <img class="logo" [src]="organization?.logoPath" />
         <span class="title">{{ organization?.name || 'Online Testing Platform' }}</span>
-        <span *ngIf="!showParticipantNavbar">{{ role }}</span>
+        <span *ngIf="!showParticipantNavbar"> {{ role }}</span>
     </div>
     <div>
         <ng-container *ngIf="showAdminNavbar">
@@ -26,6 +26,15 @@
                 color="basic"
                 >Users</a
             >
+            <a
+                *ngIf="isAdmin"
+                class="menu-item"
+                routerLinkActive="active"
+                [routerLink]="ADMIN_PROFILE_ROUTE"
+                mat-button
+                color="basic"
+                >Profile</a
+            >
         </ng-container>
         <ng-container *ngIf="showOrgMemberNavbar">
             <a
@@ -43,6 +52,14 @@
                 mat-button
                 color="basic"
                 >Study Components</a
+            >
+            <a
+                class="menu-item"
+                routerLinkActive="active"
+                [routerLink]="ORG_MEMBER_PROFILE_ROUTE"
+                mat-button
+                color="basic"
+                >Profile</a
             >
         </ng-container>
         <ng-container *ngIf="showParticipantNavbar">

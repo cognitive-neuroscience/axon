@@ -96,7 +96,7 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
 
     handleViewData(study: Study) {
         this.router.navigate([
-            this.isAdmin ? `admin-dashboard/studies${study.id}` : `organization-member-dashboard/studies/${study.id}`,
+            this.isAdmin ? `admin-dashboard/studies/${study.id}` : `organization-member-dashboard/studies/${study.id}`,
         ]);
     }
 
