@@ -26,6 +26,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { SnackbarComponent } from './services/snackbar/snackbar.component';
 import { OrganizationMemberModule } from './pages/organization-member/organization-member.module';
+import { HttpCsrfInterceptor } from './interceptors/csrf.interceptor';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, '../assets/translate/', '.json');
@@ -84,6 +85,11 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         //     useClass: ErrorInterceptor,
         //     multi: true,
         // },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: HttpCsrfInterceptor,
+            multi: true,
+        },
     ],
     bootstrap: [AppComponent],
 })
