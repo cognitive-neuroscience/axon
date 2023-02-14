@@ -39,13 +39,13 @@ export class NavbarComponent implements OnInit {
     get role(): string {
         switch (this.userStateService.userValue?.role) {
             case Role.ADMIN:
-                return 'ADMIN';
+                return 'admin';
             case Role.GUEST:
-                return 'GUEST';
+                return 'guest';
             case Role.ORGANIZATION_MEMBER:
-                return 'MEMBER';
+                return 'member';
             case Role.PARTICIPANT:
-                return 'PARTICIPANT';
+                return 'participant';
             default:
                 return '';
         }
