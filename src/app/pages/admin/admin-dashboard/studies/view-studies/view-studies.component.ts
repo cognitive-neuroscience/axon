@@ -17,6 +17,7 @@ import { LoaderService } from 'src/app/services/loader/loader.service';
 import { FileService } from 'src/app/services/file.service';
 import { UserStateService } from 'src/app/services/user-state-service';
 import { User } from 'src/app/models/User';
+import { LocalStorageService } from 'src/app/services/localStorageService.service';
 
 @Component({
     selector: 'app-view-studies',
@@ -44,7 +45,8 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
         private router: Router,
         private studyUserService: StudyUserService,
         private loaderService: LoaderService,
-        private fileService: FileService
+        private fileService: FileService,
+        private localStorageService: LocalStorageService
     ) {}
 
     get studies(): Study[] {
@@ -67,16 +69,25 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
         });
     }
 
+    get favoritedStudies(): Study[] {
+        return this.studyService.studiesValue.filter((study) => this.isFavorite(study.id));
+    }
+
     get isAdmin(): boolean {
         return this.userStateService.userIsAdmin;
     }
 
-    canEditStudy(owner: User): boolean {
-        return this.isAdmin || owner.id === parseInt(this.userStateService.currentlyLoggedInUserId);
-    }
-
     get isGuest(): boolean {
         return this.userStateService.userIsGuest;
+    }
+
+    isFavorite(studyId: number): boolean {
+        const favoritedIds = this.localStorageService.getFavoritesInLocalStorage();
+        return favoritedIds.includes(studyId);
+    }
+
+    canEditStudy(owner: User): boolean {
+        return this.isAdmin || owner.id === parseInt(this.userStateService.currentlyLoggedInUserId);
     }
 
     ngOnInit(): void {
@@ -156,6 +167,16 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
                 }
             });
         this.subscriptions.push(sub);
+    }
+
+    onSelectFavorite($event: PointerEvent, studyId: number) {
+        $event.stopPropagation();
+        const favorites = this.localStorageService.getFavoritesInLocalStorage();
+        if (this.isFavorite(studyId)) {
+            this.localStorageService.setFavoritesInLocalStorage(favorites.filter((x) => x !== studyId));
+        } else {
+            this.localStorageService.setFavoritesInLocalStorage([studyId, ...favorites]);
+        }
     }
 
     downloadStudyUsers() {
