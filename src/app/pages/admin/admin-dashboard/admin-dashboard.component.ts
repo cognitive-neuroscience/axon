@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
-import { tap, map, take, subscribeOn } from 'rxjs/operators';
+import { Observable, Subscription, throwError } from 'rxjs';
+import { tap, map, take, subscribeOn, catchError } from 'rxjs/operators';
+import { AuthService } from 'src/app/services/auth.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { UserStateService } from 'src/app/services/user-state-service';
 
 @Component({
@@ -10,7 +12,12 @@ import { UserStateService } from 'src/app/services/user-state-service';
     styleUrls: ['./admin-dashboard.component.scss'],
 })
 export class AdminDashboardComponent implements OnInit, OnDestroy {
-    constructor(private userStateService: UserStateService, private translateService: TranslateService) {}
+    constructor(
+        private userStateService: UserStateService,
+        private translateService: TranslateService,
+        private authService: AuthService,
+        private snackbarService: SnackbarService
+    ) {}
 
     private _subscriptions: Subscription[] = [];
 
@@ -19,15 +26,27 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        console.log('here');
         // subscribe noop because it is lazy
         const sub = this.userStateService
             .getOrUpdateUserState()
             .pipe(
+                catchError((err) => throwError(err)),
                 tap((user) => {
                     if (user) this.translateService.use(user.lang);
                 })
             )
-            .subscribe(() => {});
+            .subscribe(
+                (res) => {
+                    // noop
+                },
+                (err) => {
+                    if (err.status === 401) {
+                        this.snackbarService.openErrorSnackbar('forbidden');
+                        this.authService.logout(false);
+                    }
+                }
+            );
         this._subscriptions.push(sub);
     }
 

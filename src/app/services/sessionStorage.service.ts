@@ -7,14 +7,6 @@ export class SessionStorageService {
     private STUDYID_FOR_REGISTRATION = 'STUDYID_FOR_REGISTRATION';
     private STUDYID_FOR_CURRENTLY_RUNNING_STUDY = 'STUDYID_FOR_CURRENTLY_RUNNING_STUDY';
     private IS_CROWDSOURCED_USER = 'IS_CROWDSOURCED_USER';
-    private USER_ID_KEY_STRING = 'USER_ID';
-
-    setUserIdInSessionStorage(userId: string): void {
-        sessionStorage.setItem(this.USER_ID_KEY_STRING, userId);
-    }
-    getUserIdInSessionStorage(): string | null {
-        return sessionStorage.getItem(this.USER_ID_KEY_STRING);
-    }
 
     setStudyIdToRegisterInSessionStorage(code: string): void {
         sessionStorage.setItem(this.STUDYID_FOR_REGISTRATION, code);

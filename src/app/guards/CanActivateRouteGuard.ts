@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map, take } from 'rxjs/operators';
 import { Role } from '../models/enums';
 import { SnackbarService } from '../services/snackbar/snackbar.service';
 import { UserStateService } from '../services/user-state-service';
@@ -35,6 +35,10 @@ export class CanActivateRouteGuard implements CanActivate {
 
                     return isAllowed;
                 }
+            }),
+            catchError((err) => {
+                this.snackbarService.openErrorSnackbar('forbidden');
+                return of(false);
             }),
             take(1)
         );

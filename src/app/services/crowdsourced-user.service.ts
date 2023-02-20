@@ -6,7 +6,7 @@ import { SupportedLangs } from '../models/enums';
 import { TimerService } from './timer.service';
 import { CrowdsourcedUser } from '../models/User';
 import { tap } from 'rxjs/operators';
-import { SessionStorageService } from './sessionStorage.service';
+import { LocalStorageService } from './localStorageService.service';
 
 @Injectable({
     providedIn: 'root',
@@ -17,7 +17,7 @@ export class CrowdSourcedUserService {
     constructor(
         private http: HttpClient,
         private timerService: TimerService,
-        private sessionStorageService: SessionStorageService
+        private localStorageService: LocalStorageService
     ) {}
 
     setComplete(crowdSourcedUserId: string, studyId: number): Observable<CrowdsourcedUser> {
@@ -56,7 +56,7 @@ export class CrowdSourcedUserService {
             )
             .pipe(
                 tap((crowdSourceUser) =>
-                    this.sessionStorageService.setUserIdInSessionStorage(crowdSourceUser.participantId)
+                    this.localStorageService.setUserIdInLocalStorage(crowdSourceUser.participantId)
                 )
             );
     }

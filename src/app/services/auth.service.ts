@@ -7,11 +7,11 @@ import { TimerService } from './timer.service';
 import { User } from '../models/User';
 import { tap } from 'rxjs/operators';
 import { LoaderService } from './loader/loader.service';
-import { ClearanceService } from './clearance.service';
 import { SnackbarService } from './snackbar/snackbar.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SupportedLangs } from '../models/enums';
 import { Router } from '@angular/router';
+import { LocalStorageService } from './localStorageService.service';
 
 @Injectable({
     providedIn: 'root',
@@ -21,12 +21,13 @@ export class AuthService {
 
     constructor(
         private http: HttpClient,
-        private sessionStorageService: SessionStorageService,
         private timerService: TimerService,
         private loaderService: LoaderService,
         private snackbarService: SnackbarService,
         private translateService: TranslateService,
-        private router: Router
+        private router: Router,
+        private localStorageService: LocalStorageService,
+        private sessionStorageService: SessionStorageService
     ) {}
 
     login(email: string, password: string): Observable<User> {
@@ -36,7 +37,7 @@ export class AuthService {
         };
         return this.http
             .post<User>(`${environment.apiBaseURL}${this.AUTH_RESOURCE_PATH}/login`, obj)
-            .pipe(tap((user) => this.sessionStorageService.setUserIdInSessionStorage(user.id.toString())));
+            .pipe(tap((user) => this.localStorageService.setUserIdInLocalStorage(user.id.toString())));
     }
 
     getCSRF(): Observable<any> {
@@ -47,6 +48,7 @@ export class AuthService {
 
     logout(showLogoutMessage = false) {
         this.loaderService.showLoader();
+        this.localStorageService.removeUserIdFromLocalStorage();
         this.sessionStorageService.clearSessionStorage(true);
         return this.http
             .delete<HttpResponse<any>>(`${environment.apiBaseURL}${this.AUTH_RESOURCE_PATH}/logout`)

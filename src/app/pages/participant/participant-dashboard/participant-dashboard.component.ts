@@ -4,8 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, mergeMap, take, tap } from 'rxjs/operators';
 import { SupportedLangs } from 'src/app/models/enums';
+import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SessionStorageService } from 'src/app/services/sessionStorage.service';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { StudyUserService } from 'src/app/services/study-user.service';
 import { UserStateService } from 'src/app/services/user-state-service';
 import { UserService } from 'src/app/services/user.service';
@@ -26,7 +28,9 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
         private dialog: MatDialog,
         private translateService: TranslateService,
         private loaderService: LoaderService,
-        private userStateService: UserStateService
+        private userStateService: UserStateService,
+        private authService: AuthService,
+        private snackbarService: SnackbarService
     ) {}
 
     ngOnInit(): void {
@@ -57,7 +61,12 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
                     // noop
                 },
                 (err) => {
-                    console.error(err);
+                    if (err.status === 401) {
+                        this.snackbarService.openErrorSnackbar('forbidden');
+                        this.authService.logout(false);
+                    } else {
+                        console.error(err);
+                    }
                 }
             )
             .add(() => {

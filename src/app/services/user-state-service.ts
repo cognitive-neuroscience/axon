@@ -9,8 +9,8 @@ import { SessionStorageService } from './sessionStorage.service';
 import { User } from '../models/User';
 import { CrowdSourcedUserService } from './crowdsourced-user.service';
 import { Organization } from '../models/Organization';
-import { AuthService } from './auth.service';
 import { SnackbarService } from './snackbar/snackbar.service';
+import { LocalStorageService } from './localStorageService.service';
 
 @Injectable({
     providedIn: 'root',
@@ -55,7 +55,7 @@ export class UserStateService implements CanClear {
     }
 
     get currentlyLoggedInUserId() {
-        return this.sessionStorageService.getUserIdInSessionStorage();
+        return this.localStorageService.getUserIdInLocalStorage();
     }
 
     private _userBehaviorSubject: BehaviorSubject<null | User>;
@@ -64,22 +64,14 @@ export class UserStateService implements CanClear {
         private http: HttpClient,
         private sessionStorageService: SessionStorageService,
         private crowdSourcedUserService: CrowdSourcedUserService,
-        private authService: AuthService,
-        private snackbarService: SnackbarService
+        private snackbarService: SnackbarService,
+        private localStorageService: LocalStorageService
     ) {
         this._userBehaviorSubject = new BehaviorSubject(null);
     }
 
     // this function makes the request if no value is present, or a flag can be passed to force the update
     getOrUpdateUserState(forceUpdate = false): Observable<User | null> {
-        if (!this.currentlyLoggedInUserId) {
-            this.snackbarService.openErrorSnackbar(
-                'Login session ID not found. Please contact sharplab.neuro@mcgill.ca'
-            );
-            this.authService.logout(false);
-            return of(null);
-        }
-
         if (this.userHasValue && !forceUpdate) return of(this.userValue);
 
         let obs: Observable<User>;

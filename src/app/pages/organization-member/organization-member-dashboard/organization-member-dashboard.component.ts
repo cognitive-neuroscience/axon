@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { UserStateService } from 'src/app/services/user-state-service';
 
 @Component({
