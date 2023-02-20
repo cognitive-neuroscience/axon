@@ -4,7 +4,7 @@ import { ParticipantDataService } from 'src/app/services/study-data.service';
 import { TaskManagerService } from '../../../../services/task-manager.service';
 import { AuthService } from '../../../../services/auth.service';
 import { SnackbarService } from '../../../../services/snackbar/snackbar.service';
-import { TaskData, TaskNames } from '../../../../models/TaskData';
+import { BaseParticipantData, TaskNames } from '../../../../models/ParticipantData';
 import { pracSet } from './stimuli_practice';
 import { taskSet } from './stimuli_task';
 import { Observable, of } from 'rxjs';
@@ -14,7 +14,7 @@ import { TimerService } from 'src/app/services/timer.service';
 import { getRandomNumber, wait } from 'src/app/common/commonMethods';
 import { environment } from 'src/environments/environment';
 
-class PostChoiceTask extends TaskData {
+class PostChoiceTask extends BaseParticipantData {
     ratingType: string;
     activity: string;
     userAnswer: string;

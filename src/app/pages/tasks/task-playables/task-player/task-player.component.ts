@@ -1,7 +1,7 @@
 import { Component, OnDestroy, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
-import { map, mergeMap, take } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { getRandomNumber } from 'src/app/common/commonMethods';
 import {
     ComponentFactoryService,
@@ -13,12 +13,12 @@ import { TaskManagerService } from 'src/app/services/task-manager.service';
 import { ParticipantDataService } from 'src/app/services/study-data.service';
 import { Navigation } from '../../shared/navigation-buttons/navigation-buttons.component';
 import { IOnComplete } from '../playable';
-import { UserService } from 'src/app/services/user.service';
 import { AdminRouteNames, Role } from 'src/app/models/enums';
-import { TaskData } from 'src/app/models/TaskData';
+import { BaseParticipantData } from 'src/app/models/ParticipantData';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SessionStorageService } from 'src/app/services/sessionStorage.service';
 import { Location } from '@angular/common';
+import { UserStateService } from 'src/app/services/user-state-service';
 
 export interface CounterBalanceGroup {
     [key: number]: any;
@@ -83,19 +83,19 @@ export class TaskPlayerComponent implements OnDestroy {
         private componentFactoryService: ComponentFactoryService,
         private viewContainer: ViewContainerRef,
         private taskManager: TaskManagerService,
-        private userService: UserService,
         private uploadDataService: ParticipantDataService,
         private router: Router,
         private snackbarService: SnackbarService,
         private loaderService: LoaderService,
         private sessionStorageService: SessionStorageService,
-        private location: Location
+        private location: Location,
+        private userStateService: UserStateService
     ) {
         const navigationConfig = this.router.getCurrentNavigation()?.extras?.state as TaskPlayerNavigationConfig;
         if (navigationConfig) {
             this.handleTaskVariablesAndPlayTask(navigationConfig.metadata, navigationConfig.mode);
         } else {
-            const currentlyRunningStudyId = this.sessionStorageService.getCurrentlyRunningStudyIdFromSessionStorage();
+            const currentlyRunningStudyId = this.sessionStorageService.getCurrentlyRunningStudyIdInSessionStorage();
             if (currentlyRunningStudyId !== null) {
                 this.taskManager.initStudy(parseInt(currentlyRunningStudyId));
             } else {
@@ -121,9 +121,9 @@ export class TaskPlayerComponent implements OnDestroy {
             this.state.userID = 'TEST';
             this.state.studyID = 0;
         } else {
-            this.state.userID = this.userService.isCrowdsourcedUser
-                ? this.userService.user.email
-                : this.userService.user.id.toString();
+            this.state.userID = this.userStateService.isCrowdsourcedUser
+                ? this.userStateService.userValue.email
+                : this.userStateService.userValue.id.toString();
             this.state.studyID = this.taskManager.study.id;
         }
 
@@ -190,9 +190,9 @@ export class TaskPlayerComponent implements OnDestroy {
     handleOnComplete(onComplete: IOnComplete) {
         this.subscription.unsubscribe();
         this.viewContainer.clear();
-        const shouldSetTaskAsComplete = !this.userService.isCrowdsourcedUser && this.hasCompletedAllBlocks();
+        const shouldSetTaskAsComplete = !this.userStateService.isCrowdsourcedUser && this.hasCompletedAllBlocks();
 
-        if (this.userService.user.role === Role.ADMIN) console.log(onComplete);
+        if (this.userStateService.userIsAdmin) console.log(onComplete);
 
         if (onComplete.taskData && this.state.mode === 'actual') {
             this.loaderService.showLoader();
@@ -236,22 +236,22 @@ export class TaskPlayerComponent implements OnDestroy {
         return true;
     }
 
-    handleUploadData(taskData: TaskData[]): Observable<boolean> {
+    handleUploadData(taskData: BaseParticipantData[]): Observable<boolean> {
         return this.uploadDataService
-            .uploadTaskData(
-                this.userService.isCrowdsourcedUser
-                    ? this.userService.user.email
-                    : this.userService.user?.id.toString(),
+            .createParticipantData(
+                this.userStateService.isCrowdsourcedUser
+                    ? this.userStateService.userValue.email
+                    : this.userStateService.currentlyLoggedInUserId,
                 this.taskManager.study?.id,
                 this.taskManager.currentStudyTask.taskOrder,
-                this.userService.isCrowdsourcedUser,
+                this.userStateService.isCrowdsourcedUser,
                 taskData
             )
             .pipe(map((ok) => ok.ok));
     }
 
     continueAhead() {
-        if (this.userService.user.role === Role.ADMIN) {
+        if (this.userStateService.userValue.role === Role.ADMIN) {
             this.reset();
             this.router.navigate([`${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.COMPONENTS_SUBROUTE}`]);
             this.snackbarService.openInfoSnackbar('Task completed');

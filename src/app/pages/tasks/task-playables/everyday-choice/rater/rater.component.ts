@@ -10,7 +10,7 @@ import { LoaderService } from 'src/app/services/loader/loader.service';
 import { NzMarks } from 'ng-zorro-antd/slider';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
-import { EverydayChoiceTaskData } from 'src/app/models/TaskData';
+import { EverydayChoiceTaskData } from 'src/app/models/ParticipantData';
 import { ITranslationText } from 'src/app/models/InternalDTOs';
 import { TranslateService } from '@ngx-translate/core';
 

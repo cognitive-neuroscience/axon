@@ -1,7 +1,9 @@
+import { HttpStatusCode } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { HttpStatus } from 'src/app/models/Auth';
 import { RouteNames, SupportedLangs } from 'src/app/models/enums';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
@@ -67,23 +69,40 @@ export class ResetPasswordLoginComponent {
 
         this.loaderService.showLoader();
 
-        this.userService.changePassword(email, temporaryPassword, password).subscribe(
-            (_res) => {
+        this.userService
+            .updateUserPassword(email, temporaryPassword, password)
+            .subscribe(
+                (_res) => {
+                    this.snackbarService.openSuccessSnackbar(
+                        [
+                            'password successfully changed, please log in using your new password',
+                            'Le mot de passe a été modifié avec succès, veuillez vous connecter en utilisant votre nouveau mot de passe',
+                        ],
+                        undefined,
+                        20000
+                    );
+                    this.router.navigate([`login`]);
+                },
+                (err: HttpStatus) => {
+                    switch (err.status) {
+                        case HttpStatusCode.Unauthorized:
+                            this.snackbarService.openErrorSnackbar('Temporary password is incorrect', undefined, 15000);
+                            break;
+                        case HttpStatusCode.NotFound:
+                            this.snackbarService.openErrorSnackbar(
+                                'User with this email does not exist',
+                                undefined,
+                                15000
+                            );
+                            break;
+                        default:
+                            this.snackbarService.openErrorSnackbar(err.message, undefined, 15000);
+                            break;
+                    }
+                }
+            )
+            .add(() => {
                 this.loaderService.hideLoader();
-                this.snackbarService.openSuccessSnackbar(
-                    [
-                        'password successfully changed, please log in using your new password',
-                        'Le mot de passe a été modifié avec succès, veuillez vous connecter en utilisant votre nouveau mot de passe',
-                    ],
-                    undefined,
-                    20000
-                );
-                this.router.navigate([`${RouteNames.LANDINGPAGE_LOGIN_BASEROUTE}`]);
-            },
-            (err) => {
-                this.loaderService.hideLoader();
-                this.snackbarService.openErrorSnackbar(err.message);
-            }
-        );
+            });
     }
 }

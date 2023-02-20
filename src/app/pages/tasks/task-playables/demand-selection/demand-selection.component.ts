@@ -2,7 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { Color, Key, TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
-import { DemandSelectionTaskData } from 'src/app/models/TaskData';
+import { DemandSelectionTaskData } from 'src/app/models/ParticipantData';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import {

@@ -57,6 +57,7 @@ export enum Role {
     ADMIN = 'ADMIN',
     PARTICIPANT = 'PARTICIPANT',
     GUEST = 'GUEST', // access to admin views but cannot make any calls to backend
+    ORGANIZATION_MEMBER = 'ORGANIZATION_MEMBER',
 }
 
 export enum StimuliProvidedType {

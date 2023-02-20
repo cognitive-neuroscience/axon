@@ -23,7 +23,7 @@ export enum TaskNames {
     EVERYDAYCHOICE = 'everydaychoice',
 }
 
-export abstract class TaskData {
+export abstract class BaseParticipantData {
     trial: number;
     userID: string;
     submitted: string; // ISO date string
@@ -31,7 +31,7 @@ export abstract class TaskData {
     studyId: number;
 }
 
-export class StroopTaskData extends TaskData {
+export class StroopTaskData extends BaseParticipantData {
     actualAnswer: UserResponse;
     userAnswer: UserResponse;
     isCongruent: boolean;
@@ -40,7 +40,7 @@ export class StroopTaskData extends TaskData {
     score: number;
 }
 
-export class NBackTaskData extends TaskData {
+export class NBackTaskData extends BaseParticipantData {
     actualAnswer: UserResponse;
     userAnswer: UserResponse;
     responseTime: number;
@@ -51,7 +51,7 @@ export class NBackTaskData extends TaskData {
     nback: string;
 }
 
-export class TaskSwitchingTaskData extends TaskData {
+export class TaskSwitchingTaskData extends BaseParticipantData {
     color: string;
     digit: number;
     actualAnswer: UserResponse;
@@ -61,7 +61,7 @@ export class TaskSwitchingTaskData extends TaskData {
     score: number;
 }
 
-export class DemandSelectionTaskData extends TaskData {
+export class DemandSelectionTaskData extends BaseParticipantData {
     firstPatch: string;
     secondPatch: string;
     selectedPatch: string;
@@ -79,7 +79,7 @@ export class DemandSelectionTaskData extends TaskData {
     score: number;
 }
 
-export class TrailMakingTaskData extends TaskData {
+export class TrailMakingTaskData extends BaseParticipantData {
     trialType: string;
     actualAnswer: string;
     userAnswer: string;
@@ -87,7 +87,7 @@ export class TrailMakingTaskData extends TaskData {
     isCorrect: boolean;
 }
 
-export class FingerTappingTaskData extends TaskData {
+export class FingerTappingTaskData extends BaseParticipantData {
     block: number;
     dominantHand: UseHand;
     handUsed: string;
@@ -96,7 +96,7 @@ export class FingerTappingTaskData extends TaskData {
     isCorrect: boolean;
 }
 
-export class DigitSpanTaskData extends TaskData {
+export class DigitSpanTaskData extends BaseParticipantData {
     actualAnswer: string; // the actual sequence given
     userAnswer: string; // the sequence the user inputs
     responseTime: number; // time from when keypad entered screen to participant submitting their response
@@ -106,7 +106,7 @@ export class DigitSpanTaskData extends TaskData {
     score: number;
 }
 
-export class OddballTaskData extends TaskData {
+export class OddballTaskData extends BaseParticipantData {
     stimulus: string;
     targetResponse: Key;
     responseTime: number;
@@ -118,7 +118,7 @@ export class OddballTaskData extends TaskData {
     score: number;
 }
 
-export class SmileyFaceTaskData extends TaskData {
+export class SmileyFaceTaskData extends BaseParticipantData {
     actualAnswer: string;
     userAnswer: string;
     responseTime: number;
@@ -136,7 +136,7 @@ export class SmileyFaceTaskData extends TaskData {
     isNewVersion: boolean;
 }
 
-export class EverydayChoiceTaskData extends TaskData {
+export class EverydayChoiceTaskData extends BaseParticipantData {
     taskName: string;
     counterbalance: RatingTaskCounterBalance;
     activity: string;
@@ -147,7 +147,7 @@ export class EverydayChoiceTaskData extends TaskData {
     choiceTaskStimulusSet: 'first' | 'second' | '';
 }
 
-export class SARTTaskData extends TaskData {
+export class SARTTaskData extends BaseParticipantData {
     setType: SARTStimuliSetType;
     blockNum: number;
     digit: number;
@@ -159,7 +159,7 @@ export class SARTTaskData extends TaskData {
     isCorrect: boolean;
 }
 
-export class FaceNameAssociationTaskData extends TaskData {
+export class FaceNameAssociationTaskData extends BaseParticipantData {
     isPractice: boolean;
     phase: 'learning-phase' | 'test-phase';
     imagePresented: string;
@@ -174,7 +174,7 @@ export class FaceNameAssociationTaskData extends TaskData {
     responseTime: number;
 }
 
-export class PLTTaskData extends TaskData {
+export class PLTTaskData extends BaseParticipantData {
     score: number;
     isPractice: boolean;
     phase: 'practice-phase' | 'training-phase' | 'test-phase';
@@ -199,5 +199,5 @@ export class ParticipantData {
     taskOrder: number;
     participantType: ParticipantType;
     submittedAt: string;
-    data: TaskData[] | { [key: string]: any }[];
+    data: BaseParticipantData[] | { [key: string]: any }[];
 }

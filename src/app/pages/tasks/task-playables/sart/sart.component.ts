@@ -2,7 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { thisOrDefault, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { Key, TranslatedFeedback } from 'src/app/models/InternalDTOs';
-import { SARTTaskData } from 'src/app/models/TaskData';
+import { SARTTaskData } from 'src/app/models/ParticipantData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { SARTStimuliSetType, SARTStimulus, SARTTrialType } from 'src/app/services/data-generation/stimuli-models';

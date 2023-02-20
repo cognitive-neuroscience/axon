@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Task } from '../models/Task';
 import { environment } from 'src/environments/environment';
-import { take } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { CanClear } from './clearance.service';
 
 @Injectable({
@@ -12,9 +12,11 @@ import { CanClear } from './clearance.service';
 export class TaskService implements CanClear {
     // behavior subjects that hold the cached data and act as source of truth
     private _tasksBehaviorSubject: BehaviorSubject<Task[]>;
-    get tasks(): Observable<Task[]> {
-        return this._tasksBehaviorSubject.asObservable();
+
+    get tasksValue(): Task[] {
+        return this.hasTasks ? this._tasksBehaviorSubject.value : [];
     }
+
     get hasTasks(): boolean {
         return this._tasksBehaviorSubject.value !== null;
     }
@@ -26,8 +28,17 @@ export class TaskService implements CanClear {
         this._tasksBehaviorSubject = new BehaviorSubject(null);
     }
 
-    public update() {
-        this._getTasks().subscribe((tasks) => this._tasksBehaviorSubject.next(tasks));
+    getOrUpdateTasks(forceUpdate = false): Observable<Task[]> {
+        if (this.hasTasks && !forceUpdate) {
+            // this observable will keep omitting values unless we suppress it
+            return of(this.tasksValue);
+        } else {
+            return this._getTasks().pipe(tap((tasks) => this.updateTasksState(tasks)));
+        }
+    }
+
+    updateTasksState(tasks: Task[]) {
+        this._tasksBehaviorSubject.next(tasks);
     }
 
     private _getTasks(): Observable<Task[]> {
@@ -40,8 +51,6 @@ export class TaskService implements CanClear {
     }
 
     clearService() {
-        if (this._tasksBehaviorSubject.value) {
-            this._tasksBehaviorSubject.next(null);
-        }
+        this._tasksBehaviorSubject.next(null);
     }
 }

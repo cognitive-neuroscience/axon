@@ -1,6 +1,6 @@
 {
     "participant-studies-page": {
-        "greeting": "Welcome!",
+        "greeting": "Welcome",
         "introduction": "This is the online research platform run by Dr. Sharp at McGill University.",
         "descriptor": "Below you will find the study (or studies) for which you have registered.",
         "instruction": "Click the red button to view the consent form. Once you provide consent, you will be able to click the blue button to start (or continue) the study.",

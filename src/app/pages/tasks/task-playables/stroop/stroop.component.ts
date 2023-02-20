@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { StroopTaskData } from '../../../../models/TaskData';
+import { StroopTaskData } from '../../../../models/ParticipantData';
 import { SnackbarService } from '../../../../services/snackbar/snackbar.service';
 import { Key, TranslatedFeedback } from 'src/app/models/InternalDTOs';
 import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';

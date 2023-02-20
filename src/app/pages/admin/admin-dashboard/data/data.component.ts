@@ -1,29 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { forkJoin, Observable, of } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { forkJoin, Observable, of, Subscription } from 'rxjs';
 import { DateTime } from 'luxon';
 import { StudyService } from '../../../../services/study.service';
 import { Study } from '../../../../models/Study';
 import { catchError, map, mergeMap, take } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { UserService } from 'src/app/services/user.service';
 import { ParticipantDataService } from 'src/app/services/study-data.service';
 import { DataTableFormat } from './data-table/data-table.component';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
-import { ParticipantData } from 'src/app/models/TaskData';
+import { ParticipantData } from 'src/app/models/ParticipantData';
 import { TaskType } from 'src/app/models/enums';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { StudyUserService } from 'src/app/services/study-user.service';
 import { FileService } from 'src/app/services/file.service';
 import * as JSZip from 'jszip';
-import { CrowdsourcedUser, StudyUser } from 'src/app/models/Login';
 import * as FileSaver from 'file-saver';
+import { CrowdsourcedUser } from 'src/app/models/User';
+import { StudyUser } from 'src/app/models/StudyUser';
+import { UserStateService } from 'src/app/services/user-state-service';
+import { CrowdSourcedUserService } from 'src/app/services/crowdsourced-user.service';
 
 @Component({
     selector: 'app-data',
     templateUrl: './data.component.html',
     styleUrls: ['./data.component.scss'],
 })
-export class DataComponent implements OnInit {
+export class DataComponent implements OnInit, OnDestroy {
     // golang sets this as its default value for null dates.
     private readonly NULL_DATE = '0001-01-01T00:00:00Z';
 
@@ -32,47 +34,58 @@ export class DataComponent implements OnInit {
     studies: Observable<Study[]>;
     tableData: DataTableFormat[]; // json table to populate table component
     fileName: string = null;
+    subscriptions: Subscription[] = [];
 
     constructor(
         private studyService: StudyService,
         private route: ActivatedRoute,
-        private userService: UserService,
+        private userStateService: UserStateService,
         private studyUserService: StudyUserService,
-        private studyDataService: ParticipantDataService,
+        private participantDataService: ParticipantDataService,
         private snackbarService: SnackbarService,
         private loaderService: LoaderService,
-        private fileService: FileService
+        private fileService: FileService,
+        private crowdSourcedUserService: CrowdSourcedUserService
     ) {}
 
     ngOnInit(): void {
+        const sub = this.studyService.getOrUpdateStudies().subscribe(() => {});
         this.idFromURL = this.route.snapshot.paramMap.get('id');
-        if (!this.studyService.hasStudies) this.studyService.update();
+        this.subscriptions.push(sub);
+    }
+
+    get isGuest(): boolean {
+        return this.userStateService.userIsGuest;
     }
 
     get studyExists(): boolean {
         return (
             !!this.idFromURL &&
-            !!this.studyService.studies &&
-            !!this.studyService.studies.find((study) => study.id.toString() === this.idFromURL)
+            !!this.studyService.studiesValue &&
+            !!this.studyService.studiesValue.find((study) => study.id.toString() === this.idFromURL)
         );
     }
 
     get study(): Study {
-        return this.studyService.studies.find((study) => study.id.toString() === this.idFromURL);
+        return this.studyService.studiesValue.find((study) => study.id.toString() === this.idFromURL);
     }
 
-    get isAdmin(): Observable<boolean> {
-        return this.userService.userIsAdmin;
+    get isAdmin(): boolean {
+        return this.userStateService.userIsAdmin;
     }
 
     getAndDisplayData(study: Study, indexSelected: number) {
         this.loaderService.showLoader();
-        const studyTask = study.tasks[indexSelected];
-        this.userService.userIsAdmin
+        const studyTask = study.studyTasks[indexSelected];
+
+        if (this.isGuest) {
+            this.loaderService.hideLoader();
+            return;
+        }
+
+        this.participantDataService
+            .getParticipantData(study.id, studyTask.taskOrder)
             .pipe(
-                mergeMap((isAdmin) => {
-                    return isAdmin ? this.studyDataService.getParticipantData(study.id, studyTask.taskOrder) : of(null);
-                }),
                 catchError((x) => {
                     this.loaderService.hideLoader();
                     this.snackbarService.openErrorSnackbar('there was an error getting task data');
@@ -136,6 +149,15 @@ export class DataComponent implements OnInit {
         return dataRows;
     }
 
+    private formatDate(dateTime: string): string {
+        if (this.isExpectedDateFormat(dateTime)) {
+            const dt: DateTime = DateTime.fromISO(dateTime as string);
+            return dt.toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS);
+        } else {
+            return dateTime;
+        }
+    }
+
     // pass by reference, so the object will be updated - no need to return anything
     private formatDateForDataRow(row: { [key: string]: any }) {
         for (let [key, value] of Object.entries(row)) {
@@ -160,7 +182,7 @@ export class DataComponent implements OnInit {
     getCrowdsourceUsersForStudy(study: Study) {
         this.loaderService.showLoader();
 
-        this.userService.getCrowdsourcedUsersByStudyId(study.id).subscribe(
+        this.crowdSourcedUserService.getCrowdsourcedUsersByStudyId(study.id).subscribe(
             (crowdsourcedUsers) => {
                 let crowdsourcedUsersDataTable: DataTableFormat[] = crowdsourcedUsers.map((data) => {
                     return {
@@ -183,6 +205,27 @@ export class DataComponent implements OnInit {
         );
     }
 
+    private _getStudyUserDataAsDataTableFormat(studyUsers: StudyUser[]): DataTableFormat[] {
+        return studyUsers.map((studyUser) => {
+            const consentInputs = { ...(studyUser.data || {}) };
+
+            return {
+                fields: {
+                    userId: studyUser.user.id,
+                    studyId: studyUser.study.id,
+                    completionCode: studyUser.completionCode,
+                    registerDate: this.formatDate(studyUser.registerDate),
+                    dueDate: studyUser.dueDate.Valid ? this.formatDate(studyUser.dueDate.Time) : 'NONE',
+                    currentTaskIndex: studyUser.currentTaskIndex,
+                    hasAcceptedConsent: studyUser.hasAcceptedConsent,
+                    lang: studyUser.lang,
+                    ...consentInputs,
+                },
+                expandable: [],
+            };
+        });
+    }
+
     getStudyUsersForStudy(study: Study) {
         this.loaderService.showLoader();
 
@@ -190,19 +233,7 @@ export class DataComponent implements OnInit {
             .getStudyUsersForStudy(study.id)
             .subscribe(
                 (studyUsers) => {
-                    let studyUsersDataTable: DataTableFormat[] = studyUsers.map((studyUser) => {
-                        const consentInputs = { ...(studyUser.data || {}) };
-                        delete studyUser.study;
-                        delete studyUser.data;
-                        return {
-                            fields: {
-                                ...studyUser,
-                                ...consentInputs,
-                            },
-                            expandable: [],
-                        };
-                    });
-                    studyUsersDataTable = this.formatDates(studyUsersDataTable);
+                    const studyUsersDataTable = this._getStudyUserDataAsDataTableFormat(studyUsers);
 
                     this.tableData = studyUsersDataTable;
                     this.fileName = `TASKDATA_${study.internalName}_ACCOUNT_HOLDERS`;
@@ -218,8 +249,10 @@ export class DataComponent implements OnInit {
 
     downloadAllCSVs(study: Study) {
         const getDataObservables: Observable<any>[] = [
-            ...study.tasks.map((studyTask) => this.studyDataService.getParticipantData(study.id, studyTask.taskOrder)),
-            this.userService.getCrowdsourcedUsersByStudyId(study.id),
+            ...study.studyTasks.map((studyTask) =>
+                this.participantDataService.getParticipantData(study.id, studyTask.taskOrder)
+            ),
+            this.crowdSourcedUserService.getCrowdsourcedUsersByStudyId(study.id),
             this.studyUserService.getStudyUsersForStudy(study.id),
         ];
 
@@ -232,10 +265,10 @@ export class DataComponent implements OnInit {
                     const zip = new JSZip();
 
                     // add participant data to zip
-                    for (let i = 0; i < study.tasks.length; i++) {
+                    for (let i = 0; i < study.studyTasks.length; i++) {
                         let dataTableFormat: DataTableFormat[] = [];
                         const participantData = res[i] as ParticipantData[];
-                        const studyTask = study.tasks[i];
+                        const studyTask = study.studyTasks[i];
 
                         if (studyTask.task.taskType === TaskType.QUESTIONNAIRE) {
                             dataTableFormat = participantData.map((data) => {
@@ -274,7 +307,7 @@ export class DataComponent implements OnInit {
                     }
 
                     // add crowdsourced users to zip
-                    const crowdsourcedUsers = res[study.tasks.length] as CrowdsourcedUser[];
+                    const crowdsourcedUsers = res[study.studyTasks.length] as CrowdsourcedUser[];
                     let crowdsourcedUsersDataTable: DataTableFormat[] = crowdsourcedUsers.map((data) => {
                         return {
                             fields: {
@@ -287,20 +320,8 @@ export class DataComponent implements OnInit {
                     zip.file(`CROWDSOURCED_USERS.csv`, this.fileService.getCSVString(crowdsourcedUsersDataTable));
 
                     // add study users to zip
-                    const studyUsers = res[study.tasks.length + 1] as StudyUser[];
-                    let studyUsersDataTable: DataTableFormat[] = studyUsers.map((studyUser) => {
-                        const consentInputs = { ...(studyUser.data || {}) };
-                        delete studyUser.study;
-                        delete studyUser.data;
-                        return {
-                            fields: {
-                                ...studyUser,
-                                ...consentInputs,
-                            },
-                            expandable: [],
-                        };
-                    });
-                    studyUsersDataTable = this.formatDates(studyUsersDataTable);
+                    const studyUsers = res[study.studyTasks.length + 1] as StudyUser[];
+                    let studyUsersDataTable: DataTableFormat[] = this._getStudyUserDataAsDataTableFormat(studyUsers);
                     zip.file(`ACCOUNT_HOLDERS.csv`, this.fileService.getCSVString(studyUsersDataTable));
                     return zip;
                 })
@@ -321,5 +342,9 @@ export class DataComponent implements OnInit {
         if (!date || typeof date !== 'string') return false;
         const regex = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d/;
         return regex.test(date);
+    }
+
+    ngOnDestroy(): void {
+        this.subscriptions.forEach((sub) => sub.unsubscribe());
     }
 }

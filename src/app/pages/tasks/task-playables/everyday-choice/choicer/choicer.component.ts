@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
 import { ITranslationText, UserResponse } from 'src/app/models/InternalDTOs';
-import { EverydayChoiceTaskData } from 'src/app/models/TaskData';
+import { EverydayChoiceTaskData } from 'src/app/models/ParticipantData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { ChoiceTaskStimulus } from 'src/app/services/data-generation/stimuli-models';

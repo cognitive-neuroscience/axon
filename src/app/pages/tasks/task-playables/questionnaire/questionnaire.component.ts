@@ -86,7 +86,7 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
     configure(metadata: QuestionnaireMetadata, config?: TaskPlayerState) {
         this.metadata = metadata;
         if (!this.keysExistAndAreUnique(this.metadata)) {
-            this.taskManager.handleErr();
+            this.taskManager.handleErr('Questionnaire Error. Please contact sharplab.neuro@mcgill.ca');
         } else {
             this.questionnaire = this.getFormGroup(this.metadata);
             this.taskData = [];

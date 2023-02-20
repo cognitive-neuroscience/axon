@@ -17,25 +17,23 @@ import { ViewComponentsTableModel } from '../shared/view-components-table/view-c
 export class ViewInfoDisplaysComponent {
     constructor(private taskService: TaskService, private router: Router) {}
 
-    get infoDisplaysForTable(): Observable<ViewComponentsTableModel<Task>> {
-        return this.taskService.tasks.pipe(
-            map((tasks) => (tasks ? tasks.filter((task) => task.taskType === TaskType.INFO_DISPLAY) : [])),
-            map((tasks) => ({
-                tableConfig: [
-                    {
-                        columnHeader: 'Name',
-                        columnKey: 'name',
-                    },
-                    {
-                        columnHeader: 'Description',
-                        columnKey: 'description',
-                    },
-                ],
-                tableData: tasks,
-                msgOnEmpty: 'No info display',
-                tableTitle: '',
-            }))
-        );
+    get infoDisplaysForTable(): ViewComponentsTableModel<Task> {
+        const infoDisplays = this.taskService.tasksValue.filter((task) => task.taskType === TaskType.INFO_DISPLAY);
+        return {
+            tableConfig: [
+                {
+                    columnHeader: 'Name',
+                    columnKey: 'name',
+                },
+                {
+                    columnHeader: 'Description',
+                    columnKey: 'description',
+                },
+            ],
+            tableData: infoDisplays,
+            msgOnEmpty: 'No info display',
+            tableTitle: '',
+        };
     }
 
     showInfoDisplay(infoDisplay: Task) {

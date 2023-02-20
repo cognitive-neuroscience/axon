@@ -16,25 +16,24 @@ import { ViewComponentsTableModel } from '../shared/view-components-table/view-c
 export class ViewConsentsComponent {
     constructor(private taskService: TaskService, private router: Router) {}
 
-    get consentsForTable(): Observable<ViewComponentsTableModel<Task>> {
-        return this.taskService.tasks.pipe(
-            map((tasks) => (tasks ? tasks.filter((task) => task.taskType === TaskType.CONSENT) : [])),
-            map((tasks) => ({
-                tableConfig: [
-                    {
-                        columnHeader: 'Name',
-                        columnKey: 'name',
-                    },
-                    {
-                        columnHeader: 'Description',
-                        columnKey: 'description',
-                    },
-                ],
-                tableData: tasks,
-                msgOnEmpty: 'No consent forms to display',
-                tableTitle: '',
-            }))
-        );
+    get consentsForTable(): ViewComponentsTableModel<Task> {
+        const consents = this.taskService.tasksValue.filter((task) => task.taskType === TaskType.CONSENT);
+
+        return {
+            tableConfig: [
+                {
+                    columnHeader: 'Name',
+                    columnKey: 'name',
+                },
+                {
+                    columnHeader: 'Description',
+                    columnKey: 'description',
+                },
+            ],
+            tableData: consents,
+            msgOnEmpty: 'No consent forms to display',
+            tableTitle: '',
+        };
     }
 
     showConsent(consent: Task) {

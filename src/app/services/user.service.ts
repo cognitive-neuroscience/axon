@@ -1,177 +1,96 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { catchError, map, take, tap } from 'rxjs/operators';
-import { CrowdsourcedUser, User } from '../models/Login';
-import { Role, SupportedLangs } from '../models/enums';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, mergeMap, take, tap } from 'rxjs/operators';
+import { Role } from '../models/enums';
 import { TimerService } from './timer.service';
 import { CanClear } from './clearance.service';
-import { SessionStorageService } from './sessionStorage.service';
+import { User } from '../models/User';
+import { UserStateService } from './user-state-service';
+import { SnackbarService } from './snackbar/snackbar.service';
+import { HttpStatus } from '../models/Auth';
 
 @Injectable({
     providedIn: 'root',
 })
 export class UserService implements CanClear {
     private readonly USERS_RESOURCE_PATH = '/users';
-    private readonly CROWDSOURCED_USERS_RESOURCE_PATH = '/crowdsourcedusers';
 
-    get isCrowdsourcedUser(): boolean {
-        return this.sessionStorageService.getIsCrowdsourcedUser();
-    }
+    private _usersSubject: BehaviorSubject<User[]>;
 
-    get currentlyRunningStudyId(): number {
-        return parseInt(this.sessionStorageService.getCurrentlyRunningStudyIdFromSessionStorage());
+    get usersValue(): User[] {
+        return this.hasUsers ? this._usersSubject.value : [];
     }
 
-    private _guestsSubject: BehaviorSubject<User[]>;
-    get guests(): Observable<User[]> {
-        return this._guestsSubject.asObservable();
+    get hasUsers(): boolean {
+        return this._usersSubject.value !== null;
     }
 
-    get hasGuests(): boolean {
-        return this._guestsSubject.value !== null;
-    }
+    getOrUpdateUsers(forceUpdate = false): Observable<User[] | null> {
+        if (
+            !this.userStateService.userHasValue ||
+            (!this.userStateService.userIsAdmin && !this.userStateService.userIsOrgMember)
+        ) {
+            return of([]);
+        }
 
-    private _userBehaviorSubject: BehaviorSubject<User>;
-    get userAsync(): Observable<User> {
-        return this._userBehaviorSubject.asObservable();
-    }
-    get userHasValue(): boolean {
-        return this._userBehaviorSubject.value !== null;
-    }
-    get user(): User {
-        return this._userBehaviorSubject.value;
-    }
+        if (this.hasUsers && !forceUpdate) return of(this.usersValue);
 
-    get userIsAdmin(): Observable<boolean> {
-        return this.userAsync.pipe(
-            map((user) => (user ? user.role === Role.ADMIN : false)),
-            take(1)
+        return this._getUsers(this.userStateService.userOrganization.id).pipe(
+            take(1),
+            tap((users) => this.updateUsersState(users))
         );
+    }
+
+    updateUsersState(users: User[]) {
+        this._usersSubject.next(users);
     }
 
     constructor(
         private http: HttpClient,
         private timerService: TimerService,
-        private sessionStorageService: SessionStorageService
+        private userStateService: UserStateService,
+        private snackbarService: SnackbarService
     ) {
-        this._guestsSubject = new BehaviorSubject(null);
-        this._userBehaviorSubject = new BehaviorSubject(null);
+        this._usersSubject = new BehaviorSubject(null);
     }
 
-    createGuest(username: string, password: string): Observable<HttpResponse<any>> {
-        return this.registerUser(username, password, Role.GUEST);
-    }
-
-    deleteGuest(guest: User): Observable<HttpResponse<any>> {
-        return this.http.delete(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/${guest.id}`, {
-            observe: 'response',
-        });
-    }
-
-    // gets the user value and updates it if it does not exist
-    getUser(forceUpdate = false): Observable<User> {
-        if (this.userHasValue && !forceUpdate) {
-            // this observable will keep omitting values unless we suppress it
-            return this.userAsync.pipe(take(1));
-        } else {
-            return this.isCrowdsourcedUser
-                ? this._getCrowdsourcedUser(this.currentlyRunningStudyId).pipe(
-                      map((crowdsourcedUser) => ({
-                          id: 0,
-                          email: crowdsourcedUser.participantId,
-                          role: Role.PARTICIPANT,
-                          createdAt: crowdsourcedUser.registerDate,
-                          changePasswordRequired: false,
-                          lang: SupportedLangs.NONE,
-                      })),
-                      tap((user: User) => {
-                          this._userBehaviorSubject.next(user);
-                      })
-                  )
-                : this._getUser().pipe(
-                      tap((user: User) => {
-                          this._userBehaviorSubject.next(user);
-                      })
-                  );
-        }
-    }
-
-    updateUser(): void {
-        if (this.isCrowdsourcedUser) {
-            this._getCrowdsourcedUser(this.currentlyRunningStudyId).subscribe(
-                (crowdsourcedUser) => {
-                    const user: User = {
-                        id: 0,
-                        email: crowdsourcedUser.participantId,
-                        role: Role.PARTICIPANT,
-                        createdAt: crowdsourcedUser.registerDate,
-                        changePasswordRequired: false,
-                        lang: crowdsourcedUser.lang || SupportedLangs.NONE,
-                    };
-                    this._userBehaviorSubject.next(user);
-                },
-                (err) => {
-                    throw new Error(err.message);
-                }
+    // we cannot delete most users (except guests)
+    deleteGuest(user: User): Observable<any> {
+        if (user.role !== Role.GUEST) {
+            this.snackbarService.openErrorSnackbar(
+                'Cannot delete users other than guests - please contact the developer for more info'
             );
-        } else {
-            this._getUser().subscribe(
-                (user) => {
-                    this._userBehaviorSubject.next(user);
-                },
-                (err) => {
-                    this._userBehaviorSubject.next(null);
-                    throw new Error(err.message);
-                }
-            );
+            return;
         }
+        return this.http.delete<HttpStatus>(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/${user.id}`).pipe(
+            tap((_res) => {
+                const usersUpdate = [...this.usersValue];
+                const deletedUserIndex = usersUpdate.findIndex((userUpdate) => userUpdate.id === user.id);
+                if (deletedUserIndex < 0) return;
+
+                usersUpdate.splice(deletedUserIndex, 1);
+                this.updateUsersState(usersUpdate);
+            })
+        );
     }
 
-    updateGuests(): void {
-        this._getGuests().subscribe((guests) => {
-            this._guestsSubject.next(guests);
-        });
-    }
-
-    markCompletion(studyId: number): Observable<string> {
+    createUser(user: User): Observable<any> {
         return this.http
-            .patch(`${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}/${studyId}`, {
-                observe: 'response',
-            })
-            .pipe(map((res) => res as string));
+            .post<HttpStatus>(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}`, user)
+            .pipe(mergeMap(() => this.getOrUpdateUsers(true)));
     }
 
-    registerUser(email: string, password: string, role?: Role): Observable<HttpResponse<any>> {
-        const obj = {
-            email: email,
-            password: password,
-        };
-        if (role) obj['role'] = role;
-
-        return this.http.post<HttpResponse<any>>(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}`, obj, {
-            observe: 'response',
-        });
+    updateUser(user: User): Observable<User> {
+        return this.http
+            .patch<User>(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/${user.id}`, user)
+            .pipe(tap((user) => this.userStateService.updateUserState(user)));
     }
 
-    patchUser(user: User): Observable<User> {
-        return this.http.patch<User>(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/${user.id}`, user).pipe(
-            tap((user) => {
-                this._userBehaviorSubject.next(user);
-            })
-        );
-    }
-
-    getCrowdsourcedUsersByStudyId(studyId: number): Observable<CrowdsourcedUser[]> {
-        return this.http.get<CrowdsourcedUser[]>(
-            `${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}/${studyId}`
-        );
-    }
-
-    changePassword(email: string, temporaryPassword: string, newPassword: string): Observable<any> {
-        return this.http.post(
-            `${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/changepassword`,
+    updateUserPassword(email: string, temporaryPassword: string, newPassword: string): Observable<any> {
+        return this.http.put(
+            `${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/password`,
             {
                 email,
                 temporaryPassword,
@@ -181,41 +100,23 @@ export class UserService implements CanClear {
         );
     }
 
-    registerCrowdsourcedUser(participantId: string, studyId: number, lang: SupportedLangs) {
-        const crowdsourcedUser: CrowdsourcedUser = {
-            participantId,
-            studyId,
-            registerDate: this.timerService.getCurrentTimestamp(),
-            completionCode: '',
-            lang,
-        };
-
-        return this.http.post<CrowdsourcedUser>(
-            `${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}`,
-            crowdsourcedUser
-        );
+    sendForgotPasswordEmail(email: string): Observable<boolean> {
+        return this.http
+            .put<HttpResponse<any>>(
+                `${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/forgotpassword`,
+                { email: email },
+                { observe: 'response' }
+            )
+            .pipe(map((res) => res.ok));
     }
 
-    private _getGuests() {
-        return this.http.get<User[]>(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}/guests`);
-    }
-
-    private _getUser() {
-        return this.http.get<User>(`${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}`);
-    }
-
-    private _getCrowdsourcedUser(studyId: number) {
-        return this.http.get<CrowdsourcedUser>(
-            `${environment.apiBaseURL}${this.CROWDSOURCED_USERS_RESOURCE_PATH}/user/${studyId}`
+    private _getUsers(organizationId: number) {
+        return this.http.get<User[]>(
+            `${environment.apiBaseURL}${this.USERS_RESOURCE_PATH}?organizationId=${organizationId}`
         );
     }
 
     clearService() {
-        if (this._guestsSubject.value) {
-            this._guestsSubject.next(null);
-        }
-        if (this._userBehaviorSubject.value) {
-            this._userBehaviorSubject.next(null);
-        }
+        this._usersSubject.next(null);
     }
 }

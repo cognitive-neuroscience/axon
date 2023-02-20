@@ -1,32 +1,36 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
-import { AdminRouteNames, Role } from "src/app/models/enums";
-import { AdminDashboardComponent } from "./admin-dashboard/admin-dashboard.component";
-import { DataComponent } from "./admin-dashboard/data/data.component";
-import { ManageGuestsComponent } from "./admin-dashboard/manage-guests/manage-guests.component";
-import { CreateModifyStudyComponent } from "./admin-dashboard/studies/create-modify-study/create-modify-study.component";
-import { StudiesComponent } from "./admin-dashboard/studies/studies.component";
-import { ViewStudiesComponent } from "./admin-dashboard/studies/view-studies/view-studies.component";
-import { StudyComponentsComponent } from "./admin-dashboard/study-components/study-components.component";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { CanActivateRouteGuard } from 'src/app/guards/CanActivateRouteGuard';
+import { Role } from 'src/app/models/enums';
+import { ProfileComponent } from '../shared/profile/profile.component';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { DataComponent } from './admin-dashboard/data/data.component';
+import { ManageUsersComponent } from './admin-dashboard/manage-users/manage-users.component';
+import { CreateModifyStudyComponent } from './admin-dashboard/studies/create-modify-study/create-modify-study.component';
+import { StudiesComponent } from './admin-dashboard/studies/studies.component';
+import { ViewStudiesComponent } from './admin-dashboard/studies/view-studies/view-studies.component';
+import { StudyComponentsComponent } from './admin-dashboard/study-components/study-components.component';
 
 const routes: Routes = [
     {
-        path: AdminRouteNames.DASHBOARD_BASEROUTE,
+        path: 'admin-dashboard',
+        canActivate: [CanActivateRouteGuard],
         component: AdminDashboardComponent,
-        data: { roles: [Role.ADMIN, Role.GUEST] },
+        data: { roles: [Role.ADMIN] },
         children: [
-            { path: "", redirectTo: AdminRouteNames.STUDIES_SUBROUTE, pathMatch: "full" },
+            { path: '', redirectTo: 'studies', pathMatch: 'full' },
             {
-                path: AdminRouteNames.STUDIES_SUBROUTE,
+                path: 'studies',
                 component: StudiesComponent,
                 children: [
-                    { path: "", component: ViewStudiesComponent },
-                    { path: AdminRouteNames.STUDIES_CREATE_SUBROUTE, component: CreateModifyStudyComponent },
-                    { path: ":id", component: DataComponent },
+                    { path: '', component: ViewStudiesComponent },
+                    { path: 'create', component: CreateModifyStudyComponent },
+                    { path: ':id', component: DataComponent },
                 ],
             },
-            { path: AdminRouteNames.COMPONENTS_SUBROUTE, component: StudyComponentsComponent },
-            { path: AdminRouteNames.GUESTS_SUBROUTE, component: ManageGuestsComponent },
+            { path: 'components', component: StudyComponentsComponent },
+            { path: 'users', component: ManageUsersComponent },
+            { path: 'profile', component: ProfileComponent },
         ],
     },
 ];

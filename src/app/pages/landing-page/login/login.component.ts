@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { AdminRouteNames, ParticipantRouteNames, Role, RouteNames, SupportedLangs } from 'src/app/models/enums';
+import { Role, SupportedLangs } from 'src/app/models/enums';
 import { catchError, mergeMap } from 'rxjs/operators';
-import { UserService } from 'src/app/services/user.service';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { HttpStatusCode } from '@angular/common/http';
+import { HttpStatus } from 'src/app/models/Auth';
+import { UserStateService } from 'src/app/services/user-state-service';
 
 @Component({
     selector: 'app-login',
@@ -27,11 +28,11 @@ export class LoginComponent implements OnDestroy {
     });
 
     navigateToRegister() {
-        this.router.navigate([RouteNames.LANDINGPAGE_REGISTER_BASEROUTE]);
+        this.router.navigate(['/register']);
     }
 
     navigateToForgotPassword() {
-        this.router.navigate([RouteNames.LANDINGPAGE_FORGOT_PASSWORD_BASEROUTE]);
+        this.router.navigate(['/send-reset-email']);
     }
 
     togglePasswordVisibility() {
@@ -58,7 +59,7 @@ export class LoginComponent implements OnDestroy {
         this.authService
             .login(email, password)
             .pipe(
-                mergeMap(() => this.userService.getUser()),
+                mergeMap(() => this.userStateService.getOrUpdateUserState()),
                 catchError((err) => {
                     throw err;
                 })
@@ -66,18 +67,36 @@ export class LoginComponent implements OnDestroy {
             .subscribe(
                 (user) => {
                     this.snackbarService.openSuccessSnackbar(
-                        user.lang === SupportedLangs.EN ? 'Successfully logged in!' : 'Connexion réussie!'
+                        user.lang === SupportedLangs.FR ? 'Connexion réussie!' : 'Successfully logged in!'
                     );
                     this.handleNavigate(user.role);
                 },
-                (err: { status: HttpStatusCode; message: string }) => {
-                    if (err?.status === HttpStatusCode.UnprocessableEntity && err?.message === 'user does not exist') {
-                        this.snackbarService.openErrorSnackbar([
-                            'This email is not registered',
-                            "Ce courriel n'est pas enregistré",
-                        ]);
-                    } else {
-                        this.snackbarService.openErrorSnackbar(err?.message || 'There was an error');
+                (err: HttpStatus) => {
+                    switch (err.status) {
+                        case HttpStatusCode.NotFound:
+                            this.snackbarService.openErrorSnackbar([
+                                'This email is not registered',
+                                "Ce courriel n'est pas enregistré",
+                            ]);
+                            break;
+                        case HttpStatusCode.BadRequest:
+                            this.snackbarService.openErrorSnackbar([
+                                'Username or password is either empty or in an unrecognized format',
+                            ]);
+                            break;
+                        case HttpStatusCode.Unauthorized:
+                            this.snackbarService.openErrorSnackbar('Username or password is incorrect');
+                            break;
+                        case HttpStatusCode.Forbidden:
+                            this.snackbarService.openErrorSnackbar(
+                                'Password must be changed before logging in. Please check your email for a temporary password, or click "Forgot your password?" to receive another one',
+                                undefined,
+                                20000
+                            );
+                            break;
+                        default:
+                            this.snackbarService.openErrorSnackbar(err.message || 'There was an error');
+                            break;
                     }
                 }
             )
@@ -92,18 +111,21 @@ export class LoginComponent implements OnDestroy {
         private snackbarService: SnackbarService,
         private fb: UntypedFormBuilder,
         private loaderService: LoaderService,
-        private userService: UserService,
-        private clearanceService: ClearanceService
+        private clearanceService: ClearanceService,
+        private userStateService: UserStateService
     ) {}
 
     private handleNavigate(role: Role) {
         switch (role) {
             case Role.ADMIN:
-            case Role.GUEST:
-                this.router.navigate([AdminRouteNames.DASHBOARD_BASEROUTE]);
+                this.router.navigate([`admin-dashboard`]);
                 break;
             case Role.PARTICIPANT:
-                this.router.navigate([ParticipantRouteNames.DASHBOARD_BASEROUTE]);
+                this.router.navigate([`participant-dashboard`]);
+                break;
+            case Role.GUEST:
+            case Role.ORGANIZATION_MEMBER:
+                this.router.navigate([`organization-member-dashboard`]);
                 break;
             default:
                 this.snackbarService.openErrorSnackbar('There was an error logging you in');

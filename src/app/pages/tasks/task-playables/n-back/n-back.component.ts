@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { NBackTaskData } from 'src/app/models/TaskData';
+import { NBackTaskData } from 'src/app/models/ParticipantData';
 import { SnackbarService } from '../../../../services/snackbar/snackbar.service';
 import { Key, TranslatedFeedback } from 'src/app/models/InternalDTOs';
 import { TimerService } from '../../../../services/timer.service';

@@ -2,13 +2,7 @@
     <div class="d-flex justify-content-between">
         <h2 class="mb-3">{{ mode === 'CREATE' ? 'Create a new study' : 'Edit study' }}</h2>
         <div>
-            <button
-                *ngIf="mode === 'CREATE'"
-                mat-raised-button
-                color="primary"
-                [disabled]="!(isAdmin | async)"
-                (click)="navigateToViewAllStudies()"
-            >
+            <button *ngIf="mode === 'CREATE'" mat-raised-button color="primary" (click)="navigateToViewAllStudies()">
                 View all studies <mat-icon style="margin-left: 10px">view_list</mat-icon>
             </button>
         </div>
@@ -16,13 +10,13 @@
     <hr />
     <div>
         <div [formGroup]="studyForm">
-            <mat-form-field class="w-50 d-block">
+            <mat-form-field appearance="fill" class="w-50 d-block">
                 <mat-label>External Study Name</mat-label>
                 <input required formControlName="externalName" matInput type="text" placeholder="My study" />
                 <mat-error *ngIf="studyForm.get('externalName')?.hasError('required')">This is required</mat-error>
                 <mat-error *ngIf="studyForm.get('externalName')?.hasError('maxlength')">Max 255 characters</mat-error>
             </mat-form-field>
-            <mat-form-field class="w-50 d-block">
+            <mat-form-field appearance="fill" class="w-50 d-block">
                 <mat-label>Internal Study Name</mat-label>
                 <input
                     formControlName="internalName"
@@ -34,15 +28,15 @@
                 <mat-error *ngIf="studyForm.get('internalName')?.hasError('required')">This is required</mat-error>
                 <mat-error *ngIf="studyForm.get('internalName')?.hasError('maxlength')">Max 255 characters</mat-error>
             </mat-form-field>
-            <mat-form-field class="w-50 d-block">
+            <mat-form-field appearance="fill" class="w-50 d-block">
                 <mat-label>Description (optional)</mat-label>
                 <textarea rows="4" formControlName="description" matInput type="text"></textarea>
                 <mat-error *ngIf="studyForm.get('description')?.hasError('maxlength')">Max 500 characters</mat-error>
             </mat-form-field>
-            <mat-form-field class="w-50">
+            <mat-form-field appearance="fill" class="w-50">
                 <mat-label>Consent For Study</mat-label>
-                <mat-select required formControlName="consent">
-                    <mat-option *ngFor="let consentForm of consentForms | async" [value]="consentForm.id">{{
+                <mat-select required formControlName="consent" [compareWith]="compareConsentFn">
+                    <mat-option *ngFor="let consentForm of consentForms" [value]="consentForm">{{
                         consentForm.name
                     }}</mat-option>
                 </mat-select>
@@ -52,7 +46,7 @@
             <hr />
 
             <mat-label class="d-block">Build Your Study</mat-label>
-            <mat-form-field class="select-task">
+            <mat-form-field appearance="fill" class="select-task">
                 <mat-label>Sharplab Tasks</mat-label>
                 <mat-select
                     [disabled]="study && !study.canEdit"
@@ -61,7 +55,7 @@
                     <mat-optgroup label="NAB">
                         <mat-option
                             (click)="handleSelection(task)"
-                            *ngFor="let task of NABPsharplabTasks | async"
+                            *ngFor="let task of NABPsharplabTasks"
                             [value]="task"
                             >{{ task.name }}</mat-option
                         >
@@ -69,14 +63,14 @@
                     <mat-optgroup label="Experimental">
                         <mat-option
                             (click)="handleSelection(task)"
-                            *ngFor="let task of experimentalPsharplabTasks | async"
+                            *ngFor="let task of experimentalPsharplabTasks"
                             [value]="task"
                             >{{ task.name }}</mat-option
                         >
                     </mat-optgroup>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field class="select-task">
+            <mat-form-field appearance="fill" class="select-task">
                 <mat-label>Questionnaires</mat-label>
                 <mat-select
                     [disabled]="study && !study.canEdit"
@@ -84,13 +78,13 @@
                 >
                     <mat-option
                         (click)="handleSelection(questionnaire)"
-                        *ngFor="let questionnaire of questionnaires | async"
+                        *ngFor="let questionnaire of questionnaires"
                         [value]="questionnaire"
                         >{{ questionnaire.name }}</mat-option
                     >
                 </mat-select>
             </mat-form-field>
-            <mat-form-field class="select-task">
+            <mat-form-field appearance="fill" class="select-task">
                 <mat-label>Pavlovia Tasks</mat-label>
                 <mat-select
                     [disabled]="study && !study.canEdit"
@@ -99,7 +93,7 @@
                     <mat-optgroup label="NAB">
                         <mat-option
                             (click)="handleSelection(task)"
-                            *ngFor="let task of NABPavloviaTasks | async"
+                            *ngFor="let task of NABPavloviaTasks"
                             [value]="task"
                             >{{ task.name }}</mat-option
                         >
@@ -107,30 +101,27 @@
                     <mat-optgroup label="Experimental">
                         <mat-option
                             (click)="handleSelection(task)"
-                            *ngFor="let task of experimentalPavloviaTasks | async"
+                            *ngFor="let task of experimentalPavloviaTasks"
                             [value]="task"
                             >{{ task.name }}</mat-option
                         >
                     </mat-optgroup>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field class="select-task">
+            <mat-form-field appearance="fill" class="select-task">
                 <mat-label>Info Displays</mat-label>
                 <mat-select
                     [disabled]="study && !study.canEdit"
                     [matTooltip]="study && !study?.canEdit ? 'cannot edit tasks once the study has been started' : null"
                 >
-                    <mat-option
-                        (click)="handleSelection(task)"
-                        *ngFor="let task of InfoDisplays | async"
-                        [value]="task"
-                        >{{ task.name }}</mat-option
-                    >
+                    <mat-option (click)="handleSelection(task)" *ngFor="let task of InfoDisplays" [value]="task">{{
+                        task.name
+                    }}</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
 
-        <div class="mx-auto my-3">
+        <div class="mx-auto my-3 max-height">
             <div *ngIf="selectedTasks.length > 0" class="droplist" cdkDropList (cdkDropListDropped)="drop($event)">
                 <div
                     class="dropbox {{ getClass(task) }}"

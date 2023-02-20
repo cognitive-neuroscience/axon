@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
-import { FaceNameAssociationTaskData } from 'src/app/models/TaskData';
+import { FaceNameAssociationTaskData } from 'src/app/models/ParticipantData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import {
     FaceNameAssociationStimulus,

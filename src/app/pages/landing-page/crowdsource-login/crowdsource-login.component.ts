@@ -3,8 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { SnackbarService } from '../../../services/snackbar/snackbar.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
 import { Observable, Subscription, throwError } from 'rxjs';
-import { UserService } from 'src/app/services/user.service';
-import { mergeMap, take } from 'rxjs/operators';
+import { mergeMap, take, tap } from 'rxjs/operators';
 import { wait } from 'src/app/common/commonMethods';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { ClearanceService } from 'src/app/services/clearance.service';
@@ -13,6 +12,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { LanguageDialogComponent } from '../../participant/participant-dashboard/language-dialog/language-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SessionStorageService } from 'src/app/services/sessionStorage.service';
+import { UserStateService } from 'src/app/services/user-state-service';
+import { CrowdSourcedUserService } from 'src/app/services/crowdsourced-user.service';
+import { HttpStatus } from 'src/app/models/Auth';
 declare function setFullScreen(): any;
 
 @Component({
@@ -31,7 +33,8 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
         private _route: ActivatedRoute,
         private _snackbarService: SnackbarService,
         private _taskManager: TaskManagerService,
-        private userService: UserService,
+        private userStateService: UserStateService,
+        private crowdSourcedUserService: CrowdSourcedUserService,
         private loaderService: LoaderService,
         private clearanceService: ClearanceService,
         private dialog: MatDialog,
@@ -71,13 +74,17 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                         if (!lang) return throwError('user exited dialog');
                         this.translateService.use(lang);
                         this.loaderService.showLoader();
-                        return this.userService.registerCrowdsourcedUser(this.workerId, this.studyId, lang);
+                        return this.crowdSourcedUserService.createCrowdSourcedUserAndLogin(
+                            this.workerId,
+                            this.studyId,
+                            lang
+                        );
                     }),
                     mergeMap((res) => {
                         this.sessionStorageService.setIsCrowdsourcedUser(true);
                         // we set this here because the getUser func requires the current study id
                         this.sessionStorageService.setCurrentlyRunningStudyIdInSessionStorage(res.studyId.toString());
-                        return this.userService.getUser();
+                        return this.userStateService.getOrUpdateUserState();
                     }),
                     take(1)
                 )
@@ -93,21 +100,32 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                             this._taskManager.initStudy(this.studyId);
                         }
                     },
-                    (err) => {
+                    (err: HttpStatus) => {
                         // reset wasClicked if there was some sort of issue that caused them to come back to this page
                         this.wasClicked = false;
                         // if headers too large error
-                        if (err.status && err.status === 431) {
-                            this._snackbarService.openErrorSnackbar(
-                                'There was an error. Please try again by clearing your cookies, or open the study in incognito mode.',
-                                '',
-                                6000
-                            );
-                        } else {
-                            if (err !== 'user exited dialog') {
+                        switch (err?.status) {
+                            case 431:
+                                this._snackbarService.openErrorSnackbar(
+                                    'There was an error. Please try again by clearing your cookies, or open the study in incognito mode.',
+                                    '',
+                                    6000
+                                );
+                                break;
+                            case 409:
+                                this._snackbarService.openErrorSnackbar(
+                                    'A user with this ID has already registered for this study and cannot participate again.',
+                                    '',
+                                    15000
+                                );
+                                break;
+                            default:
                                 console.error(err);
-                                this._snackbarService.openErrorSnackbar(err.message || err.error?.message);
-                            }
+                                this._snackbarService.openErrorSnackbar(
+                                    err.message ||
+                                        'CrowdSource User Login error. Please contact sharplab.neuro@mcgill.ca.'
+                                );
+                                break;
                         }
                     }
                 )

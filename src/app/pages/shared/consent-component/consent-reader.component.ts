@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { getTextForLang } from 'src/app/common/commonMethods';
 import { SupportedLangs } from 'src/app/models/enums';
 import { ITranslationText } from 'src/app/models/InternalDTOs';
-import { UserService } from 'src/app/services/user.service';
+import { UserStateService } from 'src/app/services/user-state-service';
 import { AbstractBaseReaderComponent } from '../../tasks/shared/base-reader';
 
 interface ConsentTextContent extends ITranslationText {
@@ -93,13 +93,17 @@ export class ConsentReaderComponent implements AbstractBaseReaderComponent, OnIn
     }
 
     get userIsCrowdsourcedUser(): boolean {
-        return this.userService.isCrowdsourcedUser;
+        return this.userStateService.isCrowdsourcedUser;
     }
 
     @Output()
     emitConsent: EventEmitter<Record<string, string>> = new EventEmitter();
 
-    constructor(private router: Router, private translateService: TranslateService, private userService: UserService) {
+    constructor(
+        private router: Router,
+        private translateService: TranslateService,
+        private userStateService: UserStateService
+    ) {
         const state = this.router.getCurrentNavigation()?.extras.state as ConsentNavigationConfig;
 
         if (state) this.readerMetadata = state;

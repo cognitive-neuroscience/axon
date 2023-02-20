@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DigitSpanTaskData } from 'src/app/models/TaskData';
+import { DigitSpanTaskData } from 'src/app/models/ParticipantData';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
 import { TimerService } from 'src/app/services/timer.service';

@@ -1,31 +1,42 @@
-// import { Injectable } from '@angular/core';
-// import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
-// import { Observable } from 'rxjs';
-// import { AuthService } from '../services/auth.service';
-// import { SessionStorageService } from '../services/sessionStorage.service';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { Role } from '../models/enums';
+import { SnackbarService } from '../services/snackbar/snackbar.service';
+import { UserStateService } from '../services/user-state-service';
 
-// @Injectable({
-//     providedIn: "root"
-// })
-// export class CanActivateRouteGuard implements CanActivate {
-//     /**
-//      * For the admin route, this auth guard ensures that someone can only access if they have a valid token
-//      */
-//     constructor(private authService: AuthService, private sessionStorageService: SessionStorageService, private router: Router) {}
+@Injectable({
+    providedIn: 'root',
+})
+export class CanActivateRouteGuard implements CanActivate {
+    /**
+     * For the admin route, this auth guard ensures that someone can only access if they have a valid token
+     */
+    constructor(private userStateService: UserStateService, private snackbarService: SnackbarService) {}
 
-//     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-//         const token = this.sessionStorageService.getTokenFromSessionStorage()
+    canActivate(
+        route: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot
+    ): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+        return this.userStateService.getOrUpdateUserState().pipe(
+            map((user) => user?.role),
+            map((userRole) => {
+                if (!userRole) {
+                    this.snackbarService.openErrorSnackbar('forbidden');
+                    return false;
+                } else {
+                    const allowedRoles: Role[] | undefined = route?.data?.roles;
+                    const isAllowed = allowedRoles.length === 0 || allowedRoles.includes(userRole);
 
-//         if(token) {
-//             const jwt = this.authService.getDecodedToken()
-//             if(route.data.roles && route.data.roles.indexOf(jwt.Role) === -1) {
-//                 this.sessionStorageService.clearSessionStorage()
-//                 this.router.navigate(['/login'])
-//                 return false
-//             }
-//             return true
-//         }
-//         this.router.navigate(['/login'])
-//         return false
-//     }
-// }
+                    if (!isAllowed) {
+                        this.snackbarService.openErrorSnackbar('forbidden');
+                    }
+
+                    return isAllowed;
+                }
+            }),
+            take(1)
+        );
+    }
+}

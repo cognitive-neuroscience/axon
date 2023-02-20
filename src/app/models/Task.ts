@@ -10,11 +10,3 @@ export class Task {
     externalURL?: string;
     config: SharplabTaskConfig;
 }
-
-export class StudyTask {
-    studyId: number;
-    taskId: number;
-    taskOrder: number;
-    config: {} | SharplabTaskConfig; // json task metadata or questionnaire metadata
-    task: Task;
-}

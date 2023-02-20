@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { Color, Key, UserResponse, TranslatedFeedback } from '../../../../models/InternalDTOs';
-import { TaskSwitchingTaskData } from '../../../../models/TaskData';
+import { TaskSwitchingTaskData } from '../../../../models/ParticipantData';
 import { TimerService } from '../../../../services/timer.service';
 import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
 import { AbstractBaseTaskComponent } from '../base-task';

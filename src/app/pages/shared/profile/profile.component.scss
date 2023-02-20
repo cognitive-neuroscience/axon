@@ -1,0 +1,25 @@
+@import '../../../sass/mixins';
+
+@include for-small-device-only {
+    .responsive-input-width {
+        width: 100%;
+    }
+}
+
+@include for-small-desktop-only {
+    .responsive-input-width {
+        width: 100%;
+    }
+}
+
+@include for-desktop-up {
+    .responsive-input-width {
+        width: 50%;
+    }
+}
+
+@include for-large-desktop-up {
+    .responsive-input-width {
+        width: 50%;
+    }
+}
