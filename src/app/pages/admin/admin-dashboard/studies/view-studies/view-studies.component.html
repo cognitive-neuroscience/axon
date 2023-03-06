@@ -1,6 +1,6 @@
 <div>
     <div class="d-flex justify-content-between">
-        <h2 class="mb-5">Your Studies</h2>
+        <h2 class="mb-5">Organization Studies</h2>
         <div>
             <button
                 (click)="downloadStudyUsers()"
@@ -20,12 +20,213 @@
         </div>
     </div>
 
+    <h3>Favorites</h3>
+
+    <mat-accordion multi class="align-accordion-headers">
+        <mat-expansion-panel *ngFor="let study of favoritedStudies">
+            <mat-expansion-panel-header class="panel-item-header">
+                <div class="d-flex w-100" style="flex-direction: row; justify-content: space-between">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <span class="study-id font-weight-bold">{{ study.id }}</span>
+                    </div>
+                    <div
+                        (click)="onSelectFavorite($event, study.id)"
+                        class="flex-column-center favorite-star-container"
+                    >
+                        <mat-icon
+                            matTooltip="add to favorites"
+                            [matTooltipPosition]="'right'"
+                            class="add-favorite"
+                            *ngIf="!isFavorite(study.id)"
+                            >star_outline</mat-icon
+                        >
+                        <mat-icon
+                            matTooltip="remove from favorites"
+                            [matTooltipPosition]="'right'"
+                            class="remove-favorite"
+                            *ngIf="isFavorite(study.id)"
+                            >remove_circle</mat-icon
+                        >
+                    </div>
+                    <div class="flex-column" style="width: 80%; justify-content: space-around">
+                        <span style="font-size: 1.5rem">
+                            <b>{{ study.internalName ? study.internalName : study.externalName }}</b>
+                        </span>
+                        <span class="panel-item-header-description text-ellipses">
+                            {{ study.description }}
+                        </span>
+                    </div>
+                    <div class="d-flex" style="align-items: center; width: 100px">
+                        <mat-slide-toggle
+                            [(ngModel)]="study.started"
+                            [disabled]="!canEditStudy(study.owner)"
+                            (change)="toggleStudyActiveStatus(study, $event)"
+                            (click)="$event.stopPropagation()"
+                        >
+                        </mat-slide-toggle>
+                        <div [class.study-inactive]="!study.started">
+                            <mat-icon class="icons started" *ngIf="study.started">run_circle</mat-icon>
+                            <mat-icon class="icons stopped" *ngIf="!study.started">pause_circle</mat-icon>
+                        </div>
+                    </div>
+                </div>
+            </mat-expansion-panel-header>
+
+            <div>
+                <mat-divider class="my-3"></mat-divider>
+                <div class="summary-container">
+                    <div class="flex-row-space-between">
+                        <div class="flex-column">
+                            <span class="title badge">TITLE</span>
+                            <span class="internal-name">
+                                <b
+                                    matTooltipPosition="right"
+                                    matTooltip="this is the title that participants will see"
+                                    >{{ study.externalName }}</b
+                                >
+                            </span>
+                        </div>
+                        <div class="flex-column-space-around">
+                            <button
+                                class="w-100"
+                                matTooltipPosition="left"
+                                matTooltip="share this link with participants who are logging in or registering an email with us"
+                                mat-button
+                                (click)="showCopiedMessage('participants with registered accounts')"
+                                [cdkCopyToClipboard]="ACCOUNT_LINK + study.id"
+                                color="primary"
+                            >
+                                <div class="copy-button-container">
+                                    <span> Copy link for participants </span>
+                                    <mat-icon class="ml-3">content_copy</mat-icon>
+                                </div>
+                            </button>
+                            <button
+                                matTooltipPosition="left"
+                                matTooltip="share this link with participants joining from sites like mturk or prolific"
+                                mat-button
+                                (click)="showCopiedMessage('mturk or prolific users')"
+                                [cdkCopyToClipboard]="CROWDSOURCE_LINK + study.id"
+                            >
+                                <div class="copy-button-container">
+                                    <span> Copy link for crowd sourced participants </span>
+                                    <mat-icon class="ml-3">content_copy</mat-icon>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="title badge">OWNER</span>
+                    </div>
+                    <div>
+                        <span class="internal-name">{{ study.owner.name }}</span>
+                    </div>
+
+                    <div>
+                        <span class="title badge">CONSENT</span>
+                    </div>
+                    <div>
+                        <span class="internal-name">{{ study.consent.name }}</span>
+                    </div>
+
+                    <div>
+                        <span class="title badge">TASKS</span>
+                    </div>
+                    <div class="max-height">
+                        <mat-list role="list">
+                            <ng-container *ngFor="let studyTask of study.studyTasks; let i = index">
+                                <mat-list-item class="colored-row h-100" role="listitem">
+                                    <div class="task-list my-2">
+                                        <span class="d-flex flex-row" style="justify-content: space-between">
+                                            <span>
+                                                <b> ({{ i + 1 }}) {{ studyTask.task.name }} </b>
+                                            </span>
+                                            <div class="d-inline">
+                                                <span class="badge">
+                                                    {{ studyTask.task.taskType }}
+                                                </span>
+                                                <span class="badge">
+                                                    {{ studyTask.task.fromPlatform }}
+                                                </span>
+                                            </div>
+                                        </span>
+                                        <span class="text-ellipses" style="color: darkgray">
+                                            {{ studyTask.task.description }}
+                                        </span>
+                                        <span class="url text-ellipses" *ngIf="studyTask.task.externalURL">
+                                            Linked to:
+                                            <a [href]="studyTask.task.externalURL" target="_blank" class="url">{{
+                                                studyTask.task.externalURL
+                                            }}</a>
+                                        </span>
+                                    </div>
+                                </mat-list-item>
+                            </ng-container>
+                        </mat-list>
+                    </div>
+
+                    <div class="d-flex my-3" style="justify-content: space-between">
+                        <button (click)="handleViewData(study)" class="w-25" mat-raised-button [disabled]="isGuest">
+                            See data
+                        </button>
+
+                        <button
+                            [disabled]="!canEditStudy(study.owner)"
+                            (click)="handleEdit(study)"
+                            class="w-25"
+                            color="primary"
+                            mat-raised-button
+                        >
+                            Edit Study
+                        </button>
+
+                        <button
+                            (click)="handleDelete(study)"
+                            class="w-25"
+                            color="warn"
+                            mat-raised-button
+                            [disabled]="!canEditStudy(study.owner)"
+                        >
+                            Archive Study
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <ng-container *ngIf="favoritedStudies?.length === 0">
+        <div style="color: red">No favorites for this user</div>
+    </ng-container>
+
+    <h3 class="mt-3">Your Studies</h3>
+
     <mat-accordion multi class="align-accordion-headers">
         <mat-expansion-panel *ngFor="let study of studies">
             <mat-expansion-panel-header class="panel-item-header">
                 <div class="d-flex w-100" style="flex-direction: row; justify-content: space-between">
                     <div class="d-flex justify-content-center align-items-center">
                         <span class="study-id font-weight-bold">{{ study.id }}</span>
+                    </div>
+                    <div
+                        (click)="onSelectFavorite($event, study.id)"
+                        class="flex-column-center favorite-star-container"
+                    >
+                        <mat-icon
+                            matTooltip="add to favorites"
+                            [matTooltipPosition]="'right'"
+                            class="add-favorite"
+                            *ngIf="!isFavorite(study.id)"
+                            >star_outline</mat-icon
+                        >
+                        <mat-icon
+                            matTooltip="remove from favorites"
+                            [matTooltipPosition]="'right'"
+                            class="remove-favorite"
+                            *ngIf="isFavorite(study.id)"
+                            >remove_circle</mat-icon
+                        >
                     </div>
                     <div class="flex-column" style="width: 80%; justify-content: space-around">
                         <span style="font-size: 1.5rem">
@@ -196,6 +397,25 @@
                 <div class="d-flex w-100" style="flex-direction: row; justify-content: space-between">
                     <div class="d-flex justify-content-center align-items-center">
                         <span class="study-id font-weight-bold">{{ study.id }}</span>
+                    </div>
+                    <div
+                        (click)="onSelectFavorite($event, study.id)"
+                        class="flex-column-center favorite-star-container"
+                    >
+                        <mat-icon
+                            matTooltip="add to favorites"
+                            [matTooltipPosition]="'right'"
+                            class="add-favorite"
+                            *ngIf="!isFavorite(study.id)"
+                            >star_outline</mat-icon
+                        >
+                        <mat-icon
+                            matTooltip="remove from favorites"
+                            [matTooltipPosition]="'right'"
+                            class="remove-favorite"
+                            *ngIf="isFavorite(study.id)"
+                            >remove_circle</mat-icon
+                        >
                     </div>
                     <div class="flex-column" style="width: 80%; justify-content: space-around">
                         <span style="font-size: 1.5rem">

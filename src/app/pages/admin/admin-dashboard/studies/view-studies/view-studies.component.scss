@@ -1,3 +1,19 @@
+.favorite-star-container {
+    width: 50px;
+
+    mat-icon {
+        font-size: 26px;
+    }
+
+    .add-favorite:hover {
+        color: rgb(214, 181, 19);
+    }
+
+    .remove-favorite:hover {
+        color: red;
+    }
+}
+
 .panel-item-header {
     line-height: normal;
 
@@ -40,7 +56,6 @@
     padding: 0 10px;
     color: white;
     border-radius: 8px;
-    margin-right: 1.2rem;
     height: 40px;
     width: 60px;
     justify-content: center;
