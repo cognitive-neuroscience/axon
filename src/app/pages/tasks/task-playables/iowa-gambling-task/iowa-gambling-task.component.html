@@ -1,0 +1,37 @@
+<div class="container-fluid wrapper task-text flex-column-center">
+    <div *ngIf="!!taskData" class="full-box flex-column-center">
+        <div style="height: 50%; width: 100%" class="flex-column">
+            <div style="display: flex; text-align: start">
+                <h1 style="font-size: 48px; padding-top: 20px; padding-left: 20px">Your Money: {{ totalMoney }}</h1>
+            </div>
+            <div style="display: flex; flex-grow: 1; align-items: center">
+                <div style="width: 50%">
+                    <div>
+                        <h1 style="font-size: 2rem">You win {{ moneyWon }}</h1>
+                        <mat-icon style="width: 96px; height: 96px; font-size: 6rem">sentiment_very_satisfied</mat-icon>
+                    </div>
+                </div>
+                <div style="width: 50%">
+                    <div>
+                        <h1 style="font-size: 2rem">Fee of {{ feePaid }} applies now!</h1>
+                        <mat-icon style="width: 96px; height: 96px; font-size: 6rem"
+                            >sentiment_very_dissatisfieds</mat-icon
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="height: 50%; width: 100%">
+            <div style="height: 100%" class="flex-column-center">
+                <div>
+                    <button color="primary" class="button" mat-fab>A</button>
+                    <button color="primary" class="button" mat-fab>B</button>
+                    <button color="primary" class="button" mat-fab>C</button>
+                    <button color="primary" class="button" mat-fab>D</button>
+                </div>
+                <h1 style="padding-top: 50px; font-size: 2rem">Choose one of the 4 buttons</h1>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { wait } from 'src/app/common/commonMethods';
 import { BaseParticipantData } from 'src/app/models/ParticipantData';
@@ -9,7 +9,7 @@ import { ComponentMetadata, TaskPlayerState } from './task-player/task-player.co
 declare function setFullScreen(): any;
 
 @Component({ template: '' })
-export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
+export abstract class AbstractBaseTaskComponent implements OnInit, Playable, OnDestroy {
     // shared state variables
     userID: string;
     studyId: number;
@@ -27,10 +27,12 @@ export abstract class AbstractBaseTaskComponent implements Playable, OnDestroy {
     TRANSLATION_PREFIX = `tasks.feedback.`;
 
     // task lifecycle part 0: show loader for 2 seconds (as fixation) and then move onto the task
-    constructor(protected loaderService: LoaderService) {
-        loaderService.showLoader();
+    constructor(protected loaderService: LoaderService) {}
+
+    ngOnInit(): void {
+        this.loaderService.showLoader();
         setTimeout(() => {
-            loaderService.hideLoader();
+            this.loaderService.hideLoader();
             if (this.isDestroyed) return;
             this.start();
         }, this.showLoaderOnInitDuration);

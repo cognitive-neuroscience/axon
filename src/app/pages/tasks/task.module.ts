@@ -40,6 +40,7 @@ import { FaceNameAssociationComponent } from './task-playables/face-name-associa
 import { BlankComponent } from './blank/blank.component';
 import { ProbabilisticLearningTaskComponent } from './task-playables/probabilistic-learning-task/probabilistic-learning-task.component';
 import { OptionDisplayComponent } from './shared/option-display/option-display.component';
+import { IowaGamblingTaskComponent } from './task-playables/iowa-gambling-task/iowa-gambling-task.component';
 
 @NgModule({
     declarations: [
@@ -86,6 +87,7 @@ import { OptionDisplayComponent } from './shared/option-display/option-display.c
         BlankComponent,
         ProbabilisticLearningTaskComponent,
         OptionDisplayComponent,
+        IowaGamblingTaskComponent,
     ],
     imports: [
         CommonModule,

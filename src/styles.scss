@@ -104,6 +104,13 @@ button {
     flex-direction: row;
 }
 
+.flex-row-center {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
 .flex-row-space-between {
     display: flex;
     flex-direction: row;
