@@ -4,19 +4,17 @@
             <div style="display: flex; text-align: start">
                 <h1 style="font-size: 48px; padding-top: 20px; padding-left: 20px">Your Money: {{ totalMoney }}</h1>
             </div>
-            <div style="display: flex; flex-grow: 1; align-items: center">
-                <div style="width: 50%">
-                    <div>
-                        <h1 style="font-size: 2rem">You win {{ moneyWon }}</h1>
-                        <mat-icon style="width: 96px; height: 96px; font-size: 6rem">sentiment_very_satisfied</mat-icon>
+            <div *ngIf="showFeedback" style="display: flex; flex-grow: 1; align-items: center">
+                <div style="width: 50%; display: flex; justify-content: center">
+                    <div *ngIf="moneyWon !== 0" class="face-container win">
+                        <h1>You win {{ moneyWon }}</h1>
+                        <mat-icon class="face">sentiment_very_satisfied</mat-icon>
                     </div>
                 </div>
-                <div style="width: 50%">
-                    <div>
-                        <h1 style="font-size: 2rem">Fee of {{ feePaid }} applies now!</h1>
-                        <mat-icon style="width: 96px; height: 96px; font-size: 6rem"
-                            >sentiment_very_dissatisfieds</mat-icon
-                        >
+                <div style="width: 50%; display: flex; justify-content: center">
+                    <div *ngIf="feePaid !== 0" class="face-container lose">
+                        <h1>Fee of {{ feePaid }} applies now!</h1>
+                        <mat-icon class="face">sentiment_very_dissatisfieds</mat-icon>
                     </div>
                 </div>
             </div>
@@ -25,12 +23,17 @@
         <div style="height: 50%; width: 100%">
             <div style="height: 100%" class="flex-column-center">
                 <div>
-                    <button color="primary" class="button" mat-fab>A</button>
-                    <button color="primary" class="button" mat-fab>B</button>
-                    <button color="primary" class="button" mat-fab>C</button>
-                    <button color="primary" class="button" mat-fab>D</button>
+                    <div (click)="handleRoundInteraction(1)" color="primary" class="button">1</div>
+                    <div (click)="handleRoundInteraction(2)" color="primary" class="button">2</div>
+                    <div (click)="handleRoundInteraction(3)" color="primary" class="button">3</div>
+                    <div (click)="handleRoundInteraction(4)" color="primary" class="button">4</div>
                 </div>
-                <h1 style="padding-top: 50px; font-size: 2rem">Choose one of the 4 buttons</h1>
+                <h1 *ngIf="!showFeedback" style="padding-top: 50px; font-size: 2rem">Choose one of the 4 buttons</h1>
+                <div *ngIf="showFeedback" style="background-color: #3f51b5; width: 100%; margin-top: 2rem">
+                    <h1 class="flex-column-center" style="padding-top: 1rem; font-size: 2rem; color: white">
+                        Press the spacebar to collect (and/or pay fee)
+                    </h1>
+                </div>
             </div>
         </div>
     </div>
