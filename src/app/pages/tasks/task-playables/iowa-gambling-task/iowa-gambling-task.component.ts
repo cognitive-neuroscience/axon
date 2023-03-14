@@ -163,42 +163,42 @@ export class IowaGamblingTaskComponent extends AbstractBaseTaskComponent {
         this.buttonResponseAllowed = true;
     }
 
-    private isValidKey(key: string): boolean {
+    private isValidSpaceKey(key: string): boolean {
         return key === 'Space';
     }
 
-    handleRoundInteraction(buttonPressed: number) {
-        if (!this.buttonResponseAllowed) return;
-
-        this.buttonPressed = buttonPressed;
-        const thisStimulus = this.currentStimulus;
-        this.moneyWon = thisStimulus.moneyWon;
-        this.feePaid = thisStimulus.feePaid;
-        this.showFeedback = true;
-
-        this.currentTrial.selectButtonResponseTime = this.timerService.getTime();
-        this.currentTrial.buttonChoice = this.buttonPressed;
-        this.currentTrial.feePaid = thisStimulus.feePaid;
-        this.currentTrial.moneyWon = thisStimulus.moneyWon;
-        this.currentTrial.moneyInBankBeforeButtonSelection = this.totalMoney;
-        this.currentTrial.moneyInBankAfterButtonSelection = this.totalMoney + this.moneyWon + this.feePaid;
-        this.currentTrial.trialHasFee = this.feePaid < 0;
-
-        this.buttonResponseAllowed = false;
-        this.spacebarResponseAllowed = true;
+    private isValidButtonKey(key: string): boolean {
+        return key === '1' || key === '2' || key === '3' || key === '4';
     }
 
     @HostListener('window:keyup', ['$event'])
-    handleSpacebarPressed(event: KeyboardEvent) {
+    handleRoundInteraction(event: KeyboardEvent) {
         if (!this.currentTrial?.submitted) return;
-        this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
 
-        if (this.spacebarResponseAllowed && this.buttonPressed && this.isValidKey(event?.code)) {
+        if (this.buttonResponseAllowed && this.isValidButtonKey(event?.key)) {
+            this.buttonPressed = parseInt(event.key);
+            const thisStimulus = this.currentStimulus;
+            this.moneyWon = thisStimulus.moneyWon;
+            this.feePaid = thisStimulus.feePaid;
+            this.showFeedback = true;
+
+            this.currentTrial.selectButtonResponseTime = this.timerService.getTime();
+            this.currentTrial.buttonChoice = this.buttonPressed;
+            this.currentTrial.feePaid = thisStimulus.feePaid;
+            this.currentTrial.moneyWon = thisStimulus.moneyWon;
+            this.currentTrial.moneyInBankBeforeButtonSelection = this.totalMoney;
+            this.currentTrial.moneyInBankAfterButtonSelection = this.totalMoney + this.moneyWon + this.feePaid;
+            this.currentTrial.trialHasFee = this.feePaid < 0;
+
+            this.buttonResponseAllowed = false;
+            this.spacebarResponseAllowed = true;
+        } else if (this.spacebarResponseAllowed && this.buttonPressed && this.isValidSpaceKey(event?.code)) {
+            this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
+
             this.currentTrial.pressSpaceResponseTime = this.timerService.stopTimerAndGetTime();
             this.totalMoney = this.totalMoney + this.moneyWon + this.feePaid;
             this.spacebarResponseAllowed = false;
-            // super.handleRoundInteraction(event.key);
-            this.completeRound();
+            super.handleRoundInteraction(event.key);
         }
     }
 
