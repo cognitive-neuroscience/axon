@@ -193,6 +193,17 @@ export class PLTTaskData extends BaseParticipantData {
     responseTime: number;
 }
 
+export class IowaGamblingTaskData extends BaseParticipantData {
+    buttonChoice: number;
+    selectButtonResponseTime: number;
+    pressSpaceResponseTime: number;
+    trialHasFee: boolean;
+    moneyInBankBeforeButtonSelection: number;
+    moneyInBankAfterButtonSelection: number;
+    moneyWon: number;
+    feePaid: number;
+}
+
 export class ParticipantData {
     userId: string;
     studyId: number;

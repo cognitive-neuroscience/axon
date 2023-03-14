@@ -192,7 +192,7 @@ export class TaskPlayerComponent implements OnDestroy {
         this.viewContainer.clear();
         const shouldSetTaskAsComplete = !this.userStateService.isCrowdsourcedUser && this.hasCompletedAllBlocks();
 
-        if (this.userStateService.userIsAdmin) console.log(onComplete);
+        if (!this.userStateService.userIsParticipant) console.log(onComplete);
 
         if (onComplete.taskData && this.state.mode === 'actual') {
             this.loaderService.showLoader();
@@ -251,9 +251,13 @@ export class TaskPlayerComponent implements OnDestroy {
     }
 
     continueAhead() {
-        if (this.userStateService.userValue.role === Role.ADMIN) {
+        if (!this.userStateService.userIsParticipant) {
             this.reset();
-            this.router.navigate([`${AdminRouteNames.DASHBOARD_BASEROUTE}/${AdminRouteNames.COMPONENTS_SUBROUTE}`]);
+            this.router.navigate([
+                this.userStateService.userIsAdmin
+                    ? `admin-dashboard/components`
+                    : `organization-member-dashboard/components`,
+            ]);
             this.snackbarService.openInfoSnackbar('Task completed');
         } else {
             this.taskManager.next();

@@ -1,0 +1,132 @@
+@import '../../../../sass/mixins';
+
+@include for-small-device-only {
+    .button {
+        width: 80px;
+        height: 80px;
+        font-size: 65px;
+        margin: 0 0.5rem;
+    }
+
+    .face-container {
+        width: 200px;
+        height: 130px;
+        white-space: nowrap;
+        & h1 {
+            font-size: 1rem;
+        }
+    }
+
+    .face {
+        width: 50px;
+        height: 50px;
+        font-size: 3rem;
+    }
+}
+
+@include for-small-desktop-only {
+    .button {
+        width: 100px;
+        height: 100px;
+        font-size: 80px;
+        margin: 0 1rem;
+    }
+
+    .face-container {
+        width: 320px;
+        height: 190px;
+        & h1 {
+            font-size: 1.5rem;
+        }
+    }
+
+    .face {
+        width: 65px;
+        height: 65px;
+        font-size: 4rem;
+    }
+}
+
+@include for-desktop-up {
+    .button {
+        width: 120px;
+        height: 120px;
+        font-size: 95px;
+        margin: 0 2rem;
+    }
+
+    .face-container {
+        width: 350px;
+        height: 220px;
+        & h1 {
+            font-size: 2rem;
+        }
+    }
+
+    .face {
+        width: 96px;
+        height: 96px;
+        font-size: 6rem;
+    }
+}
+
+@include for-large-desktop-up {
+    .button {
+        width: 120px;
+        height: 120px;
+        font-size: 95px;
+        margin: 0 2rem;
+    }
+
+    .face-container {
+        width: 380px;
+        height: 250px;
+        & h1 {
+            font-size: 2rem;
+        }
+    }
+
+    .face {
+        width: 96px;
+        height: 96px;
+        font-size: 6rem;
+    }
+}
+
+.button {
+    display: inline-block;
+    border-radius: 50%;
+    color: white;
+    background-color: #3f51b5;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+    &:hover {
+        background-color: #374284;
+    }
+}
+
+.face-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+
+    &.win {
+        background-color: green;
+        border-radius: 12px;
+        color: white;
+        & h1 {
+            color: white;
+        }
+    }
+
+    &.lose {
+        background-color: red;
+        border-radius: 12px;
+        color: white;
+        & h1 {
+            color: white;
+        }
+    }
+}

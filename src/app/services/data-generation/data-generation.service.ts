@@ -37,6 +37,7 @@ import {
     FaceNameAssociationStimulus,
     PLTStimulus,
     PLTStimulusType,
+    IowaGamblingTaskStimulus,
 } from './stimuli-models';
 import { NBackSet } from './raw-data/nback-data-list';
 import { Color, ITranslationText } from 'src/app/models/InternalDTOs';
@@ -44,6 +45,7 @@ import { DemandSelectionImageNames } from './raw-data/demand-selection-image-lis
 import { DigitSpanStimuli } from './raw-data/digit-span-list';
 import { TrailMakingSet } from './raw-data/trail-making-list';
 import { getFaceNameAssociationStimuli } from './raw-data/face-name-association';
+import { IowaGamblingTaskStimuli } from './raw-data/iowa-gambling-task-list';
 
 @Injectable({
     providedIn: 'root',
@@ -533,5 +535,14 @@ export class DataGenerationService {
         }
 
         return stimuli;
+    }
+
+    generateIowaGamblingTaskStimuli(): {
+        1: IowaGamblingTaskStimulus[];
+        2: IowaGamblingTaskStimulus[];
+        3: IowaGamblingTaskStimulus[];
+        4: IowaGamblingTaskStimulus[];
+    } {
+        return IowaGamblingTaskStimuli;
     }
 }

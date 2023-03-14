@@ -1,4 +1,4 @@
-import { ComponentFactoryResolver, ComponentRef, Injectable, Injector } from '@angular/core';
+import { ComponentFactoryResolver, ComponentRef, Injectable, Injector, ViewContainerRef } from '@angular/core';
 import { TaskDisplayComponent } from '../pages/tasks/task-playables/task-display/task-display.component';
 import { Playable } from '../pages/tasks/task-playables/playable';
 import { RaterComponent } from '../pages/tasks/task-playables/everyday-choice/rater/rater.component';
@@ -19,6 +19,7 @@ import { QuestionnaireComponent } from '../pages/tasks/task-playables/questionna
 import { EmbeddedPageComponent } from '../pages/tasks/task-playables/embedded-page/embedded-page.component';
 import { InfoDisplayComponent } from '../pages/tasks/task-playables/info-display/info-display.component';
 import { ProbabilisticLearningTaskComponent } from '../pages/tasks/task-playables/probabilistic-learning-task/probabilistic-learning-task.component';
+import { IowaGamblingTaskComponent } from '../pages/tasks/task-playables/iowa-gambling-task/iowa-gambling-task.component';
 
 export enum ComponentName {
     // Generic components
@@ -40,6 +41,7 @@ export enum ComponentName {
     SART_COMPONENT = 'SARTCOMPONENT',
     FACE_NAME_ASSOCIATION_COMPONENT = 'FACENAMEASSOCIATIONCOMPONENT',
     PLT_COMPONENT = 'PLTCOMPONENT',
+    IOWA_GAMBLING_COMPONENT = 'IOWAGAMBLINGCOMPONENT',
 
     // Special Components
     EMBEDDED_PAGE_COMPONENT = 'EMBEDDEDPAGECOMPONENT',
@@ -69,6 +71,7 @@ const ComponentMap = {
     [ComponentName.EMBEDDED_PAGE_COMPONENT]: EmbeddedPageComponent,
     [ComponentName.INFO_DISPLAY_COMPONENT]: InfoDisplayComponent,
     [ComponentName.PLT_COMPONENT]: ProbabilisticLearningTaskComponent,
+    [ComponentName.IOWA_GAMBLING_COMPONENT]: IowaGamblingTaskComponent,
 };
 
 @Injectable({
@@ -90,6 +93,7 @@ export class ComponentFactoryService {
 
     private buildComponent(component: any): ComponentRef<any> {
         const componentFactory = this.cfr.resolveComponentFactory(component);
+
         const componentRef = componentFactory.create(this.injector);
         return componentRef;
     }

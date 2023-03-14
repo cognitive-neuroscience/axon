@@ -159,3 +159,8 @@ export class PLTStimulus {
     rightStimulusRewarded: boolean;
     expectedSelectedStimulus: PLTStimulusType;
 }
+
+export class IowaGamblingTaskStimulus {
+    moneyWon: number;
+    feePaid: number;
+}
