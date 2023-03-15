@@ -182,7 +182,7 @@ export class IowaGamblingTaskComponent extends AbstractBaseTaskComponent {
             this.feePaid = thisStimulus.feePaid;
             this.showFeedback = true;
 
-            this.currentTrial.selectButtonResponseTime = this.timerService.getTime();
+            this.currentTrial.selectButtonResponseTime = this.timerService.stopTimerAndGetTime();
             this.currentTrial.buttonChoice = this.buttonPressed;
             this.currentTrial.feePaid = thisStimulus.feePaid;
             this.currentTrial.moneyWon = thisStimulus.moneyWon;
@@ -192,6 +192,7 @@ export class IowaGamblingTaskComponent extends AbstractBaseTaskComponent {
 
             this.buttonResponseAllowed = false;
             this.spacebarResponseAllowed = true;
+            this.timerService.startTimer();
         } else if (this.spacebarResponseAllowed && this.buttonPressed && this.isValidSpaceKey(event?.code)) {
             this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
 
