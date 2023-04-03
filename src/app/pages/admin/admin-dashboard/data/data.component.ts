@@ -120,6 +120,7 @@ export class DataComponent implements OnInit, OnDestroy {
                                 taskOrder: data.taskOrder,
                                 submittedAt: data.submittedAt,
                                 participantType: data.participantType,
+                                ...data.metadata,
                             },
                             expandable: [...data.data],
                         };

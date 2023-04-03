@@ -210,5 +210,6 @@ export class ParticipantData {
     taskOrder: number;
     participantType: ParticipantType;
     submittedAt: string;
+    metadata: { wasSkipped?: boolean };
     data: BaseParticipantData[] | { [key: string]: any }[];
 }

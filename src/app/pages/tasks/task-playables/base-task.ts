@@ -75,6 +75,14 @@ export abstract class AbstractBaseTaskComponent implements OnInit, Playable, OnD
         return;
     }
 
+    handleSkip() {
+        this.onComplete.next({
+            navigation: Navigation.NEXT,
+            taskData: this.taskData,
+            wasSkipped: true,
+        });
+    }
+
     afterInit() {}
 
     ngOnDestroy() {

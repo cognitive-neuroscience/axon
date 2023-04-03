@@ -1,5 +1,5 @@
-import { ComponentName } from "src/app/services/component-factory.service";
-import { RatingTaskCounterBalance } from "./rater/rater.component";
+import { ComponentName } from 'src/app/services/component-factory.service';
+import { RatingTaskCounterBalance } from './rater/rater.component';
 
 export const EverydayChoiceLayoutMetadata = {
     config: {
@@ -12,25 +12,25 @@ export const EverydayChoiceLayoutMetadata = {
         {
             component: ComponentName.DISPLAY_COMPONENT,
             content: {
-                title: "Welcome to the Everyday Activities Game",
+                title: 'Welcome to the Everyday Activities Game',
                 sections: [
                     {
-                        sectionType: "text",
-                        textContent: "We are trying to understand how people fill their days with activities.",
+                        sectionType: 'text',
+                        textContent: 'We are trying to understand how people fill their days with activities.',
                     },
                     {
-                        sectionType: "text",
+                        sectionType: 'text',
                         textContent:
-                            "In this task we will ask you about activities that you may do in your everyday life.",
+                            'In this task we will ask you about activities that you may do in your everyday life.',
                     },
                     {
-                        sectionType: "text",
+                        sectionType: 'text',
                         textContent:
-                            "There are two parts to the task: <br> 1) Answering questions about different activities <br> 2) Indicating your preference between different activities",
+                            'There are two parts to the task: <br> 1) Answering questions about different activities <br> 2) Indicating your preference between different activities',
                     },
                     {
-                        sectionType: "text",
-                        textContent: "Click NEXT to continue",
+                        sectionType: 'text',
+                        textContent: 'Click NEXT to continue',
                     },
                 ],
                 buttons: {
@@ -43,26 +43,26 @@ export const EverydayChoiceLayoutMetadata = {
         {
             component: ComponentName.DISPLAY_COMPONENT,
             content: {
-                title: "COVID-19 Disclaimer",
+                title: 'COVID-19 Disclaimer',
                 sections: [
                     {
-                        sectionType: "text",
+                        sectionType: 'text',
                         textContent:
-                            "We recognize that what you currently do in your everyday life may be impacted by the COVID-19 pandemic.",
+                            'We recognize that what you currently do in your everyday life may be impacted by the COVID-19 pandemic.',
                     },
                     {
-                        sectionType: "text",
+                        sectionType: 'text',
                         textContent:
-                            "As a result, you may not currently be participating in some of the activities that we will ask you about.",
+                            'As a result, you may not currently be participating in some of the activities that we will ask you about.',
                     },
                     {
-                        sectionType: "text",
+                        sectionType: 'text',
                         textContent:
-                            "As much as possible, please try to picture yourself doing the activities under normal (pre-pandemic circumstances).",
+                            'As much as possible, please try to picture yourself doing the activities under normal (pre-pandemic circumstances).',
                     },
                     {
-                        sectionType: "text",
-                        textContent: "Click NEXT to continue",
+                        sectionType: 'text',
+                        textContent: 'Click NEXT to continue',
                     },
                 ],
                 buttons: {
@@ -75,24 +75,24 @@ export const EverydayChoiceLayoutMetadata = {
         {
             component: ComponentName.DISPLAY_COMPONENT,
             content: {
-                title: "Everyday Activities Game - Part 1",
+                title: 'Everyday Activities Game - Part 1',
                 sections: [
                     {
-                        sectionType: "text",
-                        textContent: "Please read the following instructions carefully.",
+                        sectionType: 'text',
+                        textContent: 'Please read the following instructions carefully.',
                     },
                     {
-                        sectionType: "text",
+                        sectionType: 'text',
                         textContent:
-                            "We will ask you a series of questions about how you feel about different activities.",
+                            'We will ask you a series of questions about how you feel about different activities.',
                     },
                     {
-                        sectionType: "text",
-                        textContent: "You will have to provide your response using your mouse.",
+                        sectionType: 'text',
+                        textContent: 'You will have to provide your response using your mouse.',
                     },
                     {
-                        sectionType: "text",
-                        textContent: "Click NEXT to continue",
+                        sectionType: 'text',
+                        textContent: 'Click NEXT to continue',
                     },
                 ],
                 buttons: {
@@ -105,25 +105,25 @@ export const EverydayChoiceLayoutMetadata = {
         {
             component: ComponentName.DISPLAY_COMPONENT,
             content: {
-                title: "Let’s walk through an example",
+                title: 'Let’s walk through an example',
                 sections: [
                     {
-                        sectionType: "text",
-                        textContent: "Activity: Bring the car to the mechanic",
+                        sectionType: 'text',
+                        textContent: 'Activity: Bring the car to the mechanic',
                     },
                     {
-                        sectionType: "text",
+                        sectionType: 'text',
                         textContent:
-                            "You will be asked: How much you look forward to the outcome of it? How mentally effortful does this activity feel to you? ",
+                            'You will be asked: How much you look forward to the outcome of it? How mentally effortful does this activity feel to you? ',
                     },
                     {
-                        sectionType: "text",
+                        sectionType: 'text',
                         textContent:
-                            "We understand that this may or may not apply to you (perhaps you don’t currently own a car), but we ask that you try to picture yourself doing each activity so that you can answer the questions.",
+                            'We understand that this may or may not apply to you (perhaps you don’t currently own a car), but we ask that you try to picture yourself doing each activity so that you can answer the questions.',
                     },
                     {
-                        sectionType: "text",
-                        textContent: "Click START to practice",
+                        sectionType: 'text',
+                        textContent: 'Click START to practice',
                     },
                 ],
                 buttons: {
@@ -134,7 +134,7 @@ export const EverydayChoiceLayoutMetadata = {
             },
         },
         {
-            component: ComponentName.RATING_COMPONMENT,
+            component: ComponentName.RATING_COMPONENT,
             config: {
                 isPractice: true,
                 maxResponseTime: 150000,
@@ -146,19 +146,19 @@ export const EverydayChoiceLayoutMetadata = {
                 delayToShowRatingSlider: 0,
                 numDoSomethingActivities: 21,
                 stimuliConfig: {
-                    type: "hardcoded",
+                    type: 'hardcoded',
                     stimuli: [
                         {
-                            activity: "Bring the car to the mechanic",
-                            type: "DoSomething",
+                            activity: 'Bring the car to the mechanic',
+                            type: 'DoSomething',
                             questions: [
                                 {
-                                    question: "How much do you look forward to the outcome of this activity?",
-                                    legend: ["Not at all", "Very Much"],
+                                    question: 'How much do you look forward to the outcome of this activity?',
+                                    legend: ['Not at all', 'Very Much'],
                                 },
                                 {
-                                    question: "How mentally effortful does this activity feel to you?",
-                                    legend: ["Not at all", "Very effortful"],
+                                    question: 'How mentally effortful does this activity feel to you?',
+                                    legend: ['Not at all', 'Very effortful'],
                                 },
                             ],
                         },
@@ -169,25 +169,25 @@ export const EverydayChoiceLayoutMetadata = {
         {
             component: ComponentName.DISPLAY_COMPONENT,
             content: {
-                title: "",
+                title: '',
                 sections: [
                     {
-                        sectionType: "text",
-                        textContent: "Now you are ready to start.",
+                        sectionType: 'text',
+                        textContent: 'Now you are ready to start.',
                     },
                     {
-                        sectionType: "text",
+                        sectionType: 'text',
                         textContent:
-                            "We will show you a total of 26 activities and ask you a series of questions about each activity.",
+                            'We will show you a total of 26 activities and ask you a series of questions about each activity.',
                     },
                     {
-                        sectionType: "text",
+                        sectionType: 'text',
                         textContent:
-                            "Please take a moment to picture yourself doing each activity before answering the questions.",
+                            'Please take a moment to picture yourself doing each activity before answering the questions.',
                     },
                     {
-                        sectionType: "text",
-                        textContent: "Click START when you are ready",
+                        sectionType: 'text',
+                        textContent: 'Click START when you are ready',
                     },
                 ],
                 buttons: {
@@ -198,7 +198,7 @@ export const EverydayChoiceLayoutMetadata = {
             },
         },
         {
-            component: ComponentName.RATING_COMPONMENT,
+            component: ComponentName.RATING_COMPONENT,
             config: {
                 isPractice: false,
                 maxResponseTime: 15000,
@@ -210,7 +210,7 @@ export const EverydayChoiceLayoutMetadata = {
                 delayToShowRatingSlider: 0,
                 numDoSomethingActivities: 21,
                 stimuliConfig: {
-                    type: "generated",
+                    type: 'generated',
                     stimuli: null,
                 },
             },
@@ -218,11 +218,11 @@ export const EverydayChoiceLayoutMetadata = {
         {
             component: ComponentName.DISPLAY_COMPONENT,
             content: {
-                title: "",
+                title: '',
                 sections: [
                     {
-                        sectionType: "text",
-                        textContent: "Thank you for completing Part 1 of the game!",
+                        sectionType: 'text',
+                        textContent: 'Thank you for completing Part 1 of the game!',
                     },
                 ],
                 buttons: {
@@ -235,25 +235,25 @@ export const EverydayChoiceLayoutMetadata = {
         {
             component: ComponentName.DISPLAY_COMPONENT,
             content: {
-                title: "Everyday Activities Game - Part 2",
+                title: 'Everyday Activities Game - Part 2',
                 sections: [
                     {
-                        sectionType: "text",
-                        textContent: "Please read the following instructions carefully.",
+                        sectionType: 'text',
+                        textContent: 'Please read the following instructions carefully.',
                     },
                     {
-                        sectionType: "text",
+                        sectionType: 'text',
                         textContent:
-                            "For this part of the task, you will be asked to choose between two different activities.",
+                            'For this part of the task, you will be asked to choose between two different activities.',
                     },
                     {
-                        sectionType: "text",
+                        sectionType: 'text',
                         textContent:
-                            "Your job is to <b>imagine yourself faced with this choice in your everyday life, and to indicate which activity you would choose.</b>",
+                            'Your job is to <b>imagine yourself faced with this choice in your everyday life, and to indicate which activity you would choose.</b>',
                     },
                     {
-                        sectionType: "text",
-                        textContent: "Click NEXT for an example",
+                        sectionType: 'text',
+                        textContent: 'Click NEXT for an example',
                     },
                 ],
                 buttons: {
@@ -266,28 +266,28 @@ export const EverydayChoiceLayoutMetadata = {
         {
             component: ComponentName.DISPLAY_COMPONENT,
             content: {
-                title: "",
+                title: '',
                 sections: [
                     {
-                        sectionType: "text",
-                        textContent: "For example:",
+                        sectionType: 'text',
+                        textContent: 'For example:',
                     },
                     {
-                        sectionType: "image-horizontal",
-                        imagePath: "/assets/images/instructions/everydaychoice-new/choice-example.PNG",
+                        sectionType: 'image-horizontal',
+                        imagePath: '/assets/images/instructions/everydaychoice-new/choice-example.PNG',
                     },
                     {
-                        sectionType: "text",
+                        sectionType: 'text',
                         textContent:
-                            "We ask that you try to picture the choice you would make in real life, even if some of the choices may not be ones you have ever been faced with.",
+                            'We ask that you try to picture the choice you would make in real life, even if some of the choices may not be ones you have ever been faced with.',
                     },
                     {
-                        sectionType: "text",
-                        textContent: "Tell us: <b>which activity would you MOST LIKELY CHOOSE TO DO?</b>",
+                        sectionType: 'text',
+                        textContent: 'Tell us: <b>which activity would you MOST LIKELY CHOOSE TO DO?</b>',
                     },
                     {
-                        sectionType: "text",
-                        textContent: "Click START to practice",
+                        sectionType: 'text',
+                        textContent: 'Click START to practice',
                     },
                 ],
                 buttons: {
@@ -308,12 +308,12 @@ export const EverydayChoiceLayoutMetadata = {
                 durationOutOftimeMessageShown: 2000,
                 delayToShowRatingSlider: 0,
                 stimuliConfig: {
-                    type: "hardcoded",
+                    type: 'hardcoded',
                     stimuli: [
                         {
-                            firstActivity: "Bring the car to the mechanic",
-                            secondActivity: "Dust your bookshelves",
-                            legend: ["Strongly choose left", "Strongly choose right"],
+                            firstActivity: 'Bring the car to the mechanic',
+                            secondActivity: 'Dust your bookshelves',
+                            legend: ['Strongly choose left', 'Strongly choose right'],
                         },
                     ],
                 },
@@ -322,20 +322,20 @@ export const EverydayChoiceLayoutMetadata = {
         {
             component: ComponentName.DISPLAY_COMPONENT,
             content: {
-                title: "",
+                title: '',
                 sections: [
                     {
-                        sectionType: "text",
-                        textContent: "You finished the practice!",
+                        sectionType: 'text',
+                        textContent: 'You finished the practice!',
                     },
                     {
-                        sectionType: "text",
+                        sectionType: 'text',
                         textContent:
-                            "Now, please picture yourself doing the activity for each of the following activities, and rate which activity you would MOST LIKELY spend time doing.",
+                            'Now, please picture yourself doing the activity for each of the following activities, and rate which activity you would MOST LIKELY spend time doing.',
                     },
                     {
-                        sectionType: "text",
-                        textContent: "Click START when you are ready",
+                        sectionType: 'text',
+                        textContent: 'Click START when you are ready',
                     },
                 ],
                 buttons: {
@@ -356,7 +356,7 @@ export const EverydayChoiceLayoutMetadata = {
                 durationOutOftimeMessageShown: 2000,
                 delayToShowRatingSlider: 0,
                 stimuliConfig: {
-                    type: "generated",
+                    type: 'generated',
                     stimuli: null,
                 },
             },
@@ -364,15 +364,15 @@ export const EverydayChoiceLayoutMetadata = {
         {
             component: ComponentName.DISPLAY_COMPONENT,
             content: {
-                title: "",
+                title: '',
                 sections: [
                     {
-                        sectionType: "text",
-                        textContent: "Hooray! You have finished the Everyday Activities Game.",
+                        sectionType: 'text',
+                        textContent: 'Hooray! You have finished the Everyday Activities Game.',
                     },
                     {
-                        sectionType: "text",
-                        textContent: "We appreciate your time and effort in helping with our research.",
+                        sectionType: 'text',
+                        textContent: 'We appreciate your time and effort in helping with our research.',
                     },
                 ],
                 buttons: {

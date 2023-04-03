@@ -5,6 +5,7 @@ import { Navigation } from '../shared/navigation-buttons/navigation-buttons.comp
 export interface IOnComplete {
     navigation: Navigation;
     taskData?: BaseParticipantData[];
+    wasSkipped?: boolean;
 }
 
 export interface Playable {

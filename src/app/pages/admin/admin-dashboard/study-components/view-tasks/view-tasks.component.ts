@@ -2,9 +2,8 @@ import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { TaskService } from '../../../../../services/task.service';
 import { Task } from '../../../../../models/Task';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Platform, RouteNames, TaskType } from '../../../../../models/enums';
-import { map } from 'rxjs/operators';
 import {
     SharplabTaskConfig,
     TaskPlayerNavigationConfig,

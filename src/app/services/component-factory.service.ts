@@ -27,7 +27,7 @@ export enum ComponentName {
     SELECT_OPTION_COMPONENT = 'SELECTOPTIONCOMPONENT',
 
     // Task related components
-    RATING_COMPONMENT = 'RATINGCOMPONENT',
+    RATING_COMPONENT = 'RATINGCOMPONENT',
     CHOICE_COMPONENT = 'CHOICECOMPONENT',
     ODDBALL_COMPONENT = 'ODDBALLCOMPONENT',
     STROOP_COMPONENT = 'STROOPCOMPONENT',
@@ -53,7 +53,7 @@ export const GenericComponentsList = [ComponentName.DISPLAY_COMPONENT, Component
 
 const ComponentMap = {
     [ComponentName.DISPLAY_COMPONENT]: TaskDisplayComponent,
-    [ComponentName.RATING_COMPONMENT]: RaterComponent,
+    [ComponentName.RATING_COMPONENT]: RaterComponent,
     [ComponentName.CHOICE_COMPONENT]: ChoicerComponent,
     [ComponentName.ODDBALL_COMPONENT]: OddballComponent,
     [ComponentName.STROOP_COMPONENT]: StroopComponent,

@@ -13,7 +13,6 @@ import { TaskManagerService } from 'src/app/services/task-manager.service';
 import { ParticipantDataService } from 'src/app/services/study-data.service';
 import { Navigation } from '../../shared/navigation-buttons/navigation-buttons.component';
 import { IOnComplete } from '../playable';
-import { AdminRouteNames, Role } from 'src/app/models/enums';
 import { BaseParticipantData } from 'src/app/models/ParticipantData';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SessionStorageService } from 'src/app/services/sessionStorage.service';
@@ -190,22 +189,31 @@ export class TaskPlayerComponent implements OnDestroy {
     handleOnComplete(onComplete: IOnComplete) {
         this.subscription.unsubscribe();
         this.viewContainer.clear();
-        const shouldSetTaskAsComplete = !this.userStateService.isCrowdsourcedUser && this.hasCompletedAllBlocks();
+        const shouldSetTaskAsComplete =
+            !this.userStateService.isCrowdsourcedUser && (this.hasCompletedAllBlocks() || onComplete.wasSkipped);
 
         if (!this.userStateService.userIsParticipant) console.log(onComplete);
 
         if (onComplete.taskData && this.state.mode === 'actual') {
             this.loaderService.showLoader();
-            this.handleUploadData(onComplete.taskData)
+            this.handleUploadData(onComplete.taskData, onComplete.wasSkipped)
                 .pipe(mergeMap((ok) => (ok && shouldSetTaskAsComplete ? this.taskManager.setTaskAsComplete() : of(ok))))
                 .subscribe(
                     (ok) => {
-                        if (ok) {
-                            onComplete.navigation === Navigation.NEXT
-                                ? this.renderNextStep()
-                                : this.renderPreviousStep();
-                        } else {
+                        if (!ok) {
                             this.taskManager.handleErr();
+                            return;
+                        }
+
+                        if (onComplete.wasSkipped) {
+                            this.continueAhead();
+                            return;
+                        }
+
+                        if (onComplete.navigation === Navigation.NEXT) {
+                            this.renderNextStep();
+                        } else {
+                            this.renderPreviousStep();
                         }
                     },
                     (_err) => {
@@ -236,7 +244,7 @@ export class TaskPlayerComponent implements OnDestroy {
         return true;
     }
 
-    handleUploadData(taskData: BaseParticipantData[]): Observable<boolean> {
+    handleUploadData(taskData: BaseParticipantData[], wasSkipped: boolean): Observable<boolean> {
         return this.uploadDataService
             .createParticipantData(
                 this.userStateService.isCrowdsourcedUser
@@ -245,7 +253,8 @@ export class TaskPlayerComponent implements OnDestroy {
                 this.taskManager.study?.id,
                 this.taskManager.currentStudyTask.taskOrder,
                 this.userStateService.isCrowdsourcedUser,
-                taskData
+                taskData,
+                wasSkipped ? { wasSkipped: true } : {}
             )
             .pipe(map((ok) => ok.ok));
     }

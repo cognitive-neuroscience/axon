@@ -4,7 +4,6 @@ import { LoginComponent } from '../pages/landing-page/login/login.component';
 import { FinalPageComponent } from '../pages/participant/final-page/final-page.component';
 import { LandingPageComponent } from '../pages/landing-page/landing-page.component';
 import { RegisterComponent } from '../pages/landing-page/register/register.component';
-import { ParticipantRouteNames, RouteNames } from '../models/enums';
 import { CrowdSourceLoginComponent } from '../pages/landing-page/crowdsource-login/crowdsource-login.component';
 import { TaskPlayerComponent } from '../pages/tasks/task-playables/task-player/task-player.component';
 import { ConsentPageComponent } from '../pages/tasks/consent/consent-page/consent-page.component';
