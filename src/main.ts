@@ -17,7 +17,10 @@ Sentry.init({
                 'https://psharplab.campus.mcgill.ca/api',
             ],
         }),
-        new Sentry.Replay(),
+        new Sentry.Replay({
+            maskAllText: false,
+            blockAllMedia: false,
+        }),
     ],
     tracesSampleRate: 1.0,
     replaysOnErrorSampleRate: 1.0,
