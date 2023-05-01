@@ -164,3 +164,5 @@ export class IowaGamblingTaskStimulus {
     moneyWon: number;
     feePaid: number;
 }
+
+export class InformationTaskStimulus {}

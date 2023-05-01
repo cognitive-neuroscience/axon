@@ -204,6 +204,8 @@ export class IowaGamblingTaskData extends BaseParticipantData {
     feePaid: number;
 }
 
+export class InformationTaskData extends BaseParticipantData {}
+
 export class ParticipantData {
     userId: string;
     studyId: number;
