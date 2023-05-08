@@ -1,0 +1,6 @@
+[auth]
+token=9d2150a82b574f9f9250090a6c055bb66275f7a2efb94bb1a717bcd01ce2d3d1
+
+[defaults]
+org=sharplab
+project=javascript-angular
