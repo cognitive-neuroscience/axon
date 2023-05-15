@@ -55,6 +55,7 @@
         "start-proxy": "ng serve --configuration development --proxy-config proxy.conf.json",
         "start": "ng serve -o",
         "build": "ng build --configuration production --aot",
+        "build-dev": "ng build --configuration development --aot",
         "test": "ng test",
         "lint": "ng lint",
         "deploy": "cd dist && scp -r . nick@psharplab.campus.mcgill.ca:/home/nick/tmp-frontend",
