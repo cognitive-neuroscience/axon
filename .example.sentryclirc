@@ -1,0 +1,6 @@
+[auth]
+token=<YOUR_TOKEN>
+
+[defaults]
+org=sharplab
+project=javascript-angular
