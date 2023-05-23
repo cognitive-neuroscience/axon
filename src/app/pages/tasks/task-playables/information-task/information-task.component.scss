@@ -1,0 +1,39 @@
+.card {
+    border-radius: 4px;
+    border: 4px solid black;
+    color: green;
+    padding: 1rem;
+    display: flex;
+    width: 100px;
+    height: 150px;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: bold;
+    cursor: pointer;
+
+    &:hover {
+        box-shadow: 1px 1px 10px black;
+    }
+}
+
+.card-container {
+    width: 10%;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cards-container {
+    width: 100%;
+    height: 400px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.deck {
+    &:hover {
+        opacity: 0.6;
+        cursor: pointer;
+    }
+}

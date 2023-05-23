@@ -2,54 +2,23 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { TimerService } from 'src/app/services/timer.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
-import { throwErrIfNotDefined } from 'src/app/common/commonMethods';
+import { thisOrDefault, throwErrIfNotDefined } from 'src/app/common/commonMethods';
 import { TaskPlayerState } from '../task-player/task-player.component';
 import { StimuliProvidedType } from 'src/app/models/enums';
 import { ComponentName } from 'src/app/services/component-factory.service';
-import { InformationTaskStimuli } from 'src/app/services/data-generation/raw-data/information-task-stimuli-list';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { InformationTaskData } from 'src/app/models/ParticipantData';
+import { InformationTaskStimuliSet, InformationTaskStimulus } from 'src/app/services/data-generation/stimuli-models';
 
 interface InformationTaskMetadata {
     componentName: ComponentName;
     componentConfig: {
-        isPractice: boolean;
-        maxResponseTime: number;
-        skippable: boolean;
-        interTrialDelay: number;
-        showFeedbackAfterEachTrial: boolean;
-        showScoreAfterEachTrial: boolean;
-        durationOfFeedback: number;
-        durationFixationPresented: number;
         numTrials: number;
+        roundNum: number;
+        isPractice: boolean;
         stimuliConfig: {
             type: StimuliProvidedType;
-            stimuli: {
-                1: {
-                    optimalSolution: number;
-                    deck: number[];
-                };
-                2: {
-                    optimalSolution: number;
-                    deck: number[];
-                };
-                3: {
-                    optimalSolution: number;
-                    deck: number[];
-                };
-                4: {
-                    optimalSolution: number;
-                    deck: number[];
-                };
-                5: {
-                    optimalSolution: number;
-                    deck: number[];
-                };
-                6: {
-                    optimalSolution: number;
-                    deck: number[];
-                };
-            };
+            stimuli: InformationTaskStimuliSet;
         };
     };
 }
@@ -62,39 +31,31 @@ interface InformationTaskMetadata {
 export class InformationTaskComponent extends AbstractBaseTaskComponent {
     // config variables variables
     private numTrials: number;
-    private deckNum: number; // determines which deck to use (1-6), translates into blockNum
+    private roundNum: number; // determines which deck to use (1-6), translates into blockNum
+    private isPractice: boolean;
 
     // high level variables
     taskData: InformationTaskData[];
-    stimuli: {
-        1: {
-            optimalSolution: number;
-            deck: number[];
-        };
-        2: {
-            optimalSolution: number;
-            deck: number[];
-        };
-        3: {
-            optimalSolution: number;
-            deck: number[];
-        };
-        4: {
-            optimalSolution: number;
-            deck: number[];
-        };
-        5: {
-            optimalSolution: number;
-            deck: number[];
-        };
-        6: {
-            optimalSolution: number;
-            deck: number[];
-        };
-    };
+    stimuli: InformationTaskStimuliSet;
+    currentStimuliIndex: number = 0;
+    largestValue: number = 0;
+    cardsSelected: number[];
+    deckIndex: number = 0;
+    valuesSelected: number[];
+    taskStarted: boolean = false;
+    roundStartTime: number;
+    trialNum: number = 0;
 
     // local state variables
-    blockNum: number = 0;
+
+    get currentStimulus(): InformationTaskStimulus {
+        return this.stimuli.cardValues[this.currentStimuliIndex];
+    }
+
+    get currentTrial(): InformationTaskData {
+        // will return null if taskData is not defined or if it has length of 0
+        return this.taskData?.length > 0 ? this.taskData[this.taskData.length - 1] : null;
+    }
 
     constructor(
         protected timerService: TimerService,
@@ -110,6 +71,8 @@ export class InformationTaskComponent extends AbstractBaseTaskComponent {
             this.studyId = throwErrIfNotDefined(config.studyID, 'no study code defined');
 
             this.numTrials = throwErrIfNotDefined(metadata.componentConfig.numTrials, 'num trials not defined');
+            this.roundNum = throwErrIfNotDefined(metadata.componentConfig.roundNum, 'roundNum is not defined');
+            this.isPractice = thisOrDefault(metadata.componentConfig.isPractice, false);
         } catch (error) {
             throw new Error('values not defined, cannot start study');
         }
@@ -121,12 +84,55 @@ export class InformationTaskComponent extends AbstractBaseTaskComponent {
 
     start(): void {
         // configure game
+        this.taskStarted = true;
+
+        this.taskData = [];
+        this.cardsSelected = [];
+        this.valuesSelected = [];
+        this.largestValue = 0;
+        this.currentStimuliIndex = 0;
+        this.trialNum = 0;
+        this.deckIndex = 0;
+
+        this.roundStartTime = Date.now();
+        super.start();
     }
 
-    beginRound() {}
+    beginRound() {
+        this.timerService.clearTimer();
+        this.timerService.startTimer();
+    }
 
-    @HostListener('window:keyup', ['$event'])
-    handleRoundInteraction(event: KeyboardEvent) {}
+    handleRoundInteraction(cardType: 'newCard' | 'existingCard', cardVal?: number) {
+        if (!this.taskStarted) return;
+
+        if (cardType === 'newCard') {
+            const newCardVal = this.currentStimulus;
+            this.cardsSelected.push(newCardVal.cardValue);
+            this.deckIndex++;
+
+            this.taskData.push({
+                userID: this.userID,
+                studyId: this.studyId,
+                submitted: this.timerService.getCurrentTimestamp(),
+                isPractice: this.isPractice,
+                trial: ++this.trialNum,
+                roundNum: this.roundNum,
+                trialScore: newCardVal.cardValue,
+                cumulativeRoundLength: this.roundStartTime - Date.now(),
+                cumulativeRoundScore:
+                    this.taskData.length <= 0
+                        ? newCardVal.cardValue
+                        : this.taskData[this.taskData.length - 1].cumulativeRoundScore + newCardVal.cardValue,
+                exploited: false,
+                expectedToExploit: newCardVal.expectedToExploit,
+                trialResponseTime: this.timerService.stopTimerAndGetTime(),
+            });
+        } else {
+        }
+        this.timerService.clearTimer();
+        this.timerService.startTimer();
+    }
 
     async completeRound() {}
 

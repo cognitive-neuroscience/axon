@@ -204,7 +204,15 @@ export class IowaGamblingTaskData extends BaseParticipantData {
     feePaid: number;
 }
 
-export class InformationTaskData extends BaseParticipantData {}
+export class InformationTaskData extends BaseParticipantData {
+    roundNum: number;
+    trialScore: number;
+    cumulativeRoundScore: number;
+    cumulativeRoundLength: number;
+    trialResponseTime: number;
+    exploited: boolean;
+    expectedToExploit: boolean;
+}
 
 export class ParticipantData {
     userId: string;

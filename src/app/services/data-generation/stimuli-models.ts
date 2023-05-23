@@ -165,4 +165,12 @@ export class IowaGamblingTaskStimulus {
     feePaid: number;
 }
 
-export class InformationTaskStimulus {}
+export class InformationTaskStimuliSet {
+    optimalScore: number;
+    cardValues: InformationTaskStimulus[];
+}
+
+export class InformationTaskStimulus {
+    cardValue: number;
+    expectedToExploit: boolean;
+}

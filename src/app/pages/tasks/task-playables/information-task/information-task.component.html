@@ -1,1 +1,46 @@
-<p>information-task works!</p>
+<div class="container-fluid wrapper task-text flex-column-center">
+    <div *ngIf="taskStarted" class="full-box flex-column-center">
+        <div class="my-3">
+            <div style="font-size: 2rem">Click on the deck or an uncovered card</div>
+        </div>
+        <div class="cards-container" style="height: 400px">
+            <div class="card-container" *ngFor="let card of cardsSelected">
+                <div (click)="handleRoundInteraction('existingCard', card)" class="card">{{ card }}</div>
+            </div>
+        </div>
+        <div class="flex-row-space-between" style="flex-grow: 1; width: 100%">
+            <div style="width: 350px">
+                <div style="font-size: 2rem">15 cards in the deck</div>
+                <img
+                    (click)="handleRoundInteraction('newCard', undefined)"
+                    style="width: 200px; height: 200px"
+                    class="deck"
+                    src="/assets/images/stimuli/informationtask/deckOfCards.png"
+                    alt="Deck of cards image"
+                />
+            </div>
+            <div style="flex-grow: 1">
+                <div
+                    style="
+                        font-size: 3rem;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin-bottom: 20px;
+                    "
+                >
+                    [
+                    <div *ngFor="let value of valuesSelected; let i = index">
+                        {{ value }}{{ i < valuesSelected.length - 1 ? ',' : '' }}
+                    </div>
+                    ]
+                </div>
+                <div style="font-size: 2rem; display: flex; justify-content: center">
+                    <div style="margin-right: 40px">Turns Taken: 5</div>
+                    <div style="margin-right: 40px">Turns Left: 15</div>
+                    <div>Total Points: 242</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
