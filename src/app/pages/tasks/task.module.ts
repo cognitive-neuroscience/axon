@@ -41,6 +41,7 @@ import { BlankComponent } from './blank/blank.component';
 import { ProbabilisticLearningTaskComponent } from './task-playables/probabilistic-learning-task/probabilistic-learning-task.component';
 import { OptionDisplayComponent } from './shared/option-display/option-display.component';
 import { IowaGamblingTaskComponent } from './task-playables/iowa-gambling-task/iowa-gambling-task.component';
+import { InformationTaskComponent } from './task-playables/information-task/information-task.component';
 
 @NgModule({
     declarations: [
@@ -64,6 +65,7 @@ import { IowaGamblingTaskComponent } from './task-playables/iowa-gambling-task/i
         TaskPlayerComponent,
         TaskSwitchingComponent,
         TrailMakingComponent,
+        InformationTaskComponent,
 
         EmbeddedPageComponent,
 

@@ -20,6 +20,7 @@ import { EmbeddedPageComponent } from '../pages/tasks/task-playables/embedded-pa
 import { InfoDisplayComponent } from '../pages/tasks/task-playables/info-display/info-display.component';
 import { ProbabilisticLearningTaskComponent } from '../pages/tasks/task-playables/probabilistic-learning-task/probabilistic-learning-task.component';
 import { IowaGamblingTaskComponent } from '../pages/tasks/task-playables/iowa-gambling-task/iowa-gambling-task.component';
+import { InformationTaskComponent } from '../pages/tasks/task-playables/information-task/information-task.component';
 
 export enum ComponentName {
     // Generic components
@@ -42,6 +43,7 @@ export enum ComponentName {
     FACE_NAME_ASSOCIATION_COMPONENT = 'FACENAMEASSOCIATIONCOMPONENT',
     PLT_COMPONENT = 'PLTCOMPONENT',
     IOWA_GAMBLING_COMPONENT = 'IOWAGAMBLINGCOMPONENT',
+    INFORMATION_TASK_COMPONENT = 'INFORMATIONTASKCOMPONENT',
 
     // Special Components
     EMBEDDED_PAGE_COMPONENT = 'EMBEDDEDPAGECOMPONENT',
@@ -72,6 +74,7 @@ const ComponentMap = {
     [ComponentName.INFO_DISPLAY_COMPONENT]: InfoDisplayComponent,
     [ComponentName.PLT_COMPONENT]: ProbabilisticLearningTaskComponent,
     [ComponentName.IOWA_GAMBLING_COMPONENT]: IowaGamblingTaskComponent,
+    [ComponentName.INFORMATION_TASK_COMPONENT]: InformationTaskComponent,
 };
 
 @Injectable({
