@@ -4,13 +4,18 @@
             <div style="font-size: 2rem">Click on the deck or an uncovered card</div>
         </div>
         <div class="cards-container" style="height: 400px">
-            <div class="card-container" *ngFor="let card of cardsSelected">
-                <div (click)="handleRoundInteraction('existingCard', card)" class="card">{{ card }}</div>
+            <div *ngFor="let card of cardsDrawn" class="card-container">
+                <div
+                    (click)="handleRoundInteraction('existingCard', card)"
+                    class="card {{ largestDrawnCardValue === card ? 'largest-card' : '' }}"
+                >
+                    {{ card }}
+                </div>
             </div>
         </div>
         <div class="flex-row-space-between" style="flex-grow: 1; width: 100%">
             <div style="width: 350px">
-                <div style="font-size: 2rem">15 cards in the deck</div>
+                <div style="font-size: 2rem">{{ stimuli.cardValues.length - cardsDrawn.length }} cards in the deck</div>
                 <img
                     (click)="handleRoundInteraction('newCard', undefined)"
                     style="width: 200px; height: 200px"
@@ -20,25 +25,19 @@
                 />
             </div>
             <div style="flex-grow: 1">
-                <div
-                    style="
-                        font-size: 3rem;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        margin-bottom: 20px;
-                    "
-                >
+                <div style="font-size: 3rem; margin-bottom: 20px">
                     [
-                    <div *ngFor="let value of valuesSelected; let i = index">
-                        {{ value }}{{ i < valuesSelected.length - 1 ? ',' : '' }}
-                    </div>
+                    <span *ngFor="let value of valuesSelected; let i = index">
+                        {{ value }}{{ i < valuesSelected.length - 1 ? ', ' : '' }}
+                    </span>
                     ]
                 </div>
                 <div style="font-size: 2rem; display: flex; justify-content: center">
-                    <div style="margin-right: 40px">Turns Taken: 5</div>
-                    <div style="margin-right: 40px">Turns Left: 15</div>
-                    <div>Total Points: 242</div>
+                    <div style="margin-right: 40px">Turns Taken: {{ valuesSelected.length }}</div>
+                    <div style="margin-right: 40px">
+                        Turns Left: {{ stimuli.cardValues.length - valuesSelected.length }}
+                    </div>
+                    <div>Total Points: {{ totalPoints }}</div>
                 </div>
             </div>
         </div>

@@ -9,6 +9,7 @@ import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import { InformationTaskData } from 'src/app/models/ParticipantData';
 import { InformationTaskStimuliSet, InformationTaskStimulus } from 'src/app/services/data-generation/stimuli-models';
+import { TranslateService } from '@ngx-translate/core';
 
 interface InformationTaskMetadata {
     componentName: ComponentName;
@@ -21,6 +22,12 @@ interface InformationTaskMetadata {
             stimuli: InformationTaskStimuliSet;
         };
     };
+}
+
+export enum InformationTaskCache {
+    TOTAL_SCORE = 'information-task-total-score',
+    OPTIMAL_SCORE = 'information-task-optimal-score',
+    STATUS_TEXT = 'information-task-status-text',
 }
 
 @Component({
@@ -38,9 +45,7 @@ export class InformationTaskComponent extends AbstractBaseTaskComponent {
     taskData: InformationTaskData[];
     stimuli: InformationTaskStimuliSet;
     currentStimuliIndex: number = 0;
-    largestValue: number = 0;
-    cardsSelected: number[];
-    deckIndex: number = 0;
+    cardsDrawn: number[];
     valuesSelected: number[];
     taskStarted: boolean = false;
     roundStartTime: number;
@@ -57,10 +62,35 @@ export class InformationTaskComponent extends AbstractBaseTaskComponent {
         return this.taskData?.length > 0 ? this.taskData[this.taskData.length - 1] : null;
     }
 
+    get largestDrawnCardValue(): number {
+        return this.cardsDrawn.reduce((acc, curr) => (curr > acc ? curr : acc), 0);
+    }
+
+    get totalPoints(): number {
+        return this.valuesSelected.reduce((acc, curr) => acc + curr, 0);
+    }
+
+    // translation mapping
+    translationMapping = {
+        scoreStatusTextLower: {
+            en: 'You scored lower',
+            fr: '',
+        },
+        scoreStatusTextEqual: {
+            en: 'You were equal!',
+            fr: '',
+        },
+        scoreStatusTextHigher: {
+            en: 'You scored higher!',
+            fr: '',
+        },
+    };
+
     constructor(
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
-        protected loaderService: LoaderService
+        protected loaderService: LoaderService,
+        private translateService: TranslateService
     ) {
         super(loaderService);
     }
@@ -83,16 +113,15 @@ export class InformationTaskComponent extends AbstractBaseTaskComponent {
     }
 
     start(): void {
+        console.log(this.stimuli);
         // configure game
         this.taskStarted = true;
 
         this.taskData = [];
-        this.cardsSelected = [];
+        this.cardsDrawn = [];
         this.valuesSelected = [];
-        this.largestValue = 0;
         this.currentStimuliIndex = 0;
         this.trialNum = 0;
-        this.deckIndex = 0;
 
         this.roundStartTime = Date.now();
         super.start();
@@ -103,38 +132,73 @@ export class InformationTaskComponent extends AbstractBaseTaskComponent {
         this.timerService.startTimer();
     }
 
-    handleRoundInteraction(cardType: 'newCard' | 'existingCard', cardVal?: number) {
+    handleRoundInteraction(cardType: 'newCard' | 'existingCard', existingCardVal?: number) {
         if (!this.taskStarted) return;
 
-        if (cardType === 'newCard') {
-            const newCardVal = this.currentStimulus;
-            this.cardsSelected.push(newCardVal.cardValue);
-            this.deckIndex++;
+        const newCardVal = this.currentStimulus;
 
-            this.taskData.push({
-                userID: this.userID,
-                studyId: this.studyId,
-                submitted: this.timerService.getCurrentTimestamp(),
-                isPractice: this.isPractice,
-                trial: ++this.trialNum,
-                roundNum: this.roundNum,
-                trialScore: newCardVal.cardValue,
-                cumulativeRoundLength: this.roundStartTime - Date.now(),
-                cumulativeRoundScore:
-                    this.taskData.length <= 0
-                        ? newCardVal.cardValue
-                        : this.taskData[this.taskData.length - 1].cumulativeRoundScore + newCardVal.cardValue,
-                exploited: false,
-                expectedToExploit: newCardVal.expectedToExploit,
-                trialResponseTime: this.timerService.stopTimerAndGetTime(),
-            });
+        let cardValue: number;
+        if (cardType === 'newCard') {
+            this.cardsDrawn.push(newCardVal.cardValue);
+            cardValue = newCardVal.cardValue;
         } else {
+            cardValue = existingCardVal;
         }
-        this.timerService.clearTimer();
-        this.timerService.startTimer();
+
+        this.valuesSelected.push(cardValue);
+
+        this.taskData.push({
+            userID: this.userID,
+            studyId: this.studyId,
+            submitted: this.timerService.getCurrentTimestamp(),
+            isPractice: this.isPractice,
+            trial: ++this.trialNum,
+            roundNum: this.roundNum,
+            trialScore: cardValue,
+            cumulativeRoundLength: Date.now() - this.roundStartTime,
+            cumulativeRoundScore:
+                this.taskData.length <= 0
+                    ? cardValue
+                    : this.taskData[this.taskData.length - 1].cumulativeRoundScore + cardValue,
+            exploited: cardType === 'existingCard',
+            expectedToExploit: newCardVal.expectedToExploit,
+            trialResponseTime: this.timerService.stopTimerAndGetTime(),
+        });
+        super.handleRoundInteraction(null);
     }
 
-    async completeRound() {}
+    async completeRound() {
+        super.completeRound();
+    }
 
-    async decideToRepeat(): Promise<void> {}
+    async decideToRepeat(): Promise<void> {
+        if (this.trialNum >= this.numTrials) {
+            this.taskStarted = false;
+            const totalScore = this.taskData.reduce((acc, currVal) => {
+                return acc + currVal.trialScore;
+            }, 0);
+
+            const optimalScore = this.stimuli.optimalScore;
+
+            console.log({ totalScore, optimalScore });
+
+            const statusText =
+                totalScore < optimalScore
+                    ? this.translationMapping.scoreStatusTextLower[this.translateService.currentLang]
+                    : totalScore === optimalScore
+                    ? this.translationMapping.scoreStatusTextEqual[this.translateService.currentLang]
+                    : this.translationMapping.scoreStatusTextHigher[this.translateService.currentLang];
+
+            // this will replace the previous round
+            this.config.setCacheValue(InformationTaskCache.TOTAL_SCORE, totalScore);
+            this.config.setCacheValue(InformationTaskCache.OPTIMAL_SCORE, optimalScore);
+            this.config.setCacheValue(InformationTaskCache.STATUS_TEXT, statusText);
+
+            super.decideToRepeat();
+        } else {
+            this.currentStimuliIndex++;
+            this.beginRound();
+            return;
+        }
+    }
 }

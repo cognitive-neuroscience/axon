@@ -10,6 +10,9 @@
     font-size: 3rem;
     font-weight: bold;
     cursor: pointer;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
 
     &:hover {
         box-shadow: 1px 1px 10px black;
@@ -36,4 +39,8 @@
         opacity: 0.6;
         cursor: pointer;
     }
+}
+
+.largest-card {
+    color: red !important;
 }
