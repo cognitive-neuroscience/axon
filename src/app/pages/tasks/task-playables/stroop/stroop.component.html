@@ -17,5 +17,6 @@
             <br />
             <span *ngIf="showScoreAfterEachTrial && scoreForSpecificTrial > 0"> +{{ scoreForSpecificTrial }} </span>
         </div>
+        <app-skip-button [isVisible]="true" (shouldSkip)="handleSkip()"></app-skip-button>
     </div>
 </div>

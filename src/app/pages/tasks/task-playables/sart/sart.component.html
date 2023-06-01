@@ -17,5 +17,6 @@
         <div class="feedback" *ngIf="showFeedback" align="center">
             <span class="{{ feedback }}">{{ feedback | translate }}</span>
         </div>
+        <app-skip-button [isVisible]="true" (shouldSkip)="handleSkip()"></app-skip-button>
     </div>
 </div>

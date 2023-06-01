@@ -33,6 +33,8 @@
         "@angular/cli": "^14.2.5",
         "@angular/compiler-cli": "^14.2.5",
         "@angular/language-service": "^14.2.5",
+        "@sentry/cli": "^2.17.5",
+        "@sentry/angular-ivy": "^7.48.0",
         "@types/file-saver": "^2.0.1",
         "@types/jest": "^28.1.8",
         "@types/luxon": "^1.25.0",
@@ -53,11 +55,15 @@
         "start-proxy": "ng serve --configuration development --proxy-config proxy.conf.json",
         "start": "ng serve -o",
         "build": "ng build --configuration production --aot",
+        "build-dev": "ng build --configuration development --aot",
         "test": "ng test",
         "lint": "ng lint",
         "deploy": "cd dist && scp -r . nick@psharplab.campus.mcgill.ca:/home/nick/tmp-frontend",
-        "build-deploy": "npm run build && npm run deploy",
-        "lint-fix": "ng lint --fix=true"
+        "build-deploy": "npm run build && npm run sentry:generate-sourcemaps && npm run sentry:upload-sourcemaps && npm run remove-maps && npm run deploy",
+        "lint-fix": "ng lint --fix=true",
+        "sentry:generate-sourcemaps": "sentry-cli sourcemaps inject ./dist",
+        "sentry:upload-sourcemaps": "sentry-cli sourcemaps upload ./dist",
+        "remove-maps": "rm ./dist/*.map"
     },
     "repository": {
         "type": "git",

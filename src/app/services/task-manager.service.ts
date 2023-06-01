@@ -3,16 +3,15 @@ import { Study } from '../models/Study';
 import { StudyService } from './study.service';
 import { SnackbarService } from './snackbar/snackbar.service';
 import { Router } from '@angular/router';
-import { UserService } from './user.service';
 import { SessionStorageService } from './sessionStorage.service';
-import { catchError, map, mergeMap, take, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import { ParticipantRouteNames, RouteNames, SupportedLangs } from '../models/enums';
 import { Task } from '../models/Task';
 import {
     SharplabTaskConfig,
     TaskPlayerNavigationConfig,
 } from '../pages/tasks/task-playables/task-player/task-player.component';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { TaskService } from './task.service';
 import { ConsentNavigationConfig } from '../pages/shared/consent-component/consent-reader.component';
 import { CanClear } from './clearance.service';
@@ -24,6 +23,7 @@ import { StudyUser } from '../models/StudyUser';
 import { StudyTask } from '../models/StudyTask';
 import { UserStateService } from './user-state-service';
 import { CrowdSourcedUserService } from './crowdsourced-user.service';
+import * as Sentry from '@sentry/angular-ivy';
 
 @Injectable({
     providedIn: 'root',
@@ -139,6 +139,7 @@ export class TaskManagerService implements CanClear {
         } else {
             this.router.navigate([ParticipantRouteNames.DASHBOARD_BASEROUTE]);
         }
+        Sentry.captureException(errText);
         this.snackbarService.openErrorSnackbar(
             errText || 'Task Manager Error. Please contact sharplab.neuro@mcgill.ca',
             undefined,

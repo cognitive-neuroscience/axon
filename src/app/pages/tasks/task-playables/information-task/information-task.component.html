@@ -1,0 +1,45 @@
+<div class="container-fluid wrapper task-text flex-column-center">
+    <div *ngIf="taskStarted" class="full-box flex-column-center">
+        <div class="my-3">
+            <div style="font-size: 2rem">Click on the deck or an uncovered card</div>
+        </div>
+        <div class="cards-container" style="height: 400px">
+            <div *ngFor="let card of cardsDrawn" class="card-container">
+                <div
+                    (click)="handleRoundInteraction('existingCard', card)"
+                    class="card {{ largestDrawnCardValue === card ? 'largest-card' : '' }}"
+                >
+                    {{ card }}
+                </div>
+            </div>
+        </div>
+        <div class="flex-row-space-between" style="flex-grow: 1; width: 100%">
+            <div style="width: 350px">
+                <div style="font-size: 2rem">{{ stimuli.cardValues.length - cardsDrawn.length }} cards in the deck</div>
+                <img
+                    (click)="handleRoundInteraction('newCard', undefined)"
+                    style="width: 200px; height: 200px"
+                    class="deck"
+                    src="/assets/images/stimuli/informationtask/deckOfCards.png"
+                    alt="Deck of cards image"
+                />
+            </div>
+            <div style="flex-grow: 1">
+                <div style="font-size: 3rem; margin-bottom: 20px">
+                    [
+                    <span *ngFor="let value of valuesSelected; let i = index">
+                        {{ value }}{{ i < valuesSelected.length - 1 ? ', ' : '' }}
+                    </span>
+                    ]
+                </div>
+                <div style="font-size: 2rem; display: flex; justify-content: center">
+                    <div style="margin-right: 40px">Turns Taken: {{ valuesSelected.length }}</div>
+                    <div style="margin-right: 40px">
+                        Turns Left: {{ stimuli.cardValues.length - valuesSelected.length }}
+                    </div>
+                    <div>Total Points: {{ totalPoints }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
