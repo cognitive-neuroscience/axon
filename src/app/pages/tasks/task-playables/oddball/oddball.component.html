@@ -13,5 +13,6 @@
                 {{ feedback | translate }}
             </div>
         </ng-container>
+        <app-skip-button [isVisible]="true" (shouldSkip)="handleSkip()"></app-skip-button>
     </div>
 </div>

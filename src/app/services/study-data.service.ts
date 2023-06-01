@@ -20,7 +20,8 @@ export class ParticipantDataService {
         studyId: number,
         taskOrder: number,
         isCrowdsourcedUser: boolean,
-        taskData: BaseParticipantData[] | { [key: string]: any }[]
+        taskData: BaseParticipantData[] | { [key: string]: any }[],
+        metadata: { wasSkipped?: boolean }
     ): Observable<HttpResponse<any>> {
         const participantData: ParticipantData = {
             userId: userId,
@@ -28,6 +29,7 @@ export class ParticipantDataService {
             taskOrder: taskOrder,
             participantType: isCrowdsourcedUser ? ParticipantType.CROWDSOURCED : ParticipantType.ACCOUNTHOLDER,
             submittedAt: this.timerService.getCurrentTimestamp(),
+            metadata: metadata,
             data: taskData,
         };
 

@@ -12,6 +12,12 @@ body {
     background-color: white;
 }
 
+.skip-button {
+    position: absolute !important;
+    top: 20px !important;
+    left: 20px !important;
+}
+
 // remove outlines when button is clicked
 button {
     outline: none !important;
