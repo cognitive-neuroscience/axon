@@ -46,7 +46,9 @@ export class StudyUserService implements CanClear {
 
         return this._getStudyUsers(this.userStateService.currentlyLoggedInUserId).pipe(
             take(1),
-            tap((studyUsers: StudyUser[]) => this._studyUsersSubject.next(studyUsers))
+            tap((studyUsers: StudyUser[]) => {
+                this._studyUsersSubject.next(studyUsers);
+            })
         );
     }
 

@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, OnDestroy } from '@angular/core';
-import { AbstractControl, UntypedFormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { HttpStatus } from 'src/app/models/Auth';
@@ -47,7 +47,7 @@ export class RegisterComponent implements OnDestroy {
 
     constructor(
         private router: Router,
-        private fb: UntypedFormBuilder,
+        private fb: FormBuilder,
         private userService: UserService,
         private snackbarService: SnackbarService,
         private loaderService: LoaderService,
@@ -87,7 +87,7 @@ export class RegisterComponent implements OnDestroy {
                     id: 0,
                     role: Role.PARTICIPANT,
                     changePasswordRequired: false,
-                    lang: SupportedLangs.EN,
+                    lang: SupportedLangs.NONE,
                     organization: null,
                 })
                 .subscribe(

@@ -1,7 +1,7 @@
 <div class="container-fluid wrapper task-text flex-column-center">
     <div *ngIf="taskStarted" class="full-box flex-column-center">
         <div class="my-3">
-            <div style="font-size: 2rem">Click on the deck or an uncovered card</div>
+            <div style="font-size: 2rem">{{ getTranslation('titleInstructionsText') }}</div>
         </div>
         <div class="cards-container" style="height: 400px">
             <div *ngFor="let card of cardsDrawn" class="card-container">
@@ -14,8 +14,10 @@
             </div>
         </div>
         <div class="flex-row-space-between" style="flex-grow: 1; width: 100%">
-            <div style="width: 350px">
-                <div style="font-size: 2rem">{{ stimuli.cardValues.length - cardsDrawn.length }} cards in the deck</div>
+            <div style="width: 350px; min-width: 350px">
+                <div style="font-size: 2rem">
+                    {{ stimuli.cardValues.length - cardsDrawn.length }} {{ getTranslation('numCardsText') }}
+                </div>
                 <img
                     (click)="handleRoundInteraction('newCard', undefined)"
                     style="width: 200px; height: 200px"
@@ -33,11 +35,13 @@
                     ]
                 </div>
                 <div style="font-size: 2rem; display: flex; justify-content: center">
-                    <div style="margin-right: 40px">Turns Taken: {{ valuesSelected.length }}</div>
                     <div style="margin-right: 40px">
-                        Turns Left: {{ stimuli.cardValues.length - valuesSelected.length }}
+                        {{ getTranslation('turnsTakenText') }}: {{ valuesSelected.length }}
                     </div>
-                    <div>Total Points: {{ totalPoints }}</div>
+                    <div style="margin-right: 40px">
+                        {{ getTranslation('turnsLeftText') }}: {{ stimuli.cardValues.length - valuesSelected.length }}
+                    </div>
+                    <div>{{ getTranslation('totalPointsText') }}: {{ totalPoints }}</div>
                 </div>
             </div>
         </div>

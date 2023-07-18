@@ -10,7 +10,7 @@ import { ITranslationText } from 'src/app/models/InternalDTOs';
 import { SupportedLangs } from 'src/app/models/enums';
 
 export interface DisplaySection {
-    sectionType: 'text' | 'image-horizontal' | 'image-square' | 'image-small';
+    sectionType: 'text' | 'image-horizontal' | 'image-square' | 'image-small' | 'image-fill';
     imagePath?: string | ITranslationText;
     imageAlignment?: 'left' | 'center' | 'right';
     textContent?: string | ITranslationText;
