@@ -54,7 +54,11 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
                 }),
                 // if 409 (conflict) then we dont want an error
                 catchError((err) => (err.status === 409 ? of(null) : throwError(err))),
-                mergeMap((_res) => this.studyUserService.getOrUpdateStudyUsers())
+                mergeMap((_res) => {
+                    // force update as sometimes the retrieved studyUsers value is cached elsewhere
+                    // and does not reflect our recent call to registerParticipantForStudy
+                    return this.studyUserService.getOrUpdateStudyUsers(true);
+                })
             )
             .subscribe(
                 (_res) => {
@@ -70,7 +74,7 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
                 }
             )
             .add(() => {
-                this.sessionStorageService.removeStudyIdToRegisterInSessionStorage();
+                // this.sessionStorageService.removeStudyIdToRegisterInSessionStorage();
                 this.loaderService.hideLoader();
             });
 

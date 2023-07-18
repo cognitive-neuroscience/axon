@@ -5,6 +5,7 @@
         id="surveyFrame"
         class="w-100 h-100"
         [src]="embeddedSurveyLink | safe_resource"
+        allow="fullscreen"
     ></iframe>
     <div *ngIf="!embeddedSurveyLink" class="w-100 h-100 flex-column-center" style="color: red">
         <h1>Could not find survey</h1>
@@ -13,9 +14,10 @@
     <app-navigation-buttons
         class="w-100"
         [previousDisabled]="true"
+        [delayBeforeNext]="15"
         [allowMultipleClicks]="true"
-        [warn]="true"
-        forwardButtonText="DO NOT CLICK THIS UNTIL YOU SEE THE ABOVE CODE WORD"
+        forwardButtonText="Only press this button when you are done"
+        [nextDisabled]="nextDisabled"
         (onNext)="proceed()"
     ></app-navigation-buttons>
 </div>

@@ -74,17 +74,41 @@ export class InformationTaskComponent extends AbstractBaseTaskComponent {
     translationMapping = {
         scoreStatusTextLower: {
             en: 'You scored lower',
-            fr: '',
+            fr: 'Vous avez obtenu un score inférieur',
         },
         scoreStatusTextEqual: {
-            en: 'You were equal!',
-            fr: '',
+            en: 'You scored equal!',
+            fr: 'Vous avez obtenu un score égal!',
         },
         scoreStatusTextHigher: {
             en: 'You scored higher!',
-            fr: '',
+            fr: 'Vous avez obtenu un score supérieur!',
+        },
+        numCardsText: {
+            en: 'cards in the deck',
+            fr: 'cartes dans le jeu',
+        },
+        titleInstructionsText: {
+            en: 'Click on the deck or an uncovered card',
+            fr: 'Cliquez sur le jeu ou sur une carte découverte',
+        },
+        turnsTakenText: {
+            en: 'Turns taken',
+            fr: 'Tours effectués',
+        },
+        turnsLeftText: {
+            en: 'Turns left',
+            fr: 'Tours restants',
+        },
+        totalPointsText: {
+            en: 'Total points',
+            fr: 'Score final',
         },
     };
+
+    getTranslation(key: keyof typeof this.translationMapping): string | undefined {
+        return this.translationMapping[key][this.translateService.currentLang];
+    }
 
     constructor(
         protected timerService: TimerService,

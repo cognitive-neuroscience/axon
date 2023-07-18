@@ -15,7 +15,7 @@
                 [disabled]="disableNext"
                 (click)="handleNext()"
             >
-                {{ forwardButtonText }}
+                {{ interval ? 'Please wait: ' + timerDisplayValue : forwardButtonText }}
                 &nbsp;
                 <mat-icon>arrow_forward</mat-icon>
             </button>

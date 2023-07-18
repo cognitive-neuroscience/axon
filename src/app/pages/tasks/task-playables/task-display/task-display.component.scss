@@ -84,6 +84,10 @@
             width: 150px;
             margin-bottom: 10px;
         }
+        .image-fill {
+            width: 100%;
+            margin-bottom: 10px;
+        }
     }
 
     @include for-small-desktop-only {
@@ -104,6 +108,10 @@
         .image-square {
             width: 200px;
             margin-bottom: 15px;
+        }
+        .image-fill {
+            width: 100%;
+            margin-bottom: 10px;
         }
     }
 
@@ -126,6 +134,10 @@
             width: 300px;
             margin-bottom: 20px;
         }
+        .image-fill {
+            width: 100%;
+            margin-bottom: 10px;
+        }
     }
 
     @include for-large-desktop-up {
@@ -146,6 +158,10 @@
         .image-square {
             width: 500px;
             margin-bottom: 30px;
+        }
+        .image-fill {
+            width: 100%;
+            margin-bottom: 10px;
         }
     }
 }

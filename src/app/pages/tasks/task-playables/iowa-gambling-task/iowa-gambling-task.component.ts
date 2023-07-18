@@ -9,6 +9,7 @@ import { LoaderService } from 'src/app/services/loader/loader.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { TaskPlayerState } from '../task-player/task-player.component';
+import { TranslateService } from '@ngx-translate/core';
 
 interface IowaGamblingMetadata {
     componentName: ComponentName;
@@ -92,10 +93,43 @@ export class IowaGamblingTaskComponent extends AbstractBaseTaskComponent {
         return this.taskData?.length > 0 ? this.taskData[this.taskData.length - 1] : null;
     }
 
+    // translation mapping
+    translationMapping = {
+        yourMoneyText: {
+            en: 'Your money',
+            fr: 'Votre argent',
+        },
+        chooseButtonText: {
+            en: 'Choose one of the 4 buttons',
+            fr: 'Choisissez l’un des 4 boutons',
+        },
+        youWinText: {
+            en: 'You win',
+            fr: 'Vous avez gagné',
+        },
+        feeFirstText: {
+            en: 'Fee of',
+            fr: 'Les frais de',
+        },
+        feeSecondText: {
+            en: 'applies now!',
+            fr: "s'appliquent dès maintenant!",
+        },
+        pressSpacebarText: {
+            en: 'Press the spacebar to collect (and/or pay fee)',
+            fr: 'Appuyez la barre d’espace pour recouvrir (et/ou payer les frais)',
+        },
+    };
+
+    getTranslation(key: keyof typeof this.translationMapping): string | undefined {
+        return this.translationMapping[key][this.translateService.currentLang];
+    }
+
     constructor(
         protected timerService: TimerService,
         protected dataGenService: DataGenerationService,
-        protected loaderService: LoaderService
+        protected loaderService: LoaderService,
+        private translateService: TranslateService
     ) {
         super(loaderService);
     }
