@@ -12,11 +12,12 @@
     </div>
 
     <app-navigation-buttons
-        class="w-100"
+        class="w-100 override-reduce-button-padding"
         [previousDisabled]="true"
         [delayBeforeNext]="15"
         [allowMultipleClicks]="true"
-        forwardButtonText="Only press this button when you are done"
+        [forwardButtonText]="nextButtonText"
+        [backButtonText]="previousButtonText"
         [nextDisabled]="nextDisabled"
         (onNext)="proceed()"
     ></app-navigation-buttons>

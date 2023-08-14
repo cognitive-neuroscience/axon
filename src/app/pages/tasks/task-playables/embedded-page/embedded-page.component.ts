@@ -1,18 +1,26 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Subject, Subscription, zip } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { Navigation } from '../../shared/navigation-buttons/navigation-buttons.component';
 import { IOnComplete, Playable } from '../playable';
 import { TaskPlayerState } from '../task-player/task-player.component';
-import { ConfirmDoneDialogComponent } from './confirm-done-dialog/confirm-done-dialog.component';
 import { IntroDialogComponent } from './intro-dialog/intro-dialog.component';
 import { UserStateService } from 'src/app/services/user-state-service';
+import { thisOrDefault } from 'src/app/common/commonMethods';
+import { TranslateService } from '@ngx-translate/core';
+import { SupportedLangs } from 'src/app/models/enums';
+import { ITranslationText } from 'src/app/models/InternalDTOs';
 
 interface EmbeddedPageMetadata {
     componentName: ComponentName;
     componentConfig: {
         externalUrl: string;
+        disableNextButtonDurationInSeconds: number;
+        buttons: {
+            nextButtonText: ITranslationText;
+            previousButtonText: ITranslationText;
+        };
     };
 }
 
@@ -20,6 +28,7 @@ interface EmbeddedPageMetadata {
     selector: 'app-embedded-page',
     templateUrl: './embedded-page.component.html',
     styleUrls: ['./embedded-page.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class EmbeddedPageComponent implements Playable, OnDestroy, OnInit {
     @ViewChild('iframe') iframe: ElementRef;
@@ -28,20 +37,26 @@ export class EmbeddedPageComponent implements Playable, OnDestroy, OnInit {
     embeddedSurveyLink: string = '';
     metadata: EmbeddedPageMetadata;
     subscriptions: Subscription[] = [];
-    delay = 60;
+    delay = 30;
     interval: number | undefined;
     nextDisabled: boolean = true;
 
-    constructor(private matDialog: MatDialog, private userStateService: UserStateService) {}
+    nextButtonText = '';
+    previousButtonText = '';
+
+    constructor(
+        private matDialog: MatDialog,
+        private userStateService: UserStateService,
+        private translateService: TranslateService
+    ) {}
 
     onComplete: Subject<IOnComplete> = new Subject<{ navigation: Navigation; taskData: any[] }>();
 
     ngOnInit(): void {
         if (this.userStateService.userIsAdmin || this.userStateService.userIsOrgMember) {
-            this.delay = 0;
-        } else {
-            this.delay = 60;
+            this.delay = 5;
         }
+
         this.nextDisabled = true;
         this.interval = window.setInterval(() => {
             if (this.delay <= 0) {
@@ -64,6 +79,12 @@ export class EmbeddedPageComponent implements Playable, OnDestroy, OnInit {
         const studyId = config.studyID;
         this.metadata = metadata;
         this.embeddedSurveyLink = this.parseURL(this.metadata.componentConfig.externalUrl, userId, studyId);
+        this.delay = thisOrDefault(metadata.componentConfig.disableNextButtonDurationInSeconds, 30);
+
+        const currentLang = this.translateService.currentLang ? this.translateService.currentLang : SupportedLangs.EN;
+
+        this.nextButtonText = this.metadata.componentConfig.buttons.nextButtonText[currentLang];
+        this.previousButtonText = this.metadata.componentConfig.buttons.previousButtonText[currentLang];
     }
 
     beginRound() {
@@ -82,16 +103,6 @@ export class EmbeddedPageComponent implements Playable, OnDestroy, OnInit {
 
     proceed() {
         this.handleComplete(Navigation.NEXT, []);
-        // const dialogRef = this.matDialog.open(ConfirmDoneDialogComponent, { width: '70%' });
-        // this.subscriptions.push(
-        //     dialogRef.afterClosed().subscribe((ok: boolean) => {
-        //         if (ok) {
-        //             this.handleComplete(Navigation.NEXT, []);
-        //         } else {
-        //             this.refocusIframe();
-        //         }
-        //     })
-        // );
     }
 
     // iframe loses focus if the user clicks outside of it, and clicking back in it does not help
