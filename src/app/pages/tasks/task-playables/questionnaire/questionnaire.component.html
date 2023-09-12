@@ -6,165 +6,142 @@
     <div>
         <form [formGroup]="questionnaire">
             <ng-container *ngFor="let question of questions">
-                <ng-container [ngSwitch]="question.questionType">
-                    <div class="my-5" *ngSwitchCase="'multipleChoiceSelect'">
-                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
-                        <p
-                            *ngIf="question.textContent"
-                            class="sub-text"
-                            [innerHTML]="handleText(question.textContent)"
-                        ></p>
-                        <mat-form-field class="w-50">
-                            <mat-label>{{ handleText(question.label) }}</mat-label>
-                            <mat-select [formControlName]="question.key" [multiple]="question.allowMultipleSelections">
-                                <mat-option
-                                    *ngFor="let option of question.multipleChoiceOptions"
-                                    [value]="option.value"
-                                    >{{ handleText(option.label) }}</mat-option
-                                >
-                            </mat-select>
-                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')">{{
-                                'errorMessages.required' | translate
-                            }}</mat-error>
-                        </mat-form-field>
-                    </div>
+                <ng-container
+                    *ngIf="controlIsVisible(question.key) && question.questionType === 'multipleChoiceSelect'"
+                >
+                    <app-multiple-choice-select
+                        [formControlState]="formControlsState[question.key]"
+                        [question]="question"
+                        [questionnaire]="questionnaire"
+                    ></app-multiple-choice-select>
+                </ng-container>
 
-                    <div class="my-5" *ngSwitchCase="'radiobuttons'">
-                        <h2
-                            *ngIf="question.title"
-                            class="title-text {{
+                <div *ngIf="controlIsVisible(question.key) && question.questionType === 'radiobuttons'" class="my-5">
+                    <h2
+                        *ngIf="question.title"
+                        class="title-text {{
                                 question.styles?.['title-font-size'] ? 'font-size-' + question.styles?.['title-font-size'] : ''
                             }}"
-                            [innerHTML]="handleText(question.title)"
-                        ></h2>
-                        <p
-                            *ngIf="question.textContent"
-                            class="sub-text {{
+                        [innerHTML]="handleText(question.title)"
+                    ></h2>
+                    <p
+                        *ngIf="question.textContent"
+                        class="sub-text {{
                                 question.styles?.['text-content-font-size'] ? 'font-size-' + question.styles?.['text-content-font-size'] : ''
                             }}"
-                            [innerHTML]="handleText(question.textContent)"
-                        ></p>
-                        <br />
+                        [innerHTML]="handleText(question.textContent)"
+                    ></p>
+                    <br />
 
-                        <div class="radiobuttons-images-container" *ngIf="question.radioButtonImageOptions">
-                            <div class="image-container" *ngFor="let imagePath of question.radioButtonImageOptions">
-                                <img class="image" [src]="imagePath" alt="image option" />
-                            </div>
+                    <div class="radiobuttons-images-container" *ngIf="question.radioButtonImageOptions">
+                        <div class="image-container" *ngFor="let imagePath of question.radioButtonImageOptions">
+                            <img class="image" [src]="imagePath" alt="image option" />
                         </div>
+                    </div>
 
-                        <mat-radio-group
-                            class="{{ question.radiobuttonPresentation }}"
-                            [formControlName]="question.key"
+                    <mat-radio-group class="{{ question.radiobuttonPresentation }}" [formControlName]="question.key">
+                        <mat-radio-button
+                            *ngFor="let radiobutton of question.options"
+                            class="{{ question.radiobuttonPresentation === 'horizontal' ? 'label-above' : '' }}"
+                            [value]="radiobutton.value"
                         >
-                            <mat-radio-button
-                                *ngFor="let radiobutton of question.multipleChoiceOptions"
-                                class="{{ question.radiobuttonPresentation === 'horizontal' ? 'label-above' : '' }}"
-                                [value]="radiobutton.value"
-                            >
-                                {{ handleText(radiobutton.label) }}
-                            </mat-radio-button>
-                        </mat-radio-group>
-                    </div>
+                            {{ handleText(radiobutton.label) }}
+                        </mat-radio-button>
+                    </mat-radio-group>
 
-                    <div class="my-5" *ngSwitchCase="'freeTextResponse'">
-                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
-                        <p
-                            *ngIf="question.textContent"
-                            class="sub-text"
-                            [innerHTML]="handleText(question.textContent)"
-                        ></p>
-                        <mat-form-field class="w-50 d-block">
-                            <mat-label>{{ handleText(question.label) }}</mat-label>
-                            <textarea rows="4" [formControlName]="question.key" matInput type="text"></textarea>
-                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')">{{
-                                'errorMessages.required' | translate
-                            }}</mat-error>
-                        </mat-form-field>
-                    </div>
+                    <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')">{{
+                        'errorMessages.required' | translate
+                    }}</mat-error>
+                </div>
 
-                    <div class="my-5" *ngSwitchCase="'input'">
-                        <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
-                        <p
-                            *ngIf="question.textContent"
-                            class="sub-text"
-                            [innerHTML]="handleText(question.textContent)"
-                        ></p>
-                        <mat-form-field class="w-50 d-block">
-                            <mat-label>{{ handleText(question.label) }}</mat-label>
-                            <input
-                                matInput
-                                [formControlName]="question.key"
-                                [type]="question.validation?.isNumeric ? 'number' : 'text'"
-                            />
-                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')">{{
-                                'errorMessages.required' | translate
-                            }}</mat-error>
-                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('min')"
-                                >{{ 'errorMessages.minValidation' | translate }}&nbsp;{{
-                                    question.validation.min
-                                }}</mat-error
-                            >
-                            <mat-error *ngIf="questionnaire.get(question.key)?.hasError('max')"
-                                >{{ 'errorMessages.maxValidation' | translate }}&nbsp;{{
-                                    question.validation.max
-                                }}</mat-error
-                            >
-                        </mat-form-field>
-                    </div>
+                <div
+                    *ngIf="controlIsVisible(question.key) && question.questionType === 'freeTextResponse'"
+                    class="my-5"
+                >
+                    <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
+                    <p *ngIf="question.textContent" class="sub-text" [innerHTML]="handleText(question.textContent)"></p>
+                    <mat-form-field class="w-50 d-block">
+                        <mat-label>{{ handleText(question.label) }}</mat-label>
+                        <textarea rows="4" [formControlName]="question.key" matInput type="text"></textarea>
+                        <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')">{{
+                            'errorMessages.required' | translate
+                        }}</mat-error>
+                    </mat-form-field>
+                </div>
 
-                    <div class="slider-container" *ngSwitchCase="'slider'">
-                        <div class="slider-inner-container">
-                            <h2 style="display: flex">
-                                <h2
-                                    *ngIf="question.title"
-                                    class="title-text responsive-title"
-                                    [innerHTML]="handleText(question.title)"
-                                ></h2>
-                                <h2
-                                    class="error-text font-weight-lighter responsive-title"
-                                    *ngIf="questionnaire.get(question.key)?.hasError('required')"
-                                >
-                                    &nbsp;({{ 'errorMessages.required' | translate }})
-                                </h2>
+                <div *ngIf="controlIsVisible(question.key) && question.questionType === 'input'" class="my-5">
+                    <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
+                    <p *ngIf="question.textContent" class="sub-text" [innerHTML]="handleText(question.textContent)"></p>
+                    <mat-form-field class="w-50 d-block">
+                        <mat-label>{{ handleText(question.label) }}</mat-label>
+                        <input
+                            matInput
+                            [formControlName]="question.key"
+                            [type]="question.validation?.isNumeric ? 'number' : 'text'"
+                        />
+                        <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')">{{
+                            'errorMessages.required' | translate
+                        }}</mat-error>
+                        <mat-error *ngIf="questionnaire.get(question.key)?.hasError('min')"
+                            >{{ 'errorMessages.minValidation' | translate }}&nbsp;{{
+                                question.validation.min
+                            }}</mat-error
+                        >
+                        <mat-error *ngIf="questionnaire.get(question.key)?.hasError('max')"
+                            >{{ 'errorMessages.maxValidation' | translate }}&nbsp;{{
+                                question.validation.max
+                            }}</mat-error
+                        >
+                    </mat-form-field>
+                </div>
+
+                <div
+                    *ngIf="controlIsVisible(question.key) && question.questionType === 'slider'"
+                    class="slider-container"
+                >
+                    <div class="slider-inner-container">
+                        <h2 style="display: flex">
+                            <h2
+                                *ngIf="question.title"
+                                class="title-text responsive-title"
+                                [innerHTML]="handleText(question.title)"
+                            ></h2>
+                            <h2
+                                class="error-text font-weight-lighter responsive-title"
+                                *ngIf="questionnaire.get(question.key)?.hasError('required')"
+                            >
+                                &nbsp;({{ 'errorMessages.required' | translate }})
                             </h2>
-                            <p
-                                *ngIf="question.textContent"
-                                class="sub-text"
-                                [innerHTML]="handleText(question.textContent)"
-                            ></p>
-                            <div class="w-75 d-block">
-                                <app-slider
-                                    [marks]="getSliderMarks(question.legend)"
-                                    (sliderValueSelected)="handleSliderValueSelected(question.key, $event)"
-                                ></app-slider>
-                            </div>
+                        </h2>
+                        <p
+                            *ngIf="question.textContent"
+                            class="sub-text"
+                            [innerHTML]="handleText(question.textContent)"
+                        ></p>
+                        <div class="w-75 d-block">
+                            <app-slider
+                                [marks]="getSliderMarks(question.sliderLegend)"
+                                (sliderValueSelected)="handleSliderValueSelected(question.key, $event)"
+                            ></app-slider>
                         </div>
                     </div>
+                </div>
 
-                    <div
-                        *ngSwitchCase="'displayText'"
-                        class="my-5 {{ question.indent ? 'indent-' + question.indent : '' }}"
-                    >
-                        <h2
-                            *ngIf="question.title"
-                            class="title-text {{ question.styles?.['title-font-size'] ? 'font-size-' + question.styles?.['title-font-size'] : '' }}"
-                            [innerHTML]="handleText(question.title)"
-                        ></h2>
-                        <p
-                            *ngIf="question.textContent"
-                            class="sub-text"
-                            [innerHTML]="handleText(question.textContent)"
-                        ></p>
-                    </div>
+                <div
+                    *ngIf="controlIsVisible(question.key) && question.questionType === 'displayText'"
+                    class="my-5 {{ question.indent ? 'indent-' + question.indent : '' }}"
+                >
+                    <h2
+                        *ngIf="question.title"
+                        class="title-text {{ question.styles?.['title-font-size'] ? 'font-size-' + question.styles?.['title-font-size'] : '' }}"
+                        [innerHTML]="handleText(question.title)"
+                    ></h2>
+                    <p *ngIf="question.textContent" class="sub-text" [innerHTML]="handleText(question.textContent)"></p>
+                </div>
 
-                    <div class="my-5" *ngSwitchCase="'divider'">
-                        <hr />
-                    </div>
-
-                    <div *ngSwitchDefault>
-                        <span class="error-text">Could not get question</span>
-                    </div>
-                </ng-container>
+                <div *ngIf="controlIsVisible(question.key) && question.questionType === 'divider'" class="my-5">
+                    <hr />
+                </div>
             </ng-container>
             <div style="color: red; font-size: 1rem; padding: 10px 0" *ngIf="!questionnaire.valid">
                 <span>

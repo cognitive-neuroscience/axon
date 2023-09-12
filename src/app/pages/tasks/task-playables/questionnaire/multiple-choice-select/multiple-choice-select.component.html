@@ -1,0 +1,15 @@
+<div class="my-5" [formGroup]="questionnaire">
+    <h2 *ngIf="question.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
+    <p *ngIf="question.textContent" class="sub-text" [innerHTML]="handleText(question.textContent)"></p>
+    <mat-form-field class="w-50">
+        <mat-label>{{ handleText(question.label) }}</mat-label>
+        <mat-select [formControlName]="question.key" [multiple]="question.allowMultipleSelections">
+            <mat-option *ngFor="let option of multipleChoiceOptions" [value]="option.value">{{
+                handleText(option.label)
+            }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="questionnaire.get(question.key)?.hasError('required')">{{
+            'errorMessages.required' | translate
+        }}</mat-error>
+    </mat-form-field>
+</div>

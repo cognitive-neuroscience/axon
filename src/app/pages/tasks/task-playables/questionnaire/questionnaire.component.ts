@@ -2,60 +2,25 @@ import { Component, OnDestroy } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { NzMarks } from 'ng-zorro-antd/slider';
+import { Subject, Subscription } from 'rxjs';
 import { getTextForLang } from 'src/app/common/commonMethods';
+import { ITranslationText } from 'src/app/models/InternalDTOs';
 import { SupportedLangs } from 'src/app/models/enums';
-import { ComponentName } from 'src/app/services/component-factory.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { TaskManagerService } from 'src/app/services/task-manager.service';
-import { TaskPlayerState } from '../task-player/task-player.component';
-import { Playable, IOnComplete } from '../playable';
-import { Subject } from 'rxjs';
 import { Navigation } from '../../shared/navigation-buttons/navigation-buttons.component';
-import { ITranslationText } from 'src/app/models/InternalDTOs';
-
-class Question {
-    questionType:
-        | 'multipleChoiceSelect'
-        | 'radiobuttons'
-        | 'freeTextResponse'
-        | 'displayText'
-        | 'divider'
-        | 'input'
-        | 'slider';
-    radiobuttonPresentation?: 'horizontal' | 'vertical' = 'horizontal';
-    styles?: {
-        'title-font-size'?: 'sm' | 'md' | 'lg' | 'xl';
-        'text-content-font-size'?: 'sm' | 'md' | 'lg' | 'xl';
-    };
-    radioButtonImageOptions?: string[]; // a list of image paths to present in the questionnaire for radiobuttons
-    indent?: number; // amount of indentation for the given text
-    allowMultipleSelections?: boolean; // for multiple choice select, allow multiple choices
-    key: string; // unique property of the input - this is what will be used when getting the data. Mandatory for all questionTypes except divider and free text
-    label?: string | ITranslationText; // label of the input
-    title?: string | ITranslationText; // title of the input - shown above the input itself
-    textContent?: string | ITranslationText; // explanatory text below the title
-    legend?: (string | ITranslationText)[]; // legend for slider, slider values are spaced out automatically
-    validation?: {
-        required?: boolean;
-        isNumeric?: boolean;
-        max?: number;
-        min?: number;
-        maxLength?: number;
-        minLength?: number;
-    };
-    multipleChoiceOptions?: {
-        label: string | ITranslationText;
-        value: any;
-    }[];
-}
-
-interface QuestionnaireMetadata {
-    componentName: ComponentName;
-    componentConfig: {
-        title: string;
-        questions: Question[];
-    };
-}
+import { IOnComplete, Playable } from '../playable';
+import { TaskPlayerState } from '../task-player/task-player.component';
+import {
+    IBaseQuestion,
+    IBaseQuestionnaireComponent,
+    IMultipleChoiceSelect,
+    IRadioButtons,
+    QuestionnaireMetadata,
+    TConditional,
+    TOption,
+} from './models';
+import { getConditionalMappingHelper, keysExistAndAreUniqueHelper } from './utils';
 
 @Component({
     selector: 'app-questionnaire',
@@ -63,17 +28,31 @@ interface QuestionnaireMetadata {
     styleUrls: ['./questionnaire.component.scss'],
 })
 export class QuestionnaireComponent implements Playable, OnDestroy {
+    subscriptions: Subscription[] = [];
     metadata: QuestionnaireMetadata;
     questionnaire: UntypedFormGroup;
     wasClicked = false;
     isVisible = false;
     taskData: any[];
 
+    formControlsState: {
+        [key: string]: {
+            dependentControlsList: (Pick<TConditional, 'doAction'> & { controlAffectedKey: string })[];
+            originalValidators: ValidatorFn[];
+            state: { options: TOption[] };
+            valueChangesSubscription: Subscription | null;
+        };
+    } = {};
+
     constructor(
         protected loaderService: LoaderService,
         private translateService: TranslateService,
         private taskManager: TaskManagerService
     ) {}
+
+    controlIsVisible(key: string): boolean {
+        return this.questionnaire.contains(key);
+    }
 
     onComplete: Subject<IOnComplete> = new Subject<{ navigation: Navigation; taskData: any[] }>();
 
@@ -85,16 +64,16 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
 
     configure(metadata: QuestionnaireMetadata, config?: TaskPlayerState) {
         this.metadata = metadata;
-        if (!this.keysExistAndAreUnique(this.metadata)) {
+        if (!keysExistAndAreUniqueHelper(this.metadata)) {
             this.taskManager.handleErr('Questionnaire Error. Please contact sharplab.neuro@mcgill.ca');
         } else {
-            this.questionnaire = this.getFormGroup(this.metadata);
             this.taskData = [];
+            this.setupForm(this.metadata);
             this.isVisible = true;
         }
     }
 
-    get questions(): Question[] {
+    get questions(): IBaseQuestionnaireComponent[] {
         return this.metadata?.componentConfig?.questions || [];
     }
 
@@ -106,49 +85,54 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
         return getTextForLang(this.translateService.currentLang as SupportedLangs, text);
     }
 
-    getFormGroup(metadata: QuestionnaireMetadata): UntypedFormGroup {
-        const formGroup: {
-            [key: string]: UntypedFormControl;
-        } = {};
-        metadata.componentConfig.questions.forEach((question) => {
-            if (question.questionType !== 'divider' && question.questionType !== 'displayText') {
-                // extensible for later if we want to add other validators
-                let validatorFnArr: ValidatorFn[] = [];
-                if (question.validation) {
-                    if (question.validation.required) validatorFnArr.push(Validators.required);
-                    if (question.validation.max !== undefined)
-                        validatorFnArr.push(Validators.max(question.validation.max));
-                    if (question.validation.min !== undefined)
-                        validatorFnArr.push(Validators.min(question.validation.min));
-                    if (question.validation.minLength !== undefined)
-                        validatorFnArr.push(Validators.minLength(question.validation.minLength));
-                    if (question.validation.maxLength !== undefined)
-                        validatorFnArr.push(Validators.minLength(question.validation.maxLength));
-                }
+    setupForm(metadata: QuestionnaireMetadata) {
+        this.formControlsState = {};
+        this.questionnaire = new UntypedFormGroup({});
 
-                formGroup[question.key] =
-                    validatorFnArr.length > 0 ? new UntypedFormControl('', validatorFnArr) : new UntypedFormControl('');
-            }
-        });
-
-        return new UntypedFormGroup(formGroup);
-    }
-
-    private keysExistAndAreUnique(metadata: QuestionnaireMetadata): boolean {
-        const keysMap: { [key: string]: boolean } = {};
+        // 1. Create initial Mapping between key and dependent keys
+        const keyToDependentKeysMap = getConditionalMappingHelper(metadata);
 
         metadata.componentConfig.questions.forEach((question) => {
-            if (question.questionType !== 'freeTextResponse' && question.questionType !== 'divider') {
-                if (question.key === '' || question.key === undefined) return false;
+            // 2. Calculate initial validators based on the question.validators object
+            let validatorFnArr: ValidatorFn[] = [];
+            if (question['validation']) {
+                const questionValidation = (question as IBaseQuestion).validation;
+                if (questionValidation.required) validatorFnArr.push(Validators.required);
+                if (questionValidation.max !== undefined) validatorFnArr.push(Validators.max(questionValidation.max));
+                if (questionValidation.min !== undefined) validatorFnArr.push(Validators.min(questionValidation.min));
+                if (questionValidation.minLength !== undefined)
+                    validatorFnArr.push(Validators.minLength(questionValidation.minLength));
+                if (questionValidation.maxLength !== undefined)
+                    validatorFnArr.push(Validators.minLength(questionValidation.maxLength));
+            }
 
-                if (keysMap[question.key]) {
-                    return false;
-                } else {
-                    keysMap[question.key] = true;
-                }
+            // 3. Add to formControlsState. All controls are added to this object
+            this.formControlsState[question.key] = {
+                dependentControlsList: keyToDependentKeysMap[question.key] || [],
+                originalValidators: validatorFnArr,
+                state: {
+                    options: [],
+                },
+                valueChangesSubscription: null,
+            };
+
+            // 4. Add to formGroup IF it initially should be visible
+            if (question?.condition?.doAction?.showOnValuesSelected || question?.condition?.doAction?.showOnNonEmpty) {
+                // noop
+                // for controls that are shown conditionally, we can assume for now that the initial value of the parent is none.
+                // therefore, we can assume that the control will initially be invisible
+            } else {
+                this.questionnaire.addControl(question.key, new UntypedFormControl('', validatorFnArr));
+            }
+            if (keyToDependentKeysMap[question.key]) {
+                // if this control has dependencies, then we want to subscribe to value changes
+                const subscription = this.questionnaire.controls[question.key].valueChanges.subscribe((val) => {
+                    this.handleDependents(question.key, val);
+                });
+                this.formControlsState[question.key].valueChangesSubscription = subscription;
+                this.subscriptions.push(subscription);
             }
         });
-        return true;
     }
 
     handleSliderValueSelected(key: string, value: number) {
@@ -169,6 +153,89 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
         }
 
         return tempMarks;
+    }
+
+    private removeControlFromFormGroup(key: string) {
+        if (this.formControlsState[key].valueChangesSubscription) {
+            this.formControlsState[key].valueChangesSubscription.unsubscribe();
+            this.formControlsState[key].valueChangesSubscription = null;
+        }
+        this.questionnaire.removeControl(key);
+    }
+
+    private addControlToFormGroup(key: string) {
+        this.questionnaire.addControl(key, new UntypedFormControl('', this.formControlsState[key].originalValidators));
+        if (this.formControlsState[key].dependentControlsList.length > 0) {
+            const subscription = this.questionnaire.controls[key].valueChanges.subscribe((val) => {
+                this.handleDependents(key, val);
+            });
+            this.formControlsState[key].valueChangesSubscription = subscription;
+            this.subscriptions.push(subscription);
+        }
+    }
+
+    private getMetadataOptions(key: string): TOption[] {
+        const question = this.metadata.componentConfig.questions.find((x) => x.key === key);
+        if (!question) return [];
+
+        return (question as IMultipleChoiceSelect | IRadioButtons)?.options || [];
+    }
+
+    private handleDependents(
+        controlBeingChangedKey: string,
+        controlBeingChangedNewValue: string | number | boolean | string[]
+    ) {
+        if (!this.formControlsState[controlBeingChangedKey]) return;
+
+        this.formControlsState[controlBeingChangedKey].dependentControlsList.forEach((dependentControl) => {
+            const action = dependentControl.doAction;
+            if (action.showOnValuesSelected) {
+                const shouldSetToVisible = (action.showOnValuesSelected || []).some(
+                    (val) => val === controlBeingChangedNewValue
+                );
+                shouldSetToVisible
+                    ? this.addControlToFormGroup(dependentControl.controlAffectedKey)
+                    : this.removeControlFromFormGroup(dependentControl.controlAffectedKey);
+            }
+            if (action.showOnNonEmpty) {
+                const newValIsArray = Array.isArray(controlBeingChangedNewValue);
+                const arrIsNotEmpty = newValIsArray ? controlBeingChangedNewValue.length > 0 : true;
+
+                const shouldSetToVisible =
+                    controlBeingChangedNewValue !== undefined &&
+                    controlBeingChangedNewValue !== null &&
+                    controlBeingChangedNewValue !== '' &&
+                    arrIsNotEmpty;
+
+                shouldSetToVisible
+                    ? this.addControlToFormGroup(dependentControl.controlAffectedKey)
+                    : this.removeControlFromFormGroup(dependentControl.controlAffectedKey);
+            }
+            if (action.populateResultsBasedOnSelectedValues) {
+                if (!Array.isArray(controlBeingChangedNewValue)) return;
+                const options = this.getMetadataOptions(controlBeingChangedKey);
+                this.formControlsState[dependentControl.controlAffectedKey].state.options =
+                    controlBeingChangedNewValue.map((val) => {
+                        const mappedOption = options.find((x) => x.value === val);
+                        return mappedOption ? mappedOption : { label: val, value: val };
+                    });
+
+                // this case happens when input B depends on input A and input As multiple selected
+                // have changed. Input A can then have a value that is invalid.
+                // TODO: handle the edge case where the dependent input B allows multi select, in whch case we
+                // need to handle comparison of two arrays.
+                if (
+                    this.questionnaire.contains(dependentControl.controlAffectedKey) &&
+                    !controlBeingChangedNewValue.includes(
+                        this.questionnaire.get(dependentControl.controlAffectedKey).value
+                    )
+                ) {
+                    this.questionnaire.get(dependentControl.controlAffectedKey).setValue('');
+                }
+            }
+            // in the future:
+            // if (conditionAction.otherAction) { ... }
+        });
     }
 
     onSubmit() {
@@ -195,6 +262,7 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        this.subscriptions.forEach((sub) => sub.unsubscribe());
         this.onComplete.complete();
     }
 }
