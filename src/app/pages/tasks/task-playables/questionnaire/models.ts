@@ -45,6 +45,7 @@ export enum EQuestionType {
     slider = 'slider',
     displayText = 'displayText',
     divider = 'divider',
+    matrix = 'matrix',
 }
 
 export interface IBaseQuestionnaireComponent {
@@ -73,6 +74,15 @@ export interface IRadioButtons extends IBaseQuestion {
     options?: TOption[];
 }
 
+export interface IMatrix extends IBaseQuestion {
+    options?: TOption[];
+    legend: {
+        value: string | number | boolean;
+        label: string | ITranslationText;
+    }[];
+    legendTitle?: string;
+}
+
 export interface IFreeTextResponse extends IBaseQuestion {
     label?: string | ITranslationText;
 }
@@ -82,7 +92,7 @@ export interface IInput extends IBaseQuestion {
 }
 
 export interface ISlider extends IBaseQuestion {
-    sliderLegend?: (string | ITranslationText)[]; // legend for slider, slider values are spaced out automatically
+    legend?: (string | ITranslationText)[]; // legend for slider, slider values are spaced out automatically
 }
 
 // not a question, purely decorative

@@ -12,6 +12,7 @@ import { Navigation } from '../../shared/navigation-buttons/navigation-buttons.c
 import { IOnComplete, Playable } from '../playable';
 import { TaskPlayerState } from '../task-player/task-player.component';
 import {
+    EQuestionType,
     IBaseQuestion,
     IBaseQuestionnaireComponent,
     IMultipleChoiceSelect,
@@ -39,7 +40,7 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
         [key: string]: {
             dependentControlsList: (Pick<TConditional, 'doAction'> & { controlAffectedKey: string })[];
             originalValidators: ValidatorFn[];
-            state: { options: TOption[] };
+            state: { options?: TOption[] };
             valueChangesSubscription: Subscription | null;
         };
     } = {};
@@ -70,6 +71,7 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
             this.taskData = [];
             this.setupForm(this.metadata);
             this.isVisible = true;
+            console.log(this.formControlsState);
         }
     }
 
@@ -214,11 +216,19 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
             if (action.populateResultsBasedOnSelectedValues) {
                 if (!Array.isArray(controlBeingChangedNewValue)) return;
                 const options = this.getMetadataOptions(controlBeingChangedKey);
-                this.formControlsState[dependentControl.controlAffectedKey].state.options =
-                    controlBeingChangedNewValue.map((val) => {
-                        const mappedOption = options.find((x) => x.value === val);
-                        return mappedOption ? mappedOption : { label: val, value: val };
-                    });
+
+                // we must make sure that the control object assigned here is a object (instead of modifying in place) for
+                // angular change detection to work. This is similar to react
+                this.formControlsState[dependentControl.controlAffectedKey] = {
+                    ...this.formControlsState[dependentControl.controlAffectedKey],
+                    state: {
+                        ...this.formControlsState[dependentControl.controlAffectedKey].state,
+                        options: controlBeingChangedNewValue.map((val) => {
+                            const mappedOption = options.find((x) => x.value === val);
+                            return mappedOption ? mappedOption : { label: val, value: val };
+                        }),
+                    },
+                };
 
                 // this case happens when input B depends on input A and input As multiple selected
                 // have changed. Input A can then have a value that is invalid.
@@ -242,14 +252,37 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
         if (!this.wasClicked) {
             this.wasClicked = true;
             const questionaireResponse = {};
-            Object.keys(this.questionnaire.controls).forEach((key) => {
-                const value = this.questionnaire.controls[key].value;
-                const isArray = Array.isArray(this.questionnaire.controls[key].value);
-                // for multi select, reduce array to a string with all selected options
-                const reducer = (acc: string, currVal: string, currIndex: number) =>
-                    currIndex === 0 ? currVal : `${acc}, ${currVal}`;
+            const keysToExclude = this.metadata.componentConfig.questions
+                .filter(
+                    (question) =>
+                        question.questionType === EQuestionType.divider ||
+                        question.questionType === EQuestionType.displayText
+                )
+                .map((question) => question.key);
 
-                questionaireResponse[key] = isArray ? (value as string[]).reduce(reducer, '') : value;
+            Object.keys(this.questionnaire.controls).forEach((key) => {
+                if (keysToExclude.includes(key)) return;
+
+                const controlValue = this.questionnaire.controls[key].value;
+                const valueIsArray = Array.isArray(controlValue);
+                const valueIsObj = typeof controlValue === 'object';
+
+                if (valueIsArray) {
+                    // for multi select with allowMultiple=true
+                    questionaireResponse[key] = controlValue.reduce(
+                        (acc: string, currVal: string, currIndex: number) => {
+                            return currIndex === 0 ? currVal : `${acc}, ${currVal}`;
+                        },
+                        ''
+                    );
+                } else if (valueIsObj) {
+                    // for matrix type component
+                    Object.keys(controlValue).forEach((matrixKey) => {
+                        questionaireResponse[matrixKey] = controlValue[matrixKey];
+                    });
+                } else {
+                    questionaireResponse[key] = controlValue;
+                }
             });
 
             // override typecheck for questionnaire response

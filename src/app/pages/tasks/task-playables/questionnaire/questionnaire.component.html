@@ -6,6 +6,14 @@
     <div>
         <form [formGroup]="questionnaire">
             <ng-container *ngFor="let question of questions">
+                <ng-container *ngIf="controlIsVisible(question.key) && question.questionType === 'matrix'">
+                    <!-- here, the input order MATTERS. formControlState relies on question existing so question must be inputted first -->
+                    <app-matrix
+                        [formControlName]="question.key"
+                        [question]="question"
+                        [formControlState]="formControlsState[question.key]"
+                    ></app-matrix>
+                </ng-container>
                 <ng-container
                     *ngIf="controlIsVisible(question.key) && question.questionType === 'multipleChoiceSelect'"
                 >
@@ -120,7 +128,7 @@
                         ></p>
                         <div class="w-75 d-block">
                             <app-slider
-                                [marks]="getSliderMarks(question.sliderLegend)"
+                                [marks]="getSliderMarks(question.legend)"
                                 (sliderValueSelected)="handleSliderValueSelected(question.key, $event)"
                             ></app-slider>
                         </div>
