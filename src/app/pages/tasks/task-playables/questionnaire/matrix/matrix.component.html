@@ -3,12 +3,14 @@
     <p *ngIf="question?.textContent" class="sub-text" [innerHTML]="handleText(question.textContent)"></p>
     <!-- we only need to check if !form.valid as required is the only validation the matrix implements -->
     <mat-error class="my-1" *ngIf="!matrixForm.valid">The question below is required</mat-error>
-    <mat-grid-list [cols]="legend.length + 1" rowHeight="5:1">
+    <mat-grid-list [cols]="legend.length + 1" rowHeight="4:1">
         <mat-grid-tile>{{ legendTitle }}</mat-grid-tile>
         <mat-grid-tile *ngFor="let legendOption of legend">{{ handleText(legendOption.label) }}</mat-grid-tile>
         <ng-container *ngFor="let matrixOption of matrixOptions">
             <mat-radio-group [formControlName]="getControlName(question.key, matrixOption.label)">
-                <mat-grid-tile style="overflow-y: auto"> {{ handleText(matrixOption.label) }} </mat-grid-tile>
+                <mat-grid-tile>
+                    <div style="overflow-y: auto; height: 100%; width: 100%">{{ handleText(matrixOption.label) }}</div>
+                </mat-grid-tile>
                 <mat-grid-tile *ngFor="let legendOption of legend">
                     <mat-radio-button [value]="legendOption.value"></mat-radio-button>
                 </mat-grid-tile>

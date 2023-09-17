@@ -115,7 +115,7 @@
                                 [innerHTML]="handleText(question.title)"
                             ></h2>
                             <h2
-                                class="error-text font-weight-lighter responsive-title {{ question.styles?.['title-font-size'] ? 'font-size-' + question.styles?.['title-font-size'] : '' }}"
+                                class="error-text font-weight-lighter responsive-title {{ question.styles?.['text-content-font-size'] ? 'font-size-' + question.styles?.['text-content-font-size'] : '' }}"
                                 *ngIf="questionnaire.get(question.key)?.hasError('required')"
                             >
                                 &nbsp;({{ 'errorMessages.required' | translate }})
