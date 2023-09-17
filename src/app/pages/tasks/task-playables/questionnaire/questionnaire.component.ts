@@ -18,10 +18,16 @@ import {
     IMultipleChoiceSelect,
     IRadioButtons,
     QuestionnaireMetadata,
+    TActions,
     TConditional,
     TOption,
 } from './models';
-import { getConditionalMappingHelper, keysExistAndAreUniqueHelper } from './utils';
+import {
+    someElementInFirstListExistsInSecondList,
+    getConditionalMappingHelper,
+    keysExistAndAreUniqueHelper,
+    valIsEmpty,
+} from './utils';
 
 @Component({
     selector: 'app-questionnaire',
@@ -41,6 +47,7 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
             dependentControlsList: (Pick<TConditional, 'doAction'> & { controlAffectedKey: string })[];
             originalValidators: ValidatorFn[];
             state: { options?: TOption[] };
+            actions?: TActions;
             valueChangesSubscription: Subscription | null;
         };
     } = {};
@@ -71,7 +78,6 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
             this.taskData = [];
             this.setupForm(this.metadata);
             this.isVisible = true;
-            console.log(this.formControlsState);
         }
     }
 
@@ -107,7 +113,6 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
                 if (questionValidation.maxLength !== undefined)
                     validatorFnArr.push(Validators.minLength(questionValidation.maxLength));
             }
-
             // 3. Add to formControlsState. All controls are added to this object
             this.formControlsState[question.key] = {
                 dependentControlsList: keyToDependentKeysMap[question.key] || [],
@@ -115,21 +120,30 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
                 state: {
                     options: [],
                 },
+                actions: question.actions || undefined,
                 valueChangesSubscription: null,
             };
 
             // 4. Add to formGroup IF it initially should be visible
-            if (question?.condition?.doAction?.showOnValuesSelected || question?.condition?.doAction?.showOnNonEmpty) {
-                // noop
-                // for controls that are shown conditionally, we can assume for now that the initial value of the parent is none.
-                // therefore, we can assume that the control will initially be invisible
-            } else {
+            const doAction = question?.condition?.doAction;
+            // for controls that are shown conditionally, we can assume for now that the initial value of the parent is none.
+            // therefore, we can assume that the control will initially be invisible
+            const shouldInitiallyHide =
+                doAction?.onlyHideWhenEmpty === true ||
+                !!doAction?.onlyShowWhenValuesSelected ||
+                !!doAction?.populateResultsBasedOnSelectedValues;
+
+            if (!shouldInitiallyHide) {
                 this.questionnaire.addControl(question.key, new UntypedFormControl('', validatorFnArr));
             }
-            if (keyToDependentKeysMap[question.key]) {
+            if (
+                (keyToDependentKeysMap[question.key] || question.actions) &&
+                this.questionnaire.controls[question.key]
+            ) {
                 // if this control has dependencies, then we want to subscribe to value changes
-                const subscription = this.questionnaire.controls[question.key].valueChanges.subscribe((val) => {
-                    this.handleDependents(question.key, val);
+                const subscription = this.questionnaire.controls[question.key]?.valueChanges.subscribe(() => {
+                    this.handleActions(question.key);
+                    this.handleDependents(question.key);
                 });
                 this.formControlsState[question.key].valueChangesSubscription = subscription;
                 this.subscriptions.push(subscription);
@@ -159,17 +173,23 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
 
     private removeControlFromFormGroup(key: string) {
         if (this.formControlsState[key].valueChangesSubscription) {
-            this.formControlsState[key].valueChangesSubscription.unsubscribe();
+            this.formControlsState[key].valueChangesSubscription?.unsubscribe();
             this.formControlsState[key].valueChangesSubscription = null;
         }
         this.questionnaire.removeControl(key);
+        this.formControlsState[key].dependentControlsList.forEach(({ controlAffectedKey }) => {
+            this.formControlsState[controlAffectedKey].valueChangesSubscription?.unsubscribe();
+            this.formControlsState[controlAffectedKey].valueChangesSubscription = null;
+            this.questionnaire.removeControl(controlAffectedKey);
+        });
     }
 
     private addControlToFormGroup(key: string) {
         this.questionnaire.addControl(key, new UntypedFormControl('', this.formControlsState[key].originalValidators));
-        if (this.formControlsState[key].dependentControlsList.length > 0) {
-            const subscription = this.questionnaire.controls[key].valueChanges.subscribe((val) => {
-                this.handleDependents(key, val);
+        if (this.formControlsState[key].dependentControlsList.length > 0 || this.formControlsState[key].actions) {
+            const subscription = this.questionnaire.controls[key].valueChanges.subscribe(() => {
+                this.handleActions(key);
+                this.handleDependents(key);
             });
             this.formControlsState[key].valueChangesSubscription = subscription;
             this.subscriptions.push(subscription);
@@ -183,36 +203,106 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
         return (question as IMultipleChoiceSelect | IRadioButtons)?.options || [];
     }
 
-    private handleDependents(
-        controlBeingChangedKey: string,
-        controlBeingChangedNewValue: string | number | boolean | string[]
-    ) {
+    private handleActions(controlKey: string) {
+        if (!this.formControlsState[controlKey]) return;
+        if (!this.formControlsState[controlKey].actions) return;
+        console.log('handling actions');
+        const action = this.formControlsState[controlKey].actions;
+        const currentValues = this.questionnaire.controls[controlKey].value;
+        if (!Array.isArray(currentValues)) return;
+
+        if (action.clearOtherOptionsWhenValueSelected) {
+            // given a bunch of selected values that we want to clear for, we can assume only one of the values in the clearOtherOptionsWhenValueSelected
+            // array will exist at a time
+            const clearOtherOptionsAsThisHasBeenSelected = currentValues.find((currentValue) =>
+                action.clearOtherOptionsWhenValueSelected.includes(currentValue)
+            );
+
+            // We check that either the clearOtherOptionsWhenValueSelected is selected in the dropdown
+            // and it is not the only one selected
+            if (!!clearOtherOptionsAsThisHasBeenSelected && currentValues.length > 1) {
+                this.questionnaire.controls[controlKey].setValue([clearOtherOptionsAsThisHasBeenSelected]);
+            }
+        }
+
+        if (action.onlyDisableOtherOptionsWhenValueSelected) {
+            // given a bunch of selected values that we want to clear for, we can assume only one of the values in the onlyDisableOtherOptionsWhenValueSelected
+            // array will exist at a time
+            const disableOtherOptionsAsThisHasBeenSelected = currentValues.find((currentValue) =>
+                action.onlyDisableOtherOptionsWhenValueSelected.includes(currentValue)
+            );
+            const options = this.getMetadataOptions(controlKey);
+            if (!!disableOtherOptionsAsThisHasBeenSelected) {
+                this.formControlsState[controlKey] = {
+                    ...this.formControlsState[controlKey],
+                    state: {
+                        ...this.formControlsState[controlKey].state,
+                        options: options.map((option) => ({
+                            ...option,
+                            disabled: option.value !== disableOtherOptionsAsThisHasBeenSelected,
+                        })),
+                    },
+                };
+            } else {
+                this.formControlsState[controlKey] = {
+                    ...this.formControlsState[controlKey],
+                    state: {
+                        ...this.formControlsState[controlKey].state,
+                        options: options,
+                    },
+                };
+                return;
+            }
+        }
+    }
+
+    private handleDependents(controlBeingChangedKey: string) {
         if (!this.formControlsState[controlBeingChangedKey]) return;
+        console.log('handling dependents');
+        const controlBeingChangedNewValue: string | number | boolean | string[] =
+            this.questionnaire.controls[controlBeingChangedKey].value;
 
         this.formControlsState[controlBeingChangedKey].dependentControlsList.forEach((dependentControl) => {
             const action = dependentControl.doAction;
-            if (action.showOnValuesSelected) {
-                const shouldSetToVisible = (action.showOnValuesSelected || []).some(
-                    (val) => val === controlBeingChangedNewValue
+
+            if (action.onlyShowWhenEmpty) {
+                let shouldShow = valIsEmpty(controlBeingChangedNewValue);
+                shouldShow
+                    ? this.addControlToFormGroup(dependentControl.controlAffectedKey)
+                    : this.removeControlFromFormGroup(dependentControl.controlAffectedKey);
+            } else if (action.onlyHideWhenEmpty) {
+                let shouldHide = valIsEmpty(controlBeingChangedNewValue);
+                shouldHide
+                    ? this.removeControlFromFormGroup(dependentControl.controlAffectedKey)
+                    : this.addControlToFormGroup(dependentControl.controlAffectedKey);
+            } else if (action.onlyShowWhenValuesSelected) {
+                const newValuesConvertedToArray = Array.isArray(controlBeingChangedNewValue)
+                    ? controlBeingChangedNewValue
+                    : [controlBeingChangedNewValue];
+
+                const shouldSetToVisible = someElementInFirstListExistsInSecondList(
+                    newValuesConvertedToArray,
+                    action.onlyShowWhenValuesSelected
                 );
                 shouldSetToVisible
                     ? this.addControlToFormGroup(dependentControl.controlAffectedKey)
                     : this.removeControlFromFormGroup(dependentControl.controlAffectedKey);
             }
-            if (action.showOnNonEmpty) {
-                const newValIsArray = Array.isArray(controlBeingChangedNewValue);
-                const arrIsNotEmpty = newValIsArray ? controlBeingChangedNewValue.length > 0 : true;
 
-                const shouldSetToVisible =
-                    controlBeingChangedNewValue !== undefined &&
-                    controlBeingChangedNewValue !== null &&
-                    controlBeingChangedNewValue !== '' &&
-                    arrIsNotEmpty;
+            if (action.hideWhenValuesSelected) {
+                const newValuesConvertedToArray = Array.isArray(controlBeingChangedNewValue)
+                    ? controlBeingChangedNewValue
+                    : [controlBeingChangedNewValue];
 
-                shouldSetToVisible
-                    ? this.addControlToFormGroup(dependentControl.controlAffectedKey)
-                    : this.removeControlFromFormGroup(dependentControl.controlAffectedKey);
+                const exists = someElementInFirstListExistsInSecondList(
+                    newValuesConvertedToArray,
+                    action.hideWhenValuesSelected || []
+                );
+                if (exists) {
+                    this.removeControlFromFormGroup(dependentControl.controlAffectedKey);
+                }
             }
+
             if (action.populateResultsBasedOnSelectedValues) {
                 if (!Array.isArray(controlBeingChangedNewValue)) return;
                 const options = this.getMetadataOptions(controlBeingChangedKey);

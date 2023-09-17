@@ -26,15 +26,23 @@ export type TValidation = {
 export type TConditional = {
     dependsOnKey: string; // this is the key of the question that this is conditional on
     doAction: {
-        showOnNonEmpty?: string[];
-        showOnValuesSelected?: string[];
-        populateResultsBasedOnSelectedValues?: boolean;
+        onlyShowWhenEmpty?: boolean; // show when empty and hide otherwise
+        onlyHideWhenEmpty?: boolean; // hide when empty and show otherwise
+        onlyShowWhenValuesSelected?: string[]; // show when values are selected and hide otherwise
+        hideWhenValuesSelected?: string[]; // hide when given values are selected. If given values are not selected, ignore.
+        populateResultsBasedOnSelectedValues?: boolean; // populated dependent multi select or matrix with the selected parent values
     };
+};
+
+export type TActions = {
+    onlyDisableOtherOptionsWhenValueSelected?: string[]; // only for allowMultipleSelections = true. Disable other options when value is selected. Enable otherwise
+    clearOtherOptionsWhenValueSelected?: string[]; // only for allowMultipleSelections = true. Clear other options when value is selected. Do nothing otherwise
 };
 
 export type TOption = {
     label: string | ITranslationText;
     value: string | number | boolean;
+    disabled?: boolean;
 };
 
 export enum EQuestionType {
@@ -50,8 +58,9 @@ export enum EQuestionType {
 
 export interface IBaseQuestionnaireComponent {
     questionType: EQuestionType;
-    condition?: TConditional;
     key: string; // unique property of the input - this is what will be used when getting the data. Mandatory for all questionTypes
+    condition?: TConditional;
+    actions?: TActions;
 }
 
 export interface IBaseQuestion extends IBaseQuestionnaireComponent {

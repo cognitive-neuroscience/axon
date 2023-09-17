@@ -108,14 +108,14 @@
                     class="slider-container"
                 >
                     <div class="slider-inner-container">
-                        <h2 style="display: flex">
+                        <h2>
                             <h2
                                 *ngIf="question.title"
-                                class="title-text responsive-title"
+                                class="title-text responsive-title {{ question.styles?.['title-font-size'] ? 'font-size-' + question.styles?.['title-font-size'] : '' }}"
                                 [innerHTML]="handleText(question.title)"
                             ></h2>
                             <h2
-                                class="error-text font-weight-lighter responsive-title"
+                                class="error-text font-weight-lighter responsive-title {{ question.styles?.['title-font-size'] ? 'font-size-' + question.styles?.['title-font-size'] : '' }}"
                                 *ngIf="questionnaire.get(question.key)?.hasError('required')"
                             >
                                 &nbsp;({{ 'errorMessages.required' | translate }})
@@ -123,7 +123,7 @@
                         </h2>
                         <p
                             *ngIf="question.textContent"
-                            class="sub-text"
+                            class="sub-text {{ question.styles?.['text-content-font-size'] ? 'font-size-' + question.styles?.['text-content-font-size'] : '' }}"
                             [innerHTML]="handleText(question.textContent)"
                         ></p>
                         <div class="w-75 d-block">
@@ -144,7 +144,11 @@
                         class="title-text {{ question.styles?.['title-font-size'] ? 'font-size-' + question.styles?.['title-font-size'] : '' }}"
                         [innerHTML]="handleText(question.title)"
                     ></h2>
-                    <p *ngIf="question.textContent" class="sub-text" [innerHTML]="handleText(question.textContent)"></p>
+                    <p
+                        *ngIf="question.textContent"
+                        class="sub-text {{ question.styles?.['text-content-font-size'] ? 'font-size-' + question.styles?.['text-content-font-size'] : '' }}"
+                        [innerHTML]="handleText(question.textContent)"
+                    ></p>
                 </div>
 
                 <div *ngIf="controlIsVisible(question.key) && question.questionType === 'divider'" class="my-5">

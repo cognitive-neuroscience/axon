@@ -44,3 +44,16 @@ export function getConditionalMappingHelper(metadata: QuestionnaireMetadata): {
     });
     return conditionalMapping;
 }
+
+export function someElementInFirstListExistsInSecondList(arr1: any[], arr2: any[]): boolean {
+    const someValInArr1ExistsInArr2 = arr1.some((arr1Element) => {
+        return arr2.some((arr2Element) => arr2Element === arr1Element);
+    });
+    return someValInArr1ExistsInArr2;
+}
+
+export function valIsEmpty(val: any): boolean {
+    if (Array.isArray(val)) return val.length === 0;
+
+    return val === null || val === undefined || val === '';
+}

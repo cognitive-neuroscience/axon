@@ -29,7 +29,11 @@ export class MultipleChoiceSelectComponent {
     }
 
     get multipleChoiceOptions(): TOption[] {
-        if (this.question?.condition?.doAction?.populateResultsBasedOnSelectedValues) {
+        if (
+            this.question?.condition?.doAction?.populateResultsBasedOnSelectedValues ||
+            (this.question?.actions?.onlyDisableOtherOptionsWhenValueSelected &&
+                this.formControlState.state.options.length > 0)
+        ) {
             return this.formControlState.state.options;
         } else {
             return this.question.options;
