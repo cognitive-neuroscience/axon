@@ -1,7 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { NzMarks } from 'ng-zorro-antd/slider';
 import { Subject, Subscription } from 'rxjs';
 import { getTextForLang } from 'src/app/common/commonMethods';
 import { ITranslationText } from 'src/app/models/InternalDTOs';
@@ -23,9 +22,9 @@ import {
     TOption,
 } from './models';
 import {
-    someElementInFirstListExistsInSecondList,
     getConditionalMappingHelper,
     keysExistAndAreUniqueHelper,
+    someElementInFirstListExistsInSecondList,
     valIsEmpty,
 } from './utils';
 
@@ -151,26 +150,6 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
         });
     }
 
-    handleSliderValueSelected(key: string, value: number) {
-        this.questionnaire.controls[key].setValue(value);
-    }
-
-    getSliderMarks(legend: (string | ITranslationText)[]): NzMarks {
-        const tempMarks: NzMarks = {};
-        if (!legend || legend.length == 0) {
-            return {};
-        }
-        let index = 0;
-        const tickIncrement = 100 / (legend.length - 1);
-
-        for (let i = 0; i < legend.length; i++) {
-            tempMarks[index] = this.handleText(legend[i]);
-            index += tickIncrement;
-        }
-
-        return tempMarks;
-    }
-
     private removeControlFromFormGroup(key: string) {
         if (this.formControlsState[key].valueChangesSubscription) {
             this.formControlsState[key].valueChangesSubscription?.unsubscribe();
@@ -206,7 +185,6 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
     private handleActions(controlKey: string) {
         if (!this.formControlsState[controlKey]) return;
         if (!this.formControlsState[controlKey].actions) return;
-        console.log('handling actions');
         const action = this.formControlsState[controlKey].actions;
         const currentValues = this.questionnaire.controls[controlKey].value;
         if (!Array.isArray(currentValues)) return;
@@ -258,7 +236,6 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
 
     private handleDependents(controlBeingChangedKey: string) {
         if (!this.formControlsState[controlBeingChangedKey]) return;
-        console.log('handling dependents');
         const controlBeingChangedNewValue: string | number | boolean | string[] =
             this.questionnaire.controls[controlBeingChangedKey].value;
 

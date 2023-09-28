@@ -1,0 +1,24 @@
+.radiobuttons-images-container {
+    display: flex;
+    flex-direction: row;
+
+    .image-container {
+        flex-grow: 1;
+        flex-basis: 0;
+
+        .image {
+            width: 100%;
+        }
+    }
+}
+
+.horizontal {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.vertical {
+    display: flex;
+    flex-direction: column;
+}

@@ -1,0 +1,23 @@
+<div class="slider-container">
+    <div style="width: 100%">
+        <h2
+            *ngIf="question.title"
+            class="color-primary m-0 {{ question.styles?.['title-font-size'] ? 'responsive-font-size-' + question.styles?.['title-font-size'] : 'responsive-font-size-md' }}"
+            [innerHTML]="handleText(question.title)"
+        ></h2>
+        <p
+            *ngIf="question.textContent"
+            class="p-0 m-0 sub-text {{ question.styles?.['text-content-font-size'] ? 'responsive-font-size-' + question.styles?.['text-content-font-size'] : 'responsive-font-size-md' }}"
+            [innerHTML]="handleText(question.textContent)"
+        ></p>
+        <mat-error class="responsive-font-size-sm" *ngIf="questionnaire.get(question.key)?.hasError('required')">{{
+            'errorMessages.required' | translate
+        }}</mat-error>
+    </div>
+    <div class="w-100 d-block">
+        <app-slider
+            [marks]="getSliderMarks(question.legend)"
+            (sliderValueSelected)="handleSliderValueSelected(question.key, $event)"
+        ></app-slider>
+    </div>
+</div>

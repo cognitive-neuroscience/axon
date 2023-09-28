@@ -79,6 +79,100 @@ button {
     }
 }
 
+.responsive-font-size {
+    @include for-small-device-only {
+        &-sm {
+            font-size: 0.8rem !important;
+            line-height: 1.4 !important;
+        }
+
+        &-md {
+            font-size: 1rem !important;
+            line-height: 1.4 !important;
+        }
+
+        &-lg {
+            font-size: 1.2rem !important;
+            line-height: 1.4 !important;
+        }
+
+        &-xl {
+            font-size: 1.4rem !important;
+            line-height: 1.4 !important;
+        }
+    }
+
+    @include for-small-desktop-only {
+        &-sm {
+            font-size: 1rem !important;
+            line-height: 1.6 !important;
+        }
+
+        &-md {
+            font-size: 1.2rem !important;
+            line-height: 1.6 !important;
+        }
+
+        &-lg {
+            font-size: 1.4rem !important;
+            line-height: 1.6 !important;
+        }
+
+        &-xl {
+            font-size: 1.6rem !important;
+            line-height: 1.6 !important;
+        }
+    }
+
+    @include for-desktop-up {
+        &-sm {
+            font-size: 1.2rem !important;
+            line-height: 1.6 !important;
+        }
+
+        &-md {
+            font-size: 1.4rem !important;
+            line-height: 1.6 !important;
+        }
+
+        &-lg {
+            font-size: 1.6rem !important;
+            line-height: 1.6 !important;
+        }
+
+        &-xl {
+            font-size: 1.8rem !important;
+            line-height: 1.6 !important;
+        }
+    }
+
+    @include for-large-desktop-up {
+        &-sm {
+            font-size: 1.4rem !important;
+            line-height: 1.6 !important;
+        }
+
+        &-md {
+            font-size: 1.6rem !important;
+            line-height: 1.6 !important;
+        }
+
+        &-lg {
+            font-size: 1.8rem !important;
+            line-height: 1.6 !important;
+        }
+
+        &-xl {
+            font-size: 2rem !important;
+            line-height: 1.6 !important;
+        }
+    }
+}
+
+.color-primary {
+    color: #3f51b5;
+}
+
 .flex-column {
     display: flex;
     flex-direction: column;
@@ -220,6 +314,10 @@ td.mat-footer-cell {
     border-radius: 4px !important;
 }
 
+.error-text {
+    color: red;
+}
+
 .snack-bar {
     color: white;
 
@@ -276,11 +374,11 @@ td.mat-footer-cell {
 }
 
 .ant-slider-mark-text {
-    color: #3f51b5;
+    color: black;
     width: 25%;
 
     @include for-small-device-only {
-        font-size: 1rem;
+        font-size: 0.8rem;
     }
 
     @include for-small-desktop-only {
@@ -288,11 +386,11 @@ td.mat-footer-cell {
     }
 
     @include for-desktop-up {
-        font-size: 1.2rem;
+        font-size: 1.4rem;
     }
 
     @include for-large-desktop-up {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
     }
 }
 

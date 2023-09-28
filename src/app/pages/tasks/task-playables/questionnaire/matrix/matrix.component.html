@@ -1,9 +1,23 @@
-<div class="my-5" [formGroup]="matrixForm">
-    <h2 *ngIf="question?.title" class="title-text" [innerHTML]="handleText(question.title)"></h2>
-    <p *ngIf="question?.textContent" class="sub-text" [innerHTML]="handleText(question.textContent)"></p>
+<div class="my-4" [formGroup]="matrixForm">
+    <h2
+        *ngIf="question?.title"
+        class="color-primary {{
+            question.styles?.['title-font-size'] ? 'responsive-font-size-' + question.styles?.['title-font-size'] : 'responsive-font-size-md'
+        }}"
+        [innerHTML]="handleText(question.title)"
+    ></h2>
+    <p
+        *ngIf="question?.textContent || true"
+        class="sub-text {{
+        question.styles?.['text-content-font-size'] ? 'responsive-font-size-' + question.styles?.['text-content-font-size'] : 'responsive-font-size-md'
+    }}"
+        [innerHTML]="handleText(question.textContent)"
+    ></p>
     <!-- we only need to check if !form.valid as required is the only validation the matrix implements -->
-    <mat-error class="my-1" *ngIf="!matrixForm.valid">The question below is required</mat-error>
-    <mat-grid-list [cols]="legend.length + 1" rowHeight="4:1">
+    <mat-error class="responsive-font-size-sm my-1" *ngIf="!matrixForm.valid"
+        >Please select a value for each item below</mat-error
+    >
+    <mat-grid-list [cols]="legend.length + 1" rowHeight="3:1">
         <mat-grid-tile>{{ legendTitle }}</mat-grid-tile>
         <mat-grid-tile *ngFor="let legendOption of legend">{{ handleText(legendOption.label) }}</mat-grid-tile>
         <ng-container *ngFor="let matrixOption of matrixOptions">

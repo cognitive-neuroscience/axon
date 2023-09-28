@@ -4,76 +4,8 @@
     padding: 2% 4%;
 }
 
-.title-text {
-    color: #3f51b5;
-}
-
 .sub-text {
     color: #464646;
-}
-
-.slider-container {
-    display: flex;
-    justify-content: center;
-    margin: 7rem 0;
-
-    .slider-inner-container {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-}
-
-.responsive-title {
-    @include for-small-device-only {
-        font-size: 1rem;
-    }
-
-    @include for-small-desktop-only {
-        font-size: 1.2rem;
-    }
-
-    @include for-desktop-up {
-        font-size: 1.5rem;
-    }
-
-    @include for-large-desktop-up {
-        font-size: 1.8rem;
-    }
-}
-
-.error-text {
-    color: red;
-}
-
-.horizontal {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-}
-
-.vertical {
-    display: flex;
-    flex-direction: column;
-}
-
-.mat-error {
-    font-size: 1rem !important;
-}
-
-.radiobuttons-images-container {
-    display: flex;
-    flex-direction: row;
-
-    .image-container {
-        flex-grow: 1;
-        flex-basis: 0;
-
-        .image {
-            width: 100%;
-        }
-    }
 }
 
 .indent-1 {
@@ -88,24 +20,20 @@
     margin-left: 9rem;
 }
 
-.font-size {
-    &-sm {
-        font-size: 1rem;
-        line-height: normal;
-    }
+// .font-size {
+//     &-sm {
+//         font-size: 1rem;
+//     }
 
-    &-md {
-        font-size: 1.2rem;
-        line-height: normal;
-    }
+//     &-md {
+//         font-size: 1.2rem;
+//     }
 
-    &-lg {
-        font-size: 1.5rem;
-        line-height: normal;
-    }
+//     &-lg {
+//         font-size: 1.5rem;
+//     }
 
-    &-xl {
-        font-size: 2rem;
-        line-height: normal;
-    }
-}
+//     &-xl {
+//         font-size: 2rem;
+//     }
+// }

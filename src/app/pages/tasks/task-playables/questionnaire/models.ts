@@ -73,10 +73,11 @@ export interface IMultipleChoiceSelect extends IBaseQuestion {
     allowMultipleSelections?: boolean;
     options?: TOption[];
     label?: string | ITranslationText;
+    styles?: TQuestionStyles;
 }
 
 export interface IRadioButtons extends IBaseQuestion {
-    radioButtonPresentation?: 'horizontal' | 'vertical';
+    radiobuttonPresentation?: 'horizontal' | 'vertical';
     radioButtonImageOptions?: string[]; // a list of image paths to present in the questionnaire for radiobuttons
     styles?: TQuestionStyles;
     label?: string | ITranslationText;
@@ -85,6 +86,7 @@ export interface IRadioButtons extends IBaseQuestion {
 
 export interface IMatrix extends IBaseQuestion {
     options?: TOption[];
+    styles?: TQuestionStyles;
     legend: {
         value: string | number | boolean;
         label: string | ITranslationText;
@@ -101,6 +103,7 @@ export interface IInput extends IBaseQuestion {
 }
 
 export interface ISlider extends IBaseQuestion {
+    styles?: TQuestionStyles;
     legend?: (string | ITranslationText)[]; // legend for slider, slider values are spaced out automatically
 }
 
