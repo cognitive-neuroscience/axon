@@ -70,6 +70,7 @@ export interface IBaseQuestion extends IBaseQuestionnaireComponent {
 }
 
 export interface IMultipleChoiceSelect extends IBaseQuestion {
+    indent?: number; // amount of indentation for the given text
     allowMultipleSelections?: boolean;
     options?: TOption[];
     label?: string | ITranslationText;

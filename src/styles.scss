@@ -169,6 +169,18 @@ button {
     }
 }
 
+.indent-1 {
+    margin-left: 3rem;
+}
+
+.indent-2 {
+    margin-left: 6rem;
+}
+
+.indent-3 {
+    margin-left: 9rem;
+}
+
 .color-primary {
     color: #3f51b5;
 }
@@ -297,6 +309,29 @@ button {
 // global angular materials CSS overrides
 .mat-form-field-label {
     color: #3f51b5 !important;
+}
+
+// this CSS is for the app-matrix so that the entire box is clickable and selects the corresponding radiobutton
+// this is probably going to be very helpful for PD patients with tremors
+app-matrix {
+    .mat-grid-tile-content {
+        .mat-radio-button {
+            width: 100%;
+            height: 100%;
+        }
+        .mat-radio-label {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:hover {
+                background-color: #e7e7e7;
+            }
+        }
+    }
 }
 
 th.mat-header-cell,

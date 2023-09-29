@@ -1,5 +1,5 @@
 <div *ngIf="isVisible" class="questionnaire-container">
-    <h1 class="mat-h1 my-4 color-primary">
+    <h1 class="my-4 color-primary responsive-font-size-xl">
         <b>{{ handleText(title) }}</b>
         <hr />
     </h1>
@@ -115,7 +115,7 @@
                     <hr />
                 </div>
             </ng-container>
-            <div style="color: red; font-size: 1rem; padding: 10px 0" *ngIf="!questionnaire.valid">
+            <div class="error-text responsive-font-size-sm my-3" *ngIf="!questionnaire.valid">
                 <span>
                     {{ 'errorMessages.unansweredQuestions' | translate }}
                 </span>

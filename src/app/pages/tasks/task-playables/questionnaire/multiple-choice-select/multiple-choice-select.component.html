@@ -1,4 +1,4 @@
-<div class="my-5" [formGroup]="questionnaire">
+<div class="my-5 {{ question.indent ? 'indent-' + question.indent : '' }}" [formGroup]="questionnaire">
     <h2
         *ngIf="question.title"
         class="color-primary {{
