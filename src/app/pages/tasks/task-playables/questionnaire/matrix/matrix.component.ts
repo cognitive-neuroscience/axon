@@ -80,9 +80,9 @@ export class MatrixComponent implements ControlValueAccessor, Validator, OnInit,
     getControlName(parentKey: string, controlName: string | ITranslationText) {
         let key = '';
         if (typeof controlName === 'string') {
-            key = controlName.replace(' ', '_');
+            key = controlName.toLocaleLowerCase().replace(/ /g, '_');
         } else {
-            key = controlName.en.replace(' ', '_');
+            key = controlName.en.toLocaleLowerCase().replace(/ /g, '_');
         }
         return `${parentKey}_${key}`;
     }
@@ -129,6 +129,7 @@ export class MatrixComponent implements ControlValueAccessor, Validator, OnInit,
     }
 
     writeValue(obj: any): void {
+        console.log(obj);
         if (obj) {
             this.matrixForm.setValue(obj);
         }
