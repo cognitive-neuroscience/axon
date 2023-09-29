@@ -1,0 +1,39 @@
+<div [formGroup]="questionnaire" class="my-5">
+    <div>
+        <h2
+            *ngIf="question.title"
+            class="color-primary m-0 {{ question.styles?.['title-font-size'] ? 'responsive-font-size-' + question.styles?.['title-font-size'] : 'responsive-font-size-md' }}"
+            [innerHTML]="handleText(question.title)"
+        ></h2>
+        <p
+            *ngIf="question.textContent"
+            class="sub-text {{ question.styles?.['title-font-size'] ? 'responsive-font-size-' + question.styles?.['title-font-size'] : 'responsive-font-size-md' }}"
+            class="sub-text {{
+                question.styles?.['text-content-font-size'] ? 'responsive-font-size-' + question.styles?.['text-content-font-size'] : 'responsive-font-size-md'
+            }}"
+            [innerHTML]="handleText(question.textContent)"
+        ></p>
+
+        <mat-error class="responsive-font-size-sm" *ngIf="questionnaire.get(question.key)?.hasError('required')">{{
+            'errorMessages.required' | translate
+        }}</mat-error>
+
+        <div class="radiobuttons-images-container" *ngIf="question.radioButtonImageOptions">
+            <div class="image-container" *ngFor="let imagePath of question.radioButtonImageOptions">
+                <img class="image" [src]="imagePath" alt="image option" />
+            </div>
+        </div>
+
+        <div style="width: 100%">
+            <mat-radio-group class="{{ question.radiobuttonPresentation }}" [formControlName]="question.key">
+                <mat-radio-button
+                    *ngFor="let radiobutton of question.options"
+                    class="{{ question.radiobuttonPresentation === 'horizontal' ? 'label-above' : '' }}"
+                    [value]="radiobutton.value"
+                >
+                    {{ handleText(radiobutton.label) }}
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+</div>

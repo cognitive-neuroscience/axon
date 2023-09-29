@@ -1,0 +1,34 @@
+<div class="my-4" [formGroup]="matrixForm">
+    <h2
+        *ngIf="question?.title"
+        class="color-primary {{
+            question.styles?.['title-font-size'] ? 'responsive-font-size-' + question.styles?.['title-font-size'] : 'responsive-font-size-md'
+        }}"
+        [innerHTML]="handleText(question.title)"
+    ></h2>
+    <p
+        *ngIf="question?.textContent || true"
+        class="sub-text {{
+        question.styles?.['text-content-font-size'] ? 'responsive-font-size-' + question.styles?.['text-content-font-size'] : 'responsive-font-size-md'
+    }}"
+        [innerHTML]="handleText(question.textContent)"
+    ></p>
+    <!-- we only need to check if !form.valid as required is the only validation the matrix implements -->
+    <mat-error class="responsive-font-size-sm my-1" *ngIf="!matrixForm.valid"
+        >Please select a value for each item below</mat-error
+    >
+    <mat-grid-list [cols]="legend.length + 1" rowHeight="3:1">
+        <mat-grid-tile>{{ legendTitle }}</mat-grid-tile>
+        <mat-grid-tile *ngFor="let legendOption of legend">{{ handleText(legendOption.label) }}</mat-grid-tile>
+        <ng-container *ngFor="let matrixOption of matrixOptions">
+            <mat-radio-group [formControlName]="getControlName(question.key, matrixOption.label)">
+                <mat-grid-tile>
+                    <div style="overflow-y: auto; height: 100%; width: 100%">{{ handleText(matrixOption.label) }}</div>
+                </mat-grid-tile>
+                <mat-grid-tile *ngFor="let legendOption of legend">
+                    <mat-radio-button [value]="legendOption.value"></mat-radio-button>
+                </mat-grid-tile>
+            </mat-radio-group>
+        </ng-container>
+    </mat-grid-list>
+</div>

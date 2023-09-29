@@ -1,0 +1,30 @@
+<div class="my-5 {{ question.indent ? 'indent-' + question.indent : '' }}" [formGroup]="questionnaire">
+    <h2
+        *ngIf="question.title"
+        class="color-primary {{
+        question.styles?.['title-font-size'] ? 'responsive-font-size-' + question.styles?.['title-font-size'] : 'responsive-font-size-md'
+    }}"
+        [innerHTML]="handleText(question.title)"
+    ></h2>
+    <p
+        *ngIf="question.textContent"
+        class="sub-text {{
+        question.styles?.['text-content-font-size'] ? 'responsive-font-size-' + question.styles?.['text-content-font-size'] : 'responsive-font-size-md'
+    }}"
+        [innerHTML]="handleText(question.textContent)"
+    ></p>
+    <mat-form-field class="w-50">
+        <mat-label>{{ handleText(question.label) }}</mat-label>
+        <mat-select [formControlName]="question.key" [multiple]="question.allowMultipleSelections">
+            <mat-option
+                *ngFor="let option of multipleChoiceOptions"
+                [value]="option.value"
+                [disabled]="option.disabled"
+                >{{ handleText(option.label) }}</mat-option
+            >
+        </mat-select>
+        <mat-error class="responsive-font-size-sm" *ngIf="questionnaire.get(question.key)?.hasError('required')">{{
+            'errorMessages.required' | translate
+        }}</mat-error>
+    </mat-form-field>
+</div>

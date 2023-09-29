@@ -43,6 +43,10 @@ import { OptionDisplayComponent } from './shared/option-display/option-display.c
 import { IowaGamblingTaskComponent } from './task-playables/iowa-gambling-task/iowa-gambling-task.component';
 import { SkipButtonComponent } from './shared/skip-button/skip-button.component';
 import { InformationTaskComponent } from './task-playables/information-task/information-task.component';
+import { MultipleChoiceSelectComponent } from './task-playables/questionnaire/multiple-choice-select/multiple-choice-select.component';
+import { MatrixComponent } from './task-playables/questionnaire/matrix/matrix.component';
+import { SliderControlComponent } from './task-playables/questionnaire/slider-control/slider-control.component';
+import { RadioButtonsComponent } from './task-playables/questionnaire/radio-buttons/radio-buttons.component';
 
 @NgModule({
     declarations: [
@@ -83,6 +87,10 @@ import { InformationTaskComponent } from './task-playables/information-task/info
 
         SafeResoucePipe,
         QuestionnaireComponent,
+        MultipleChoiceSelectComponent,
+        MatrixComponent,
+        RadioButtonsComponent,
+        SliderControlComponent,
         IntroDialogComponent,
         ConfirmDoneDialogComponent,
         ConsentPageComponent,

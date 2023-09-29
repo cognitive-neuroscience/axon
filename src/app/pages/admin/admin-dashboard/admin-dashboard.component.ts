@@ -26,7 +26,6 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        console.log('here');
         // subscribe noop because it is lazy
         const sub = this.userStateService
             .getOrUpdateUserState()
