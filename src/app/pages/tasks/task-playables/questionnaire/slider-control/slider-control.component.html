@@ -14,7 +14,7 @@
             'errorMessages.required' | translate
         }}</mat-error>
     </div>
-    <div class="w-100 d-block">
+    <div class="w-100 d-block" style="margin-top: 15px">
         <app-slider
             [marks]="getSliderMarks(question.legend)"
             (sliderValueSelected)="handleSliderValueSelected(question.key, $event)"

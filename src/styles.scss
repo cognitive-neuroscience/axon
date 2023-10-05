@@ -399,9 +399,9 @@ td.mat-footer-cell {
 // ng zorro styling overrides
 
 .ant-slider-handle {
-    width: 20px;
-    height: 20px;
-    margin-top: -8px;
+    width: 50px;
+    height: 50px;
+    margin-top: -25px;
 }
 
 .ant-slider-rail {
@@ -411,6 +411,7 @@ td.mat-footer-cell {
 .ant-slider-mark-text {
     color: black;
     width: 25%;
+    margin-top: 20px;
 
     @include for-small-device-only {
         font-size: 0.8rem;

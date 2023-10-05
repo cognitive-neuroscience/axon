@@ -129,7 +129,6 @@ export class MatrixComponent implements ControlValueAccessor, Validator, OnInit,
     }
 
     writeValue(obj: any): void {
-        console.log(obj);
         if (obj) {
             this.matrixForm.setValue(obj);
         }
