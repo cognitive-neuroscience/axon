@@ -18,7 +18,7 @@ export class SliderControlComponent {
     @Input() questionnaire: UntypedFormGroup;
 
     @Input() formControlState: {
-        dependentControlsList: (Pick<TConditional, 'doAction'> & { controlAffectedKey: string })[];
+        dependentControlsList: (Pick<TConditional, 'doConditional'> & { controlAffectedKey: string })[];
         originalValidators: ValidatorFn[];
         state: { options: TOption[] };
     };

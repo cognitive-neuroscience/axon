@@ -25,12 +25,15 @@ export type TValidation = {
 
 export type TConditional = {
     dependsOnKey: string; // this is the key of the question that this is conditional on
-    doAction: {
+    doConditional: {
         onlyShowWhenEmpty?: boolean; // show when empty and hide otherwise
         onlyHideWhenEmpty?: boolean; // hide when empty and show otherwise
         onlyShowWhenValuesSelected?: string[]; // show when values are selected and hide otherwise
         hideWhenValuesSelected?: string[]; // hide when given values are selected. If given values are not selected, ignore.
-        populateResultsBasedOnSelectedValues?: boolean; // populated dependent multi select or matrix with the selected parent values
+        populateResultsBasedOnSelectedValues?: {
+            // populate dependent multi select or matrix with the selected parent values. If undefined, do not do this action
+            valuesToHide?: string[]; // if this array has values, these values will be hidden
+        };
     };
 };
 

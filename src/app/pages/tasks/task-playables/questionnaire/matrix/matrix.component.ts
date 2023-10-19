@@ -35,13 +35,13 @@ export class MatrixComponent implements ControlValueAccessor, Validator, OnInit,
     @Input() question: IMatrix;
 
     private _formControlState: {
-        dependentControlsList: (Pick<TConditional, 'doAction'> & { controlAffectedKey: string })[];
+        dependentControlsList: (Pick<TConditional, 'doConditional'> & { controlAffectedKey: string })[];
         originalValidators: ValidatorFn[];
         state: { options: TOption[] };
     };
 
     @Input() set formControlState(val: {
-        dependentControlsList: (Pick<TConditional, 'doAction'> & { controlAffectedKey: string })[];
+        dependentControlsList: (Pick<TConditional, 'doConditional'> & { controlAffectedKey: string })[];
         originalValidators: ValidatorFn[];
         state: { options: TOption[] };
     }) {

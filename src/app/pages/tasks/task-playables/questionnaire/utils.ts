@@ -20,22 +20,22 @@ export function keysExistAndAreUniqueHelper(metadata: QuestionnaireMetadata): bo
 }
 
 export function getConditionalMappingHelper(metadata: QuestionnaireMetadata): {
-    [key: string]: (Pick<TConditional, 'doAction'> & { controlAffectedKey: string })[];
+    [key: string]: (Pick<TConditional, 'doConditional'> & { controlAffectedKey: string })[];
 } {
     const conditionalMapping: {
-        [key: string]: (Pick<TConditional, 'doAction'> & { controlAffectedKey: string })[];
+        [key: string]: (Pick<TConditional, 'doConditional'> & { controlAffectedKey: string })[];
     } = {};
     metadata.componentConfig.questions.forEach((question) => {
         if (question.condition) {
             if (conditionalMapping[question.condition.dependsOnKey]) {
                 conditionalMapping[question.condition.dependsOnKey].push({
-                    doAction: question.condition.doAction,
+                    doConditional: question.condition.doConditional,
                     controlAffectedKey: (question as IBaseQuestion).key,
                 });
             } else {
                 conditionalMapping[question.condition.dependsOnKey] = [
                     {
-                        doAction: question.condition.doAction,
+                        doConditional: question.condition.doConditional,
                         controlAffectedKey: (question as IBaseQuestion).key,
                     },
                 ];
