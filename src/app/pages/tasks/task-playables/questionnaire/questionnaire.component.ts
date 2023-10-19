@@ -43,7 +43,7 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
 
     formControlsState: {
         [key: string]: {
-            dependentControlsList: (Pick<TConditional, 'doAction'> & { controlAffectedKey: string })[];
+            dependentControlsList: (Pick<TConditional, 'doConditional'> & { controlAffectedKey: string })[];
             originalValidators: ValidatorFn[];
             state: { options?: TOption[] };
             actions?: TActions;
@@ -124,13 +124,13 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
             };
 
             // 4. Add to formGroup IF it initially should be visible
-            const doAction = question?.condition?.doAction;
+            const doConditional = question?.condition?.doConditional;
             // for controls that are shown conditionally, we can assume for now that the initial value of the parent is none.
             // therefore, we can assume that the control will initially be invisible
             const shouldInitiallyHide =
-                doAction?.onlyHideWhenEmpty === true ||
-                !!doAction?.onlyShowWhenValuesSelected ||
-                !!doAction?.populateResultsBasedOnSelectedValues;
+                doConditional?.onlyHideWhenEmpty === true ||
+                !!doConditional?.onlyShowWhenValuesSelected ||
+                !!doConditional?.populateResultsBasedOnSelectedValues;
 
             if (!shouldInitiallyHide) {
                 this.questionnaire.addControl(question.key, new UntypedFormControl('', validatorFnArr));
@@ -234,84 +234,160 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
         }
     }
 
+    private handleOnlyShowWhenEmptyConditional(
+        dependentControl: Pick<TConditional, 'doConditional'> & {
+            controlAffectedKey: string;
+        },
+        controlBeingChangedNewValue: string | number | boolean | string[]
+    ) {
+        let shouldShow = valIsEmpty(controlBeingChangedNewValue);
+        shouldShow
+            ? this.addControlToFormGroup(dependentControl.controlAffectedKey)
+            : this.removeControlFromFormGroup(dependentControl.controlAffectedKey);
+    }
+
+    private handleOnlyHideWhenEmptyConditional(
+        dependentControl: Pick<TConditional, 'doConditional'> & {
+            controlAffectedKey: string;
+        },
+        controlBeingChangedNewValue: string | number | boolean | string[]
+    ) {
+        let newValuesSelected = controlBeingChangedNewValue;
+        if (
+            Array.isArray(newValuesSelected) &&
+            (dependentControl.doConditional?.populateResultsBasedOnSelectedValues?.valuesToHide?.length || 0) > 0
+        ) {
+            newValuesSelected = newValuesSelected.filter((valSelected) => {
+                const selectedValueShouldBeKept =
+                    dependentControl.doConditional.populateResultsBasedOnSelectedValues.valuesToHide.every(
+                        (optionToHide) => optionToHide !== valSelected
+                    );
+                return selectedValueShouldBeKept;
+            });
+        }
+
+        let shouldHide = valIsEmpty(newValuesSelected);
+        shouldHide
+            ? this.removeControlFromFormGroup(dependentControl.controlAffectedKey)
+            : this.addControlToFormGroup(dependentControl.controlAffectedKey);
+    }
+
+    private handleOnlyShowWhenValuesSelectedConditional(
+        dependentControl: Pick<TConditional, 'doConditional'> & {
+            controlAffectedKey: string;
+        },
+        controlBeingChangedNewValue: string | number | boolean | string[]
+    ) {
+        const newValuesConvertedToArray = Array.isArray(controlBeingChangedNewValue)
+            ? controlBeingChangedNewValue
+            : [controlBeingChangedNewValue];
+
+        const shouldSetToVisible = someElementInFirstListExistsInSecondList(
+            newValuesConvertedToArray,
+            dependentControl.doConditional.onlyShowWhenValuesSelected || []
+        );
+        shouldSetToVisible
+            ? this.addControlToFormGroup(dependentControl.controlAffectedKey)
+            : this.removeControlFromFormGroup(dependentControl.controlAffectedKey);
+    }
+
+    private hideWhenValuesSelectedConditional(
+        dependentControl: Pick<TConditional, 'doConditional'> & {
+            controlAffectedKey: string;
+        },
+        controlBeingChangedNewValue: string | number | boolean | string[]
+    ) {
+        const newValuesConvertedToArray = Array.isArray(controlBeingChangedNewValue)
+            ? controlBeingChangedNewValue
+            : [controlBeingChangedNewValue];
+
+        const exists = someElementInFirstListExistsInSecondList(
+            newValuesConvertedToArray,
+            dependentControl.doConditional.hideWhenValuesSelected || []
+        );
+        if (exists) {
+            this.removeControlFromFormGroup(dependentControl.controlAffectedKey);
+        }
+    }
+
+    private handlePopulateResultsBasedOnSelectedValuesConditional(
+        dependentControl: Pick<TConditional, 'doConditional'> & {
+            controlAffectedKey: string;
+        },
+        controlBeingChangedNewValue: string | number | boolean | string[],
+        controlBeingChangedKey: string
+    ) {
+        if (!Array.isArray(controlBeingChangedNewValue)) return;
+        const options = this.getMetadataOptions(controlBeingChangedKey);
+        let newSelectedValues = [...controlBeingChangedNewValue];
+
+        if (
+            dependentControl.doConditional.populateResultsBasedOnSelectedValues?.valuesToHide &&
+            dependentControl.doConditional.populateResultsBasedOnSelectedValues.valuesToHide.length > 0
+        ) {
+            newSelectedValues = newSelectedValues.filter((newValue) => {
+                const selectedValueShouldBeShown =
+                    dependentControl.doConditional.populateResultsBasedOnSelectedValues.valuesToHide.every(
+                        (optionToHide) => optionToHide !== newValue
+                    );
+                return selectedValueShouldBeShown;
+            });
+        }
+
+        // we must make sure that the control object assigned here is a object (instead of modifying in place) for
+        // angular change detection to work. This is similar to react
+        this.formControlsState[dependentControl.controlAffectedKey] = {
+            ...this.formControlsState[dependentControl.controlAffectedKey],
+            state: {
+                ...this.formControlsState[dependentControl.controlAffectedKey].state,
+                options: newSelectedValues.map((val) => {
+                    const mappedOption = options.find((x) => x.value === val);
+                    return mappedOption ? mappedOption : { label: val, value: val };
+                }),
+            },
+        };
+
+        // this case happens when input B depends on input A and input A's selected values
+        // have changed. Input B can then have a value that is invalid.
+        // TODO: handle the edge case where the dependent input B allows multi select, in which case we
+        // need to handle comparison of two arrays.
+        if (
+            this.questionnaire.contains(dependentControl.controlAffectedKey) &&
+            !controlBeingChangedNewValue.includes(this.questionnaire.get(dependentControl.controlAffectedKey).value)
+        ) {
+            this.questionnaire.get(dependentControl.controlAffectedKey).setValue('');
+        }
+    }
+
     private handleDependents(controlBeingChangedKey: string) {
         if (!this.formControlsState[controlBeingChangedKey]) return;
         const controlBeingChangedNewValue: string | number | boolean | string[] =
             this.questionnaire.controls[controlBeingChangedKey].value;
 
         this.formControlsState[controlBeingChangedKey].dependentControlsList.forEach((dependentControl) => {
-            const action = dependentControl.doAction;
+            const conditional = dependentControl.doConditional;
 
-            if (action.onlyShowWhenEmpty) {
-                let shouldShow = valIsEmpty(controlBeingChangedNewValue);
-                shouldShow
-                    ? this.addControlToFormGroup(dependentControl.controlAffectedKey)
-                    : this.removeControlFromFormGroup(dependentControl.controlAffectedKey);
-            } else if (action.onlyHideWhenEmpty) {
-                let shouldHide = valIsEmpty(controlBeingChangedNewValue);
-                shouldHide
-                    ? this.removeControlFromFormGroup(dependentControl.controlAffectedKey)
-                    : this.addControlToFormGroup(dependentControl.controlAffectedKey);
-            } else if (action.onlyShowWhenValuesSelected) {
-                const newValuesConvertedToArray = Array.isArray(controlBeingChangedNewValue)
-                    ? controlBeingChangedNewValue
-                    : [controlBeingChangedNewValue];
-
-                const shouldSetToVisible = someElementInFirstListExistsInSecondList(
-                    newValuesConvertedToArray,
-                    action.onlyShowWhenValuesSelected
-                );
-                shouldSetToVisible
-                    ? this.addControlToFormGroup(dependentControl.controlAffectedKey)
-                    : this.removeControlFromFormGroup(dependentControl.controlAffectedKey);
+            if (conditional.onlyShowWhenEmpty) {
+                this.handleOnlyShowWhenEmptyConditional(dependentControl, controlBeingChangedNewValue);
+            } else if (conditional.onlyHideWhenEmpty) {
+                this.handleOnlyHideWhenEmptyConditional(dependentControl, controlBeingChangedNewValue);
+            } else if (conditional.onlyShowWhenValuesSelected) {
+                this.handleOnlyShowWhenValuesSelectedConditional(dependentControl, controlBeingChangedNewValue);
             }
 
-            if (action.hideWhenValuesSelected) {
-                const newValuesConvertedToArray = Array.isArray(controlBeingChangedNewValue)
-                    ? controlBeingChangedNewValue
-                    : [controlBeingChangedNewValue];
-
-                const exists = someElementInFirstListExistsInSecondList(
-                    newValuesConvertedToArray,
-                    action.hideWhenValuesSelected || []
-                );
-                if (exists) {
-                    this.removeControlFromFormGroup(dependentControl.controlAffectedKey);
-                }
+            if (conditional.hideWhenValuesSelected) {
+                this.hideWhenValuesSelectedConditional(dependentControl, controlBeingChangedNewValue);
             }
 
-            if (action.populateResultsBasedOnSelectedValues) {
-                if (!Array.isArray(controlBeingChangedNewValue)) return;
-                const options = this.getMetadataOptions(controlBeingChangedKey);
-
-                // we must make sure that the control object assigned here is a object (instead of modifying in place) for
-                // angular change detection to work. This is similar to react
-                this.formControlsState[dependentControl.controlAffectedKey] = {
-                    ...this.formControlsState[dependentControl.controlAffectedKey],
-                    state: {
-                        ...this.formControlsState[dependentControl.controlAffectedKey].state,
-                        options: controlBeingChangedNewValue.map((val) => {
-                            const mappedOption = options.find((x) => x.value === val);
-                            return mappedOption ? mappedOption : { label: val, value: val };
-                        }),
-                    },
-                };
-
-                // this case happens when input B depends on input A and input As multiple selected
-                // have changed. Input A can then have a value that is invalid.
-                // TODO: handle the edge case where the dependent input B allows multi select, in whch case we
-                // need to handle comparison of two arrays.
-                if (
-                    this.questionnaire.contains(dependentControl.controlAffectedKey) &&
-                    !controlBeingChangedNewValue.includes(
-                        this.questionnaire.get(dependentControl.controlAffectedKey).value
-                    )
-                ) {
-                    this.questionnaire.get(dependentControl.controlAffectedKey).setValue('');
-                }
+            if (conditional.populateResultsBasedOnSelectedValues) {
+                this.handlePopulateResultsBasedOnSelectedValuesConditional(
+                    dependentControl,
+                    controlBeingChangedNewValue,
+                    controlBeingChangedKey
+                );
             }
             // in the future:
-            // if (conditionAction.otherAction) { ... }
+            // if (conditional.otherConditional) { ... }
         });
     }
 

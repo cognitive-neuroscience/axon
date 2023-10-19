@@ -17,7 +17,7 @@ export class MultipleChoiceSelectComponent {
     @Input() questionnaire: UntypedFormGroup;
 
     @Input() formControlState: {
-        dependentControlsList: (Pick<TConditional, 'doAction'> & { controlAffectedKey: string })[];
+        dependentControlsList: (Pick<TConditional, 'doConditional'> & { controlAffectedKey: string })[];
         originalValidators: ValidatorFn[];
         state: { options: TOption[] };
     };
@@ -30,7 +30,7 @@ export class MultipleChoiceSelectComponent {
 
     get multipleChoiceOptions(): TOption[] {
         if (
-            this.question?.condition?.doAction?.populateResultsBasedOnSelectedValues ||
+            this.question?.condition?.doConditional?.populateResultsBasedOnSelectedValues ||
             (this.question?.actions?.onlyDisableOtherOptionsWhenValueSelected &&
                 this.formControlState.state.options.length > 0)
         ) {
