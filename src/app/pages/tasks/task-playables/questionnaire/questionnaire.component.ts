@@ -349,6 +349,13 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
 
         // this case happens when input B depends on input A and input A's selected values
         // have changed. Input B can then have a value that is invalid.
+        // ex:  input A is an MultipleChoice question with options [1, 2, 3]
+        //      input b is dependent on input A (i.e. input B's title: choose the BEST answer from A)
+        //
+        //      steps:
+        //          User selects option 1 and option 2 for input A
+        //          User then goes to input b and selection option 2
+        //          User then removed option 2 from input A. Now input B has an invalid value
         // TODO: handle the edge case where the dependent input B allows multi select, in which case we
         // need to handle comparison of two arrays.
         if (
