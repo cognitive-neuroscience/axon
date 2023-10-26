@@ -27,6 +27,7 @@ import {
     someElementInFirstListExistsInSecondList,
     valIsEmpty,
 } from './utils';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 
 @Component({
     selector: 'app-questionnaire',
@@ -39,6 +40,7 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
     questionnaire: UntypedFormGroup;
     wasClicked = false;
     isVisible = false;
+    highlightInvalid = false;
     taskData: any[];
 
     formControlsState: {
@@ -54,7 +56,8 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
     constructor(
         protected loaderService: LoaderService,
         private translateService: TranslateService,
-        private taskManager: TaskManagerService
+        private taskManager: TaskManagerService,
+        private snackbarService: SnackbarService
     ) {}
 
     controlIsVisible(key: string): boolean {
@@ -78,6 +81,10 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
             this.setupForm(this.metadata);
             this.isVisible = true;
         }
+    }
+
+    shouldHighlightQuestion(key: string): boolean {
+        return this.highlightInvalid && !this.questionnaire.get(key)?.valid;
     }
 
     get questions(): IBaseQuestionnaireComponent[] {
@@ -399,6 +406,16 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
     }
 
     onSubmit() {
+        if (!this.questionnaire.valid) {
+            const errorMessage = (this.translateService.translations[this.translateService.currentLang]?.errorMessages
+                ?.unansweredQuestions || '') as string;
+            const errorMessageList = errorMessage.split('.');
+            this.snackbarService.openErrorSnackbar(errorMessageList, undefined, 6000);
+
+            this.highlightInvalid = true;
+            return;
+        }
+
         if (!this.wasClicked) {
             this.wasClicked = true;
             const questionaireResponse = {};
