@@ -1,5 +1,15 @@
 @import '../../../../sass/mixins';
 
+.highlight {
+    background-color: rgb(255 208 208);
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+.question-container {
+    padding: 4rem 0;
+}
+
 .questionnaire-container {
     padding: 2% 4%;
 }

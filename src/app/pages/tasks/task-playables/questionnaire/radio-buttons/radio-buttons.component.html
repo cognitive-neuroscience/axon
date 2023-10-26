@@ -1,4 +1,4 @@
-<div [formGroup]="questionnaire" class="my-5">
+<div [formGroup]="questionnaire">
     <div>
         <h2
             *ngIf="question.title"
@@ -7,7 +7,6 @@
         ></h2>
         <p
             *ngIf="question.textContent"
-            class="sub-text {{ question.styles?.['title-font-size'] ? 'responsive-font-size-' + question.styles?.['title-font-size'] : 'responsive-font-size-md' }}"
             class="sub-text {{
                 question.styles?.['text-content-font-size'] ? 'responsive-font-size-' + question.styles?.['text-content-font-size'] : 'responsive-font-size-md'
             }}"

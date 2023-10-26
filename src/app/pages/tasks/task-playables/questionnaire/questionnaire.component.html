@@ -6,25 +6,32 @@
     <div>
         <form [formGroup]="questionnaire">
             <ng-container *ngFor="let question of questions">
-                <ng-container *ngIf="controlIsVisible(question.key) && question.questionType === 'matrix'">
+                <div
+                    *ngIf="controlIsVisible(question.key) && question.questionType === 'matrix'"
+                    class="question-container {{ shouldHighlightQuestion(question.key) ? 'highlight' : '' }}"
+                >
                     <!-- here, the input order MATTERS. formControlState relies on question existing so question must be inputted first -->
                     <app-matrix
                         [formControlName]="question.key"
                         [question]="question"
                         [formControlState]="formControlsState[question.key]"
                     ></app-matrix>
-                </ng-container>
-                <ng-container
+                </div>
+                <div
                     *ngIf="controlIsVisible(question.key) && question.questionType === 'multipleChoiceSelect'"
+                    class="question-container {{ shouldHighlightQuestion(question.key) ? 'highlight' : '' }}"
                 >
                     <app-multiple-choice-select
                         [formControlState]="formControlsState[question.key]"
                         [question]="question"
                         [questionnaire]="questionnaire"
                     ></app-multiple-choice-select>
-                </ng-container>
+                </div>
 
-                <div *ngIf="controlIsVisible(question.key) && question.questionType === 'radiobuttons'">
+                <div
+                    *ngIf="controlIsVisible(question.key) && question.questionType === 'radiobuttons'"
+                    class="question-container {{ shouldHighlightQuestion(question.key) ? 'highlight' : '' }}"
+                >
                     <app-radio-buttons
                         [formControlState]="formControlsState[question.key]"
                         [question]="question"
@@ -34,7 +41,7 @@
 
                 <div
                     *ngIf="controlIsVisible(question.key) && question.questionType === 'freeTextResponse'"
-                    class="my-4"
+                    class="question-container {{ shouldHighlightQuestion(question.key) ? 'highlight' : '' }}"
                 >
                     <h2
                         *ngIf="question.title"
@@ -55,9 +62,24 @@
                     </mat-form-field>
                 </div>
 
-                <div *ngIf="controlIsVisible(question.key) && question.questionType === 'input'" class="my-4">
-                    <h2 *ngIf="question.title" class="color-primary" [innerHTML]="handleText(question.title)"></h2>
-                    <p *ngIf="question.textContent" class="sub-text" [innerHTML]="handleText(question.textContent)"></p>
+                <div
+                    *ngIf="controlIsVisible(question.key) && question.questionType === 'input'"
+                    class="question-container {{ shouldHighlightQuestion(question.key) ? 'highlight' : '' }}"
+                >
+                    <h2
+                        *ngIf="question.title"
+                        class="color-primary {{ question.styles?.['title-font-size'] ? 'responsive-font-size-' + question.styles?.['title-font-size'] : 'responsive-font-size-md' }}"
+                        [innerHTML]="handleText(question.title)"
+                    ></h2>
+
+                    <p
+                        *ngIf="question.textContent"
+                        class="sub-text"
+                        [innerHTML]="handleText(question.textContent)"
+                        class="sub-text {{
+                        question.styles?.['text-content-font-size'] ? 'responsive-font-size-' + question.styles?.['text-content-font-size'] : 'responsive-font-size-md'
+                    }}"
+                    ></p>
                     <mat-form-field class="w-50 d-block">
                         <mat-label>{{ handleText(question.label) }}</mat-label>
                         <input
@@ -87,7 +109,10 @@
                     </mat-form-field>
                 </div>
 
-                <div *ngIf="controlIsVisible(question.key) && question.questionType === 'slider'">
+                <div
+                    *ngIf="controlIsVisible(question.key) && question.questionType === 'slider'"
+                    class="question-container {{ shouldHighlightQuestion(question.key) ? 'highlight' : '' }}"
+                >
                     <app-slider-control
                         [formControlState]="formControlsState[question.key]"
                         [question]="question"
@@ -97,7 +122,7 @@
 
                 <div
                     *ngIf="controlIsVisible(question.key) && question.questionType === 'displayText'"
-                    class="my-4 {{ question.indent ? 'indent-' + question.indent : '' }}"
+                    class="py-2 {{ question.indent ? 'indent-' + question.indent : '' }}"
                 >
                     <h2
                         *ngIf="question.title"
@@ -111,20 +136,17 @@
                     ></p>
                 </div>
 
-                <div *ngIf="controlIsVisible(question.key) && question.questionType === 'divider'" class="my-4">
+                <div
+                    *ngIf="controlIsVisible(question.key) && question.questionType === 'divider'"
+                    class="question-container"
+                >
                     <hr />
                 </div>
             </ng-container>
-            <div class="error-text responsive-font-size-sm my-3" *ngIf="!questionnaire.valid">
-                <span>
-                    {{ 'errorMessages.unansweredQuestions' | translate }}
-                </span>
-            </div>
             <button
                 (click)="onSubmit()"
-                class="w-25 mb-5"
+                class="w-25 my-5"
                 style="text-transform: uppercase"
-                [disabled]="!questionnaire.valid || wasClicked"
                 color="primary"
                 mat-raised-button
             >
