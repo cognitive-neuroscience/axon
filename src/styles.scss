@@ -349,6 +349,16 @@ td.mat-footer-cell {
     border-radius: 4px !important;
 }
 
+mat-option .mat-option-text {
+    line-height: 1rem;
+    padding: 14px;
+    white-space: normal;
+}
+
+.mat-select-panel mat-option.mat-option {
+    height: unset;
+}
+
 .error-text {
     color: red;
 }
