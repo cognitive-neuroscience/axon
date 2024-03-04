@@ -108,6 +108,7 @@ export interface IInput extends IBaseQuestion {
 
 export interface ISlider extends IBaseQuestion {
     styles?: TQuestionStyles;
+    helperText?: string | ITranslationText;
     legend?: (string | ITranslationText)[]; // legend for slider, slider values are spaced out automatically
 }
 

@@ -17,6 +17,8 @@
     <div class="w-100 d-block" style="margin-top: 15px">
         <app-slider
             [marks]="getSliderMarks(question.legend)"
+            [helperText]="question.helperText"
+            [helperTextFontStyle]="question.styles?.['text-content-font-size'] ? 'responsive-font-size-' + question.styles?.['text-content-font-size'] : 'responsive-font-size-md'"
             (sliderValueSelected)="handleSliderValueSelected(question.key, $event)"
         ></app-slider>
     </div>

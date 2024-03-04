@@ -1,10 +1,13 @@
-<div class="slider-container">
-    <nz-slider
-        [nzMarks]="marks"
-        [nzReverse]="shouldReverseLegend"
-        nzTooltipVisible="never"
-        (nzOnAfterChange)="onSelectSlideValue($event)"
-        [nzIncluded]="false"
-        [ngModel]="startingValue"
-    ></nz-slider>
+<div class="flex-row-center">
+    <div class="slider-container">
+        <div class="text-center mb-5 font-weight-bold {{ helperTextFontStyle }}">{{ handleText(helperText) }}</div>
+        <nz-slider
+            [nzMarks]="marks"
+            [nzReverse]="shouldReverseLegend"
+            nzTooltipVisible="never"
+            (nzOnAfterChange)="onSelectSlideValue($event)"
+            [nzIncluded]="false"
+            [ngModel]="startingValue"
+        ></nz-slider>
+    </div>
 </div>
