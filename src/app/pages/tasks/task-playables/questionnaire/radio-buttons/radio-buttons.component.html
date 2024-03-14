@@ -13,9 +13,12 @@
             [innerHTML]="handleText(question.textContent)"
         ></p>
 
-        <mat-error class="responsive-font-size-sm" *ngIf="questionnaire.get(question.key)?.hasError('required')">{{
-            'errorMessages.required' | translate
-        }}</mat-error>
+        <mat-error
+            style="margin-bottom: "
+            class="responsive-font-size-sm"
+            *ngIf="questionnaire.get(question.key)?.hasError('required')"
+            >{{ 'errorMessages.required' | translate }}</mat-error
+        >
 
         <div class="radiobuttons-images-container" *ngIf="question.radioButtonImageOptions">
             <div class="image-container" *ngFor="let imagePath of question.radioButtonImageOptions">
@@ -23,7 +26,7 @@
             </div>
         </div>
 
-        <div style="width: 100%">
+        <div style="width: 100%; margin-top: 10px">
             <mat-radio-group class="{{ question.radiobuttonPresentation }}" [formControlName]="question.key">
                 <mat-radio-button
                     *ngFor="let radiobutton of question.options"
