@@ -13,10 +13,11 @@
     }}"
         [innerHTML]="handleText(question.textContent)"
     ></p>
-    <!-- we only need to check if !form.valid as required is the only validation the matrix implements -->
-    <mat-error class="responsive-font-size-sm my-1" *ngIf="!matrixForm.valid"
-        >Please select a value for each item below</mat-error
-    >
+
+    <mat-error style="margin-bottom: 10px" class="responsive-font-size-sm" *ngIf="!matrixForm.valid">{{
+        'errorMessages.required' | translate
+    }}</mat-error>
+
     <mat-grid-list [cols]="legend.length + 1" rowHeight="3:1">
         <mat-grid-tile>{{ legendTitle }}</mat-grid-tile>
         <mat-grid-tile *ngFor="let legendOption of legend">{{ handleText(legendOption.label) }}</mat-grid-tile>

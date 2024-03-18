@@ -14,7 +14,7 @@
         ></p>
 
         <mat-error
-            style="margin-bottom: "
+            style="margin-bottom: 10px"
             class="responsive-font-size-sm"
             *ngIf="questionnaire.get(question.key)?.hasError('required')"
             >{{ 'errorMessages.required' | translate }}</mat-error
