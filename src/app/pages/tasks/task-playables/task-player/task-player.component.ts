@@ -260,7 +260,9 @@ export class TaskPlayerComponent implements OnDestroy {
     }
 
     continueAhead() {
-        if (!this.userStateService.userIsParticipant) {
+        if (this.taskManager.isTestMode || this.userStateService.userIsParticipant) {
+            this.taskManager.next();
+        } else {
             this.reset();
             this.router.navigate([
                 this.userStateService.userIsAdmin
@@ -268,8 +270,6 @@ export class TaskPlayerComponent implements OnDestroy {
                     : `organization-member-dashboard/components`,
             ]);
             this.snackbarService.openInfoSnackbar('Task completed');
-        } else {
-            this.taskManager.next();
         }
     }
 

@@ -170,6 +170,7 @@ export class CreateModifyStudyComponent implements OnInit, OnDestroy {
                     task: task,
                 };
             }),
+            snapshots: {}, // the BE does not touch snapshots as it should not be modifiable by the FE. It doesnt matter what we send here
         };
 
         this.loaderService.showLoader();
@@ -229,6 +230,7 @@ export class CreateModifyStudyComponent implements OnInit, OnDestroy {
                     task: task,
                 };
             }),
+            snapshots: {}, // the BE does not touch snapshots as it should not be modifiable by the FE. It doesnt matter what we send here
         };
 
         this.loaderService.showLoader();

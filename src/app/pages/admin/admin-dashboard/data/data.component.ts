@@ -324,6 +324,8 @@ export class DataComponent implements OnInit, OnDestroy {
                     const studyUsers = res[study.studyTasks.length + 1] as StudyUser[];
                     let studyUsersDataTable: DataTableFormat[] = this._getStudyUserDataAsDataTableFormat(studyUsers);
                     zip.file(`ACCOUNT_HOLDERS.csv`, this.fileService.getCSVString(studyUsersDataTable));
+
+                    zip.file(`SNAPSHOT.json`, JSON.stringify(study.snapshots));
                     return zip;
                 })
             )

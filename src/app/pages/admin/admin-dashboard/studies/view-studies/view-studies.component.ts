@@ -1,23 +1,22 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Study } from '../../../../../models/Study';
-import { StudyService } from '../../../../../services/study.service';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { Router } from '@angular/router';
+import { Subscription, of, throwError } from 'rxjs';
+import { catchError, mergeMap } from 'rxjs/operators';
+import { User } from 'src/app/models/User';
+import { FileService } from 'src/app/services/file.service';
+import { LoaderService } from 'src/app/services/loader/loader.service';
+import { LocalStorageService } from 'src/app/services/localStorageService.service';
+import { StudyUserService } from 'src/app/services/study-user.service';
+import { UserStateService } from 'src/app/services/user-state-service';
+import { environment } from '../../../../../../environments/environment';
+import { Study } from '../../../../../models/Study';
 import { ConfirmationService } from '../../../../../services/confirmation/confirmation.service';
 import { SnackbarService } from '../../../../../services/snackbar/snackbar.service';
-import { forkJoin, Observable, of, Subscription } from 'rxjs';
-import { environment } from '../../../../../../environments/environment';
-import { UserService } from 'src/app/services/user.service';
-import { Router } from '@angular/router';
-import { AdminRouteNames, Role } from 'src/app/models/enums';
-import { map, mergeMap, takeUntil } from 'rxjs/operators';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { StudyService } from '../../../../../services/study.service';
 import { CreateModifyStudyComponent } from '../create-modify-study/create-modify-study.component';
-import { StudyUserService } from 'src/app/services/study-user.service';
-import { LoaderService } from 'src/app/services/loader/loader.service';
-import { FileService } from 'src/app/services/file.service';
-import { UserStateService } from 'src/app/services/user-state-service';
-import { User } from 'src/app/models/User';
-import { LocalStorageService } from 'src/app/services/localStorageService.service';
+import { TaskManagerService } from 'src/app/services/task-manager.service';
 
 @Component({
     selector: 'app-view-studies',
@@ -46,7 +45,8 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
         private studyUserService: StudyUserService,
         private loaderService: LoaderService,
         private fileService: FileService,
-        private localStorageService: LocalStorageService
+        private localStorageService: LocalStorageService,
+        private taskManagerService: TaskManagerService
     ) {}
 
     get studies(): Study[] {
@@ -145,23 +145,33 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
                 `Are you sure you want to ${active ? 'activate' : 'deactivate'} the study?`,
                 `${
                     active && study.canEdit
-                        ? 'This will allow participants to start your study. Once you activate the study, you will not be able to edit it in the future'
+                        ? 'This will allow participants to start your study. This will also take a snapshot of the study which will ensure that the tasks in your study will always remain the same. If you want to update the snapshot with the latest task versions, you can toggle the study on and off again. Once you activate the study, you will not be able to edit it in the future'
                         : ''
                 }`
             )
             .pipe(
                 mergeMap((ok) => {
                     if (ok) {
-                        return this.studyService.updateStudy(study, false);
+                        return active ? this.studyService.takeSnapshot(study.id) : of(ok);
                     } else {
-                        return of(false);
+                        return throwError('CANCELLED');
                     }
+                }),
+                mergeMap(() => {
+                    return this.studyService.updateStudy(study, false);
+                }),
+                catchError((err) => {
+                    this.snackbarService.openErrorSnackbar(
+                        'There was an error toggling the study status. Please contact the developer'
+                    );
+                    return of(false);
                 })
             )
             .subscribe((ok) => {
                 // either httpresponse or null, so we can check truthiness
                 if (ok) {
                     this.snackbarService.openSuccessSnackbar('Successfully updated study');
+                    this.studyService.getOrUpdateStudies(true).subscribe(() => {});
                 } else {
                     study.started = originalValue;
                 }
@@ -187,6 +197,10 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
                 this.fileService.exportAsJSONFile(res, 'userStudiesSummary');
             })
             .add(() => this.loaderService.hideLoader());
+    }
+
+    handlePreviewStudy(studyId: number) {
+        this.taskManagerService.initStudy(studyId, true);
     }
 
     showCopiedMessage(copyLinkFor: string) {

@@ -24,6 +24,7 @@ import { StudyTask } from '../models/StudyTask';
 import { UserStateService } from './user-state-service';
 import { CrowdSourcedUserService } from './crowdsourced-user.service';
 import * as Sentry from '@sentry/angular-ivy';
+import { snapshotToStudyTasks } from './utils';
 
 @Injectable({
     providedIn: 'root',
@@ -35,9 +36,14 @@ export class TaskManagerService implements CanClear {
 
     private _currentTaskIndex: number = 0;
     private _study: Study = null;
+    private _isTestMode: boolean = false;
 
     get study(): Study {
         return this._study;
+    }
+
+    get isTestMode() {
+        return this._isTestMode;
     }
 
     get currentStudyTask(): StudyTask {
@@ -71,14 +77,15 @@ export class TaskManagerService implements CanClear {
      * 5. call route
      */
 
-    initStudy(studyId: number) {
+    initStudy(studyId: number, runInTestMode?: boolean) {
+        this._isTestMode = runInTestMode === undefined ? false : runInTestMode;
         this.loaderService.showLoader();
         this.sessionStorageService.setCurrentlyRunningStudyIdInSessionStorage(studyId.toString());
         this.userStateService
             .getOrUpdateUserState()
             .pipe(
                 mergeMap((_user) =>
-                    this.userStateService.isCrowdsourcedUser
+                    this.userStateService.isCrowdsourcedUser || this._isTestMode
                         ? of(null)
                         : this.studyUserService.getOrUpdateStudyUsers(true)
                 ),
@@ -94,7 +101,11 @@ export class TaskManagerService implements CanClear {
                     return this.studyService.getStudyById(studyId);
                 }),
                 mergeMap((res) => {
-                    this._study = res.body;
+                    const updatedStudy: Study = {
+                        ...res.body,
+                        studyTasks: snapshotToStudyTasks(res.body),
+                    };
+                    this._study = updatedStudy;
                     return this.userStateService.isCrowdsourcedUser
                         ? this.taskService.getTaskByTaskId(res.body.consent.id)
                         : of(null);
@@ -124,7 +135,7 @@ export class TaskManagerService implements CanClear {
 
     private showConsent(consent: Task) {
         const config: ConsentNavigationConfig = {
-            mode: 'actual',
+            mode: this._isTestMode ? 'test' : 'actual',
             metadata: consent.config.metadata[0].componentConfig,
         };
 
@@ -156,7 +167,7 @@ export class TaskManagerService implements CanClear {
             const sharplabConfig = (hasConfigOverride ? studyTask.config : studyTask.task.config) as SharplabTaskConfig;
 
             const navigationConfig: TaskPlayerNavigationConfig = {
-                mode: 'actual',
+                mode: this._isTestMode ? 'test' : 'actual',
                 metadata: sharplabConfig,
             };
 
@@ -173,6 +184,11 @@ export class TaskManagerService implements CanClear {
                 .finally(() => {
                     this.loaderService.hideLoader();
                 });
+        } else if (this._isTestMode) {
+            this.router.navigate([
+                this.userStateService.userIsAdmin ? `admin-dashboard/studies` : `organization-member-dashboard/studies`,
+            ]);
+            this.snackbarService.openInfoSnackbar('Study completed');
         } else {
             this.loaderService.showLoader();
             this.studyUserService
@@ -205,7 +221,7 @@ export class TaskManagerService implements CanClear {
         // currentTaskIndex is incremented in the setTaskAsComplete method for account holders
         // this functionality is kept separate as there are cases where we want to set as complete before
         // the user officially finishes the task (when the last block is finished, not when the user hits next)
-        if (this.userStateService.isCrowdsourcedUser) ++this._currentTaskIndex;
+        if (this.userStateService.isCrowdsourcedUser || this._isTestMode) ++this._currentTaskIndex;
 
         this._handleNext();
     }

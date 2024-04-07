@@ -1,42 +1,32 @@
 <div *ngIf="!studyExists" class="error-text p-4">Could not find study</div>
 
-<div *ngIf="studyExists" class="container-fluid p-4">
+<div *ngIf="studyExists" class="container-fluid">
     <div class="d-flex flex-column">
-        <h1>Internal Name: {{ study?.internalName || '' }}</h1>
-        <h2 style="color: rgb(110, 110, 110); margin: 0">External name: {{ study?.externalName }}</h2>
-        <h2 style="color: rgb(110, 110, 110)">Study ID: {{ study?.id }}</h2>
+        <div>
+            <span class="badge"> Study Id: {{ study?.id }} </span>
+            <span class="badge">{{ study?.started ? 'Active' : 'Inactive' }} </span>
+            <span class="badge">{{ study?.canEdit ? 'Study can be edited' : 'Study cannot be edited' }} </span>
+            <span class="badge">Created: {{ study?.createdAt | date: 'dd/MM/yyyy HH:mm a' }}</span>
+            <span class="badge">Owner: {{ study?.owner?.id }}</span>
+        </div>
+        <h1 style="margin: 0.25rem 0">Study Name: {{ study?.internalName || '' }}</h1>
+        <h3 style="color: rgb(110, 110, 110); margin: 0">
+            External name (what participants see): {{ study?.externalName }}
+        </h3>
     </div>
 
-    <button [disabled]="isGuest" color="primary" style="width: 200px" mat-flat-button [matMenuTriggerFor]="studyTasks">
-        select data
-        <mat-icon>keyboard_arrow_down</mat-icon>
-    </button>
+    <hr />
 
     <button
         (click)="downloadAllCSVs(study)"
         [disabled]="isGuest"
         color="accent"
-        style="width: 200px; margin-left: 15px"
+        style="margin-left: 3.5rem; margin-bottom: 1rem; font-size: 1rem; padding: 0.25rem 1rem"
         mat-flat-button
     >
-        download all
+        Download all data
         <mat-icon>download</mat-icon>
     </button>
 
-    <hr />
-
-    <mat-menu #studyTasks="matMenu">
-        <button
-            *ngFor="let studyTask of study.studyTasks; let i = index"
-            mat-menu-item
-            (click)="getAndDisplayData(study, i)"
-        >
-            {{ studyTask.taskOrder }} : {{ studyTask.task.name }}
-        </button>
-        <hr />
-        <button (click)="getCrowdsourceUsersForStudy(study)" mat-menu-item>Crowdsourced Participants</button>
-        <button (click)="getStudyUsersForStudy(study)" mat-menu-item>Accountholding Participants</button>
-    </mat-menu>
-
-    <app-data-table *ngIf="!isGuest" [fileName]="fileName" [tableData]="tableData"></app-data-table>
+    <app-data-tree [study]="study"></app-data-tree>
 </div>

@@ -4,7 +4,7 @@ import { Study } from '../models/Study';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { CanClear } from './clearance.service';
-import { mergeMap, take, tap } from 'rxjs/operators';
+import { map, mergeMap, take, tap } from 'rxjs/operators';
 import { UserStateService } from './user-state-service';
 import { HttpStatus } from '../models/Auth';
 
@@ -76,6 +76,12 @@ export class StudyService implements CanClear {
                     this.updateStudiesState(updatedStudies);
                 })
             );
+    }
+
+    takeSnapshot(studyId: number): Observable<HttpStatus> {
+        return this._http
+            .patch<HttpResponse<HttpStatus>>(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${studyId}/snapshot`, {})
+            .pipe(map((e) => e.body));
     }
 
     archiveStudy(studyId: number): Observable<HttpStatus> {

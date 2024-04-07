@@ -27,6 +27,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatTreeModule } from '@angular/material/tree';
 
 const modules = [
     MatInputModule,
@@ -56,6 +57,7 @@ const modules = [
     MatSlideToggleModule,
     MatProgressBarModule,
     MatGridListModule,
+    MatTreeModule,
 ];
 
 @NgModule({

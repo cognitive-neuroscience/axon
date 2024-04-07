@@ -117,7 +117,7 @@
                     </div>
 
                     <div>
-                        <span class="title badge">OWNER</span>
+                        <span class="title badge">OWNER </span>
                     </div>
                     <div>
                         <span class="internal-name">{{ study.owner.name }}</span>
@@ -300,7 +300,7 @@
                         <span class="title badge">OWNER</span>
                     </div>
                     <div>
-                        <span class="internal-name">{{ study.owner.name }}</span>
+                        <span class="internal-name">{{ study.owner.name || study.owner.id || '' }}</span>
                     </div>
 
                     <div>
@@ -347,14 +347,28 @@
                     </div>
 
                     <div class="d-flex my-3" style="justify-content: space-between">
-                        <button (click)="handleViewData(study)" class="w-25" mat-raised-button [disabled]="isGuest">
+                        <button
+                            (click)="handlePreviewStudy(study.id)"
+                            class="w-25 mx-2"
+                            color="accent"
+                            mat-raised-button
+                        >
+                            Preview study
+                        </button>
+
+                        <button
+                            (click)="handleViewData(study)"
+                            class="w-25 mx-2"
+                            mat-raised-button
+                            [disabled]="isGuest"
+                        >
                             See data
                         </button>
 
                         <button
                             [disabled]="!canEditStudy(study.owner)"
                             (click)="handleEdit(study)"
-                            class="w-25"
+                            class="w-25 mx-2"
                             color="primary"
                             mat-raised-button
                         >
@@ -363,7 +377,7 @@
 
                         <button
                             (click)="handleDelete(study)"
-                            class="w-25"
+                            class="w-25 mx-2"
                             color="warn"
                             mat-raised-button
                             [disabled]="!canEditStudy(study.owner)"

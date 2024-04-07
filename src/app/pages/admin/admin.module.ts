@@ -22,6 +22,7 @@ import { ViewComponentsTableComponent } from './admin-dashboard/study-components
 import { ViewConsentsComponent } from './admin-dashboard/study-components/view-consents/view-consents.component';
 import { AlterMetadataDialogComponent } from './admin-dashboard/study-components/view-tasks/alter-metadata-dialog/alter-metadata-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { DataTreeComponent } from './admin-dashboard/data/data-tree/data-tree.component';
 
 @NgModule({
     declarations: [
@@ -40,6 +41,7 @@ import { TranslateModule } from '@ngx-translate/core';
         ViewComponentsTableComponent,
         ViewConsentsComponent,
         AlterMetadataDialogComponent,
+        DataTreeComponent,
     ],
     imports: [
         CommonModule,
