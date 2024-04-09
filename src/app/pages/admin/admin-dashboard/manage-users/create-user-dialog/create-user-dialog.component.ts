@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, isDevMode } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Role, SupportedLangs } from 'src/app/models/enums';
 import { User } from 'src/app/models/User';
@@ -38,7 +38,7 @@ export class CreateUserDialogComponent implements OnInit {
             createdAt: null,
             email: this.newUserEmail,
             role: this.newUserRole === Role.ORGANIZATION_MEMBER ? Role.ORGANIZATION_MEMBER : Role.GUEST,
-            changePasswordRequired: false,
+            changePasswordRequired: !isDevMode(), // we should require the user to change their password on first login
             password: 'password',
             lang: SupportedLangs.EN,
             organization: this.userStateService.userOrganization,

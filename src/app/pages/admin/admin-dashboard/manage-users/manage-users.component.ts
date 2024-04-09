@@ -56,7 +56,7 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
             (_data) => {
                 this.loaderService.hideLoader();
                 // this.userService.updateGuests();
-                this.snackbarService.openSuccessSnackbar('Successfully created new guest');
+                this.snackbarService.openSuccessSnackbar('Successfully created added new user');
             },
             (err: HttpStatus) => {
                 this.loaderService.hideLoader();

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SnackbarService } from '../../../services/snackbar/snackbar.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
-import { Observable, Subscription, throwError } from 'rxjs';
+import { Observable, Subscription, of, throwError } from 'rxjs';
 import { mergeMap, take, tap } from 'rxjs/operators';
 import { wait } from 'src/app/common/commonMethods';
 import { LoaderService } from 'src/app/services/loader/loader.service';
@@ -15,6 +15,7 @@ import { SessionStorageService } from 'src/app/services/sessionStorage.service';
 import { UserStateService } from 'src/app/services/user-state-service';
 import { CrowdSourcedUserService } from 'src/app/services/crowdsourced-user.service';
 import { HttpStatus } from 'src/app/models/Auth';
+import { StudyService } from 'src/app/services/study.service';
 declare function setFullScreen(): any;
 
 @Component({
@@ -39,7 +40,8 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
         private clearanceService: ClearanceService,
         private dialog: MatDialog,
         private translateService: TranslateService,
-        private sessionStorageService: SessionStorageService
+        private sessionStorageService: SessionStorageService,
+        private studyService: StudyService
     ) {}
 
     ngOnInit(): void {
@@ -61,12 +63,18 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
     }
 
     onRegister() {
-        if (!this.wasClicked) {
-            this.wasClicked = true;
+        if (this.wasClicked || !this.studyId) return;
+        if (this.workerId.length === 0) return;
 
-            if (this.workerId.length === 0) return;
+        this.wasClicked = true;
+        this.clearanceService.clearServices();
 
-            this.clearanceService.clearServices();
+        this.studyService.getStudyById(this.studyId).subscribe((study) => {
+            if (!study.body.started) {
+                this._snackbarService.openErrorSnackbar('Study not started');
+                this.wasClicked = false;
+                return;
+            }
 
             this.openLanguageDialog()
                 .pipe(
@@ -74,6 +82,9 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                         if (!lang) return throwError('user exited dialog');
                         this.translateService.use(lang);
                         this.loaderService.showLoader();
+                        return of(lang);
+                    }),
+                    mergeMap((lang) => {
                         return this.crowdSourcedUserService.createCrowdSourcedUserAndLogin(
                             this.workerId,
                             this.studyId,
@@ -132,7 +143,7 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                 .add(() => {
                     this.loaderService.hideLoader();
                 });
-        }
+        });
     }
 
     async startGameInFullScreen() {
