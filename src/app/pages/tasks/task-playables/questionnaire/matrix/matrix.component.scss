@@ -1,3 +1,27 @@
-mat-grid-tile {
-    color: black;
+.tile {
+    padding: 1rem;
+    margin: 1px;
+    flex: 1 1 0;
+    background-color: #f3f3f3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
+
+.tile-radio-button {
+    margin: 1px;
+    flex: 1 1 0;
+    background-color: #f3f3f3;
+    color: #3f51b5;
+
+    mat-radio-button {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+// background-color: #e7e7e7;

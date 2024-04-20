@@ -18,18 +18,26 @@
         'errorMessages.required' | translate
     }}</mat-error>
 
-    <mat-grid-list [cols]="legend.length + 1" rowHeight="3:1">
-        <mat-grid-tile>{{ legendTitle }}</mat-grid-tile>
-        <mat-grid-tile *ngFor="let legendOption of legend">{{ handleText(legendOption.label) }}</mat-grid-tile>
+    <div style="min-width: 620px">
+        <div style="display: flex">
+            <div class="tile">{{ legendTitle }}</div>
+            <div class="tile" *ngFor="let legendOption of legend">
+                {{ handleText(legendOption.label) }}
+            </div>
+        </div>
         <ng-container *ngFor="let matrixOption of matrixOptions">
-            <mat-radio-group [formControlName]="getControlName(question.key, matrixOption.label)">
-                <mat-grid-tile>
-                    <div style="overflow-y: auto; height: 100%; width: 100%">{{ handleText(matrixOption.label) }}</div>
-                </mat-grid-tile>
-                <mat-grid-tile *ngFor="let legendOption of legend">
+            <mat-radio-group
+                color="primary"
+                style="display: flex"
+                [formControlName]="getControlName(question.key, matrixOption.label)"
+            >
+                <div class="tile-radio-button">
+                    <div style="padding: 1rem">{{ handleText(matrixOption.label) }}</div>
+                </div>
+                <div class="tile-radio-button" *ngFor="let legendOption of legend">
                     <mat-radio-button [value]="legendOption.value"></mat-radio-button>
-                </mat-grid-tile>
+                </div>
             </mat-radio-group>
         </ng-container>
-    </mat-grid-list>
+    </div>
 </div>
