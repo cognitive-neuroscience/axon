@@ -154,28 +154,32 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
                     if (ok) {
                         return active ? this.studyService.takeSnapshot(study.id) : of(ok);
                     } else {
+                        // if the user rejects, then we just cancel the request
                         return throwError('CANCELLED');
                     }
                 }),
                 mergeMap(() => {
                     return this.studyService.updateStudy(study, false);
-                }),
-                catchError((err) => {
-                    this.snackbarService.openErrorSnackbar(
-                        'There was an error toggling the study status. Please contact the developer'
-                    );
-                    return of(false);
                 })
             )
-            .subscribe((ok) => {
-                // either httpresponse or null, so we can check truthiness
-                if (ok) {
-                    this.snackbarService.openSuccessSnackbar('Successfully updated study');
-                    this.studyService.getOrUpdateStudies(true).subscribe(() => {});
-                } else {
+            .subscribe(
+                (ok) => {
+                    if (ok) {
+                        this.snackbarService.openSuccessSnackbar('Successfully updated study');
+                        this.studyService.getOrUpdateStudies(true).subscribe(() => {});
+                    } else {
+                        study.started = originalValue;
+                    }
+                },
+                (err) => {
+                    if (err !== 'CANCELLED') {
+                        this.snackbarService.openErrorSnackbar(
+                            'There was a problem updating the study. Please contact the developer.'
+                        );
+                    }
                     study.started = originalValue;
                 }
-            });
+            );
         this.subscriptions.push(sub);
     }
 
