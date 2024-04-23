@@ -18,7 +18,7 @@
         'errorMessages.required' | translate
     }}</mat-error>
 
-    <div style="min-width: 620px">
+    <div>
         <div style="display: flex">
             <div class="tile">{{ legendTitle }}</div>
             <div class="tile" *ngFor="let legendOption of legend">
@@ -32,7 +32,7 @@
                 [formControlName]="getControlName(question.key, matrixOption.label)"
             >
                 <div class="tile-radio-button">
-                    <div style="padding: 1rem">{{ handleText(matrixOption.label) }}</div>
+                    <div style="padding: 1rem; word-break: break-all">{{ handleText(matrixOption.label) }}</div>
                 </div>
                 <div class="tile-radio-button" *ngFor="let legendOption of legend">
                     <mat-radio-button [value]="legendOption.value"></mat-radio-button>
