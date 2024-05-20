@@ -103,6 +103,7 @@ export interface IFreeTextResponse extends IBaseQuestion {
 }
 
 export interface IInput extends IBaseQuestion {
+    indent?: number; // amount of indentation for the given text
     label?: string | ITranslationText;
 }
 

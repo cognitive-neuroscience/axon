@@ -41,7 +41,9 @@
 
                 <div
                     *ngIf="controlIsVisible(question.key) && question.questionType === 'freeTextResponse'"
-                    class="question-container {{ shouldHighlightQuestion(question.key) ? 'highlight' : '' }}"
+                    class="question-container {{ shouldHighlightQuestion(question.key) ? 'highlight' : '' }} {{
+                        question.indent ? 'indent-' + question.indent : ''
+                    }}"
                 >
                     <h2
                         *ngIf="question.title"
@@ -64,7 +66,9 @@
 
                 <div
                     *ngIf="controlIsVisible(question.key) && question.questionType === 'input'"
-                    class="question-container {{ shouldHighlightQuestion(question.key) ? 'highlight' : '' }}"
+                    class="question-container {{ shouldHighlightQuestion(question.key) ? 'highlight' : '' }} {{
+                        question.indent ? 'indent-' + question.indent : ''
+                    }}"
                 >
                     <h2
                         *ngIf="question.title"
