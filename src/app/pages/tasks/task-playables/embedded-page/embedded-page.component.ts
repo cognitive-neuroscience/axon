@@ -85,11 +85,11 @@ export class EmbeddedPageComponent implements Playable, OnDestroy, OnInit {
 
         this.nextButtonText = thisOrDefault(
             this.metadata.componentConfig.buttons?.nextButtonText?.[currentLang],
-            undefined
+            'NEXT'
         );
         this.previousButtonText = thisOrDefault(
             this.metadata.componentConfig.buttons?.previousButtonText?.[currentLang],
-            undefined
+            'PREVIOUS'
         );
     }
 
