@@ -83,8 +83,14 @@ export class EmbeddedPageComponent implements Playable, OnDestroy, OnInit {
 
         const currentLang = this.translateService.currentLang ? this.translateService.currentLang : SupportedLangs.EN;
 
-        this.nextButtonText = this.metadata.componentConfig.buttons.nextButtonText[currentLang];
-        this.previousButtonText = this.metadata.componentConfig.buttons.previousButtonText[currentLang];
+        this.nextButtonText = thisOrDefault(
+            this.metadata.componentConfig.buttons?.nextButtonText?.[currentLang],
+            undefined
+        );
+        this.previousButtonText = thisOrDefault(
+            this.metadata.componentConfig.buttons?.previousButtonText?.[currentLang],
+            undefined
+        );
     }
 
     beginRound() {
