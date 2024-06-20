@@ -174,3 +174,32 @@ export class InformationTaskStimulus {
     cardValue: number;
     expectedToExploit: boolean;
 }
+
+export class SDMTTaskSimulus {
+    imageURL: string;
+    expectedNumber: string;
+}
+
+export enum SDMTImageEnum {
+    IMAGE1 = '/assets/images/stimuli/sdmt/1.png',
+    IMAGE2 = '/assets/images/stimuli/sdmt/2.png',
+    IMAGE3 = '/assets/images/stimuli/sdmt/3.png',
+    IMAGE4 = '/assets/images/stimuli/sdmt/4.png',
+    IMAGE5 = '/assets/images/stimuli/sdmt/5.png',
+    IMAGE6 = '/assets/images/stimuli/sdmt/6.png',
+    IMAGE7 = '/assets/images/stimuli/sdmt/7.png',
+    IMAGE8 = '/assets/images/stimuli/sdmt/8.png',
+    IMAGE9 = '/assets/images/stimuli/sdmt/9.png',
+}
+
+export interface SDMTImageToNumberMapping {
+    [SDMTImageEnum.IMAGE1]: string;
+    [SDMTImageEnum.IMAGE2]: string;
+    [SDMTImageEnum.IMAGE3]: string;
+    [SDMTImageEnum.IMAGE4]: string;
+    [SDMTImageEnum.IMAGE5]: string;
+    [SDMTImageEnum.IMAGE6]: string;
+    [SDMTImageEnum.IMAGE7]: string;
+    [SDMTImageEnum.IMAGE8]: string;
+    [SDMTImageEnum.IMAGE9]: string;
+}

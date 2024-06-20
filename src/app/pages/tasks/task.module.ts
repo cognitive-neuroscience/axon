@@ -47,6 +47,7 @@ import { MultipleChoiceSelectComponent } from './task-playables/questionnaire/mu
 import { MatrixComponent } from './task-playables/questionnaire/matrix/matrix.component';
 import { SliderControlComponent } from './task-playables/questionnaire/slider-control/slider-control.component';
 import { RadioButtonsComponent } from './task-playables/questionnaire/radio-buttons/radio-buttons.component';
+import { SdmtComponent } from './task-playables/sdmt/sdmt.component';
 
 @NgModule({
     declarations: [
@@ -100,6 +101,7 @@ import { RadioButtonsComponent } from './task-playables/questionnaire/radio-butt
         ProbabilisticLearningTaskComponent,
         OptionDisplayComponent,
         IowaGamblingTaskComponent,
+        SdmtComponent,
     ],
     imports: [
         CommonModule,

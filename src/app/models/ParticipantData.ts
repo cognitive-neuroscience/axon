@@ -214,6 +214,15 @@ export class InformationTaskData extends BaseParticipantData {
     expectedToExploit: boolean;
 }
 
+export class SDMTData extends BaseParticipantData {
+    blockNum: number;
+    responseTime: string;
+    imageURL: string;
+    isCorrect: boolean;
+    actualAnswer: string;
+    userAnswer: string;
+}
+
 export class ParticipantData {
     userId: string;
     studyId: number;
