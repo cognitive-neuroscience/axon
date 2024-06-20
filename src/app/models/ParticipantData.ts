@@ -216,11 +216,11 @@ export class InformationTaskData extends BaseParticipantData {
 
 export class SDMTData extends BaseParticipantData {
     blockNum: number;
-    responseTime: string;
     imageURL: string;
     isCorrect: boolean;
     actualAnswer: string;
     userAnswer: string;
+    timeFromLastValidKeyPress: number;
 }
 
 export class ParticipantData {

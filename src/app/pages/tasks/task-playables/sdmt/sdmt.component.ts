@@ -15,6 +15,7 @@ import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { TaskPlayerState } from '../task-player/task-player.component';
+import { Key } from 'src/app/models/InternalDTOs';
 
 interface SDMTMetadata {
     componentName: ComponentName;
@@ -46,14 +47,40 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
 
     // high level variables
     taskData: SDMTData[];
+    blockNum: number = 1;
     stimuli: SDMTTaskSimulus[][];
-    currentStimulus = {
+    trialNum: number = 0;
+    currentStimulusIndex = {
         col: 0,
         row: 0,
     };
 
+    ngOnInit(): void {
+        this.loaderService.showLoader();
+        setTimeout(() => {
+            this.loaderService.hideLoader();
+            if (this.isDestroyed) return;
+            this.start();
+        }, 100);
+    }
+
     // local state variables
     isLoading: boolean = false;
+    responseAllowed: boolean = false;
+    feedback: string = '';
+    showFeedback: boolean = false;
+
+    // timers
+    maxResponseTimer: any;
+
+    get currentStimulus(): SDMTTaskSimulus {
+        return this.stimuli[this.currentStimulusIndex.row][this.currentStimulusIndex.col];
+    }
+
+    get currentTrial(): SDMTData {
+        // will return null if taskData is not defined or if it has length of 0
+        return this.taskData?.length > 0 ? this.taskData[this.taskData.length - 1] : null;
+    }
 
     // translation mapping
     translationMapping = {
@@ -63,6 +90,10 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
         },
         tutorialInstructionsMessage: {
             en: 'Below is a PRACTICE. <br />See how the first three are filled in? <br />Fill in the next 6 items using the number keys on our keyboard (1 - 9)',
+            fr: '...en francais',
+        },
+        tutorialFeedback: {
+            en: 'Please type in the correct number!',
             fr: '...en francais',
         },
     };
@@ -87,6 +118,10 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
         return this.translationMapping.tutorialInstructionsMessage[this.translateService.currentLang];
     }
 
+    get tutorialFeedbackMessage(): string {
+        return this.translationMapping.tutorialFeedback[this.translateService.currentLang];
+    }
+
     configure(metadata: SDMTMetadata, config: TaskPlayerState) {
         this.isLoading = true;
         try {
@@ -97,43 +132,143 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
         }
 
         this.isPractice = thisOrDefault(metadata.componentConfig.isPractice, false);
-        this.maxResponseTime = thisOrDefault(metadata.componentConfig.maxResponseTime, 120000);
+        // this.maxResponseTime = thisOrDefault(metadata.componentConfig.maxResponseTime, 120000);
+        this.maxResponseTime = 10000;
         this.numCols = thisOrDefault(metadata.componentConfig.numCols, 16);
         this.numRows = thisOrDefault(metadata.componentConfig.numRows, 9);
 
         if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
             this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
+
+        this.taskData = [];
     }
 
     async start() {
-        this.taskData = [];
         this.stimuli = this.dataGenService.generateSDMTStimuli(
             this.isPractice,
             this.imageToNumberMapping,
             this.numRows,
             this.numCols
         );
-        console.log({
-            stimuli: this.stimuli,
-        });
+        if (this.isPractice) {
+            // select the fourth box in the practice round as the first three are already answered
+            this.currentStimulusIndex = {
+                row: 0,
+                col: 3,
+            };
+        } else {
+            this.currentStimulusIndex = {
+                row: 0,
+                col: 0,
+            };
+        }
         super.start();
     }
 
     beginRound() {
+        this.timerService.clearTimer();
         this.isLoading = false;
-        console.log('BEGIN ROUND');
+
+        this.timerService.startTimer();
+        this.responseAllowed = true;
+
+        this.setTimer(this.maxResponseTime, () => {
+            this.responseAllowed = false;
+            if (this.isDestroyed) return;
+            super.decideToRepeat();
+        });
     }
 
     private isValidKey(key: string) {
-        return true;
+        return (
+            key === Key.NUMONE ||
+            key === Key.NUMTWO ||
+            key === Key.NUMTHREE ||
+            key === Key.NUMFOUR ||
+            key === Key.NUMFIVE ||
+            key === Key.NUMSIX ||
+            key === Key.NUMSEVEN ||
+            key === Key.NUMEIGHT ||
+            key === Key.NUMNINE
+        );
+    }
+
+    private setTimer(delay: number, cbFunc?: () => void) {
+        this.maxResponseTimer = window.setTimeout(() => {
+            if (cbFunc) cbFunc();
+        }, delay);
     }
 
     @HostListener('window:keypress', ['$event'])
-    handleRoundInteraction(event: KeyboardEvent): void {}
+    handleRoundInteraction(event: KeyboardEvent): void {
+        if (event === null) {
+            // signal that we want to move on
+            super.handleRoundInteraction(null);
+            return;
+        }
 
-    async completeRound() {}
+        if (this.responseAllowed && this.isValidKey(event.key)) {
+            this.showFeedback = false;
+            this.feedback = '';
+            const isCorrect = event.key === this.currentStimulus.expectedNumber;
 
-    async decideToRepeat() {}
+            this.taskData.push({
+                trial: ++this.trialNum,
+                userID: this.userID,
+                studyId: this.studyId,
+                submitted: this.timerService.getCurrentTimestamp(),
+                isPractice: this.isPractice,
+                isCorrect: isCorrect,
+                blockNum: this.blockNum,
+                timeFromLastValidKeyPress: this.timerService.stopTimerAndGetTime(),
+                imageURL: this.currentStimulus.imageURL,
+                actualAnswer: this.currentStimulus.expectedNumber,
+                userAnswer: event.key,
+            });
+
+            if (this.isPractice && !isCorrect) {
+                // show feedback
+                this.showFeedback = true;
+                this.feedback = this.tutorialFeedbackMessage;
+            } else {
+                this.currentStimulus.userAnswer = event.key;
+                if (
+                    // check if we are done with this current block
+                    this.currentStimulusIndex.col >= this.stimuli[this.currentStimulusIndex.row].length - 1 &&
+                    this.currentStimulusIndex.row >= this.stimuli.length - 1
+                ) {
+                    super.handleRoundInteraction(null);
+                    return;
+                }
+
+                if (this.currentStimulusIndex.col >= this.stimuli[this.currentStimulusIndex.row].length - 1) {
+                    // increment stimulus index
+                    this.currentStimulusIndex.row++;
+                    this.currentStimulusIndex.col = 0;
+                } else {
+                    this.currentStimulusIndex.col++;
+                }
+            }
+
+            this.timerService.clearTimer();
+            this.timerService.startTimer();
+        }
+    }
+
+    async completeRound() {
+        this.responseAllowed = false;
+        super.completeRound();
+    }
+
+    async decideToRepeat() {
+        if (this.isPractice) {
+            clearTimeout(this.maxResponseTimer);
+            super.decideToRepeat();
+        } else {
+            this.blockNum++;
+            this.start();
+        }
+    }
 
     constructor(
         protected snackbarService: SnackbarService,

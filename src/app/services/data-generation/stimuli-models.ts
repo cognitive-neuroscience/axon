@@ -178,6 +178,7 @@ export class InformationTaskStimulus {
 export class SDMTTaskSimulus {
     imageURL: string;
     expectedNumber: string;
+    userAnswer: string;
 }
 
 export enum SDMTImageEnum {

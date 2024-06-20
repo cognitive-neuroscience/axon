@@ -556,6 +556,7 @@ export class DataGenerationService {
         return {
             imageURL,
             expectedNumber: imageToNumberMapping[imageURL],
+            userAnswer: '',
         };
     }
 
