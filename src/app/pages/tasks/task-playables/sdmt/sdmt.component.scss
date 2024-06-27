@@ -1,0 +1,98 @@
+@import '../../../../sass/mixins';
+
+.tutorial-message {
+    width: 80%;
+    margin-bottom: 1rem;
+}
+
+.legend {
+    margin-bottom: 1rem;
+}
+
+.stimulus-border {
+    border: 2px solid black;
+}
+
+.selected {
+    border: 2px solid red;
+}
+
+.stimulus {
+    font-weight: bold;
+}
+
+@include for-small-device-only {
+    .legend {
+        width: 300px;
+    }
+
+    .tutorial-message {
+        font-size: 16px;
+    }
+
+    .stimulus {
+        width: 20px;
+        height: 20px;
+    }
+
+    .stimulus-answer {
+        font-size: 20px;
+    }
+}
+
+@include for-small-desktop-only {
+    .legend {
+        width: 350px;
+    }
+
+    .tutorial-message {
+        font-size: 20px;
+    }
+
+    .stimulus {
+        width: 25px;
+        height: 25px;
+    }
+
+    .stimulus-answer {
+        font-size: 24px;
+    }
+}
+
+@include for-desktop-up {
+    .legend {
+        width: 400px;
+    }
+
+    .tutorial-message {
+        font-size: 24px;
+    }
+
+    .stimulus {
+        width: 30px;
+        height: 30px;
+    }
+
+    .stimulus-answer {
+        font-size: 28px;
+    }
+}
+
+@include for-large-desktop-up {
+    .legend {
+        width: 400px;
+    }
+
+    .tutorial-message {
+        font-size: 28px;
+    }
+
+    .stimulus {
+        width: 35px;
+        height: 35px;
+    }
+
+    .stimulus-answer {
+        font-size: 32px;
+    }
+}

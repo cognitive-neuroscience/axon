@@ -1,0 +1,38 @@
+<div class="container-fluid wrapper task-text flex-column-center">
+    <div *ngIf="!isLoading" class="full-box flex-column-center">
+        <div *ngIf="isPractice" class="flex-column-center">
+            <div class="tutorial-message">{{ tutorialKeyMessage }}</div>
+        </div>
+        <div class="flex-column-center">
+            <img class="legend" src="/assets/images/stimuli/sdmt/legend.png" alt="legend" />
+        </div>
+
+        <div *ngIf="isPractice" class="flex-column-center">
+            <div class="tutorial-message" [innerHTML]="tutorialInstructionsMessage"></div>
+        </div>
+        <div *ngFor="let row of stimuli; let rowIndex = index">
+            <div style="display: flex">
+                <div
+                    *ngFor="let stimulus of row; let colIndex = index"
+                    class="{{
+                        rowIndex === currentStimulusIndex.row && colIndex === currentStimulusIndex.col
+                            ? 'selected'
+                            : 'stimulus-border'
+                    }}"
+                >
+                    <div class="stimulus">
+                        <img style="height: 100%" src="{{ stimulus.imageURL }}" />
+                    </div>
+                    <div class="stimulus stimulus-answer flex-column-center" style="border-top: 2px solid black">
+                        {{ stimulus.userAnswer }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="isPractice">
+            <div style="margin-top: 2rem; height: 26px">
+                <div style="color: red" *ngIf="showFeedback">{{ feedback }}</div>
+            </div>
+        </div>
+    </div>
+</div>
