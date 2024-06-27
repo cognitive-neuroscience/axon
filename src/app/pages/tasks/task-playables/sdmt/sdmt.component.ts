@@ -43,8 +43,6 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
     private numRows: number;
     private numCols: number;
 
-    showLoaderOnInitDuration = 2000;
-
     // high level variables
     taskData: SDMTData[];
     blockNum: number = 1;
@@ -54,15 +52,6 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
         col: 0,
         row: 0,
     };
-
-    ngOnInit(): void {
-        this.loaderService.showLoader();
-        setTimeout(() => {
-            this.loaderService.hideLoader();
-            if (this.isDestroyed) return;
-            this.start();
-        }, 100);
-    }
 
     // local state variables
     isLoading: boolean = false;
@@ -132,8 +121,7 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
         }
 
         this.isPractice = thisOrDefault(metadata.componentConfig.isPractice, false);
-        // this.maxResponseTime = thisOrDefault(metadata.componentConfig.maxResponseTime, 120000);
-        this.maxResponseTime = 10000;
+        this.maxResponseTime = thisOrDefault(metadata.componentConfig.maxResponseTime, 120000);
         this.numCols = thisOrDefault(metadata.componentConfig.numCols, 16);
         this.numRows = thisOrDefault(metadata.componentConfig.numRows, 9);
 
