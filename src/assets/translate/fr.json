@@ -58,6 +58,8 @@
         "maxValidation": "Doit être inférieur à"
     },
     "buttons": {
-        "submit": "soumettre"
+        "submit": "soumettre",
+        "next": "Suivant",
+        "previous": "Précedent"
     }
 }

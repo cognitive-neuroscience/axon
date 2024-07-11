@@ -58,6 +58,8 @@
         "maxValidation": "Must be below"
     },
     "buttons": {
-        "submit": "submit"
+        "submit": "submit",
+        "next": "Next",
+        "previous": "Previous"
     }
 }

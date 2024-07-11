@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { getTextForLang, thisOrDefault } from 'src/app/common/commonMethods';
 import { ComponentName } from 'src/app/services/component-factory.service';
@@ -52,7 +52,7 @@ export interface TaskDisplayComponentMetadata {
     templateUrl: './task-display.component.html',
     styleUrls: ['./task-display.component.scss'],
 })
-export class TaskDisplayComponent implements OnDestroy, Playable {
+export class TaskDisplayComponent implements OnInit, OnDestroy, Playable {
     // metadata variables
     title: string = '';
     subtitle: string = '';
@@ -74,6 +74,9 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
     timerDisplayValue: number;
     timerCountDown: boolean = false;
     showNavigationButtons: boolean = true;
+
+    nextButtonText: string = '';
+    previousButtonText: string = '';
 
     // intervals/timers
     interval: number;
@@ -161,6 +164,13 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
                 ? this.startTimerReverse(metadata.componentConfig.timerConfig.timer / 1000)
                 : this.startTimer(metadata.componentConfig.timerConfig.timer / 1000);
         }
+    }
+
+    ngOnInit(): void {
+        this.previousButtonText =
+            this.translateService.translations[this.translateService.currentLang]?.buttons?.previous ?? 'previous';
+        this.nextButtonText =
+            this.translateService.translations[this.translateService.currentLang]?.buttons?.next ?? 'next';
     }
 
     afterInit() {
