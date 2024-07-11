@@ -251,6 +251,7 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
     async decideToRepeat() {
         if (this.isPractice) {
             clearTimeout(this.maxResponseTimer);
+            this.isLoading = true;
             super.decideToRepeat();
         } else {
             this.blockNum++;
