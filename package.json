@@ -1,7 +1,7 @@
 {
     "name": "axon",
     "version": "0.1.0",
-    "description": "Dashboard for delivering neuroscience experiments on the web for the Neurodegenration Research Laboratory at The Neuro",
+    "description": "Dashboard for delivering neuroscience experiments on the web for the Neurodegeneration Research Laboratory at The Neuro",
     "main": "src/main.ts",
     "dependencies": {
         "@angular/animations": "^14.2.5",

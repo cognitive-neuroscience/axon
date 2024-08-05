@@ -4,7 +4,15 @@ import { ITranslationText } from 'src/app/models/InternalDTOs';
 import { ImageService } from '../image.service';
 import { DataGenerationService } from './data-generation.service';
 import { getFaceNameAssociationStimuli } from './raw-data/face-name-association';
-import { SARTStimuliSetType, SARTTrialType, SmileyFaceType, StroopStimulus } from './stimuli-models';
+import {
+    SARTStimuliSetType,
+    SARTTrialType,
+    SDMTImageEnum,
+    SDMTImageToNumberMapping,
+    SmileyFaceType,
+    StroopStimulus,
+} from './stimuli-models';
+import { getSDMTRealStimuli } from './raw-data/sdmt-data-list';
 
 describe('Data Generation Service', () => {
     let service: DataGenerationService;
@@ -293,6 +301,45 @@ describe('Data Generation Service', () => {
                     { firstActivity: { en: 'A', fr: 'A' }, secondActivity: { en: 'C', fr: 'C' }, set: 'second' },
                     { firstActivity: { en: 'B', fr: 'B' }, secondActivity: { en: 'D', fr: 'D' }, set: 'second' },
                 ]);
+            });
+        });
+    });
+
+    describe('SDMT stimuli generation', () => {
+        beforeEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        const imageToNumberMapping: SDMTImageToNumberMapping = {
+            [SDMTImageEnum.IMAGE1]: '1',
+            [SDMTImageEnum.IMAGE2]: '2',
+            [SDMTImageEnum.IMAGE3]: '3',
+            [SDMTImageEnum.IMAGE4]: '4',
+            [SDMTImageEnum.IMAGE5]: '5',
+            [SDMTImageEnum.IMAGE6]: '6',
+            [SDMTImageEnum.IMAGE7]: '7',
+            [SDMTImageEnum.IMAGE8]: '8',
+            [SDMTImageEnum.IMAGE9]: '9',
+        };
+        it('should generate stimuli with at least one of each image per block fo 18', () => {
+            const stimuli = getSDMTRealStimuli(imageToNumberMapping);
+
+            expect(stimuli[0].length).toEqual(18 * 12);
+
+            for (let i = 0; i < 12; i++) {
+                const stimuliBlock = stimuli[0].slice(i * 18, (i + 1) * 18);
+
+                for (const key of Object.keys(imageToNumberMapping)) {
+                    expect(stimuliBlock.find((stimulus) => stimulus.imageURL === key));
+                }
+            }
+        });
+
+        it('should not have any repeats', () => {
+            const stimuli = getSDMTRealStimuli(imageToNumberMapping)[0];
+            stimuli.forEach((_, index) => {
+                if (index === stimuli.length - 1) return;
+                expect(stimuli[index].imageURL).not.toEqual(stimuli[index + 1]?.imageURL);
             });
         });
     });

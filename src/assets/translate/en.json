@@ -60,6 +60,7 @@
     "buttons": {
         "submit": "submit",
         "next": "Next",
+        "start": "Start",
         "previous": "Previous"
     }
 }

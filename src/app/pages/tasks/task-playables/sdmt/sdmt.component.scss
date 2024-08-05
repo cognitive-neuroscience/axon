@@ -14,6 +14,10 @@
 }
 
 @include for-small-device-only {
+    .tutorial-header {
+        font-size: 1.2rem;
+    }
+
     .legend {
         width: 400px;
     }
@@ -23,8 +27,8 @@
     }
 
     .stimulus {
-        width: 40px;
-        height: 40px;
+        width: 30px;
+        height: 30px;
     }
 
     .stimulus-answer {
@@ -41,6 +45,10 @@
 }
 
 @include for-small-desktop-only {
+    .tutorial-header {
+        font-size: 1.4rem;
+    }
+
     .legend {
         width: 600px;
     }
@@ -50,8 +58,8 @@
     }
 
     .stimulus {
-        width: 60px;
-        height: 60px;
+        width: 45px;
+        height: 45px;
     }
 
     .stimulus-answer {
@@ -68,6 +76,10 @@
 }
 
 @include for-desktop-up {
+    .tutorial-header {
+        font-size: 1.8rem;
+    }
+
     .legend {
         width: 700px;
     }
@@ -77,8 +89,8 @@
     }
 
     .stimulus {
-        width: 70px;
-        height: 70px;
+        width: 65px;
+        height: 65px;
     }
 
     .stimulus-answer {
@@ -95,6 +107,10 @@
 }
 
 @include for-large-desktop-up {
+    .tutorial-header {
+        font-size: 2rem;
+    }
+
     .legend {
         width: 900px;
     }

@@ -1,5 +1,6 @@
 <div class="container-fluid wrapper task-text flex-column-center">
     <div *ngIf="!isLoading" class="full-box flex-column-center">
+        <h1 *ngIf="isPractice" class="tutorial-header">{{ tutorialWelcomeHeader }}</h1>
         <div *ngIf="isPractice" class="flex-column-center">
             <div class="tutorial-message">{{ tutorialKeyMessage }}</div>
         </div>
