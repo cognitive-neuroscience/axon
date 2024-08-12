@@ -48,7 +48,7 @@ import { DigitSpanStimuli } from './raw-data/digit-span-list';
 import { TrailMakingSet } from './raw-data/trail-making-list';
 import { getFaceNameAssociationStimuli } from './raw-data/face-name-association';
 import { IowaGamblingTaskStimuli } from './raw-data/iowa-gambling-task-list';
-import { getSDMTPracticeStimuli } from './raw-data/sdmt-data-list';
+import { getSDMTPracticeStimuli, getSDMTRealStimuli } from './raw-data/sdmt-data-list';
 
 @Injectable({
     providedIn: 'root',
@@ -549,36 +549,12 @@ export class DataGenerationService {
         return IowaGamblingTaskStimuli;
     }
 
-    private generateSDMTStimulus(imageToNumberMapping: SDMTImageToNumberMapping): SDMTTaskSimulus {
-        const imagesList = Object.keys(imageToNumberMapping);
-        const randNum = getRandomNumber(0, imagesList.length);
-        const imageURL = imagesList[randNum];
-        return {
-            imageURL,
-            expectedNumber: imageToNumberMapping[imageURL],
-            userAnswer: '',
-        };
-    }
-
-    generateSDMTStimuli(
-        isPractice: boolean,
-        imageToNumberMapping: SDMTImageToNumberMapping,
-        numRows: number,
-        numCols: number
-    ): SDMTTaskSimulus[][] {
+    generateSDMTStimuli(isPractice: boolean, imageToNumberMapping: SDMTImageToNumberMapping): SDMTTaskSimulus[][] {
         if (isPractice) {
             return getSDMTPracticeStimuli(imageToNumberMapping);
         } else {
-            const newGrid: SDMTTaskSimulus[][] = [];
-            for (let i = 0; i < numRows; i++) {
-                const newRow: SDMTTaskSimulus[] = [];
-                for (let j = 0; j < numCols; j++) {
-                    const newStimulus = this.generateSDMTStimulus(imageToNumberMapping);
-                    newRow.push(newStimulus);
-                }
-                newGrid.push(newRow);
-            }
-            return newGrid;
+            // this should never be used... we should be getting the data from config
+            return getSDMTRealStimuli(imageToNumberMapping);
         }
     }
 }

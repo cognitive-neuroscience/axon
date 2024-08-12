@@ -52,7 +52,7 @@ export interface TaskDisplayComponentMetadata {
     templateUrl: './task-display.component.html',
     styleUrls: ['./task-display.component.scss'],
 })
-export class TaskDisplayComponent implements OnInit, OnDestroy, Playable {
+export class TaskDisplayComponent implements OnDestroy, Playable {
     // metadata variables
     title: string = '';
     subtitle: string = '';
@@ -164,13 +164,16 @@ export class TaskDisplayComponent implements OnInit, OnDestroy, Playable {
                 ? this.startTimerReverse(metadata.componentConfig.timerConfig.timer / 1000)
                 : this.startTimer(metadata.componentConfig.timerConfig.timer / 1000);
         }
-    }
 
-    ngOnInit(): void {
+        if (this.buttonConfig.isStart) {
+            this.nextButtonText =
+                this.translateService.translations[this.translateService.currentLang]?.buttons?.start ?? 'Start';
+        } else {
+            this.nextButtonText =
+                this.translateService.translations[this.translateService.currentLang]?.buttons?.next ?? 'next';
+        }
         this.previousButtonText =
             this.translateService.translations[this.translateService.currentLang]?.buttons?.previous ?? 'previous';
-        this.nextButtonText =
-            this.translateService.translations[this.translateService.currentLang]?.buttons?.next ?? 'next';
     }
 
     afterInit() {

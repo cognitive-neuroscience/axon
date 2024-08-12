@@ -42,10 +42,11 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
     private maxResponseTime: number;
     private numRows: number;
     private numCols: number;
+    private allHardcodedStimuli: SDMTTaskSimulus[][];
 
     // high level variables
     taskData: SDMTData[];
-    blockNum: number = 1;
+    blockNum: number = 0;
     stimuli: SDMTTaskSimulus[][];
     trialNum: number = 0;
     currentStimulusIndex = {
@@ -75,15 +76,19 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
     translationMapping = {
         tutorialKeyMessage: {
             en: 'In this task, you will need to fill in the blanks based on a key. Below is the key. Each symbol in the top box has a corresponding number in the bottom box.',
-            fr: '...en francais',
+            fr: 'Dans ce jeu, vous devrez remplir les blancs à l’aide d’une clé. Voici la clé. Chaque symbole dans la case du haut correspond à un numéro dans la case du bas.',
+        },
+        tutorialWelcomeHeader: {
+            en: 'Welcome to the Symbol game',
+            fr: 'Bienvenue au Jeu des symboles',
         },
         tutorialInstructionsMessage: {
             en: 'Below is a PRACTICE. <br />See how the first three are filled in? <br />Fill in the next 6 items using the number keys on our keyboard (1 - 9)',
-            fr: '...en francais',
+            fr: 'Ci-dessous se trouve un EXEMPLE. <br /> Voyez comment les trois premières cases sont remplies? <br /> Remplissez les 6 cases suivantes en utilisant les touches numériques de votre clavier (1 - 9)',
         },
         tutorialFeedback: {
             en: 'Please type in the correct number!',
-            fr: '...en francais',
+            fr: 'Veuillez saisir le bon numéro!',
         },
     };
 
@@ -98,6 +103,10 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
         [SDMTImageEnum.IMAGE8]: '8',
         [SDMTImageEnum.IMAGE9]: '9',
     };
+
+    get tutorialWelcomeHeader(): string {
+        return this.translationMapping.tutorialWelcomeHeader[this.translateService.currentLang];
+    }
 
     get tutorialKeyMessage(): string {
         return this.translationMapping.tutorialKeyMessage[this.translateService.currentLang];
@@ -125,19 +134,19 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
         this.numCols = thisOrDefault(metadata.componentConfig.numCols, 16);
         this.numRows = thisOrDefault(metadata.componentConfig.numRows, 9);
 
-        if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
-            this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
+        if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED) {
+            const hardcodedData = JSON.parse(JSON.stringify(metadata.componentConfig.stimuliConfig.stimuli));
+            this.stimuli = hardcodedData;
+            this.allHardcodedStimuli = hardcodedData;
+        }
 
         this.taskData = [];
     }
 
     async start() {
-        this.stimuli = this.dataGenService.generateSDMTStimuli(
-            this.isPractice,
-            this.imageToNumberMapping,
-            this.numRows,
-            this.numCols
-        );
+        // we used this function originally but we now hard code it. I'm leaving this here for provenance as
+        // this is the code that originally generated the current hard coded stimuli we use
+        // const x = this.dataGenService.generateSDMTStimuli(false, this.imageToNumberMapping);
         if (this.isPractice) {
             // select the fourth box in the practice round as the first three are already answered
             this.currentStimulusIndex = {
@@ -145,6 +154,9 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
                 col: 3,
             };
         } else {
+            this.stimuli = [
+                this.allHardcodedStimuli[0].slice(this.blockNum * this.numCols, (this.blockNum + 1) * this.numCols),
+            ];
             this.currentStimulusIndex = {
                 row: 0,
                 col: 0,
@@ -162,6 +174,7 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
 
         this.setTimer(this.maxResponseTime, () => {
             this.responseAllowed = false;
+            this.isLoading = true;
             if (this.isDestroyed) return;
             super.decideToRepeat();
         });
@@ -195,6 +208,9 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
             return;
         }
 
+        // do not allow the user to hold the key down
+        if (event.repeat) return;
+
         if (this.responseAllowed && this.isValidKey(event.key)) {
             this.showFeedback = false;
             this.feedback = '';
@@ -207,7 +223,7 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
                 submitted: this.timerService.getCurrentTimestamp(),
                 isPractice: this.isPractice,
                 isCorrect: isCorrect,
-                blockNum: this.blockNum,
+                blockNum: this.blockNum + 1,
                 timeFromLastValidKeyPress: this.timerService.stopTimerAndGetTime(),
                 imageURL: this.currentStimulus.imageURL,
                 actualAnswer: this.currentStimulus.expectedNumber,
@@ -254,6 +270,11 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
             this.isLoading = true;
             super.decideToRepeat();
         } else {
+            if (this.taskData.length >= this.allHardcodedStimuli[0].length) {
+                super.decideToRepeat();
+                this.isLoading = true;
+                return;
+            }
             this.blockNum++;
             this.start();
         }
