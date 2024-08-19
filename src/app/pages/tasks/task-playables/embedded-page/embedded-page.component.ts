@@ -7,7 +7,7 @@ import { IOnComplete, Playable } from '../playable';
 import { TaskPlayerState } from '../task-player/task-player.component';
 import { IntroDialogComponent } from './intro-dialog/intro-dialog.component';
 import { UserStateService } from 'src/app/services/user-state-service';
-import { thisOrDefault } from 'src/app/common/commonMethods';
+import { getTextForLang, thisOrDefault } from 'src/app/common/commonMethods';
 import { TranslateService } from '@ngx-translate/core';
 import { SupportedLangs } from 'src/app/models/enums';
 import { ITranslationText } from 'src/app/models/InternalDTOs';
@@ -53,6 +53,7 @@ export class EmbeddedPageComponent implements Playable, OnDestroy, OnInit {
     onComplete: Subject<IOnComplete> = new Subject<{ navigation: Navigation; taskData: any[] }>();
 
     ngOnInit(): void {
+        // when the user is an admin or org member, this task is being run in the portal so we just want to show a short delay
         if (this.userStateService.userIsAdmin || this.userStateService.userIsOrgMember) {
             this.delay = 5;
         }
@@ -78,7 +79,8 @@ export class EmbeddedPageComponent implements Playable, OnDestroy, OnInit {
         const userId = config.userID;
         const studyId = config.studyID;
         this.metadata = metadata;
-        this.embeddedSurveyLink = this.parseURL(this.metadata.componentConfig.externalUrl, userId, studyId);
+        const externalURL = this.handleTranslate(this.metadata.componentConfig.externalUrl);
+        this.embeddedSurveyLink = this.parseURL(externalURL, userId, studyId);
         this.delay = thisOrDefault(metadata.componentConfig.disableNextButtonDurationInSeconds, 30);
 
         const currentLang = this.translateService.currentLang ? this.translateService.currentLang : SupportedLangs.EN;
@@ -91,6 +93,10 @@ export class EmbeddedPageComponent implements Playable, OnDestroy, OnInit {
             this.metadata.componentConfig.buttons?.previousButtonText?.[currentLang],
             'PREVIOUS'
         );
+    }
+
+    handleTranslate(text: ITranslationText | string): string {
+        return getTextForLang(this.translateService.currentLang as SupportedLangs, text);
     }
 
     beginRound() {
