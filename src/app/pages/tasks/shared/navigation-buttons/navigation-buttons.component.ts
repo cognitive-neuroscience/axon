@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { SupportedLangs } from 'src/app/models/enums';
 
 export enum Navigation {
     PREVIOUS = 'previous',
@@ -59,6 +61,10 @@ export class NavigationButtonsComponent implements OnInit {
     @Output()
     onNext: EventEmitter<Navigation> = new EventEmitter();
 
+    get pleaseWaitText(): string {
+        return this.translateService.currentLang === SupportedLangs.EN ? 'Please wait: ' : 'Veuillez patienter: ';
+    }
+
     handleNext() {
         if (!this.wasClicked) {
             this.wasClicked = true;
@@ -88,7 +94,7 @@ export class NavigationButtonsComponent implements OnInit {
         }, 1000);
     }
 
-    constructor() {}
+    constructor(private translateService: TranslateService) {}
 
     ngOnInit(): void {
         this.wasClicked = false;
