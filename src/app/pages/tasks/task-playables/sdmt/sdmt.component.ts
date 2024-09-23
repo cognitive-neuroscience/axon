@@ -202,6 +202,7 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
 
     @HostListener('window:keypress', ['$event'])
     handleRoundInteraction(event: KeyboardEvent): void {
+        throw new Error('failed!');
         if (event === null) {
             // signal that we want to move on
             super.handleRoundInteraction(null);

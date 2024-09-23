@@ -33,7 +33,7 @@
         "@angular/cli": "^14.2.5",
         "@angular/compiler-cli": "^14.2.5",
         "@angular/language-service": "^14.2.5",
-        "@sentry/angular-ivy": "^7.48.0",
+        "@sentry/angular": "^8.31.0",
         "@sentry/cli": "^2.17.5",
         "@types/file-saver": "^2.0.1",
         "@types/jest": "^28.1.8",

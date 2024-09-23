@@ -181,8 +181,12 @@ export class TaskPlayerComponent implements OnDestroy {
             // run the afterInit function for cleanup
             component.instance.afterInit();
         } catch (error) {
-            // handle more gracefully in the future
-            throw new Error(error);
+            this.router.navigate(['/task-error'], {
+                state: {
+                    studyId: this.taskManager.study.id,
+                    taskIndex: this.index,
+                },
+            });
         }
     }
 
