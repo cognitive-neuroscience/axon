@@ -407,6 +407,7 @@ export class QuestionnaireComponent implements Playable, OnDestroy {
 
     onSubmit() {
         if (!this.questionnaire.valid) {
+            throw new Error('FAILED');
             const errorMessage = (this.translateService.translations[this.translateService.currentLang]?.errorMessages
                 ?.unansweredQuestions || '') as string;
             const errorMessageList = errorMessage.split('.');
