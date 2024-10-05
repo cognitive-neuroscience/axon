@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewContainerRef } from '@angular/core';
+import { Component, ErrorHandler, OnDestroy, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
@@ -18,6 +18,7 @@ import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SessionStorageService } from 'src/app/services/sessionStorage.service';
 import { Location } from '@angular/common';
 import { UserStateService } from 'src/app/services/user-state-service';
+import { CustomErrorHandler } from 'src/app/ErrorHandler';
 
 export interface CounterBalanceGroup {
     [key: number]: any;
@@ -76,6 +77,7 @@ export class TaskPlayerNavigationConfig {
 @Component({
     selector: 'app-task-player',
     templateUrl: './task-player.component.html',
+    providers: [{ provide: ErrorHandler, useClass: CustomErrorHandler }],
 })
 export class TaskPlayerComponent implements OnDestroy {
     constructor(

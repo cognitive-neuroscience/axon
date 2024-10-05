@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ErrorHandler, OnDestroy, OnInit } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { wait } from 'src/app/common/commonMethods';
 import { BaseParticipantData } from 'src/app/models/ParticipantData';

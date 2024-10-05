@@ -29,6 +29,8 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { SnackbarComponent } from './services/snackbar/snackbar.component';
 import { OrganizationMemberModule } from './pages/organization-member/organization-member.module';
 import { HttpCsrfInterceptor } from './interceptors/csrf.interceptor';
+import { ErrorPageComponent } from './pages/error/error-page.component';
+import { CustomErrorHandler } from './ErrorHandler';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, '../assets/translate/', '.json');
@@ -43,6 +45,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         LoaderComponent,
         CreateUserDialogComponent,
         LandingPageComponent,
+        ErrorPageComponent,
         RegisterComponent,
         SendResetPasswordComponent,
         ResetPasswordLoginComponent,
@@ -94,10 +97,14 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         },
         {
             provide: ErrorHandler,
-            useValue: Sentry.createErrorHandler({
-                showDialog: true,
-            }),
+            useClass: CustomErrorHandler,
         },
+        // {
+        //     provide: ErrorHandler,
+        //     useValue: Sentry.createErrorHandler({
+        //         showDialog: false,
+        //     }),
+        // },
         {
             provide: Sentry.TraceService,
             deps: [Router],

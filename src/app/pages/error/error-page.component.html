@@ -1,0 +1,56 @@
+<div style="width: 100%; height: 100%" class="flex-column-center">
+    <div style="width: 80%">
+        <h6 style="font-size: 2rem; margin-bottom: 1rem; color: red">Error</h6>
+        <div>
+            <div style="font-size: 1rem">
+                An error has occurred while loading the study. Please copy the below error message and send it to
+                <b>sharplab.neuro@mcgill.ca</b> so that we can resolve it as soon as possible.
+            </div>
+            <div style="width: 100%">
+                <div class="steps-container">
+                    <div class="number-container text">1</div>
+                    <div class="content-container">
+                        <h6 class="text">Copy the error message:</h6>
+                        <div
+                            style="
+                                background-color: #f0f0f0;
+                                padding: 1rem;
+                                border-radius: 8px;
+                                font-family: 'Courier New', Courier, monospace;
+                                white-space: break-spaces;
+                                max-height: 600px;
+                                overflow-y: auto;
+                            "
+                        >
+                            <div style="display: flex; justify-content: flex-end">
+                                <button mat-icon-button (click)="(handleCopy)">
+                                    <mat-icon matTooltip="copy to clipboard">content_copy</mat-icon>
+                                </button>
+                            </div>
+                            {{ error }}
+                        </div>
+                    </div>
+                </div>
+                <div class="steps-container">
+                    <div class="number-container text">2</div>
+                    <div class="content-container">
+                        <h6 class="text">
+                            Send an email to
+                            <a href="mailto:sharplab.neuro@mcgill.ca">sharplab.neuro@mcgill.ca</a>. Paste the above
+                            error message into the email.
+                        </h6>
+                    </div>
+                </div>
+                <div class="steps-container">
+                    <div class="number-container text">3</div>
+                    <div class="content-container">
+                        <h6 class="text">Click on the button below to go back to the main menu</h6>
+                        <div>
+                            <button mat-flat-button color="primary">Back to main menu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

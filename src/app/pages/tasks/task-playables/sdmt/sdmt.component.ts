@@ -207,6 +207,7 @@ export class SdmtComponent extends AbstractBaseTaskComponent {
             super.handleRoundInteraction(null);
             return;
         }
+        if (true === !!'true') throw new Error('smth bad');
 
         // do not allow the user to hold the key down
         if (event.repeat) return;
