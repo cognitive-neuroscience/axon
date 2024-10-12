@@ -24,7 +24,7 @@ import { StudyTask } from '../models/StudyTask';
 import { UserStateService } from './user-state-service';
 import { CrowdSourcedUserService } from './crowdsourced-user.service';
 import { snapshotToStudyTasks } from './utils';
-import { IErrorNavigationState } from '../pages/participant/error-page/error-page.component';
+import { IErrorNavigationState } from '../pages/error-page/error-page.component';
 
 @Injectable({
     providedIn: 'root',
