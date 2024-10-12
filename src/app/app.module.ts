@@ -27,6 +27,7 @@ import { OrganizationMemberModule } from './pages/organization-member/organizati
 import { SharedModule } from './pages/shared/shared.module';
 import { SnackbarComponent } from './services/snackbar/snackbar.component';
 import CustomErrorHandler from './CustomErrorHandler';
+import { ErrorPageComponent } from './pages/error-page/error-page.component';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, '../assets/translate/', '.json');
@@ -35,6 +36,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 @NgModule({
     declarations: [
         AppComponent,
+        ErrorPageComponent,
         LoginComponent,
         CrowdSourceLoginComponent,
         ConfirmationComponent,
