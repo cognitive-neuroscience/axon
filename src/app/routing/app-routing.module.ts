@@ -12,6 +12,7 @@ import { ResetPasswordLoginComponent } from '../pages/landing-page/forgot-passwo
 import { StudyBackgroundComponent } from '../pages/landing-page/study-background/study-background.component';
 import { NotFoundComponent } from '../pages/landing-page/not-found/not-found.component';
 import { BlankComponent } from '../pages/tasks/blank/blank.component';
+import { ErrorPageComponent } from '../pages/participant/error-page/error-page.component';
 
 const routes: Routes = [
     {
@@ -41,6 +42,10 @@ const routes: Routes = [
         component: TaskPlayerComponent,
     },
     {
+        path: 'error',
+        component: ErrorPageComponent,
+    },
+    {
         path: 'studies',
         children: [
             {
@@ -57,6 +62,7 @@ const routes: Routes = [
     { path: 'blank', component: BlankComponent },
     { path: 'complete', component: FinalPageComponent },
     { path: 'notfound', component: NotFoundComponent },
+    { path: 'task-error', component: ErrorPageComponent },
     { path: '**', component: NotFoundComponent },
 ];
 

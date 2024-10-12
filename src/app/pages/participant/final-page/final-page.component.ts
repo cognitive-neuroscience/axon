@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { SnackbarService } from '../../../services/snackbar/snackbar.service';
-import { UserService } from '../../../services/user.service';
-import { TaskManagerService } from '../../../services/task-manager.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { SessionStorageService } from '../../../services/sessionStorage.service';
+import { SnackbarService } from '../../../services/snackbar/snackbar.service';
 
 @Component({
     selector: 'app-final-page',

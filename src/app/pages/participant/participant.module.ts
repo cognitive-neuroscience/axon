@@ -11,12 +11,14 @@ import { FinalPageComponent } from './final-page/final-page.component';
 import { ConsentDialogComponent } from './participant-dashboard/participant-studies/consent-dialog/consent-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageDialogComponent } from './participant-dashboard/language-dialog/language-dialog.component';
+import { ErrorPageComponent } from './error-page/error-page.component';
 
 @NgModule({
     declarations: [
         ParticipantDashboardComponent,
         ParticipantStudiesComponent,
         FinalPageComponent,
+        ErrorPageComponent,
         ConsentDialogComponent,
         LanguageDialogComponent,
     ],

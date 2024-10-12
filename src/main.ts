@@ -1,29 +1,24 @@
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app/app.module';
+
+import { browserTracingIntegration, init, replayIntegration } from '@sentry/angular';
 import { environment } from './environments/environment';
 
-import * as Sentry from '@sentry/angular-ivy';
-
 if (environment.production) {
-    Sentry.init({
+    init({
         dsn: 'https://1eac536a2ca24255a6faf10c0f3abc39@o4505031493222400.ingest.sentry.io/4505031494467584',
         integrations: [
-            new Sentry.BrowserTracing({
-                tracePropagationTargets: [
-                    'localhost',
-                    'localhost:8181',
-                    'https://psharplab.campus.mcgill.ca',
-                    'https://psharplab.campus.mcgill.ca/api',
-                ],
-            }),
-            new Sentry.Replay({
+            replayIntegration({
                 maskAllText: false,
                 blockAllMedia: false,
             }),
+            browserTracingIntegration(),
         ],
-        tracesSampleRate: 1.0,
+        tracesSampleRate: 0.1,
+        tracePropagationTargets: ['https://psharplab.campus.mcgill.ca'],
         replaysOnErrorSampleRate: 1.0,
+        replaysSessionSampleRate: 0.1,
     });
     enableProdMode();
 }

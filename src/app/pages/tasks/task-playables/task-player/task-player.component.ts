@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewContainerRef } from '@angular/core';
+import { Component, ErrorHandler, OnDestroy, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
@@ -181,8 +181,12 @@ export class TaskPlayerComponent implements OnDestroy {
             // run the afterInit function for cleanup
             component.instance.afterInit();
         } catch (error) {
-            // handle more gracefully in the future
-            throw new Error(error);
+            this.router.navigate(['/task-error'], {
+                state: {
+                    studyId: this.taskManager.study.id,
+                    taskIndex: this.index,
+                },
+            });
         }
     }
 
@@ -201,7 +205,7 @@ export class TaskPlayerComponent implements OnDestroy {
                 .subscribe(
                     (ok) => {
                         if (!ok) {
-                            this.taskManager.handleErr();
+                            this.taskManager.handleErr('Error uploading data');
                             return;
                         }
 
@@ -216,8 +220,8 @@ export class TaskPlayerComponent implements OnDestroy {
                             this.renderPreviousStep();
                         }
                     },
-                    (_err) => {
-                        this.taskManager.handleErr();
+                    (err) => {
+                        this.taskManager.handleErr(err);
                     }
                 )
                 .add(() => {

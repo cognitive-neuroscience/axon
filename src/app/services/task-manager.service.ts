@@ -23,8 +23,8 @@ import { StudyUser } from '../models/StudyUser';
 import { StudyTask } from '../models/StudyTask';
 import { UserStateService } from './user-state-service';
 import { CrowdSourcedUserService } from './crowdsourced-user.service';
-import * as Sentry from '@sentry/angular-ivy';
 import { snapshotToStudyTasks } from './utils';
+import { IErrorNavigationState } from '../pages/participant/error-page/error-page.component';
 
 @Injectable({
     providedIn: 'root',
@@ -120,8 +120,8 @@ export class TaskManagerService implements CanClear {
                      */
                     task === null ? this.runStudy() : this.showConsent(task);
                 },
-                (_err) => {
-                    this.handleErr();
+                (err) => {
+                    this.handleErr(err);
                 }
             )
             .add(() => {
@@ -144,18 +144,15 @@ export class TaskManagerService implements CanClear {
         });
     }
 
-    handleErr(errText?: string): void {
-        if (this.userStateService.isCrowdsourcedUser) {
-            this.router.navigate([ParticipantRouteNames.CROWDSOURCEPARTICIPANT_REGISTER_BASEROUTE]);
-        } else {
-            this.router.navigate([ParticipantRouteNames.DASHBOARD_BASEROUTE]);
-        }
-        Sentry.captureException(errText);
-        this.snackbarService.openErrorSnackbar(
-            errText || 'Task Manager Error. Please contact sharplab.neuro@mcgill.ca',
-            undefined,
-            15000
-        );
+    handleErr(err?: any): void {
+        this.router.navigate(['task-error'], {
+            state: {
+                taskIndex: this.currentStudyTask?.taskOrder,
+                studyId: this.currentStudyTask?.studyId,
+                userId: this.userStateService?.currentlyLoggedInUserId,
+                stackTrace: err instanceof Error ? err.stack : err,
+            } as IErrorNavigationState,
+        });
     }
 
     // ------------------------------------
@@ -203,7 +200,7 @@ export class TaskManagerService implements CanClear {
                         );
                     },
                     (err) => {
-                        this.snackbarService.openErrorSnackbar('there was an error');
+                        this.handleErr(err);
                     }
                 )
                 .add(() => {
@@ -214,7 +211,7 @@ export class TaskManagerService implements CanClear {
 
     next(): void {
         if (!this.hasStudy) {
-            this.handleErr();
+            this.handleErr('no study found');
             return;
         }
 
@@ -260,8 +257,8 @@ export class TaskManagerService implements CanClear {
                         (crowdSourcedUser) => {
                             this._routeToFinalPage(crowdSourcedUser.completionCode);
                         },
-                        (_err) => {
-                            this.handleErr();
+                        (err) => {
+                            this.handleErr(err);
                         }
                     )
                     .add(() => this.loaderService.hideLoader());
