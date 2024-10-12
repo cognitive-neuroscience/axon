@@ -42,6 +42,10 @@ const routes: Routes = [
         component: TaskPlayerComponent,
     },
     {
+        path: 'error',
+        component: ErrorPageComponent,
+    },
+    {
         path: 'studies',
         children: [
             {
