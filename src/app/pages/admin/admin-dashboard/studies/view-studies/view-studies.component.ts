@@ -91,7 +91,13 @@ export class ViewStudiesComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        const studiesSub = this.studyService.getOrUpdateStudies().subscribe((a) => {});
+        this.loaderService.showLoader();
+        const studiesSub = this.studyService
+            .getOrUpdateStudies()
+            .subscribe((a) => {})
+            .add(() => {
+                this.loaderService.hideLoader();
+            });
         this.subscriptions.push(studiesSub);
     }
 
