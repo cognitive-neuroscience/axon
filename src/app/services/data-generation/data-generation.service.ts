@@ -8,7 +8,13 @@ import {
     selectNRandomElementsNoRepeats,
     shuffle,
 } from 'src/app/common/commonMethods';
+import { Color, ITranslationText } from 'src/app/models/InternalDTOs';
 import { ImageService } from '../image.service';
+import { DemandSelectionImageNames } from './raw-data/demand-selection-image-list';
+import { DigitSpanStimuli } from './raw-data/digit-span-list';
+import { getLearningPhaseStimuli, recombineStimuliForTesting } from './raw-data/face-name-association';
+import { IowaGamblingTaskStimuli } from './raw-data/iowa-gambling-task-list';
+import { NBackSet } from './raw-data/nback-data-list';
 import {
     OddballImageNames,
     OddballNonTargetStimulus,
@@ -16,39 +22,33 @@ import {
     OddballTargetStimulus,
 } from './raw-data/oddball-image-list';
 import { RatingTaskActivities, RatingTaskQuestionList } from './raw-data/rating-task-data-list';
+import { getSDMTPracticeStimuli, getSDMTRealStimuli } from './raw-data/sdmt-data-list';
+import { TrailMakingSet } from './raw-data/trail-making-list';
 import {
     ChoiceTaskStimulus,
     DemandSelectionCounterbalance,
     DemandSelectionStimulus,
     DigitSpanStimulus,
+    FaceNameAssociationStimulus,
     ImageBlob,
+    IowaGamblingTaskStimulus,
     NBackStimulus,
     OddballStimulus,
+    PLTStimulus,
+    PLTStimulusType,
     RatingTaskStimuli,
-    SARTStimulus,
     SARTStimuliSetType,
+    SARTStimulus,
+    SARTTrialType,
+    SDMTImageToNumberMapping,
+    SDMTTaskSimulus,
     SmileyFaceStimulus,
     SmileyFaceType,
     StroopStimulus,
     TaskSwitchingStimulus,
     TrailMakingStimulus,
     TrailMakingTrialType,
-    SARTTrialType,
-    FaceNameAssociationStimulus,
-    PLTStimulus,
-    PLTStimulusType,
-    IowaGamblingTaskStimulus,
-    SDMTTaskSimulus,
-    SDMTImageToNumberMapping,
 } from './stimuli-models';
-import { NBackSet } from './raw-data/nback-data-list';
-import { Color, ITranslationText } from 'src/app/models/InternalDTOs';
-import { DemandSelectionImageNames } from './raw-data/demand-selection-image-list';
-import { DigitSpanStimuli } from './raw-data/digit-span-list';
-import { TrailMakingSet } from './raw-data/trail-making-list';
-import { getFaceNameAssociationStimuli } from './raw-data/face-name-association';
-import { IowaGamblingTaskStimuli } from './raw-data/iowa-gambling-task-list';
-import { getSDMTPracticeStimuli, getSDMTRealStimuli } from './raw-data/sdmt-data-list';
 
 @Injectable({
     providedIn: 'root',
@@ -455,11 +455,20 @@ export class DataGenerationService {
         return stimuli;
     }
 
-    generateFaceNameAssociationTaskStimuli(phase: 'learning-phase' | 'test-phase'): FaceNameAssociationStimulus[] {
+    generateFaceNameAssociationTaskStimuli(
+        phase: 'learning-phase' | 'test-phase',
+        counterbalance: 1 | 2,
+        existingStimuli?: FaceNameAssociationStimulus[]
+    ): FaceNameAssociationStimulus[] {
         if (phase === 'learning-phase') {
-            return shuffle(getFaceNameAssociationStimuli('learning-phase'));
+            if (existingStimuli) {
+                const newStimuli = deepClone(existingStimuli);
+                return shuffle(newStimuli);
+            } else {
+                return getLearningPhaseStimuli(counterbalance);
+            }
         } else {
-            return shuffle(getFaceNameAssociationStimuli('test-phase'));
+            return recombineStimuliForTesting(existingStimuli);
         }
     }
 

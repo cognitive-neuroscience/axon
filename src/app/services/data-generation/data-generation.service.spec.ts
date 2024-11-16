@@ -3,7 +3,6 @@ import * as commonMethodModule from 'src/app/common/commonMethods';
 import { ITranslationText } from 'src/app/models/InternalDTOs';
 import { ImageService } from '../image.service';
 import { DataGenerationService } from './data-generation.service';
-import { getFaceNameAssociationStimuli } from './raw-data/face-name-association';
 import {
     SARTStimuliSetType,
     SARTTrialType,
@@ -113,9 +112,9 @@ describe('Data Generation Service', () => {
 
     describe('FaceName Association Stimuli', () => {
         it('should have equivalent person and correctPerson names', () => {
-            const generatedStimuli = service.generateFaceNameAssociationTaskStimuli('learning-phase');
+            const generatedStimuli = service.generateFaceNameAssociationTaskStimuli('learning-phase', 1, undefined);
             generatedStimuli.forEach((stimulus) => {
-                expect(stimulus.personName).toEqual(stimulus.correctPersonName);
+                expect(stimulus.displayedPersonName).toEqual(stimulus.actualPersonName);
             });
         });
 

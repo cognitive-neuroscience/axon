@@ -166,12 +166,13 @@ export class FaceNameAssociationTaskData extends BaseParticipantData {
     namePresented: string;
     actualName: string;
     stimulusSet: number;
-    maleFemale: 'male' | 'female';
+    gender: 'M' | 'F';
     trialType: FaceNameAssociationTaskTrialtype;
     userAnswer: UserResponse;
     actualAnswer: UserResponse;
     isCorrect: boolean;
     responseTime: number;
+    blockNum: number;
 }
 
 export class PLTTaskData extends BaseParticipantData {

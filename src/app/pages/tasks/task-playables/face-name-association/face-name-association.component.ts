@@ -13,7 +13,6 @@ import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { TaskPlayerState } from '../task-player/task-player.component';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
-import { ImageService } from 'src/app/services/image.service';
 
 interface FaceNameAssociationMetadata {
     componentName: ComponentName;
@@ -21,14 +20,19 @@ interface FaceNameAssociationMetadata {
         isPractice: boolean;
         phase: 'learning-phase' | 'test-phase';
         maxResponseTime: number;
-        stimulusSet: number;
         interTrialDelay: number;
         durationStimulusPresented: number;
+        blockNum: number;
         stimuliConfig: {
             type: StimuliProvidedType;
             stimuli: FaceNameAssociationStimulus[];
         };
     };
+}
+
+export enum FaceNameAssociationCache {
+    STIMULI = 'facenameassociation-stimuli',
+    BLOCK_NUM = 'facenameassociation-block-num',
 }
 
 @Component({
@@ -53,6 +57,8 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
     private interTrialDelay = 500;
     private durationStimulusPresented = 3000;
     private durationOfFeedback = 1000;
+    private counterbalance: 1 | 2;
+    private blockNum: number;
 
     // high level variables
     taskData: FaceNameAssociationTaskData[];
@@ -62,12 +68,13 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
     // local state variables
     trialNum = 0;
     currentName = '';
+    stimulusShown = '';
     showStimulus = false;
     allowResponse = false;
-    stimulusShown: string | ArrayBuffer = null;
     blobs: { [key: string]: Blob } = {};
     feedback: string = '';
     showFeedback: boolean = false;
+    imagePath: string = '';
 
     YES = UserResponse.YES;
     NO = UserResponse.NO;
@@ -86,8 +93,7 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
     constructor(
         protected timerService: TimerService,
         protected loaderService: LoaderService,
-        private dataGenService: DataGenerationService,
-        private imageService: ImageService
+        private dataGenService: DataGenerationService
     ) {
         super(loaderService);
     }
@@ -107,17 +113,27 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
                 'duration stimulus presented not defined'
             );
 
+            this.config = config;
+
             this.phase = throwErrIfNotDefined(metadata.componentConfig.phase, 'phase not defined');
         } catch (error) {
             throw new Error('values not defined, cannot start study');
         }
         this.isPractice = metadata.componentConfig.isPractice;
-        this.stimulusSet = metadata.componentConfig.stimulusSet || 1;
         this.interTrialDelay = metadata.componentConfig.interTrialDelay || 500;
         this.durationStimulusPresented = metadata.componentConfig.durationStimulusPresented || 3000;
+        this.counterbalance = throwErrIfNotDefined(
+            config.counterBalanceGroups[config.counterbalanceNumber] as 1 | 2,
+            'counterbalance not defined'
+        );
+        this.stimulusSet = this.counterbalance;
+        this.blockNum = this.config.getCacheValue(FaceNameAssociationCache.BLOCK_NUM) || 1; // set to 1 if not defined
 
-        if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
+        if (config.getCacheValue(FaceNameAssociationCache.STIMULI)) {
+            this.stimuli = config.getCacheValue(FaceNameAssociationCache.STIMULI) as FaceNameAssociationStimulus[];
+        } else if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED) {
             this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
+        }
     }
 
     async start() {
@@ -125,26 +141,23 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
         this.currentStimuliIndex = 0;
         this.trialNum = 0;
 
-        if (!this.stimuli) {
-            this.stimuli = this.dataGenService.generateFaceNameAssociationTaskStimuli(this.phase);
-            const fileNames = this.stimuli.map((x) => `/assets/images/stimuli/facenameassociation/${x.imageName}.png`);
-            this.imageService.loadImagesAsBlobs(fileNames).subscribe((res) => {
-                res.forEach((blob, index) => {
-                    const imageName = this.stimuli[index].imageName;
-                    this.blobs[imageName] = blob;
-                });
-                super.start();
-            });
-        } else {
-            super.start();
+        this.stimuli = this.dataGenService.generateFaceNameAssociationTaskStimuli(
+            this.phase,
+            this.counterbalance,
+            this.stimuli
+        );
+        if (!this.config.getCacheValue(FaceNameAssociationCache.STIMULI)) {
+            // store in cache for next block
+            this.config.setCacheValue(FaceNameAssociationCache.STIMULI, this.stimuli);
         }
+        super.start();
     }
 
     private getActualAnswer(stimulus: FaceNameAssociationStimulus): UserResponse {
         if (this.phase === 'learning-phase') {
             return UserResponse.NA;
         } else {
-            return stimulus.personName === stimulus.correctPersonName ? UserResponse.YES : UserResponse.NO;
+            return stimulus.trialType === FaceNameAssociationTaskTrialtype.INTACT ? UserResponse.YES : UserResponse.NO;
         }
     }
 
@@ -153,7 +166,6 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
         this.showStimulus = false;
         this.allowResponse = false;
         this.currentName = '';
-        this.stimulusShown = null;
 
         this.taskData.push({
             userID: this.userID,
@@ -162,18 +174,16 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
             trial: ++this.trialNum,
             phase: this.phase,
             imagePresented: this.currentStimulus.imageName,
-            namePresented: this.currentStimulus.personName,
-            actualName: this.currentStimulus.correctPersonName,
+            namePresented: this.currentStimulus.displayedPersonName,
+            actualName: this.currentStimulus.actualPersonName,
             stimulusSet: this.stimulusSet,
-            maleFemale: this.currentStimulus.isFemale ? 'female' : 'male',
-            trialType:
-                this.currentStimulus.personName === this.currentStimulus.correctPersonName
-                    ? FaceNameAssociationTaskTrialtype.INTACT
-                    : FaceNameAssociationTaskTrialtype.RECOMBINED,
+            gender: this.currentStimulus.gender,
+            trialType: this.currentStimulus.trialType,
             userAnswer: UserResponse.NA,
             isCorrect: false,
             actualAnswer: this.getActualAnswer(this.currentStimulus),
             responseTime: 0,
+            blockNum: this.blockNum,
             submitted: this.timerService.getCurrentTimestamp(),
         });
 
@@ -196,8 +206,8 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
     }
 
     private async setStimuliUI() {
-        this.currentName = this.currentStimulus.personName;
-        await this.showImage(this.blobs[this.currentStimulus.imageName]);
+        this.currentName = this.currentStimulus.displayedPersonName;
+        this.stimulusShown = this.currentStimulus.imagePath;
     }
 
     private setMaxResponseTimer(delay: number, cbFunc?: () => void) {
@@ -270,6 +280,7 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
 
         if (finishedLastStimulus) {
             super.decideToRepeat();
+            this.config.setCacheValue(FaceNameAssociationCache.BLOCK_NUM, ++this.blockNum);
             return;
         } else {
             this.currentStimuliIndex++;
@@ -278,18 +289,5 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
             this.beginRound();
             return;
         }
-    }
-
-    private showImage(blob: Blob): Promise<void> {
-        return new Promise((resolve) => {
-            const fr = new FileReader();
-            const handler = () => {
-                this.stimulusShown = fr.result;
-                fr.removeEventListener('load', handler);
-                resolve();
-            };
-            fr.addEventListener('load', handler);
-            fr.readAsDataURL(blob);
-        });
     }
 }
