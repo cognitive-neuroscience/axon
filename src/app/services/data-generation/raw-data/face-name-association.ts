@@ -139,61 +139,56 @@ export function getLearningPhaseStimuli(counterbalance: 1 | 2): FaceNameAssociat
     return shuffle([...maleStimuli, ...femaleStimuli]);
 }
 
-export function recombineStimuliForTesting(
-    stimuli?: FaceNameAssociationStimulus[],
-    maxRecombinations: number = 6
-): FaceNameAssociationStimulus[] {
-    if (!stimuli) throw new Error('existing stimuli required for test phase');
-    const newStimuli = deepClone(stimuli);
-    const MAX_RECOMBINED_ALLOWED = maxRecombinations;
-
-    let numMaleRecombined = 0;
-    let numFemaleRecombined = 0;
-
-    while (numFemaleRecombined !== 6 || numMaleRecombined !== 6) {
-        const randomIndex = getRandomNumber(0, newStimuli.length);
-        const randomIndexToSwap = getRandomNumber(0, newStimuli.length);
-        if (randomIndex === randomIndexToSwap) continue;
-
-        const randomStimulus = newStimuli[randomIndex];
-        const randomStimulusToSwap = newStimuli[randomIndexToSwap];
-        if (randomStimulus.gender !== randomStimulusToSwap.gender) continue;
-
-        if (randomStimulus.gender === 'M' && numMaleRecombined >= MAX_RECOMBINED_ALLOWED) continue;
-        if (randomStimulus.gender === 'F' && numFemaleRecombined >= MAX_RECOMBINED_ALLOWED) continue;
-
-        // do swap
-        const originalRandomStimulusType = randomStimulus.trialType;
-        const originalRandomStimulusToSwapType = randomStimulusToSwap.trialType;
-        newStimuli[randomIndex] = randomStimulusToSwap;
-        randomStimulusToSwap.trialType = FaceNameAssociationTaskTrialtype.RECOMBINED;
-        newStimuli[randomIndexToSwap] = randomStimulus;
-        randomStimulus.trialType = FaceNameAssociationTaskTrialtype.RECOMBINED;
-
-        if (randomStimulus.gender === 'M') {
-            numMaleRecombined = newStimuli.filter(
-                (s) => s.trialType === FaceNameAssociationTaskTrialtype.RECOMBINED
-            ).length;
-            if (numMaleRecombined > MAX_RECOMBINED_ALLOWED) {
-                // revert as we are over our allowed limit
-                newStimuli[randomIndex] = randomStimulus;
-                newStimuli[randomIndexToSwap] = randomStimulusToSwap;
-                randomStimulus.trialType = originalRandomStimulusType;
-                randomStimulusToSwap.trialType = originalRandomStimulusToSwapType;
-            }
-        } else {
-            numFemaleRecombined = newStimuli.filter(
-                (s) => s.trialType === FaceNameAssociationTaskTrialtype.RECOMBINED
-            ).length;
-            if (numFemaleRecombined > MAX_RECOMBINED_ALLOWED) {
-                // revert as we are over our allowed limit
-                newStimuli[randomIndex] = randomStimulus;
-                newStimuli[randomIndexToSwap] = randomStimulusToSwap;
-                randomStimulus.trialType = originalRandomStimulusType;
-                randomStimulusToSwap.trialType = originalRandomStimulusToSwapType;
-            }
+export function getNShuffledIndicesByGender(
+    stimuli: FaceNameAssociationStimulus[],
+    nIndices: number,
+    gender: FaceNameAssociationStimulus['gender']
+): { originalIndex: number; newIndex: number }[] {
+    const originalIndices: number[] = [];
+    while (originalIndices.length < nIndices) {
+        const randomIndex = getRandomNumber(0, 24);
+        const stimulus = stimuli[randomIndex];
+        if (stimulus.gender === gender && !originalIndices.includes(randomIndex)) {
+            originalIndices.push(randomIndex);
         }
     }
+
+    let newIndices: number[] = shuffle(originalIndices);
+    while (originalIndices.some((_, index) => originalIndices[index] === newIndices[index])) {
+        newIndices = shuffle(originalIndices);
+    }
+
+    return originalIndices.map((originalIndex, index) => ({
+        originalIndex: originalIndex,
+        newIndex: newIndices[index],
+    }));
+}
+
+export function recombineStimuliForTesting(
+    stimuli?: FaceNameAssociationStimulus[],
+    numRecombinationsPerGender: number = 6
+): FaceNameAssociationStimulus[] {
+    if (!stimuli) throw new Error('existing stimuli required for test phase');
+    if (
+        numRecombinationsPerGender > stimulusSetImages().maleImages.length ||
+        numRecombinationsPerGender > stimulusSetImages().femaleImages.length
+    )
+        throw new Error('number of recombinations more than images');
+    const newStimuli = deepClone(stimuli);
+
+    let maleIndicesToRecombine = getNShuffledIndicesByGender(stimuli, numRecombinationsPerGender, 'M');
+    maleIndicesToRecombine.forEach(({ originalIndex, newIndex }) => {
+        const newName = newStimuli[newIndex].actualPersonName;
+        newStimuli[originalIndex].displayedPersonName = newName;
+        newStimuli[originalIndex].trialType = FaceNameAssociationTaskTrialtype.RECOMBINED;
+    });
+
+    let femaleIndicesToRecombine = getNShuffledIndicesByGender(stimuli, numRecombinationsPerGender, 'F');
+    femaleIndicesToRecombine.forEach(({ originalIndex, newIndex }) => {
+        const newName = newStimuli[newIndex].actualPersonName;
+        newStimuli[originalIndex].displayedPersonName = newName;
+        newStimuli[originalIndex].trialType = FaceNameAssociationTaskTrialtype.RECOMBINED;
+    });
 
     return shuffle(newStimuli);
 }

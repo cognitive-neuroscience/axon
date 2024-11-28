@@ -173,6 +173,7 @@ export class FaceNameAssociationTaskData extends BaseParticipantData {
     isCorrect: boolean;
     responseTime: number;
     blockNum: number;
+    attentionCheck: string;
 }
 
 export class PLTTaskData extends BaseParticipantData {

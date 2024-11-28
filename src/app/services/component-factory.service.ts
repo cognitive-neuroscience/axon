@@ -22,11 +22,13 @@ import { ProbabilisticLearningTaskComponent } from '../pages/tasks/task-playable
 import { IowaGamblingTaskComponent } from '../pages/tasks/task-playables/iowa-gambling-task/iowa-gambling-task.component';
 import { InformationTaskComponent } from '../pages/tasks/task-playables/information-task/information-task.component';
 import { SdmtComponent } from '../pages/tasks/task-playables/sdmt/sdmt.component';
+import { AttentionCheckComponent } from '../pages/tasks/task-playables/attention-check/attention-check.component';
 
 export enum ComponentName {
     // Generic components
     DISPLAY_COMPONENT = 'DISPLAYCOMPONENT',
     SELECT_OPTION_COMPONENT = 'SELECTOPTIONCOMPONENT',
+    ATTENTIONCHECKCOMPONENT = 'ATTENTIONCHECKCOMPONENT',
 
     // Task related components
     RATING_COMPONENT = 'RATINGCOMPONENT',
@@ -78,6 +80,7 @@ const ComponentMap = {
     [ComponentName.IOWA_GAMBLING_COMPONENT]: IowaGamblingTaskComponent,
     [ComponentName.INFORMATION_TASK_COMPONENT]: InformationTaskComponent,
     [ComponentName.SDMT_COMPONENT]: SdmtComponent,
+    [ComponentName.ATTENTIONCHECKCOMPONENT]: AttentionCheckComponent,
 };
 
 @Injectable({

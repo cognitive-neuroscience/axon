@@ -468,7 +468,7 @@ export class DataGenerationService {
                 return getLearningPhaseStimuli(counterbalance);
             }
         } else {
-            return recombineStimuliForTesting(existingStimuli);
+            return recombineStimuliForTesting(existingStimuli, 2);
         }
     }
 

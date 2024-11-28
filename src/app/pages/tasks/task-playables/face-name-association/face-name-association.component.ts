@@ -13,6 +13,7 @@ import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { TaskPlayerState } from '../task-player/task-player.component';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
+import { AttentionCheckCache } from '../attention-check/attention-check.component';
 
 interface FaceNameAssociationMetadata {
     componentName: ComponentName;
@@ -32,7 +33,6 @@ interface FaceNameAssociationMetadata {
 
 export enum FaceNameAssociationCache {
     STIMULI = 'facenameassociation-stimuli',
-    BLOCK_NUM = 'facenameassociation-block-num',
 }
 
 @Component({
@@ -46,7 +46,7 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
      * This task involves two phases. In the first phase, the participant sees a bunch of images and associated names. This is the learning phase.
      * In the second phase, the participant is tested on the images. Half of them are correct, and are half of them are recombined.
      *
-     * The stimuli are hard coded.
+     * The face images are taken from a set number of images, and names are automatically (and randomly) assigned depending on the counterbalance.
      */
 
     // config variables
@@ -127,7 +127,7 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
             'counterbalance not defined'
         );
         this.stimulusSet = this.counterbalance;
-        this.blockNum = this.config.getCacheValue(FaceNameAssociationCache.BLOCK_NUM) || 1; // set to 1 if not defined
+        this.blockNum = metadata.componentConfig.blockNum || 1;
 
         if (config.getCacheValue(FaceNameAssociationCache.STIMULI)) {
             this.stimuli = config.getCacheValue(FaceNameAssociationCache.STIMULI) as FaceNameAssociationStimulus[];
@@ -167,6 +167,10 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
         this.allowResponse = false;
         this.currentName = '';
 
+        const attentionCheckAnswers: string = (
+            (this.config.getCacheValue(AttentionCheckCache.USER_ANSWERS) as string[]) || []
+        ).reduce((acc, curr, index) => (index === 0 ? curr : `${acc}, ${curr}`), '');
+
         this.taskData.push({
             userID: this.userID,
             studyId: this.studyId,
@@ -185,6 +189,7 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
             responseTime: 0,
             blockNum: this.blockNum,
             submitted: this.timerService.getCurrentTimestamp(),
+            attentionCheck: attentionCheckAnswers,
         });
 
         if (this.phase === 'learning-phase') {
@@ -280,7 +285,6 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
 
         if (finishedLastStimulus) {
             super.decideToRepeat();
-            this.config.setCacheValue(FaceNameAssociationCache.BLOCK_NUM, ++this.blockNum);
             return;
         } else {
             this.currentStimuliIndex++;
