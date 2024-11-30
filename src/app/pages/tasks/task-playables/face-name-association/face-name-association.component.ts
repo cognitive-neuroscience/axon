@@ -150,7 +150,17 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
             // store in cache for next block
             this.config.setCacheValue(FaceNameAssociationCache.STIMULI, this.stimuli);
         }
+
+        this.stimuli.forEach((stimulus) => {
+            this.preload(stimulus.imagePath);
+        });
+
         super.start();
+    }
+
+    private preload(url: string) {
+        const img = new Image();
+        img.src = url;
     }
 
     private getActualAnswer(stimulus: FaceNameAssociationStimulus): UserResponse {
