@@ -4,16 +4,16 @@ import { StimuliProvidedType } from 'src/app/models/enums';
 import { TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
 import { FaceNameAssociationTaskData } from 'src/app/models/ParticipantData';
 import { ComponentName } from 'src/app/services/component-factory.service';
+import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
 import {
     FaceNameAssociationStimulus,
     FaceNameAssociationTaskTrialtype,
 } from 'src/app/services/data-generation/stimuli-models';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { TimerService } from 'src/app/services/timer.service';
+import { AttentionCheckCache } from '../attention-check/attention-check.component';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { TaskPlayerState } from '../task-player/task-player.component';
-import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
-import { AttentionCheckCache } from '../attention-check/attention-check.component';
 
 interface FaceNameAssociationMetadata {
     componentName: ComponentName;

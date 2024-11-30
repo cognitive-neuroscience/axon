@@ -1,7 +1,14 @@
 <div class="wrapper task-text flex-column-center">
     <div class="full-box flex-column-center" style="justify-content: space-around">
         <ng-container *ngIf="showStimulus">
-            <img *ngIf="stimulusShown" class="stimulus" [src]="stimulusShown" alt="Stimulus" />
+            <img
+                *ngIf="stimulusShown"
+                class="stimulus"
+                width="800"
+                height="562"
+                [ngSrc]="stimulusShown"
+                alt="Stimulus"
+            />
         </ng-container>
 
         <ng-container *ngIf="showStimulus && stimulusShown && phase !== 'test-phase'">

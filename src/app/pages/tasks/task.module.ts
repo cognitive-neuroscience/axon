@@ -22,7 +22,7 @@ import { RaterComponent } from './task-playables/everyday-choice/rater/rater.com
 import { NgZorroModule } from 'src/app/modules/ngzorro/ngzorro.module';
 import { NavigationButtonsComponent } from './shared/navigation-buttons/navigation-buttons.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { RotateDirective } from './shared/Rotate.directive';
 import { ColorGameComponent } from './unused/color-game/color-game.component';
 import { EmbeddedPageComponent } from './task-playables/embedded-page/embedded-page.component';
@@ -113,6 +113,7 @@ import { AttentionCheckComponent } from './task-playables/attention-check/attent
         ReactiveFormsModule,
         SharedModule,
         TranslateModule,
+        NgOptimizedImage,
     ],
     exports: [EmbeddedPageComponent],
 })
