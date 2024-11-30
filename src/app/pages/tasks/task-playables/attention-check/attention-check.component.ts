@@ -10,7 +10,6 @@ interface AttentionCheckMetadata {
     component: ComponentName;
     componentConfig: {
         numbersDisplayed: number[];
-        durationStimulusPresented: number;
         maxResponseTime: number;
     };
 }

@@ -146,7 +146,7 @@ export function getNShuffledIndicesByGender(
 ): { originalIndex: number; newIndex: number }[] {
     const originalIndices: number[] = [];
     while (originalIndices.length < nIndices) {
-        const randomIndex = getRandomNumber(0, 24);
+        const randomIndex = getRandomNumber(0, stimuli.length);
         const stimulus = stimuli[randomIndex];
         if (stimulus.gender === gender && !originalIndices.includes(randomIndex)) {
             originalIndices.push(randomIndex);
