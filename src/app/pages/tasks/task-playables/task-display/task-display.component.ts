@@ -100,12 +100,16 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
         this.handleComplete(nav);
     }
 
-    injectString(section: DisplaySection): string {
-        const text = getTextForLang(this.translateService.currentLang as SupportedLangs, section.textContent);
+    injectString(
+        textContent: string,
+        injection: 'cached-string' | 'counterbalance' | 'counterbalance-alternative',
+        cacheKey: string
+    ): string {
+        const text = getTextForLang(this.translateService.currentLang as SupportedLangs, textContent);
 
-        switch (section.injection) {
+        switch (injection) {
             case 'cached-string':
-                const cachedVar = thisOrDefault(this.config.getCacheValue(section.cacheKey), '');
+                const cachedVar = thisOrDefault(this.config.getCacheValue(cacheKey), '');
                 return text.replace('???', cachedVar);
             case 'counterbalance':
                 return text.replace('???', this.counterbalanceStr);
@@ -143,7 +147,8 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
 
         // search the display sections to see if counterbalance alt needs to be injected
         if (!!metadata.componentConfig.sections.find((section) => section.injection === 'counterbalance-alternative')) {
-            // 3 - 1 == 2, and 3 - 2 == 1. This gives us the value that is not the counterbalance target value
+            // 3 - 1 == 2, and 3 - 2 == 1. This gives us the value that is not the counterbalance target value.
+            // Note that this only works if the counterbalance groups = 2. If more, we need to modify this logic
             this.counterbalanceAltStr = config.counterBalanceGroups[3 - config.counterbalanceNumber];
         }
 

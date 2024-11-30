@@ -129,11 +129,12 @@ export enum SARTStimuliSetType {
 }
 
 export class FaceNameAssociationStimulus {
-    personName: string;
-    correctPersonName: string;
-    imageName: string;
-    isFemale: boolean;
+    displayedPersonName: string;
+    actualPersonName: string;
     trialType: FaceNameAssociationTaskTrialtype;
+    imageName: string;
+    gender: 'M' | 'F';
+    imagePath: string;
 }
 
 export enum FaceNameAssociationTaskTrialtype {

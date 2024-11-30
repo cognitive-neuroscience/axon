@@ -48,6 +48,7 @@ import { MatrixComponent } from './task-playables/questionnaire/matrix/matrix.co
 import { SliderControlComponent } from './task-playables/questionnaire/slider-control/slider-control.component';
 import { RadioButtonsComponent } from './task-playables/questionnaire/radio-buttons/radio-buttons.component';
 import { SdmtComponent } from './task-playables/sdmt/sdmt.component';
+import { AttentionCheckComponent } from './task-playables/attention-check/attention-check.component';
 
 @NgModule({
     declarations: [
@@ -83,6 +84,7 @@ import { SdmtComponent } from './task-playables/sdmt/sdmt.component';
         SelectOptionComponent,
         InfoDisplayComponent,
         SkipButtonComponent,
+        AttentionCheckComponent,
 
         RotateDirective,
 

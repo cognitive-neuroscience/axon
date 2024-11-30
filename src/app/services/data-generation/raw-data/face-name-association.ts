@@ -1,352 +1,194 @@
+import { deepClone, getRandomNumber, shuffle } from 'src/app/common/commonMethods';
 import { FaceNameAssociationStimulus, FaceNameAssociationTaskTrialtype } from '../stimuli-models';
 
-/**
- * We do not want face name manipulation to affect later trials so we turn
- * this into a function to ensure we are dealing with an array of new objects
- * every time
- */
-export function getFaceNameAssociationStimuli(phase: 'learning-phase' | 'test-phase'): FaceNameAssociationStimulus[] {
-    if (phase === 'learning-phase') {
-        return [
-            {
-                personName: 'Mary',
-                correctPersonName: 'Mary',
-                imageName: '1F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Patricia',
-                correctPersonName: 'Patricia',
-                imageName: '2F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Jennifer',
-                correctPersonName: 'Jennifer',
-                imageName: '3F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Linda',
-                correctPersonName: 'Linda',
-                imageName: '4F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Elizabeth',
-                correctPersonName: 'Elizabeth',
-                imageName: '5F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Barbara',
-                correctPersonName: 'Barbara',
-                imageName: '6F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Susan',
-                correctPersonName: 'Susan',
-                imageName: '7F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Jessica',
-                correctPersonName: 'Jessica',
-                imageName: '8F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Sarah',
-                correctPersonName: 'Sarah',
-                imageName: '9F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Karen',
-                correctPersonName: 'Karen',
-                imageName: '10F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Nancy',
-                correctPersonName: 'Nancy',
-                imageName: '11F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Lisa',
-                correctPersonName: 'Lisa',
-                imageName: '12F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'James',
-                correctPersonName: 'James',
-                imageName: '1M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Robert',
-                correctPersonName: 'Robert',
-                imageName: '2M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'John',
-                correctPersonName: 'John',
-                imageName: '3M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Michael',
-                correctPersonName: 'Michael',
-                imageName: '4M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'William',
-                correctPersonName: 'William',
-                imageName: '5M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'David',
-                correctPersonName: 'David',
-                imageName: '6M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Richard',
-                correctPersonName: 'Richard',
-                imageName: '7M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Joseph',
-                correctPersonName: 'Joseph',
-                imageName: '8M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Thomas',
-                correctPersonName: 'Thomas',
-                imageName: '9M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Charles',
-                correctPersonName: 'Charles',
-                imageName: '10M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Christopher',
-                correctPersonName: 'Christopher',
-                imageName: '11M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Daniel',
-                correctPersonName: 'Daniel',
-                imageName: '12M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-        ];
-    } else {
-        return [
-            {
-                personName: 'Mary',
-                correctPersonName: 'Mary',
-                imageName: '1F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Patricia',
-                correctPersonName: 'Patricia',
-                imageName: '2F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Jennifer',
-                correctPersonName: 'Jennifer',
-                imageName: '3F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Linda',
-                correctPersonName: 'Linda',
-                imageName: '4F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Elizabeth',
-                correctPersonName: 'Elizabeth',
-                imageName: '5F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Barbara',
-                correctPersonName: 'Barbara',
-                imageName: '6F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Lisa',
-                correctPersonName: 'Susan',
-                imageName: '7F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.RECOMBINED,
-            },
-            {
-                personName: 'Susan',
-                correctPersonName: 'Jessica',
-                imageName: '8F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.RECOMBINED,
-            },
-            {
-                personName: 'Jessica',
-                correctPersonName: 'Sarah',
-                imageName: '9F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.RECOMBINED,
-            },
-            {
-                personName: 'Sarah',
-                correctPersonName: 'Karen',
-                imageName: '10F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.RECOMBINED,
-            },
-            {
-                personName: 'Karen',
-                correctPersonName: 'Nancy',
-                imageName: '11F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.RECOMBINED,
-            },
-            {
-                personName: 'Nancy',
-                correctPersonName: 'Lisa',
-                imageName: '12F',
-                isFemale: true,
-                trialType: FaceNameAssociationTaskTrialtype.RECOMBINED,
-            },
-            {
-                personName: 'James',
-                correctPersonName: 'James',
-                imageName: '1M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Robert',
-                correctPersonName: 'Robert',
-                imageName: '2M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'John',
-                correctPersonName: 'John',
-                imageName: '3M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Michael',
-                correctPersonName: 'Michael',
-                imageName: '4M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'William',
-                correctPersonName: 'William',
-                imageName: '5M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'David',
-                correctPersonName: 'David',
-                imageName: '6M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.INTACT,
-            },
-            {
-                personName: 'Daniel',
-                correctPersonName: 'Richard',
-                imageName: '7M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.RECOMBINED,
-            },
-            {
-                personName: 'Richard',
-                correctPersonName: 'Joseph',
-                imageName: '8M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.RECOMBINED,
-            },
-            {
-                personName: 'Joseph',
-                correctPersonName: 'Thomas',
-                imageName: '9M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.RECOMBINED,
-            },
-            {
-                personName: 'Thomas',
-                correctPersonName: 'Charles',
-                imageName: '10M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.RECOMBINED,
-            },
-            {
-                personName: 'Charles',
-                correctPersonName: 'Christopher',
-                imageName: '11M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.RECOMBINED,
-            },
-            {
-                personName: 'Christopher',
-                correctPersonName: 'Daniel',
-                imageName: '12M',
-                isFemale: false,
-                trialType: FaceNameAssociationTaskTrialtype.RECOMBINED,
-            },
-        ];
+function stimulusSet1Names() {
+    return {
+        maleNames: [
+            'Thomas',
+            'Oliver',
+            'Theodore',
+            'Leo',
+            'Zachary',
+            'Daniel',
+            'Jonathan',
+            'Henry',
+            'Justin',
+            'Andrew',
+            'Kevin',
+            'Mason',
+        ],
+        femaleNames: [
+            'Amelia',
+            'Sarah',
+            'Rachel',
+            'Megan',
+            'Mila',
+            'Vanessa',
+            'Lauren',
+            'Samantha',
+            'Julia',
+            'Ella',
+            'Abigail',
+            'Elizabeth',
+        ],
+    };
+}
+
+function stimulusSet2Names() {
+    return {
+        maleNames: [
+            'Benjamin',
+            'Brandon',
+            'Logan',
+            'Liam',
+            'Jack',
+            'Nicholas',
+            'Kevin',
+            'Gabriel',
+            'Christopher',
+            'Samuel',
+            'Nathan',
+            'William',
+        ],
+        femaleNames: [
+            'Amanda',
+            'Chloe',
+            'Ava',
+            'Stephanie',
+            'Alyssa',
+            'Evelyn',
+            'Laura',
+            'Victoria',
+            'Mia',
+            'Madison',
+            'Olivia',
+            'Kayla',
+        ],
+    };
+}
+
+function stimulusSetImages() {
+    return {
+        femaleImages: [
+            '1-AF.jpg',
+            '2-AF.jpg',
+            '3-AF.jpg',
+            '4-BF.jpg',
+            '5-BF.jpg',
+            '6-BF.jpg',
+            '7-LF.jpg',
+            '8-LF.jpg',
+            '9-LF.jpg',
+            '10-WF.jpg',
+            '11-WF.jpg',
+            '12-WF.jpg',
+        ],
+        maleImages: [
+            '13-AM.jpg',
+            '14-AM.jpg',
+            '15-AM.jpg',
+            '16-BM.jpg',
+            '17-BM.jpg',
+            '18-BM.jpg',
+            '19-LM.jpg',
+            '20-LM.jpg',
+            '21-LM.jpg',
+            '22-WM.jpg',
+            '23-WM.jpg',
+            '24-WM.jpg',
+        ],
+    };
+}
+
+function getFaceNameAssociationNames(counterbalanceGroup: 1 | 2): {
+    maleNames: string[];
+    femaleNames: string[];
+} {
+    return counterbalanceGroup === 2 ? stimulusSet2Names() : stimulusSet1Names();
+}
+
+export function getLearningPhaseStimuli(counterbalance: 1 | 2): FaceNameAssociationStimulus[] {
+    const { maleNames, femaleNames } = getFaceNameAssociationNames(counterbalance);
+    const { maleImages, femaleImages } = stimulusSetImages();
+
+    if (maleNames.length !== maleImages.length || femaleNames.length !== femaleImages.length)
+        throw new Error("number of names and images don't match");
+
+    const shuffledMaleNames = shuffle(maleNames);
+    const shuffledMaleImages = shuffle(maleImages);
+    const maleStimuli: FaceNameAssociationStimulus[] = shuffledMaleImages.map((image, index) => ({
+        imageName: image,
+        gender: 'M',
+        displayedPersonName: shuffledMaleNames[index],
+        actualPersonName: shuffledMaleNames[index],
+        trialType: FaceNameAssociationTaskTrialtype.INTACT,
+        imagePath: `/assets/images/stimuli/facenameassociation/${counterbalance}/male/${image}`,
+    }));
+
+    const shuffledFemaleNames = shuffle(femaleNames);
+    const shuffledFemaleImages = shuffle(femaleImages);
+    const femaleStimuli: FaceNameAssociationStimulus[] = shuffledFemaleImages.map((image, index) => ({
+        imageName: image,
+        gender: 'F',
+        displayedPersonName: shuffledFemaleNames[index],
+        actualPersonName: shuffledFemaleNames[index],
+        trialType: FaceNameAssociationTaskTrialtype.INTACT,
+        imagePath: `/assets/images/stimuli/facenameassociation/${counterbalance}/female/${image}`,
+    }));
+
+    return shuffle([...maleStimuli, ...femaleStimuli]);
+}
+
+export function getNShuffledIndicesByGender(
+    stimuli: FaceNameAssociationStimulus[],
+    nIndices: number,
+    gender: FaceNameAssociationStimulus['gender']
+): { originalIndex: number; newIndex: number }[] {
+    const originalIndices: number[] = [];
+    while (originalIndices.length < nIndices) {
+        const randomIndex = getRandomNumber(0, stimuli.length);
+        const stimulus = stimuli[randomIndex];
+        if (stimulus.gender === gender && !originalIndices.includes(randomIndex)) {
+            originalIndices.push(randomIndex);
+        }
     }
+
+    let newIndices: number[] = shuffle(originalIndices);
+    while (originalIndices.some((_, index) => originalIndices[index] === newIndices[index])) {
+        newIndices = shuffle(originalIndices);
+    }
+
+    return originalIndices.map((originalIndex, index) => ({
+        originalIndex: originalIndex,
+        newIndex: newIndices[index],
+    }));
+}
+
+export function recombineStimuliForTesting(
+    stimuli?: FaceNameAssociationStimulus[],
+    numRecombinationsPerGender: number = 6
+): FaceNameAssociationStimulus[] {
+    if (!stimuli) throw new Error('existing stimuli required for test phase');
+    if (
+        numRecombinationsPerGender > stimulusSetImages().maleImages.length ||
+        numRecombinationsPerGender > stimulusSetImages().femaleImages.length
+    )
+        throw new Error('number of recombinations more than images');
+    const newStimuli = deepClone(stimuli);
+
+    let maleIndicesToRecombine = getNShuffledIndicesByGender(stimuli, numRecombinationsPerGender, 'M');
+    maleIndicesToRecombine.forEach(({ originalIndex, newIndex }) => {
+        const newName = newStimuli[newIndex].actualPersonName;
+        newStimuli[originalIndex].displayedPersonName = newName;
+        newStimuli[originalIndex].trialType = FaceNameAssociationTaskTrialtype.RECOMBINED;
+    });
+
+    let femaleIndicesToRecombine = getNShuffledIndicesByGender(stimuli, numRecombinationsPerGender, 'F');
+    femaleIndicesToRecombine.forEach(({ originalIndex, newIndex }) => {
+        const newName = newStimuli[newIndex].actualPersonName;
+        newStimuli[originalIndex].displayedPersonName = newName;
+        newStimuli[originalIndex].trialType = FaceNameAssociationTaskTrialtype.RECOMBINED;
+    });
+
+    return shuffle(newStimuli);
 }

@@ -16,7 +16,10 @@
         <div>
             <ng-container *ngFor="let section of displaySections">
                 <ng-container *ngIf="section.sectionType === 'text'">
-                    <div class="section" [innerHTML]="injectString(section)"></div>
+                    <div
+                        class="section"
+                        [innerHTML]="injectString(section.textContent, section.injection, section.cacheKey)"
+                    ></div>
                 </ng-container>
                 <div
                     class="image-container {{ section.imageAlignment }}"
@@ -29,7 +32,7 @@
                 >
                     <img
                         class="{{ section.sectionType }}"
-                        [src]="getTranslation(section.imagePath)"
+                        [src]="injectString(getTranslation(section.imagePath), section.injection, section.cacheKey)"
                         alt="Instruction Image"
                     />
                 </div>
