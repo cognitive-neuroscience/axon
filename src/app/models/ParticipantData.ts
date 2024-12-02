@@ -176,6 +176,15 @@ export class FaceNameAssociationTaskData extends BaseParticipantData {
     attentionCheck: string;
 }
 
+export class JudgementOfLineTaskData extends BaseParticipantData {
+    isPractice: boolean;
+    targetLinePresented: string;
+    targetAnglePresented: string;
+    isCorrect: boolean;
+    responseTime: number;
+    userAnswer: string;
+}
+
 export class PLTTaskData extends BaseParticipantData {
     score: number;
     isPractice: boolean;

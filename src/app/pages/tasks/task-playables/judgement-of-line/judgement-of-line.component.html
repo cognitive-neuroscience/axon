@@ -1,0 +1,38 @@
+<div class="container-fluid wrapper task-text flex-column-center">
+    <div class="full-box">
+        <div *ngIf="showStimulus" class="flex-column-center w-100 h-100">
+            <div class="w-100 h-75 d-flex" style="justify-content: center; align-items: flex-start; margin-top: 20px">
+                <div class="line-container no-hover {{ stimulusShown }}">
+                    <div class="line"></div>
+                </div>
+            </div>
+            <div class="w-100 h-75 d-flex" style="justify-content: center; align-items: flex-end; margin-bottom: 20px">
+                <div
+                    *ngFor="let line of lines"
+                    (click)="handleRoundInteraction(line)"
+                    class="line-container angle-{{ line }}"
+                >
+                    <div class="line"></div>
+                </div>
+            </div>
+
+            <app-skip-button [isVisible]="true" (shouldSkip)="handleSkip()"></app-skip-button>
+        </div>
+        <div *ngIf="showTimeRemaining" style="position: absolute; right: 20px; bottom: 20px">
+            <h6 class="color-primary" style="font-size: 4rem">{{ timeRemaining }}</h6>
+        </div>
+        <div *ngIf="showNext" class="d-flex w-100 h-100 flex-column-center">
+            <button
+                style="font-size: 4rem; width: 200px; height: 80px"
+                mat-flat-button
+                color="primary"
+                (click)="onClickNextTrial()"
+            >
+                {{ 'buttons.next' | translate }}
+            </button>
+        </div>
+        <div *ngIf="showFeedback" class="w-100 h-100 flex-column-center">
+            <h1 class="color-primary" style="font-size: 2rem">{{ feedback }}</h1>
+        </div>
+    </div>
+</div>

@@ -71,7 +71,6 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
     stimulusShown = '';
     showStimulus = false;
     allowResponse = false;
-    blobs: { [key: string]: Blob } = {};
     feedback: string = '';
     showFeedback: boolean = false;
     imagePath: string = '';

@@ -1,0 +1,120 @@
+.line-container {
+    height: 220px;
+    width: 25px; // add width to give line selection area some padding
+    position: absolute;
+    transform-origin: bottom;
+    display: flex;
+    justify-content: center;
+
+    &:hover {
+        cursor: pointer;
+        .line {
+            background: linear-gradient(red 85%, white 85%);
+        }
+    }
+}
+
+.no-hover {
+    &:hover {
+        cursor: auto !important;
+        .line {
+            background: linear-gradient(black 85%, white 85%) !important;
+        }
+    }
+}
+
+.line {
+    width: 2px;
+    z-index: 999;
+    background: linear-gradient(black 85%, white 85%);
+}
+
+.angle-1 {
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.angle-2 {
+    -moz-transform: rotate(77.14deg);
+    -webkit-transform: rotate(77.14deg);
+    transform: rotate(77.14deg);
+}
+
+.angle-3 {
+    -moz-transform: rotate(64.286deg);
+    -webkit-transform: rotate(64.286deg);
+    transform: rotate(64.286deg);
+}
+
+.angle-4 {
+    -moz-transform: rotate(51.429deg);
+    -webkit-transform: rotate(51.429deg);
+    transform: rotate(51.429deg);
+}
+
+.angle-5 {
+    -moz-transform: rotate(38.571deg);
+    -webkit-transform: rotate(38.571deg);
+    transform: rotate(38.571deg);
+}
+
+.angle-6 {
+    -moz-transform: rotate(25.714deg);
+    -webkit-transform: rotate(25.714deg);
+    transform: rotate(25.714deg);
+}
+
+.angle-7 {
+    -moz-transform: rotate(12.857deg);
+    -webkit-transform: rotate(12.857deg);
+    transform: rotate(12.857deg);
+}
+
+.angle-8 {
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+}
+
+.angle-9 {
+    -moz-transform: rotate(-12.857deg);
+    -webkit-transform: rotate(-12.857deg);
+    transform: rotate(-12.857deg);
+}
+
+.angle-10 {
+    -moz-transform: rotate(-25.714deg);
+    -webkit-transform: rotate(-25.714deg);
+    transform: rotate(-25.714deg);
+}
+
+.angle-11 {
+    -moz-transform: rotate(-38.571deg);
+    -webkit-transform: rotate(-38.571deg);
+    transform: rotate(-38.571deg);
+}
+
+.angle-12 {
+    -moz-transform: rotate(-51.429deg);
+    -webkit-transform: rotate(-51.429deg);
+    transform: rotate(-51.429deg);
+}
+
+.angle-13 {
+    -moz-transform: rotate(-64.286deg);
+    -webkit-transform: rotate(-64.286deg);
+    transform: rotate(-64.286deg);
+}
+
+.angle-14 {
+    -moz-transform: rotate(-77.14deg);
+    -webkit-transform: rotate(-77.14deg);
+    transform: rotate(-77.14deg);
+}
+
+.angle-15 {
+    -moz-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
