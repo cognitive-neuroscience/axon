@@ -40,12 +40,12 @@ export class AttentionCheckComponent implements Playable {
 
     private translationMapping = {
         promptBeginningSegment: {
-            en: 'Please press',
-            fr: '',
+            en: 'Press',
+            fr: 'Appuyez sur le',
         },
         promptEndSegment: {
             en: 'on your keyboard',
-            fr: '',
+            fr: 'sur votre clavier',
         },
     };
 
@@ -61,6 +61,10 @@ export class AttentionCheckComponent implements Playable {
         this.timer = window.setTimeout(() => {
             if (cbFunc) cbFunc();
         }, delay);
+    }
+
+    private cancelTimer() {
+        clearTimeout(this.timer);
     }
 
     afterInit(): void {
@@ -96,6 +100,7 @@ export class AttentionCheckComponent implements Playable {
 
     completeRound() {
         this.responseAllowed = false;
+        this.cancelTimer();
         if (this.userAnswers.length >= this.numbersDisplayed.length) {
             this.handleComplete();
         } else {
