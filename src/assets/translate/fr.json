@@ -46,6 +46,10 @@
         "finger-tapping": {
             "begin-tapping": "Commencez à appuyer",
             "continue-tapping": "Continuez à appuyer"
+        },
+        "response": {
+            "yes": "Oui",
+            "no": "Non"
         }
     },
     "errorMessages": {

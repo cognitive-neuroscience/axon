@@ -23,6 +23,7 @@ import { IowaGamblingTaskComponent } from '../pages/tasks/task-playables/iowa-ga
 import { InformationTaskComponent } from '../pages/tasks/task-playables/information-task/information-task.component';
 import { SdmtComponent } from '../pages/tasks/task-playables/sdmt/sdmt.component';
 import { AttentionCheckComponent } from '../pages/tasks/task-playables/attention-check/attention-check.component';
+import { JudgementOfLineComponent } from '../pages/tasks/task-playables/judgement-of-line/judgement-of-line.component';
 
 export enum ComponentName {
     // Generic components
@@ -48,6 +49,7 @@ export enum ComponentName {
     IOWA_GAMBLING_COMPONENT = 'IOWAGAMBLINGCOMPONENT',
     INFORMATION_TASK_COMPONENT = 'INFORMATIONTASKCOMPONENT',
     SDMT_COMPONENT = 'SDMTCOMPONENT',
+    JUDGEMENT_OF_LINE_COMPONENT = 'JUDGEMENTOFLINECOMPONENT',
 
     // Special Components
     EMBEDDED_PAGE_COMPONENT = 'EMBEDDEDPAGECOMPONENT',
@@ -81,6 +83,7 @@ const ComponentMap = {
     [ComponentName.INFORMATION_TASK_COMPONENT]: InformationTaskComponent,
     [ComponentName.SDMT_COMPONENT]: SdmtComponent,
     [ComponentName.ATTENTIONCHECKCOMPONENT]: AttentionCheckComponent,
+    [ComponentName.JUDGEMENT_OF_LINE_COMPONENT]: JudgementOfLineComponent,
 };
 
 @Injectable({

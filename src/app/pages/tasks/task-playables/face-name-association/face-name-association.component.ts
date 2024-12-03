@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
-import { StimuliProvidedType } from 'src/app/models/enums';
+import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
 import { TranslatedFeedback, UserResponse } from 'src/app/models/InternalDTOs';
 import { FaceNameAssociationTaskData } from 'src/app/models/ParticipantData';
 import { ComponentName } from 'src/app/services/component-factory.service';
@@ -14,6 +14,7 @@ import { TimerService } from 'src/app/services/timer.service';
 import { AttentionCheckCache } from '../attention-check/attention-check.component';
 import { AbstractBaseTaskComponent } from '../base-task';
 import { TaskPlayerState } from '../task-player/task-player.component';
+import { TranslateService } from '@ngx-translate/core';
 
 interface FaceNameAssociationMetadata {
     componentName: ComponentName;
@@ -71,7 +72,6 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
     stimulusShown = '';
     showStimulus = false;
     allowResponse = false;
-    blobs: { [key: string]: Blob } = {};
     feedback: string = '';
     showFeedback: boolean = false;
     imagePath: string = '';
@@ -81,6 +81,17 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
 
     // timers
     maxResponseTimer: any;
+
+    translationMapping = {
+        prompt: {
+            [SupportedLangs.EN]: 'Is this',
+            [SupportedLangs.FR]: 'Est-ce',
+        },
+    };
+
+    get prompt(): string {
+        return this.translationMapping.prompt[this.translateService.currentLang];
+    }
 
     get currentStimulus(): FaceNameAssociationStimulus {
         return this.stimuli[this.currentStimuliIndex];
@@ -93,7 +104,8 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
     constructor(
         protected timerService: TimerService,
         protected loaderService: LoaderService,
-        private dataGenService: DataGenerationService
+        private dataGenService: DataGenerationService,
+        private translateService: TranslateService
     ) {
         super(loaderService);
     }

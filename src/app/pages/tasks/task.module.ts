@@ -49,6 +49,7 @@ import { SliderControlComponent } from './task-playables/questionnaire/slider-co
 import { RadioButtonsComponent } from './task-playables/questionnaire/radio-buttons/radio-buttons.component';
 import { SdmtComponent } from './task-playables/sdmt/sdmt.component';
 import { AttentionCheckComponent } from './task-playables/attention-check/attention-check.component';
+import { JudgementOfLineComponent } from './task-playables/judgement-of-line/judgement-of-line.component';
 
 @NgModule({
     declarations: [
@@ -73,6 +74,7 @@ import { AttentionCheckComponent } from './task-playables/attention-check/attent
         TaskSwitchingComponent,
         TrailMakingComponent,
         InformationTaskComponent,
+        JudgementOfLineComponent,
 
         EmbeddedPageComponent,
 

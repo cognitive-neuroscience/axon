@@ -566,4 +566,13 @@ export class DataGenerationService {
             return getSDMTRealStimuli(imageToNumberMapping);
         }
     }
+
+    generateJudgementOfLineStimuli(numTrials: number) {
+        const stimuli: string[] = [];
+        for (let i = 0; i < numTrials; i++) {
+            const randomNumber = getRandomNumber(1, 16);
+            stimuli.push(`angle-${randomNumber}`);
+        }
+        return stimuli;
+    }
 }
