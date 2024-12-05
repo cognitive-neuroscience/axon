@@ -36,6 +36,7 @@ export interface TaskDisplayComponentMetadata {
             canSkipTimer: boolean;
             skipAvailableAfterXSeconds: number;
             countDown: boolean;
+            placement?: 'top-left' | 'top-right' | 'top-center' | 'bottom-left' | 'bottom-right' | 'bottom-center';
         };
         subtitle?: string;
         sections?: DisplaySection[];
@@ -73,6 +74,7 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
     timerMode: boolean = false;
     timerDisplayValue: number;
     timerCountDown: boolean = false;
+    timerPlacement: TaskDisplayComponentMetadata['componentConfig']['timerConfig']['placement'] = 'top-left';
     showNavigationButtons: boolean = true;
 
     nextButtonText: string = '';
@@ -160,6 +162,7 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
                 metadata.componentConfig.timerConfig.skipAvailableAfterXSeconds,
                 0
             );
+            this.timerPlacement = thisOrDefault(metadata.componentConfig.timerConfig.placement, 'top-center');
 
             if (!this.canSkipTimer || this.skipAvailableAfterXSeconds > 0) {
                 this.showNavigationButtons = false;

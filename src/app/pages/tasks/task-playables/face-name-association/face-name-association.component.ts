@@ -25,6 +25,7 @@ interface FaceNameAssociationMetadata {
         interTrialDelay: number;
         durationStimulusPresented: number;
         blockNum: number;
+        durationOfFeedback: number;
         stimuliConfig: {
             type: StimuliProvidedType;
             stimuli: FaceNameAssociationStimulus[];
@@ -57,7 +58,7 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
     private stimulusSet = 1;
     private interTrialDelay = 500;
     private durationStimulusPresented = 3000;
-    private durationOfFeedback = 1000;
+    private durationOfFeedback = 3000;
     private counterbalance: 1 | 2;
     private blockNum: number;
 
@@ -86,6 +87,10 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
         prompt: {
             [SupportedLangs.EN]: 'Is this',
             [SupportedLangs.FR]: 'Est-ce',
+        },
+        tooSlow: {
+            [SupportedLangs.EN]: 'Please respond faster next time',
+            [SupportedLangs.FR]: 'Veuillez répondre plus vite la prochaine fois',
         },
     };
 
@@ -140,6 +145,7 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
         );
         this.stimulusSet = this.counterbalance;
         this.blockNum = metadata.componentConfig.blockNum || 1;
+        this.durationOfFeedback = this.durationOfFeedback || 3000;
 
         if (config.getCacheValue(FaceNameAssociationCache.STIMULI)) {
             this.stimuli = config.getCacheValue(FaceNameAssociationCache.STIMULI) as FaceNameAssociationStimulus[];
@@ -285,14 +291,14 @@ export class FaceNameAssociationComponent extends AbstractBaseTaskComponent {
                 this.currentTrial.isCorrect = true;
                 break;
             case UserResponse.NA:
-                this.feedback = TranslatedFeedback.TOOSLOW;
+                this.feedback = this.translationMapping.tooSlow[this.translateService.currentLang];
                 break;
             default:
                 this.currentTrial.isCorrect = false;
                 break;
         }
 
-        if (this.phase === 'test-phase' && this.feedback === TranslatedFeedback.TOOSLOW) {
+        if (this.phase === 'test-phase' && this.currentTrial.userAnswer === UserResponse.NA) {
             this.showFeedback = true;
             await wait(this.durationOfFeedback);
             if (this.isDestroyed) return;

@@ -25,6 +25,8 @@
 }
 
 .timer-value {
+    position: absolute;
+    width: 100%;
     padding: 1% 4% 1% 4%;
     display: flex;
     justify-content: center;
@@ -33,6 +35,36 @@
     color: white;
     background-color: #3f51b5;
     font-size: 2.5rem;
+
+    &.top-left {
+        top: 0;
+        justify-content: flex-start !important;
+    }
+
+    &.top-center {
+        top: 0;
+        justify-content: center !important;
+    }
+
+    &.top-right {
+        top: 0;
+        justify-content: flex-end !important;
+    }
+
+    &.bottom-left {
+        bottom: 0;
+        justify-content: flex-start !important;
+    }
+
+    &.bottom-center {
+        bottom: 0;
+        justify-content: center !important;
+    }
+
+    &.bottom-right {
+        bottom: 0;
+        justify-content: flex-end !important;
+    }
 }
 
 .display-instructions {
@@ -42,6 +74,10 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+
+    &.pad-top {
+        margin-top: 4%;
+    }
 
     .title {
         font-weight: bold;

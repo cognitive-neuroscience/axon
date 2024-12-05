@@ -1,10 +1,12 @@
 <div class="display-container">
-    <div *ngIf="timerMode && showTimer">
-        <div class="timer-value">
-            <span>{{ timerDisplayValue }}</span>
-        </div>
+    <div *ngIf="timerMode && showTimer" class="timer-value {{ timerPlacement }}">
+        <span>{{ timerDisplayValue }}</span>
     </div>
-    <div class="display-instructions overflow-scrollable">
+    <div
+        class="display-instructions overflow-scrollable {{
+            timerMode && showTimer && timerPlacement.includes('top') ? 'pad-top' : ''
+        }}"
+    >
         <div>
             <ng-container *ngIf="title">
                 <h1 class="title" [innerHTML]="title"></h1>
