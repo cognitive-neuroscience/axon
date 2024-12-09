@@ -76,7 +76,11 @@
     flex-direction: column;
 
     &.pad-top {
-        margin-top: 4%;
+        margin-top: calc(48px + 2%);
+    }
+
+    &.pad-bottom {
+        margin-bottom: calc(48px + 2%);
     }
 
     .title {
@@ -97,6 +101,11 @@
 
         .image-small {
             width: 50px;
+            margin-bottom: 20px;
+        }
+
+        .image-medium {
+            width: 390px;
             margin-bottom: 20px;
         }
     }
