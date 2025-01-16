@@ -16,7 +16,7 @@ if (environment.production) {
             browserTracingIntegration(),
         ],
         tracesSampleRate: 0.1,
-        tracePropagationTargets: ['https://psharplab.campus.mcgill.ca'],
+        tracePropagationTargets: ['https://wecog.research.mcgill.ca'],
         replaysOnErrorSampleRate: 1.0,
         replaysSessionSampleRate: 0.1,
     });

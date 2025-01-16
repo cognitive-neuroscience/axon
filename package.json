@@ -58,7 +58,7 @@
         "build-dev": "ng build --configuration development --aot",
         "test": "ng test",
         "lint": "ng lint",
-        "deploy": "cd dist && scp -r . nick@psharplab.campus.mcgill.ca:/home/nick/tmp-frontend",
+        "deploy": "cd dist && scp -r . nicholas.lee2@affiliate.mcgill.ca:/home/nlee30",
         "build-deploy": "npm run build && npm run sentry:generate-sourcemaps && npm run sentry:upload-sourcemaps && npm run remove-maps && npm run deploy",
         "lint-fix": "ng lint --fix=true",
         "sentry:generate-sourcemaps": "sentry-cli sourcemaps inject ./dist",

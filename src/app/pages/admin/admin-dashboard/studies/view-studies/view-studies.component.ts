@@ -26,11 +26,11 @@ import { TaskManagerService } from 'src/app/services/task-manager.service';
 export class ViewStudiesComponent implements OnInit, OnDestroy {
     showHiddenStudies: boolean = false;
     CROWDSOURCE_LINK: string = environment.production
-        ? 'https://psharplab.campus.mcgill.ca/#/crowdsource-participant?studyid='
+        ? `https://wecog.research.mcgill.ca/#/crowdsource-participant?studyid=`
         : 'https://localhost:4200/#/crowdsource-participant?studyid=';
 
     ACCOUNT_LINK: string = environment.production
-        ? 'https://psharplab.campus.mcgill.ca/#/studies/'
+        ? 'https://wecog.research.mcgill.ca/#/studies/'
         : 'https://localhost:4200/#/studies/';
 
     subscriptions: Subscription[] = [];
