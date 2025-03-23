@@ -35,6 +35,7 @@ export class DataComponent implements OnInit, OnDestroy {
     tableData: DataTableFormat[]; // json table to populate table component
     fileName: string = null;
     subscriptions: Subscription[] = [];
+    isLoading: boolean = false;
 
     constructor(
         private studyService: StudyService,
@@ -49,7 +50,15 @@ export class DataComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        const sub = this.studyService.getOrUpdateStudies().subscribe(() => {});
+        this.isLoading = true;
+        this.loaderService.showLoader();
+        const sub = this.studyService
+            .getOrUpdateStudies()
+            .subscribe(() => {})
+            .add(() => {
+                this.isLoading = false;
+                this.loaderService.hideLoader();
+            });
         this.idFromURL = this.route.snapshot.paramMap.get('id');
         this.subscriptions.push(sub);
     }
@@ -212,8 +221,8 @@ export class DataComponent implements OnInit, OnDestroy {
 
             return {
                 fields: {
-                    userId: studyUser.user.id,
-                    studyId: studyUser.study.id,
+                    userId: studyUser.userId,
+                    studyId: studyUser.studyId,
                     completionCode: studyUser.completionCode,
                     registerDate: this.formatDate(studyUser.registerDate),
                     dueDate: studyUser.dueDate.Valid ? this.formatDate(studyUser.dueDate.Time) : 'NONE',

@@ -91,7 +91,7 @@ export class TaskManagerService implements CanClear {
                 ),
                 mergeMap((studyUsers: null | StudyUser[]) => {
                     if (studyUsers) {
-                        const studyUser = studyUsers.find((studyUser) => studyUser.study.id === studyId);
+                        const studyUser = studyUsers.find((studyUser) => studyUser.studyId === studyId);
                         if (!studyUser.hasAcceptedConsent) throw new Error('user has not accepted consent');
                         this._currentTaskIndex = studyUser.currentTaskIndex;
                     } else {
@@ -226,7 +226,7 @@ export class TaskManagerService implements CanClear {
     // only for account holders because their current task index is saved in the db
     setTaskAsComplete(): Observable<boolean> {
         const studyUserForThisStudy = this.studyUserService.studyUsers.find(
-            (studyUser) => studyUser.study.id === this.study.id
+            (studyUser) => studyUser.studyId === this.study.id
         );
         if (!studyUserForThisStudy) return of(false);
 

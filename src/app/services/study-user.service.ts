@@ -59,12 +59,8 @@ export class StudyUserService implements CanClear {
     // register a given account holding participant with a study id
     registerParticipantForStudy(user: User, studyId: number): Observable<any> {
         const studyUser: StudyUser = {
-            user: {
-                id: user.id,
-            },
-            study: {
-                id: studyId,
-            },
+            userId: user.id,
+            studyId: studyId,
             completionCode: '',
             registerDate: this.timerService.getCurrentTimestamp(),
             dueDate: {
@@ -82,7 +78,7 @@ export class StudyUserService implements CanClear {
     updateStudyUser(studyUser: StudyUser): Observable<StudyUser> {
         return this.http
             .patch<StudyUser>(
-                `${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}/${studyUser.user.id}/${studyUser.study.id}`,
+                `${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}/${studyUser.userId}/${studyUser.studyId}`,
                 studyUser
             )
             .pipe(
@@ -90,8 +86,8 @@ export class StudyUserService implements CanClear {
                     const updatedStudyUsers = [...this.studyUsers];
                     const updatedStudyUserIndex = updatedStudyUsers.findIndex(
                         (updatedStudyUser) =>
-                            updatedStudyUser.user.id === receivedStudyUser.user.id &&
-                            updatedStudyUser.study.id === receivedStudyUser.study.id
+                            updatedStudyUser.userId === receivedStudyUser.userId &&
+                            updatedStudyUser.studyId === receivedStudyUser.studyId
                     );
                     if (updatedStudyUserIndex < 0) return;
                     updatedStudyUsers[updatedStudyUserIndex] = receivedStudyUser;

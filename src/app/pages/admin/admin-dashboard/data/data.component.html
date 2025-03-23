@@ -1,6 +1,6 @@
-<div *ngIf="!studyExists" class="error-text p-4">Could not find study</div>
+<div *ngIf="!studyExists && !isLoading" class="error-text p-4">Could not find study</div>
 
-<div *ngIf="studyExists" class="container-fluid">
+<div *ngIf="studyExists && !isLoading" class="container-fluid">
     <div class="d-flex flex-column">
         <div>
             <span class="badge"> Study Id: {{ study?.id }} </span>

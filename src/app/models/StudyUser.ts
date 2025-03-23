@@ -1,11 +1,9 @@
 import { SupportedLangs } from './enums';
 import { NullTime } from './InternalDTOs';
-import { Study } from './Study';
-import { User } from './User';
 
 export class StudyUser {
-    user: Partial<User>;
-    study: Partial<Study>;
+    userId: number;
+    studyId: number;
     completionCode: string;
     registerDate: string;
     dueDate: NullTime;

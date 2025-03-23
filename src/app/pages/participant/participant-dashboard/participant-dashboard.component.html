@@ -1,4 +1,4 @@
 <app-navbar></app-navbar>
-<div class="participant-studies-container">
+<div *ngIf="!isLoading" class="participant-studies-container">
     <router-outlet></router-outlet>
 </div>

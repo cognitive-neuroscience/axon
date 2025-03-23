@@ -6,11 +6,13 @@
         <button
             [disabled]="node.disabled"
             (click)="node.clickAction()"
-            style="font-size: 1.25rem; padding: 1rem"
+            style="font-size: 1.25rem; padding: 0.5rem; width: 100%; text-align: left"
             mat-button
             color="primary"
         >
-            {{ node.studyTask?.taskOrder !== null ? node.studyTask.taskOrder + ': ' : '' }} {{ node.name }}
+            <mat-icon style="margin-right: 1rem">download</mat-icon>
+            {{ node.studyTask?.taskOrder !== null ? 'Task ' + (node.studyTask.taskOrder + 1) + ': ' : '' }}
+            {{ node.name }}
         </button>
     </mat-tree-node>
     <!-- This is the tree node template for expandable nodes -->

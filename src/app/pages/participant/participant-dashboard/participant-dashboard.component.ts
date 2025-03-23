@@ -20,6 +20,7 @@ import { LanguageDialogComponent } from './language-dialog/language-dialog.compo
 })
 export class ParticipantDashboardComponent implements OnInit, OnDestroy {
     subscriptions: Subscription[] = [];
+    isLoading: boolean = false;
 
     constructor(
         private sessionStorageService: SessionStorageService,
@@ -35,6 +36,7 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         const studyId = parseInt(this.sessionStorageService.getStudyIdToRegisterInSessionStorage());
+        this.isLoading = true;
 
         const obs = this.userStateService
             .getOrUpdateUserState()
@@ -75,6 +77,7 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
             )
             .add(() => {
                 // this.sessionStorageService.removeStudyIdToRegisterInSessionStorage();
+                this.isLoading = false;
                 this.loaderService.hideLoader();
             });
 

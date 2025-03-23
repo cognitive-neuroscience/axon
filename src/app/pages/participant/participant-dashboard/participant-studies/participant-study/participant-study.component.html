@@ -1,0 +1,54 @@
+<div class="participant-study {{ studyIsDone(studyUser) ? 'complete' : '' }}">
+    <h2 class="{{ studyIsDone(studyUser) ? 'complete' : '' }}">
+        {{ studyUserStudy.externalName }}
+    </h2>
+
+    <section class="progress-bar-section">
+        <div class="progress-status-container">
+            <ng-container *ngIf="!studyIsDone(studyUser)">
+                <h2 class="progress-status incomplete">
+                    {{ getProgress(studyUser) }}%
+                    {{ 'participant-studies-page.progress-message.status' | translate }}
+                </h2>
+                <mat-icon
+                    class="progress-icon incomplete"
+                    matTooltip="{{ 'participant-studies-page.progress-message.in-progress' | translate }}"
+                    matTooltipPosition="after"
+                    #tooltip="matTooltip"
+                    >pending_actions</mat-icon
+                >
+            </ng-container>
+            <ng-container *ngIf="studyIsDone(studyUser)">
+                <h2 class="progress-status complete">
+                    {{ 'participant-studies-page.progress-message.complete' | translate }}
+                </h2>
+                <mat-icon
+                    class="progress-icon complete"
+                    matTooltip="{{ 'participant-studies-page.progress-message.complete' | translate }}"
+                    matTooltipPosition="after"
+                    #tooltip="matTooltip"
+                    >check_circle</mat-icon
+                >
+            </ng-container>
+        </div>
+        <mat-progress-bar color="primary" [value]="getProgress(studyUser)"></mat-progress-bar>
+        <span *ngIf="!studyUser.hasAcceptedConsent" class="error-text my-3 d-block">{{
+            'participant-studies-page.consent-warning' | translate
+        }}</span>
+    </section>
+
+    <div class="button-container">
+        <button (click)="openConsentDialog(studyUser)" style="min-width: 240px" mat-raised-button color="accent">
+            {{ 'participant-studies-page.buttons.view-consent' | translate }}
+        </button>
+        <button
+            (click)="startOrContinueStudy(studyUser)"
+            [disabled]="!studyUser.hasAcceptedConsent || studyIsDone(studyUser) || !studyUserStudy.started"
+            style="min-width: 240px"
+            mat-raised-button
+            color="primary"
+        >
+            {{ getButtonText(studyUser) | translate }}
+        </button>
+    </div>
+</div>
