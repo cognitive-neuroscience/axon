@@ -161,7 +161,7 @@ export class DataTreeComponent implements OnInit {
         this._study = study;
         this.dataSource.data = [
             {
-                name: 'Download Study Snapshots',
+                name: 'Study Snapshots',
                 clickAction: undefined,
                 disabled: Object.keys(study.snapshots).length === 0,
                 children: [
@@ -189,27 +189,39 @@ export class DataTreeComponent implements OnInit {
                 ],
             },
             {
-                name: 'Download user data for Account Holders',
-                clickAction: () => {
-                    this.downloadStudyUserData(study);
-                },
-                children: [],
+                name: 'User Data',
+                clickAction: undefined,
+                children: [
+                    {
+                        name: 'Download user data for Account Holders',
+                        clickAction: () => {
+                            this.downloadStudyUserData(study);
+                        },
+                        children: [],
+                    },
+                    {
+                        name: 'Download user data for Crowdsourced Users',
+                        clickAction: () => {
+                            this.downloadCrowdsourcedUserData(study);
+                        },
+                        children: [],
+                    },
+                ],
             },
             {
-                name: 'Download user data for Crowdsourced Users',
-                clickAction: () => {
-                    this.downloadCrowdsourcedUserData(study);
-                },
-                children: [],
+                name: 'Task Data',
+                clickAction: undefined,
+                children: [
+                    ...(this._study.studyTasks || []).map((studyTask) => ({
+                        name: `Download ${studyTask.task.name} Participant Data`,
+                        studyTask: studyTask,
+                        clickAction: () => {
+                            this.downloadParticipantData(study, studyTask);
+                        },
+                        children: [],
+                    })),
+                ],
             },
-            ...(this._study.studyTasks || []).map((studyTask) => ({
-                name: `Download ${studyTask.task.name} Participant Data`,
-                studyTask: studyTask,
-                clickAction: () => {
-                    this.downloadParticipantData(study, studyTask);
-                },
-                children: [],
-            })),
         ];
     }
 

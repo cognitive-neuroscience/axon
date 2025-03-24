@@ -64,8 +64,8 @@ export function getStudyUserDataAsDataTableFormat(studyUsers: StudyUser[]): Data
 
         return {
             fields: {
-                userId: studyUser.user.id,
-                studyId: studyUser.study.id,
+                userId: studyUser.userId,
+                studyId: studyUser.studyId,
                 completionCode: studyUser.completionCode,
                 registerDate: formatDate(studyUser.registerDate),
                 dueDate: studyUser.dueDate.Valid ? formatDate(studyUser.dueDate.Time) : 'NONE',

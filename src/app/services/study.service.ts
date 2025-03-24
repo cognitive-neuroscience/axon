@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, of, Subject } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 import { Study } from '../models/Study';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -18,6 +18,7 @@ export class StudyService implements CanClear {
 
     private readonly RESOURCE_PATH = '/studies';
     private _studiesBehaviorSubject: BehaviorSubject<Study[]>;
+    private _studyBehaviorSubjectCache: BehaviorSubject<{ [studyId: number]: HttpResponse<Study> }>;
 
     get studiesValue(): Study[] {
         return this.hasStudiesValue ? this._studiesBehaviorSubject.value : [];
@@ -27,8 +28,13 @@ export class StudyService implements CanClear {
         return this._studiesBehaviorSubject.value !== null;
     }
 
+    hasStudyValueInCache(studyId: number): HttpResponse<Study> | undefined {
+        return this._studyBehaviorSubjectCache.value[studyId];
+    }
+
     constructor(private _http: HttpClient, private userStateService: UserStateService) {
         this._studiesBehaviorSubject = new BehaviorSubject(null);
+        this._studyBehaviorSubjectCache = new BehaviorSubject({});
     }
 
     getOrUpdateStudies(forceUpdate = false): Observable<Study[] | null> {
@@ -51,9 +57,22 @@ export class StudyService implements CanClear {
     }
 
     getStudyById(studyId: number): Observable<HttpResponse<Study>> {
-        return this._http.get<Study>(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${studyId}`, {
-            observe: 'response',
-        });
+        if (this.hasStudyValueInCache(studyId)) {
+            return of(this._studyBehaviorSubjectCache.value[studyId]);
+        }
+
+        return this._http
+            .get<Study>(`${environment.apiBaseURL}${this.RESOURCE_PATH}/${studyId}`, {
+                observe: 'response',
+            })
+            .pipe(
+                tap((study) => {
+                    this._studyBehaviorSubjectCache.next({
+                        ...(this._studyBehaviorSubjectCache.value || {}),
+                        [study.body.id]: study,
+                    });
+                })
+            );
     }
 
     createStudy(study: Study): Observable<any> {

@@ -44,7 +44,7 @@ export class ErrorPageComponent implements OnInit {
         } else if (this._userStateService.userIsGuest || this._userStateService.userIsOrgMember) {
             this._router.navigate([`organization-member-dashboard`]);
         } else {
-            throw new Error('Unsupported user role!');
+            this._router.navigate([`login`]);
         }
     }
 }
