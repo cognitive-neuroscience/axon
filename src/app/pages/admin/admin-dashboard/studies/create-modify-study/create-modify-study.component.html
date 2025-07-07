@@ -10,13 +10,13 @@
     <hr />
     <div>
         <div [formGroup]="studyForm">
-            <mat-form-field appearance="fill" class="w-50 d-block">
+            <mat-form-field appearance="fill" class="w-100 d-block">
                 <mat-label>External Study Name</mat-label>
                 <input required formControlName="externalName" matInput type="text" placeholder="My study" />
                 <mat-error *ngIf="studyForm.get('externalName')?.hasError('required')">This is required</mat-error>
                 <mat-error *ngIf="studyForm.get('externalName')?.hasError('maxlength')">Max 255 characters</mat-error>
             </mat-form-field>
-            <mat-form-field appearance="fill" class="w-50 d-block">
+            <mat-form-field appearance="fill" class="w-100 d-block">
                 <mat-label>Internal Study Name</mat-label>
                 <input
                     formControlName="internalName"
@@ -28,12 +28,12 @@
                 <mat-error *ngIf="studyForm.get('internalName')?.hasError('required')">This is required</mat-error>
                 <mat-error *ngIf="studyForm.get('internalName')?.hasError('maxlength')">Max 255 characters</mat-error>
             </mat-form-field>
-            <mat-form-field appearance="fill" class="w-50 d-block">
+            <mat-form-field appearance="fill" class="w-100 d-block">
                 <mat-label>Description (optional)</mat-label>
                 <textarea rows="4" formControlName="description" matInput type="text"></textarea>
                 <mat-error *ngIf="studyForm.get('description')?.hasError('maxlength')">Max 500 characters</mat-error>
             </mat-form-field>
-            <mat-form-field appearance="fill" class="w-50">
+            <mat-form-field appearance="fill" class="w-100">
                 <mat-label>Consent For Study</mat-label>
                 <mat-select required formControlName="consent" [compareWith]="compareConsentFn">
                     <mat-option *ngFor="let consentForm of consentForms" [value]="consentForm">{{
@@ -42,6 +42,18 @@
                 </mat-select>
                 <mat-error *ngIf="studyForm.get('consent')?.hasError('required')">This is required</mat-error>
             </mat-form-field>
+
+            <div class="w-100">
+                <mat-accordion>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>Advanced</mat-panel-title>
+                            <mat-panel-description>Set up rerouting and study background</mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <app-json-editor [json]="study.config" (onChange)="study.config = $event"></app-json-editor>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
 
             <hr />
 

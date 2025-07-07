@@ -11,7 +11,7 @@ export interface InfoDisplayViewerMetadata {
 
 export interface InfoDisplayViewerSection {
     header?: string;
-    indent?: boolean;
+    indent?: false | number;
     hr?: boolean;
     textContent?: string;
 }

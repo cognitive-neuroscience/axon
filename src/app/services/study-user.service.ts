@@ -1,7 +1,7 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { take, tap } from 'rxjs/operators';
+import { catchError, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { StudyUser, StudyUserSummary } from '../models/StudyUser';
 import { User } from '../models/User';
@@ -98,6 +98,20 @@ export class StudyUserService implements CanClear {
 
     getStudyUsersForStudy(studyId: number): Observable<StudyUser[]> {
         return this.http.get<StudyUser[]>(`${environment.apiBaseURL}/studies/${studyId}/studyusers`);
+    }
+
+    getStudyUserByUserAndStudyId(userId: number, studyId: number): Observable<StudyUser | null> {
+        return this.http
+            .get<StudyUser>(`${environment.apiBaseURL}${this.STUDY_USERS_RESOURCE_PATH}/${userId}/${studyId}`)
+            .pipe(
+                catchError((err) => {
+                    if (err.status === 404) {
+                        return of(null);
+                    } else {
+                        throw new Error(err);
+                    }
+                })
+            );
     }
 
     getStudyUserSummary(): Observable<StudyUserSummary[]> {
