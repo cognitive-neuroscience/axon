@@ -42,14 +42,15 @@ export class StudyBackgroundComponent implements OnInit, OnDestroy {
             this.studyService
                 .getStudyById(parsedNum)
                 .subscribe(
-                    (task) => {
-                        if (task.status === 204) {
+                    (study) => {
+                        if (study.status === 204) {
                             this.router.navigate([`${RouteNames.LANDINGPAGE_NOTFOUND}`]);
                             return;
                         } else {
                             // save the id in session storage so that the user can register for it later
                             this.sessionStorageService.setStudyIdToRegisterInSessionStorage(studyIdFromURL);
-                            this.studyBackground = Object.keys(task.body.config).length === 0 ? null : task.body.config;
+                            this.studyBackground =
+                                Object.keys(study.body.config).length === 0 ? null : study.body.config;
                         }
                     },
                     (_err) => {

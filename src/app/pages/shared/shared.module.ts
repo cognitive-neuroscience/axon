@@ -8,10 +8,23 @@ import { InfoDisplayViewerComponent } from './info-display-viewer/info-display-v
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProfileComponent } from './profile/profile.component';
+import { JsonEditorComponent } from './json-editor/json-editor.component';
 
 @NgModule({
-    declarations: [NavbarComponent, ConsentReaderComponent, InfoDisplayViewerComponent, ProfileComponent],
+    declarations: [
+        NavbarComponent,
+        ConsentReaderComponent,
+        InfoDisplayViewerComponent,
+        ProfileComponent,
+        JsonEditorComponent,
+    ],
     imports: [CommonModule, MaterialModule, RouterModule, TranslateModule, FormsModule, ReactiveFormsModule],
-    exports: [NavbarComponent, ConsentReaderComponent, InfoDisplayViewerComponent, ProfileComponent],
+    exports: [
+        NavbarComponent,
+        ConsentReaderComponent,
+        InfoDisplayViewerComponent,
+        ProfileComponent,
+        JsonEditorComponent,
+    ],
 })
 export class SharedModule {}

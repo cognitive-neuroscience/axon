@@ -1,0 +1,13 @@
+<div style="height: 50vh">
+    <textarea
+        [value]="jsonTextValue"
+        (input)="onTextChange($event.target.value)"
+        class="w-100"
+        style="height: 45vh"
+        [ngStyle]="{ 'border-color': isError ? 'red' : 'initial' }"
+        >{{ json }}</textarea
+    >
+    <div style="color: red">
+        <p *ngIf="isError">JSON is invalid</p>
+    </div>
+</div>

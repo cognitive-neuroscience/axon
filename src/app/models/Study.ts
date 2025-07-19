@@ -1,9 +1,16 @@
-import { SharplabTaskConfig } from '../pages/tasks/task-playables/task-player/task-player.component';
+import { InfoDisplayViewerMetadata } from '../pages/shared/info-display-viewer/info-display-viewer.component';
 import { NullTime } from './InternalDTOs';
 import { StudyTask } from './StudyTask';
 import { Task } from './Task';
 import { User } from './User';
-import { Platform } from './enums';
+
+export class ReroutingConfig {
+    mustCompleteOneOf: {
+        studyId: number;
+        currentTaskIndex: number;
+    }[]; // this will be logical OR – at least one of the studies in this list must have been completed
+    rerouteTo: number;
+}
 
 export class Study {
     id: number;
@@ -16,9 +23,15 @@ export class Study {
     consent: Task;
     owner: Partial<User>;
     description: string;
-    config: any; // json metadata
+    /*
+     * json metadata that describes the study, used for study background landing page
+     * config would be of type InfoDisplayViewerMetadata & RoutingConfig
+     */
+    config?: {
+        rerouteConfig?: ReroutingConfig;
+    } & Partial<InfoDisplayViewerMetadata>;
     studyTasks: StudyTask[];
     snapshots: {
-        [key: string]: (Task & { taskOrder: number })[];
+        [key: string]: (Task & { taskOrder: number })[]; // a copy of the json task metadata or questionnaire metadata at a given point in time
     };
 }

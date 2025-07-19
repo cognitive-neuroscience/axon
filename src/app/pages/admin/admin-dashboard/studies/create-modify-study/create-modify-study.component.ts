@@ -2,11 +2,10 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Inject, OnDestroy, OnInit, Optional } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { map, mergeMap, take } from 'rxjs/operators';
-import { AdminRouteNames, Platform, TaskType } from 'src/app/models/enums';
+import { Subscription } from 'rxjs';
+import { Platform, TaskType } from 'src/app/models/enums';
 import { Study } from 'src/app/models/Study';
 import { Task } from 'src/app/models/Task';
 import { LoaderService } from 'src/app/services/loader/loader.service';
@@ -22,16 +21,15 @@ import { UserStateService } from 'src/app/services/user-state-service';
 })
 export class CreateModifyStudyComponent implements OnInit, OnDestroy {
     mode: 'EDIT' | 'CREATE' = 'CREATE';
-
     studyForm: UntypedFormGroup;
-
     selectedTasks: Task[];
+    studyConfig: {};
+    jsonIsError: boolean;
+    subscriptions: Subscription[] = [];
 
     get tasks(): Task[] {
         return this.taskService.tasksValue;
     }
-
-    subscriptions: Subscription[] = [];
 
     private originalSelectedTasks: Task[] = [];
 
@@ -106,6 +104,7 @@ export class CreateModifyStudyComponent implements OnInit, OnDestroy {
         this.taskService.getOrUpdateTasks().subscribe(() => {});
 
         this.selectedTasks = [];
+        this.studyConfig = {};
         this.studyForm = this.fb.group({
             externalName: ['', Validators.compose([Validators.required, Validators.maxLength(255)])],
             internalName: ['', Validators.compose([Validators.required, Validators.maxLength(255)])],
@@ -121,6 +120,8 @@ export class CreateModifyStudyComponent implements OnInit, OnDestroy {
             this.studyForm.controls['internalName'].setValue(this.study.internalName);
             this.studyForm.controls['description'].setValue(this.study.description);
             this.studyForm.controls['consent'].setValue(this.study.consent);
+
+            this.studyConfig = { ...this.study.config };
 
             this.study.studyTasks.forEach((studyTask) => {
                 this.selectedTasks.push(studyTask.task);
@@ -145,6 +146,13 @@ export class CreateModifyStudyComponent implements OnInit, OnDestroy {
         this.selectedTasks.splice(index, 1);
     }
 
+    handleUpdateJSON(event: { json: any; isValid: boolean }) {
+        this.jsonIsError = !event.isValid;
+        if (event.json && event.isValid) {
+            this.studyConfig = event.json;
+        }
+    }
+
     onSubmit() {
         this.mode === 'CREATE' ? this.handleCreateStudy() : this.handleEditStudy();
     }
@@ -159,7 +167,7 @@ export class CreateModifyStudyComponent implements OnInit, OnDestroy {
             started: this.study.started,
             description: this.studyForm.controls['description'].value,
             canEdit: this.study.canEdit,
-            config: this.study.config,
+            config: this.studyConfig,
             owner: this.study.owner,
             consent: this.studyForm.controls['consent'].value,
             studyTasks: this.selectedTasks.map((task, index) => {
@@ -220,7 +228,7 @@ export class CreateModifyStudyComponent implements OnInit, OnDestroy {
             owner: {
                 id: parseInt(this.userStateService.currentlyLoggedInUserId),
             },
-            config: {},
+            config: this.studyConfig,
             consent: this.studyForm.controls['consent'].value,
             studyTasks: this.selectedTasks.map((task, index) => {
                 return {
