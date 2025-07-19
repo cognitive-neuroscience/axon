@@ -44,13 +44,13 @@
             </mat-form-field>
 
             <div class="w-100">
-                <mat-accordion>
+                <mat-accordion *ngIf="studyConfig">
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
                             <mat-panel-title>Advanced</mat-panel-title>
                             <mat-panel-description>Set up rerouting and study background</mat-panel-description>
                         </mat-expansion-panel-header>
-                        <app-json-editor [json]="study.config" (onChange)="study.config = $event"></app-json-editor>
+                        <app-json-editor [json]="studyConfig" (onChange)="handleUpdateJSON($event)"></app-json-editor>
                     </mat-expansion-panel>
                 </mat-accordion>
             </div>
@@ -173,7 +173,7 @@
     </div>
     <div class="my-2">
         <button
-            [disabled]="!studyForm.valid || selectedTasks.length < 1"
+            [disabled]="!studyForm.valid || selectedTasks.length < 1 || jsonIsError"
             class="w-25"
             mat-raised-button
             color="primary"

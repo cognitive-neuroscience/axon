@@ -20,15 +20,16 @@ export class JsonEditorComponent {
         return this._originalJSON;
     }
 
-    @Output() onChange: EventEmitter<any> = new EventEmitter<any>(); // emit json
+    @Output() onChange: EventEmitter<any> = new EventEmitter<{ json: any | null; isValid: boolean }>(); // emit json
 
     onTextChange(value: string) {
         this.isError = false;
         this.jsonTextValue = value;
         try {
             const parsed = JSON.parse(value);
-            this.onChange.emit(parsed);
+            this.onChange.emit({ json: parsed, isValid: true });
         } catch (e) {
+            this.onChange.emit({ json: null, isValid: false });
             this.isError = true;
             return;
         }
