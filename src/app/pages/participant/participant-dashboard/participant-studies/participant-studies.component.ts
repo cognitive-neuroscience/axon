@@ -26,38 +26,43 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.loaderService.showLoader();
-        const obs = this.studyUserService
-            .getOrUpdateStudyUsers()
+        const obs = this.studyUserService.studyUsersObservable
             .pipe(
                 mergeMap((studyUsers: StudyUser[] | null) =>
                     forkJoin((studyUsers || []).map((studyUser) => this.studyService.getStudyById(studyUser.studyId)))
                 ),
                 map((studyUserResponses) => studyUserResponses.map((x) => x.body))
             )
-            .subscribe((studies) => {
-                // we need this initially in order to sort the study users. StudyUsers do not have
-                // nested Study objects, so we have to query the studies separately
-                this.studyUsers = this.studyUserService.studyUsers.sort((a, b) => {
-                    const studyA = studies.find((study) => study.id === a.studyId);
-                    const studyB = studies.find((study) => study);
+            .subscribe(
+                (studies) => {
+                    // we need this initially in order to sort the study users. StudyUsers do not have
+                    // nested Study objects, so we have to query the studies separately
+                    this.studyUsers = this.studyUserService.studyUsers.sort((a, b) => {
+                        const studyA = studies.find((study) => study.id === a.studyId);
+                        const studyB = studies.find((study) => study);
 
-                    const aIsDone = a.currentTaskIndex === (studyA.studyTasks || []).length;
-                    const bIsDone = b.currentTaskIndex === (studyB.studyTasks || []).length;
+                        const aIsDone = a.currentTaskIndex === (studyA.studyTasks || []).length;
+                        const bIsDone = b.currentTaskIndex === (studyB.studyTasks || []).length;
 
-                    const dateA = Date.parse(a.registerDate);
-                    const dateB = Date.parse(b.registerDate);
+                        const dateA = Date.parse(a.registerDate);
+                        const dateB = Date.parse(b.registerDate);
 
-                    if (aIsDone && bIsDone) {
-                        return dateB - dateA;
-                    } else if (aIsDone && !bIsDone) {
-                        return 1;
-                    } else if (!aIsDone && bIsDone) {
-                        return -1;
-                    } else {
-                        return dateB - dateA;
-                    }
-                });
-            })
+                        if (aIsDone && bIsDone) {
+                            return dateB - dateA;
+                        } else if (aIsDone && !bIsDone) {
+                            return 1;
+                        } else if (!aIsDone && bIsDone) {
+                            return -1;
+                        } else {
+                            return dateB - dateA;
+                        }
+                    });
+                    this.loaderService.hideLoader();
+                },
+                (err) => {
+                    this.loaderService.hideLoader();
+                }
+            )
             .add(() => {
                 this.loaderService.hideLoader();
             });

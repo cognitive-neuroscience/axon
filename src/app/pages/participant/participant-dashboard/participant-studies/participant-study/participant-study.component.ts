@@ -40,7 +40,6 @@ export class ParticipantStudyComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.isLoading = true;
-        this.studyUserService.getOrUpdateStudyUsers().subscribe(() => {});
         this.subscriptions.push(
             this.studyService
                 .getStudyById(this.studyUser.studyId)
@@ -107,7 +106,7 @@ export class ParticipantStudyComponent implements OnInit, OnDestroy {
                         hasAcceptedConsent: true,
                     };
                     this.loaderService.showLoader();
-                    return consentData ? this.studyUserService.updateStudyUser(updatedStudyUser) : of(null);
+                    return consentData ? this.studyUserService.updateStudyUser(updatedStudyUser) : of(null); // this will push an update to the parent studyUsers list
                 })
             )
             .subscribe(

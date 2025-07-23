@@ -16,9 +16,11 @@ export class StudyUserService implements CanClear {
     private readonly STUDY_USERS_RESOURCE_PATH = '/studyusers';
 
     private _studyUsersSubject: BehaviorSubject<StudyUser[]>;
-    // get studyUsers(): Observable<StudyUser[]> {
-    //     return this._studyUsersSubject.asObservable();
-    // }'
+
+    get studyUsersObservable(): Observable<StudyUser[]> {
+        return this._studyUsersSubject.asObservable();
+    }
+
     get studyUsers(): StudyUser[] {
         return this.hasStudyUsers ? this._studyUsersSubject.value : [];
     }
