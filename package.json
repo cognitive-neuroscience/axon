@@ -73,7 +73,7 @@
         "neuroscience"
     ],
     "author": "Nicholas Lee (nicoalee.github.io)",
-    "license": "ISC",
+    "license": "MIT",
     "bugs": {
         "url": "https://github.com/cognitive-neuroscience/axon/issues"
     },
