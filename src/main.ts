@@ -11,6 +11,7 @@ if (environment.production) {
         integrations: [
             replayIntegration({
                 maskAllText: false,
+                mask: ['.mask-sensitive'],
                 blockAllMedia: false,
             }),
             browserTracingIntegration(),

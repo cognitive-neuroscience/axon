@@ -4,7 +4,15 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <mat-form-field appearance="outline" class="pt-1" floatLabel="always">
             <mat-label>EMAIL / COURRIEL</mat-label>
-            <input matInput formControlName="email" type="email" placeholder="example@domain.com" email required />
+            <input
+                class="mask-sensitive"
+                matInput
+                formControlName="email"
+                type="email"
+                placeholder="example@domain.com"
+                email
+                required
+            />
             <mat-error *ngIf="loginForm.get('email')?.hasError('required')"
                 >This is required / Ceci est requis</mat-error
             >
@@ -18,6 +26,7 @@
                 passwordIsVisible ? 'visibility' : 'visibility_off'
             }}</mat-icon>
             <input
+                class="mask-sensitive"
                 type="text"
                 required
                 formControlName="password"
