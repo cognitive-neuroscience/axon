@@ -7,6 +7,7 @@ import { UserStateService } from './services/user-state-service';
 import { IErrorNavigationState } from './pages/error-page/error-page.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SnackbarService } from './services/snackbar/snackbar.service';
+import { getSafeErrorInfo } from './common/error-utils';
 
 @Injectable()
 export default class CustomErrorHandler extends SentryErrorHandler {
@@ -35,7 +36,7 @@ export default class CustomErrorHandler extends SentryErrorHandler {
                     state: {
                         taskIndex: undefined,
                         studyId: undefined,
-                        stackTrace: error.message,
+                        stackTrace: getSafeErrorInfo(error),
                         userId: this.userStateService.currentlyLoggedInUserId,
                     } as IErrorNavigationState,
                 });
@@ -46,7 +47,7 @@ export default class CustomErrorHandler extends SentryErrorHandler {
                     state: {
                         taskIndex: this.taskManager?.currentStudyTask?.taskOrder,
                         studyId: this.taskManager?.currentStudyTask?.studyId,
-                        stackTrace: error instanceof Error ? error.stack : error,
+                        stackTrace: getSafeErrorInfo(error),
                         userId: this.userStateService.currentlyLoggedInUserId,
                     } as IErrorNavigationState,
                 });

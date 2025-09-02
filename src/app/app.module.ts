@@ -19,6 +19,7 @@ import { LoaderComponent } from './services/loader/loader.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpCsrfInterceptor } from './interceptors/csrf.interceptor';
+import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { ResetPasswordLoginComponent } from './pages/landing-page/forgot-password/change-password-page/reset-password-login.component';
 import { SendResetPasswordComponent } from './pages/landing-page/forgot-password/send-reset-password/send-reset-password.component';
 import { NotFoundComponent } from './pages/landing-page/not-found/not-found.component';
@@ -82,11 +83,11 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         AppRoutingModule,
     ],
     providers: [
-        // {
-        //     provide: HTTP_INTERCEPTORS,
-        //     useClass: ErrorInterceptor,
-        //     multi: true,
-        // },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: ErrorInterceptor,
+            multi: true,
+        },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: HttpCsrfInterceptor,
@@ -96,16 +97,6 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
             provide: ErrorHandler,
             useClass: CustomErrorHandler,
         },
-        // {
-        //     provide: Sentry.TraceService,
-        //     deps: [Router],
-        // },
-        // {
-        //     provide: APP_INITIALIZER,
-        //     useFactory: () => () => {},
-        //     deps: [Sentry.TraceService],
-        //     multi: true,
-        // },
     ],
     bootstrap: [AppComponent],
 })

@@ -25,6 +25,7 @@ import { UserStateService } from './user-state-service';
 import { CrowdSourcedUserService } from './crowdsourced-user.service';
 import { snapshotToStudyTasks } from './utils';
 import { IErrorNavigationState } from '../pages/error-page/error-page.component';
+import { getSafeErrorInfo } from '../common/error-utils';
 
 @Injectable({
     providedIn: 'root',
@@ -150,7 +151,7 @@ export class TaskManagerService implements CanClear {
                 taskIndex: this.currentStudyTask?.taskOrder,
                 studyId: this.currentStudyTask?.studyId,
                 userId: this.userStateService?.currentlyLoggedInUserId,
-                stackTrace: err instanceof Error ? err.stack : err,
+                stackTrace: getSafeErrorInfo(err),
             } as IErrorNavigationState,
         });
     }
