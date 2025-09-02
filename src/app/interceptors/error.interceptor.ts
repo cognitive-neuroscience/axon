@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, throwError } from 'rxjs';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { RouteNames } from '../models/enums';
 import { SnackbarService } from '../services/snackbar/snackbar.service';
@@ -27,6 +27,9 @@ export class ErrorInterceptor implements HttpInterceptor {
 
                     // Redirect to login page
                     this.router.navigate([`/${RouteNames.LANDINGPAGE_LOGIN_BASEROUTE}`]);
+
+                    // do not propagate the error to the next interceptor
+                    return EMPTY;
                 }
                 return throwError(err);
             })

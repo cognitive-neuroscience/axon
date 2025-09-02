@@ -111,8 +111,8 @@ export class ParticipantStudyComponent implements OnInit, OnDestroy {
             )
             .subscribe(
                 (_res) => {},
-                (err: HttpStatus) => {
-                    this.snackbar.openErrorSnackbar(err.message);
+                (err) => {
+                    this.taskManager.handleErr(err);
                 }
             )
             .add(() => {
