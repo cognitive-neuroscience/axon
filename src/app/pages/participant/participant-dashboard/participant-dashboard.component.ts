@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
-import { catchError, map, mergeMap, take, tap } from 'rxjs/operators';
+import { catchError, finalize, map, mergeMap, take, tap } from 'rxjs/operators';
 import { SupportedLangs } from 'src/app/models/enums';
 import { Study } from 'src/app/models/Study';
 import { StudyUser } from 'src/app/models/StudyUser';
@@ -61,14 +61,18 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
         sub = (studyId ? redirectSub : of(null))
             .pipe(
                 mergeMap(() => this.userStateService.getOrUpdateUserState(true)),
-                mergeMap((res) =>
-                    res?.lang === SupportedLangs.NONE
+                mergeMap((res) => {
+                    this.loaderService.hideLoader();
+                    return res?.lang === SupportedLangs.NONE
                         ? this.openLanguageDialog().pipe(
                               mergeMap((lang) => this.userService.updateUser({ ...res, lang }))
                           )
-                        : of(res)
-                ),
-                tap((user) => this.translateService.use(user?.lang)),
+                        : of(res);
+                }),
+                tap((user) => {
+                    this.translateService.use(user?.lang ? user.lang : SupportedLangs.EN);
+                    this.loaderService.showLoader();
+                }),
                 mergeMap((user) => {
                     // register the participant for the given study saved in session storage if it exists
                     return studyId ? this.studyUserService.registerParticipantForStudy(user, studyId) : of(null);
@@ -77,11 +81,18 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
                 // and does not reflect our recent call to registerParticipantForStudy
                 mergeMap(() => this.studyUserService.getOrUpdateStudyUsers(true)),
                 // if 409 (conflict) then we dont want an error
-                catchError((err) => (err.status === 409 ? of(null) : throwError(err)))
+                catchError((err) => (err.status === 409 ? of(null) : throwError(err))),
+                // finalize runs regardless of how the observable completes (success, error, or unsubscription)
+                finalize(() => {
+                    this.sessionStorageService.removeStudyIdToRegisterInSessionStorage();
+                    this.isLoading = false;
+                    this.loaderService.hideLoader();
+                })
             )
             .subscribe(
                 (_res) => {
                     // noop
+                    _res;
                 },
                 (err) => {
                     if (err.status === 401) {
@@ -91,12 +102,7 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
                         console.error(err);
                     }
                 }
-            )
-            .add(() => {
-                this.sessionStorageService.removeStudyIdToRegisterInSessionStorage();
-                this.isLoading = false;
-                this.loaderService.hideLoader();
-            });
+            );
 
         this.subscriptions.push(sub);
     }

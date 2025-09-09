@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { forkJoin, Subscription } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { forkJoin, of, Subscription } from 'rxjs';
+import { finalize, map, mergeMap } from 'rxjs/operators';
 import { StudyUser } from 'src/app/models/StudyUser';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { StudyUserService } from 'src/app/services/study-user.service';
@@ -28,10 +28,23 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
         this.loaderService.showLoader();
         const obs = this.studyUserService.studyUsersObservable
             .pipe(
-                mergeMap((studyUsers: StudyUser[] | null) =>
-                    forkJoin((studyUsers || []).map((studyUser) => this.studyService.getStudyById(studyUser.studyId)))
-                ),
-                map((studyUserResponses) => studyUserResponses.map((x) => x.body))
+                mergeMap((studyUsers: StudyUser[] | null) => {
+                    const users = studyUsers || [];
+                    if (users.length === 0) {
+                        return of([]); // Return empty array immediately so finalize gets called
+                    }
+                    return forkJoin(
+                        users.map((studyUser) => {
+                            return this.studyService.getStudyById(studyUser.studyId);
+                        })
+                    );
+                }),
+                map((studyUserResponses) => {
+                    return studyUserResponses.map((x) => x.body);
+                }),
+                finalize(() => {
+                    this.loaderService.hideLoader();
+                })
             )
             .subscribe(
                 (studies) => {
@@ -62,10 +75,7 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
                 (err) => {
                     this.loaderService.hideLoader();
                 }
-            )
-            .add(() => {
-                this.loaderService.hideLoader();
-            });
+            );
         this.subscriptions.push(obs);
     }
 

@@ -19,6 +19,15 @@ export class ErrorInterceptor implements HttpInterceptor {
         return next.handle(req).pipe(
             catchError((err: HttpErrorResponse) => {
                 if (err.status === 401) {
+                    // Check if this is a password incorrect error that should be handled locally
+                    const errorMessage = err.error?.message || err.message || '';
+                    const isPasswordIncorrect = errorMessage.toLowerCase().includes('password is incorrect');
+
+                    if (isPasswordIncorrect) {
+                        // Let the login component handle the password incorrect error locally
+                        return throwError(err);
+                    }
+
                     // JWT has expired - log the user out and redirect to login
                     this.snackbarService.openInfoSnackbar('Your session has expired. Please login again to continue.');
 

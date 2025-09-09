@@ -6,7 +6,7 @@ import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { Role, SupportedLangs } from 'src/app/models/enums';
-import { catchError, mergeMap } from 'rxjs/operators';
+import { catchError, finalize, mergeMap } from 'rxjs/operators';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { HttpStatusCode } from '@angular/common/http';
 import { HttpStatus } from 'src/app/models/Auth';
@@ -62,6 +62,9 @@ export class LoginComponent implements OnDestroy {
                 mergeMap(() => this.userStateService.getOrUpdateUserState()),
                 catchError((err) => {
                     throw err;
+                }),
+                finalize(() => {
+                    this.loaderService.hideLoader();
                 })
             )
             .subscribe(
@@ -99,10 +102,7 @@ export class LoginComponent implements OnDestroy {
                             break;
                     }
                 }
-            )
-            .add(() => {
-                this.loaderService.hideLoader();
-            });
+            );
     }
 
     constructor(
@@ -134,6 +134,7 @@ export class LoginComponent implements OnDestroy {
     }
 
     ngOnDestroy() {
+        this.loaderService.hideLoader();
         this.subscriptions.forEach((sub) => sub.unsubscribe());
     }
 }
