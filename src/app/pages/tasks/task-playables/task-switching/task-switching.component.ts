@@ -88,6 +88,11 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
     // timers
     maxResponseTimer: any;
 
+    get currentTrial(): TaskSwitchingTaskData {
+        // will return null if taskData is not defined or if it has length of 0
+        return this.taskData?.length > 0 ? this.taskData[this.taskData.length - 1] : null;
+    }
+
     get currentStimulus(): TaskSwitchingStimulus {
         return this.stimuli[this.currentStimuliIndex];
     }
@@ -211,29 +216,30 @@ export class TaskSwitchingComponent extends AbstractBaseTaskComponent {
 
     @HostListener('window:keydown', ['$event'])
     handleRoundInteraction(event: KeyboardEvent) {
-        const thisTrial = this.taskData[this.taskData.length - 1];
-        thisTrial.submitted = this.timerService.getCurrentTimestamp();
+        if (!this.currentTrial) return;
+
+        this.currentTrial.submitted = this.timerService.getCurrentTimestamp();
 
         if (this.responseAllowed && this.isValidKey(event?.key)) {
             this.cancelAllTimers();
             this.responseAllowed = false;
 
             let userAnswer: UserResponse;
-            thisTrial.responseTime = this.timerService.stopTimerAndGetTime();
+            this.currentTrial.responseTime = this.timerService.stopTimerAndGetTime();
 
-            if (thisTrial.color === this.oddEvenColor) {
+            if (this.currentTrial.color === this.oddEvenColor) {
                 userAnswer = event.key === Key.ARROWLEFT ? UserResponse.ODD : UserResponse.EVEN;
             } else {
                 userAnswer = event.key === Key.ARROWLEFT ? UserResponse.LESSER : UserResponse.GREATER;
             }
-            thisTrial.userAnswer = userAnswer;
+            this.currentTrial.userAnswer = userAnswer;
             super.handleRoundInteraction(event.key);
             return;
         } else if (event === null) {
             this.cancelAllTimers();
-            thisTrial.isCorrect = false;
-            thisTrial.responseTime = this.maxResponseTime;
-            thisTrial.score = 0;
+            this.currentTrial.isCorrect = false;
+            this.currentTrial.responseTime = this.maxResponseTime;
+            this.currentTrial.score = 0;
             super.handleRoundInteraction(null);
             return;
         }
