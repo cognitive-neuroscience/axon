@@ -51,16 +51,19 @@ export abstract class AbstractBaseTaskComponent implements OnInit, Playable, OnD
 
     // task lifecycle part 4: handle the user interaction or event that causes the round to move on
     handleRoundInteraction(_any: any) {
+        if (this.isDestroyed) return;
         this.completeRound();
     }
 
     // task lifecycle part 5: clean up the stimulus and record any data if necessary once round is over
     completeRound() {
+        if (this.isDestroyed) return;
         this.decideToRepeat();
     }
 
     // task lifecycle part 6: decide whether to do another round of the task or complete
     async decideToRepeat() {
+        if (this.isDestroyed) return;
         this.loaderService.showLoader();
         await wait(this.showLoaderOnEndDuration);
         this.loaderService.hideLoader();
@@ -68,6 +71,7 @@ export abstract class AbstractBaseTaskComponent implements OnInit, Playable, OnD
     }
 
     handleComplete() {
+        if (this.isDestroyed) return;
         this.onComplete.next({
             navigation: Navigation.NEXT,
             taskData: this.taskData,

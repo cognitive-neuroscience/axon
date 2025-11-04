@@ -17,5 +17,6 @@
         </div>
 
         <app-numpad *ngIf="showKeypad" (submit)="handleRoundInteraction($event)"></app-numpad>
+        <app-skip-button [isVisible]="true" (shouldSkip)="handleSkip()"></app-skip-button>
     </div>
 </div>
