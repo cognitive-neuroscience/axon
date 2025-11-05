@@ -35,5 +35,6 @@
                 <div style="color: red" *ngIf="showFeedback">{{ feedback }}</div>
             </div>
         </div>
+        <app-skip-button [isVisible]="true" (shouldSkip)="handleSkip()"></app-skip-button>
     </div>
 </div>
