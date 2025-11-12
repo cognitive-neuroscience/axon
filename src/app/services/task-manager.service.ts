@@ -26,6 +26,7 @@ import { CrowdSourcedUserService } from './crowdsourced-user.service';
 import { snapshotToStudyTasks } from './utils';
 import { IErrorNavigationState } from '../pages/error-page/error-page.component';
 import { getSafeErrorInfo } from '../common/error-utils';
+import * as Sentry from '@sentry/angular';
 
 @Injectable({
     providedIn: 'root',
@@ -146,6 +147,8 @@ export class TaskManagerService implements CanClear {
     }
 
     handleErr(err?: any): void {
+        Sentry.captureException(err);
+
         this.router.navigate(['task-error'], {
             state: {
                 taskIndex: this.currentStudyTask?.taskOrder,
