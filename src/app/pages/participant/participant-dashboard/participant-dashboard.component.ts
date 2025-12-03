@@ -97,9 +97,8 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
                     if (err.status === 409) {
                         return of(null);
                     } else if (err.status === 403) {
-                        this.snackbarService.openErrorSnackbar(
-                            this.translateService.instant('errorMessages.studyNotAvailable')
-                        );
+                        const message = this.translateService.instant('errorMessages.studyNotAvailable');
+                        this.snackbarService.openErrorSnackbar(`${message}: ${studyId}`);
                         return of(null);
                     } else {
                         return throwError(err);

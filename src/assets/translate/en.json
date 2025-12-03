@@ -59,7 +59,8 @@
         "emailsMustMatch": "Emails must match",
         "unansweredQuestions": "There are still invalid/unanswered questions above. Please review your responses above to make sure you have answered each of the questions",
         "minValidation": "Must be above",
-        "maxValidation": "Must be below"
+        "maxValidation": "Must be below",
+        "studyNotAvailable": "This study is not available"
     },
     "buttons": {
         "submit": "submit",
