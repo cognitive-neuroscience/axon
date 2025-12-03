@@ -25,7 +25,7 @@ export default class CustomErrorHandler extends SentryErrorHandler {
         const ngZone = this.injector.get(NgZone);
 
         // check specifically to see if the CSRF is not responding...usually this means the server is offline
-        if (error instanceof HttpErrorResponse && error?.url?.includes('/api/auth/csrf') && error?.status === 504) {
+        if (error instanceof HttpErrorResponse && error?.url?.includes('/api/auth/csrf') && error?.status >= 500) {
             this.snackbarService.openErrorSnackbar(
                 'The server is not responding. Please try again later.',
                 undefined,
