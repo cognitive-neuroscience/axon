@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { SnackbarService } from '../../../services/snackbar/snackbar.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
 import { Observable, Subscription, of, throwError } from 'rxjs';
-import { mergeMap, take, tap } from 'rxjs/operators';
+import { catchError, mergeMap, take, tap } from 'rxjs/operators';
 import { wait } from 'src/app/common/commonMethods';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { ClearanceService } from 'src/app/services/clearance.service';
@@ -69,81 +69,91 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
         this.wasClicked = true;
         this.clearanceService.clearServices();
 
-        this.studyService.getStudyById(this.studyId).subscribe((study) => {
-            if (!study.body.started) {
-                this._snackbarService.openErrorSnackbar('Study not started');
-                this.wasClicked = false;
-                return;
-            }
-
-            this.openLanguageDialog()
-                .pipe(
-                    mergeMap((lang) => {
-                        if (!lang) return throwError('user exited dialog');
-                        this.translateService.use(lang);
-                        this.loaderService.showLoader();
-                        return of(lang);
-                    }),
-                    mergeMap((lang) => {
-                        return this.crowdSourcedUserService.createCrowdSourcedUserAndLogin(
-                            this.workerId,
-                            this.studyId,
-                            lang
-                        );
-                    }),
-                    mergeMap((res) => {
-                        this.sessionStorageService.setIsCrowdsourcedUser(true);
-                        // we set this here because the getUser func requires the current study id
-                        this.sessionStorageService.setCurrentlyRunningStudyIdInSessionStorage(res.studyId.toString());
-                        return this.userStateService.getOrUpdateUserState();
-                    }),
-                    take(1)
-                )
-                .subscribe(
-                    async (user) => {
-                        if (user) {
-                            await this.startGameInFullScreen();
-                            this._snackbarService.openSuccessSnackbar(
-                                this.translateService.currentLang === SupportedLangs.FR
-                                    ? 'Votre ID a été enregistré avec succès!: ' + this.workerId
-                                    : 'Regisrered ID successfully: ' + this.workerId
+        this.studyService.getStudyById(this.studyId).subscribe(
+            (study) => {
+                this.openLanguageDialog()
+                    .pipe(
+                        mergeMap((lang) => {
+                            if (!lang) return throwError('user exited dialog');
+                            this.translateService.use(lang);
+                            this.loaderService.showLoader();
+                            return of(lang);
+                        }),
+                        mergeMap((lang) => {
+                            return this.crowdSourcedUserService.createCrowdSourcedUserAndLogin(
+                                this.workerId,
+                                this.studyId,
+                                lang
                             );
-                            this._taskManager.initStudy(this.studyId);
+                        }),
+                        mergeMap((res) => {
+                            this.sessionStorageService.setIsCrowdsourcedUser(true);
+                            // we set this here because the getUser func requires the current study id
+                            this.sessionStorageService.setCurrentlyRunningStudyIdInSessionStorage(
+                                res.studyId.toString()
+                            );
+                            return this.userStateService.getOrUpdateUserState();
+                        }),
+                        take(1)
+                    )
+                    .subscribe(
+                        async (user) => {
+                            if (user) {
+                                await this.startGameInFullScreen();
+                                this._snackbarService.openSuccessSnackbar(
+                                    this.translateService.currentLang === SupportedLangs.FR
+                                        ? 'Votre ID a été enregistré avec succès!: ' + this.workerId
+                                        : 'Regisrered ID successfully: ' + this.workerId
+                                );
+                                this._taskManager.initStudy(this.studyId);
+                            }
+                        },
+                        (err: HttpStatus) => {
+                            // reset wasClicked if there was some sort of issue that caused them to come back to this page
+                            this.wasClicked = false;
+                            // if headers too large error
+                            switch (err?.status) {
+                                case 431:
+                                    this._snackbarService.openErrorSnackbar(
+                                        'There was an error. Please try again by clearing your cookies, or open the study in incognito mode.',
+                                        '',
+                                        6000
+                                    );
+                                    break;
+                                case 403:
+                                    // study is either not started or has been deleted
+                                    this._snackbarService.openErrorSnackbar([
+                                        'Study not available',
+                                        "Cette étude n'est pas disponible.",
+                                    ]);
+                                    break;
+                                case 409:
+                                    this._snackbarService.openErrorSnackbar(
+                                        'A user with this ID has already registered for this study and cannot participate again.',
+                                        '',
+                                        15000
+                                    );
+                                    break;
+                                default:
+                                    console.error(err);
+                                    this._snackbarService.openErrorSnackbar(
+                                        err.message ||
+                                            'CrowdSource User Login error. Please contact sharplab.neuro@mcgill.ca.'
+                                    );
+                                    break;
+                            }
                         }
-                    },
-                    (err: HttpStatus) => {
-                        // reset wasClicked if there was some sort of issue that caused them to come back to this page
-                        this.wasClicked = false;
-                        // if headers too large error
-                        switch (err?.status) {
-                            case 431:
-                                this._snackbarService.openErrorSnackbar(
-                                    'There was an error. Please try again by clearing your cookies, or open the study in incognito mode.',
-                                    '',
-                                    6000
-                                );
-                                break;
-                            case 409:
-                                this._snackbarService.openErrorSnackbar(
-                                    'A user with this ID has already registered for this study and cannot participate again.',
-                                    '',
-                                    15000
-                                );
-                                break;
-                            default:
-                                console.error(err);
-                                this._snackbarService.openErrorSnackbar(
-                                    err.message ||
-                                        'CrowdSource User Login error. Please contact sharplab.neuro@mcgill.ca.'
-                                );
-                                break;
-                        }
-                    }
-                )
-                .add(() => {
-                    this.loaderService.hideLoader();
-                });
-        });
+                    )
+                    .add(() => {
+                        this.loaderService.hideLoader();
+                    });
+            },
+            (err) => {
+                if (err.status === 404) {
+                    this._snackbarService.openErrorSnackbar(['Study not found', "Cette étude n'a pas été trouvée."]);
+                }
+            }
+        );
     }
 
     async startGameInFullScreen() {
