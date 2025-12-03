@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { forkJoin, of, Subscription } from 'rxjs';
 import { finalize, map, mergeMap } from 'rxjs/operators';
 import { StudyUser } from 'src/app/models/StudyUser';
@@ -8,12 +9,25 @@ import { StudyService } from 'src/app/services/study.service';
 import { UserStateService } from 'src/app/services/user-state-service';
 declare function setFullScreen(): any;
 
+function deviceHasHardwareKeyboard() {
+    const isTouch = navigator.maxTouchPoints > 0;
+    // This is a heuristic to detect if the device has a hardware keyboard
+    // Touch devices typically have a coarse pointer, and computers typically have a fine pointer
+    const isCoarse = window.matchMedia('(pointer: coarse)').matches;
+    const smallScreen = Math.min(window.screen.width, window.screen.height) < 900;
+    const isMobileOrTablet = isTouch && isCoarse && smallScreen;
+
+    return isMobileOrTablet;
+}
+
 @Component({
     selector: 'app-participant-studies',
     templateUrl: './participant-studies.component.html',
     styleUrls: ['./participant-studies.component.scss'],
 })
-export class ParticipantStudiesComponent implements OnInit, OnDestroy {
+export class ParticipantStudiesComponent implements OnInit, AfterViewInit, OnDestroy {
+    @ViewChild('mobileDialog') mobileDialogTemplate: TemplateRef<any>;
+
     subscriptions: Subscription[] = [];
     studyUsers: StudyUser[] = [];
 
@@ -21,7 +35,8 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
         private studyUserService: StudyUserService,
         private loaderService: LoaderService,
         private userStateService: UserStateService,
-        private studyService: StudyService
+        private studyService: StudyService,
+        private dialog: MatDialog
     ) {}
 
     ngOnInit(): void {
@@ -77,6 +92,15 @@ export class ParticipantStudiesComponent implements OnInit, OnDestroy {
                 }
             );
         this.subscriptions.push(obs);
+    }
+
+    ngAfterViewInit(): void {
+        if (deviceHasHardwareKeyboard()) {
+            this.dialog.open(this.mobileDialogTemplate, {
+                width: '60%',
+                disableClose: true,
+            });
+        }
     }
 
     get userId(): number {
