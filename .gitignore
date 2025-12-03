@@ -2,6 +2,7 @@
 
 # config files
 .sentryclirc
+.deploy.sh
 
 # compiled output
 /dist
