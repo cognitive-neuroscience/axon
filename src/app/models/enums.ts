@@ -5,6 +5,7 @@ export enum RouteNames {
     LANDINGPAGE_RESET_PASSWORD_BASEROUTE = 'reset',
     LANDINGPAGE_STUDIES_BASEROUTE = 'studies',
     LANDINGPAGE_NOTFOUND = 'notfound',
+    LANDINGPAGE_NOTALLOWED = 'notallowed',
 
     TASKPLAYER = 'playtask',
 

@@ -38,6 +38,17 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
         private studyService: StudyService
     ) {}
 
+    private shouldReroute(studyConfig: Study['config'], studyUsers: StudyUser[]): boolean {
+        if (!studyConfig?.rerouteConfig?.mustCompleteOneOf) return false;
+
+        return studyConfig?.rerouteConfig.mustCompleteOneOf.some(({ studyId, currentTaskIndex }) => {
+            const hasStudyUserForStudy = studyUsers.find((studyUser) => studyUser.studyId === studyId);
+            if (!hasStudyUserForStudy) return false;
+
+            return hasStudyUserForStudy.currentTaskIndex >= currentTaskIndex;
+        });
+    }
+
     ngOnInit(): void {
         let studyId = parseInt(this.sessionStorageService.getStudyIdToRegisterInSessionStorage());
         this.isLoading = true;
@@ -80,8 +91,20 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
                 // force update as sometimes the retrieved studyUsers value is cached elsewhere
                 // and does not reflect our recent call to registerParticipantForStudy
                 mergeMap(() => this.studyUserService.getOrUpdateStudyUsers(true)),
-                // if 409 (conflict) then we dont want an error
-                catchError((err) => (err.status === 409 ? of(null) : throwError(err))),
+                // if 409 (conflict) then we dont want to show an error – it just means that the user is already registered for the study
+                // if 403 (forbidden) then we dont want to show an error – it just means that the user is not allowed to register for the study
+                catchError((err) => {
+                    if (err.status === 409) {
+                        return of(null);
+                    } else if (err.status === 403) {
+                        this.snackbarService.openErrorSnackbar(
+                            this.translateService.instant('errorMessages.studyNotAvailable')
+                        );
+                        return of(null);
+                    } else {
+                        return throwError(err);
+                    }
+                }),
                 // finalize runs regardless of how the observable completes (success, error, or unsubscription)
                 finalize(() => {
                     this.sessionStorageService.removeStudyIdToRegisterInSessionStorage();
@@ -105,17 +128,6 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
             );
 
         this.subscriptions.push(sub);
-    }
-
-    shouldReroute(studyConfig: Study['config'], studyUsers: StudyUser[]): boolean {
-        if (!studyConfig?.rerouteConfig?.mustCompleteOneOf) return false;
-
-        return studyConfig?.rerouteConfig.mustCompleteOneOf.some(({ studyId, currentTaskIndex }) => {
-            const hasStudyUserForStudy = studyUsers.find((studyUser) => studyUser.studyId === studyId);
-            if (!hasStudyUserForStudy) return false;
-
-            return hasStudyUserForStudy.currentTaskIndex >= currentTaskIndex;
-        });
     }
 
     openLanguageDialog(): Observable<SupportedLangs> {

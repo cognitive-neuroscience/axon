@@ -6,6 +6,8 @@ import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SessionStorageService } from 'src/app/services/sessionStorage.service';
 import { StudyService } from 'src/app/services/study.service';
 import { InfoDisplayViewerMetadata } from '../../shared/info-display-viewer/info-display-viewer.component';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 
 @Component({
     selector: 'app-study-background',
@@ -21,7 +23,9 @@ export class StudyBackgroundComponent implements OnInit, OnDestroy {
         private studyService: StudyService,
         private router: Router,
         private loader: LoaderService,
-        private sessionStorageService: SessionStorageService
+        private sessionStorageService: SessionStorageService,
+        private translateService: TranslateService,
+        private snackbarService: SnackbarService
     ) {}
 
     ngOnInit(): void {
@@ -43,9 +47,15 @@ export class StudyBackgroundComponent implements OnInit, OnDestroy {
                 .getStudyById(parsedNum)
                 .subscribe(
                     (study) => {
-                        if (study.status === 204) {
+                        if (study.status === 204 || study.body.deletedAt?.Valid) {
                             this.router.navigate([`${RouteNames.LANDINGPAGE_NOTFOUND}`]);
                             return;
+                        } else if (!study.body.started) {
+                            this.snackbarService.openErrorSnackbar([
+                                'This study has not started yet. ',
+                                "Cette étude n'a pas encore commencé.",
+                            ]);
+                            this.router.navigate([`${RouteNames.LANDINGPAGE_NOTALLOWED}`]);
                         } else {
                             // save the id in session storage so that the user can register for it later
                             this.sessionStorageService.setStudyIdToRegisterInSessionStorage(studyIdFromURL);

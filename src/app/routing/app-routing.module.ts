@@ -13,6 +13,7 @@ import { StudyBackgroundComponent } from '../pages/landing-page/study-background
 import { NotFoundComponent } from '../pages/landing-page/not-found/not-found.component';
 import { BlankComponent } from '../pages/tasks/blank/blank.component';
 import { ErrorPageComponent } from '../pages/error-page/error-page.component';
+import { NotAllowedComponent } from '../pages/landing-page/not-allowed/not-allowed.component';
 
 const routes: Routes = [
     {
@@ -62,6 +63,7 @@ const routes: Routes = [
     { path: 'blank', component: BlankComponent },
     { path: 'complete', component: FinalPageComponent },
     { path: 'notfound', component: NotFoundComponent },
+    { path: 'notallowed', component: NotAllowedComponent },
     { path: 'task-error', component: ErrorPageComponent },
     { path: '**', component: NotFoundComponent },
 ];
