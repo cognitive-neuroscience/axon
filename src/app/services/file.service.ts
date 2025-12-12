@@ -4,6 +4,10 @@ import * as FileSaver from 'file-saver';
 import { DataTableFormat } from '../pages/admin/admin-dashboard/data/data-table/data-table.component';
 import { SnackbarService } from './snackbar/snackbar.service';
 
+export const replaceSpacesColonsAndUnderscores = (str: string) => {
+    return str.replace(/[\s_:]+/g, '-');
+};
+
 @Injectable({
     providedIn: 'root',
 })
@@ -48,7 +52,8 @@ export class FileService {
         const csv = this.getCSVString(tableData);
         const csvBlob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 
-        FileSaver.saveAs(csvBlob, `${csvFileName}${this.CSV_EXTENSION}`);
+        const fileName = `${replaceSpacesColonsAndUnderscores(csvFileName)}${this.CSV_EXTENSION}`;
+        FileSaver.saveAs(csvBlob, fileName);
     }
 
     getCSVString(tableData: DataTableFormat[]): string {
@@ -70,7 +75,9 @@ export class FileService {
         try {
             const stringifiedJSON = JSON.stringify(json);
             const blob = new Blob([stringifiedJSON], { type: this.JSON_TYPE });
-            FileSaver.saveAs(blob, fileName + this.JSON_EXTENSION);
+
+            const jsonFileName = `${replaceSpacesColonsAndUnderscores(fileName)}${this.JSON_EXTENSION}`;
+            FileSaver.saveAs(blob, jsonFileName);
         } catch (e) {
             this.snackbarService.openErrorSnackbar('there was an issue downloading the JSON file');
         }

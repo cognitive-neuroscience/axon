@@ -75,6 +75,41 @@
             <div>
                 <mat-divider class="my-3"></mat-divider>
                 <div class="summary-container">
+                    <div class="d-flex my-3" style="justify-content: space-between">
+                        <button
+                            (click)="handlePreviewStudy(study.id)"
+                            class="w-25 mx-2"
+                            color="accent"
+                            mat-raised-button
+                        >
+                            Preview study
+                        </button>
+
+                        <button (click)="handleViewData(study)" class="w-25" mat-raised-button [disabled]="isGuest">
+                            See data
+                        </button>
+
+                        <button
+                            [disabled]="!canEditStudy(study.owner)"
+                            (click)="handleEdit(study)"
+                            class="w-25 mx-2"
+                            color="primary"
+                            mat-raised-button
+                        >
+                            Edit Study
+                        </button>
+
+                        <button
+                            (click)="handleDelete(study)"
+                            class="w-25 mx-2"
+                            color="warn"
+                            mat-raised-button
+                            [disabled]="!canEditStudy(study.owner)"
+                        >
+                            Archive Study
+                        </button>
+                    </div>
+
                     <div class="flex-row-space-between">
                         <div class="flex-column">
                             <span class="title badge">TITLE</span>
@@ -133,6 +168,7 @@
                     <div>
                         <span class="title badge">TASKS</span>
                     </div>
+
                     <div class="max-height">
                         <mat-list role="list">
                             <ng-container *ngFor="let studyTask of study.studyTasks; let i = index">
@@ -164,41 +200,6 @@
                                 </mat-list-item>
                             </ng-container>
                         </mat-list>
-                    </div>
-
-                    <div class="d-flex my-3" style="justify-content: space-between">
-                        <button
-                            (click)="handlePreviewStudy(study.id)"
-                            class="w-25 mx-2"
-                            color="accent"
-                            mat-raised-button
-                        >
-                            Preview study
-                        </button>
-
-                        <button (click)="handleViewData(study)" class="w-25" mat-raised-button [disabled]="isGuest">
-                            See data
-                        </button>
-
-                        <button
-                            [disabled]="!canEditStudy(study.owner)"
-                            (click)="handleEdit(study)"
-                            class="w-25 mx-2"
-                            color="primary"
-                            mat-raised-button
-                        >
-                            Edit Study
-                        </button>
-
-                        <button
-                            (click)="handleDelete(study)"
-                            class="w-25 mx-2"
-                            color="warn"
-                            mat-raised-button
-                            [disabled]="!canEditStudy(study.owner)"
-                        >
-                            Archive Study
-                        </button>
                     </div>
                 </div>
             </div>
@@ -264,16 +265,49 @@
             <div>
                 <mat-divider class="my-3"></mat-divider>
                 <div class="summary-container">
+                    <div class="d-flex my-3" style="justify-content: space-between">
+                        <button
+                            (click)="handlePreviewStudy(study.id)"
+                            class="w-25 mx-2"
+                            color="accent"
+                            mat-raised-button
+                        >
+                            Preview study
+                        </button>
+
+                        <button
+                            (click)="handleViewData(study)"
+                            class="w-25 mx-2"
+                            mat-raised-button
+                            [disabled]="isGuest"
+                        >
+                            See data
+                        </button>
+
+                        <button
+                            [disabled]="!canEditStudy(study.owner)"
+                            (click)="handleEdit(study)"
+                            class="w-25 mx-2"
+                            color="primary"
+                            mat-raised-button
+                        >
+                            Edit Study
+                        </button>
+
+                        <button
+                            (click)="handleDelete(study)"
+                            class="w-25 mx-2"
+                            color="warn"
+                            mat-raised-button
+                            [disabled]="!canEditStudy(study.owner)"
+                        >
+                            Archive Study
+                        </button>
+                    </div>
                     <div class="flex-row-space-between">
                         <div class="flex-column">
                             <span class="title badge">TITLE</span>
-                            <span class="internal-name">
-                                <b
-                                    matTooltipPosition="right"
-                                    matTooltip="this is the title that participants will see"
-                                    >{{ study.externalName }}</b
-                                >
-                            </span>
+                            <span class="internal-name">{{ study.externalName }}</span>
                         </div>
                         <div class="flex-column-space-around">
                             <button
@@ -354,46 +388,6 @@
                             </ng-container>
                         </mat-list>
                     </div>
-
-                    <div class="d-flex my-3" style="justify-content: space-between">
-                        <button
-                            (click)="handlePreviewStudy(study.id)"
-                            class="w-25 mx-2"
-                            color="accent"
-                            mat-raised-button
-                        >
-                            Preview study
-                        </button>
-
-                        <button
-                            (click)="handleViewData(study)"
-                            class="w-25 mx-2"
-                            mat-raised-button
-                            [disabled]="isGuest"
-                        >
-                            See data
-                        </button>
-
-                        <button
-                            [disabled]="!canEditStudy(study.owner)"
-                            (click)="handleEdit(study)"
-                            class="w-25 mx-2"
-                            color="primary"
-                            mat-raised-button
-                        >
-                            Edit Study
-                        </button>
-
-                        <button
-                            (click)="handleDelete(study)"
-                            class="w-25 mx-2"
-                            color="warn"
-                            mat-raised-button
-                            [disabled]="!canEditStudy(study.owner)"
-                        >
-                            Archive Study
-                        </button>
-                    </div>
                 </div>
             </div>
         </mat-expansion-panel>
@@ -467,6 +461,46 @@
             <div>
                 <mat-divider class="my-3"></mat-divider>
                 <div class="summary-container">
+                    <div class="d-flex my-3" style="justify-content: space-between">
+                        <button
+                            (click)="handlePreviewStudy(study.id)"
+                            class="w-25 mx-2"
+                            color="accent"
+                            mat-raised-button
+                        >
+                            Preview study
+                        </button>
+
+                        <button
+                            (click)="handleViewData(study)"
+                            class="w-25 mx-2"
+                            mat-raised-button
+                            [disabled]="isGuest"
+                        >
+                            See data
+                        </button>
+
+                        <button
+                            [disabled]="true"
+                            (click)="handleEdit(study)"
+                            class="w-25 mx-2"
+                            color="primary"
+                            mat-raised-button
+                        >
+                            Edit Study
+                        </button>
+
+                        <button
+                            (click)="handleDelete(study)"
+                            class="w-25 mx-2"
+                            color="warn"
+                            mat-raised-button
+                            [disabled]="true"
+                        >
+                            Archive Study
+                        </button>
+                    </div>
+
                     <div class="flex-row-space-between">
                         <div class="flex-column">
                             <span class="title badge">TITLE</span>
@@ -556,46 +590,6 @@
                                 </mat-list-item>
                             </ng-container>
                         </mat-list>
-                    </div>
-
-                    <div class="d-flex my-3" style="justify-content: space-between">
-                        <button
-                            (click)="handlePreviewStudy(study.id)"
-                            class="w-25 mx-2"
-                            color="accent"
-                            mat-raised-button
-                        >
-                            Preview study
-                        </button>
-
-                        <button
-                            (click)="handleViewData(study)"
-                            class="w-25 mx-2"
-                            mat-raised-button
-                            [disabled]="isGuest"
-                        >
-                            See data
-                        </button>
-
-                        <button
-                            [disabled]="true"
-                            (click)="handleEdit(study)"
-                            class="w-25 mx-2"
-                            color="primary"
-                            mat-raised-button
-                        >
-                            Edit Study
-                        </button>
-
-                        <button
-                            (click)="handleDelete(study)"
-                            class="w-25 mx-2"
-                            color="warn"
-                            mat-raised-button
-                            [disabled]="true"
-                        >
-                            Archive Study
-                        </button>
                     </div>
                 </div>
             </div>

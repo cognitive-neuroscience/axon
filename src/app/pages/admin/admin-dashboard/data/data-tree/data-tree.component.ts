@@ -89,7 +89,9 @@ export class DataTreeComponent implements OnInit {
             .subscribe(
                 (studyUsers) => {
                     const tabularData = getStudyUserDataAsDataTableFormat(studyUsers);
-                    const fileName = `TASKDATA_${study.internalName}_ACCOUNT_HOLDERS`;
+                    const downloadDate = new Date().toDateString();
+                    const downloadTime = new Date().toLocaleTimeString();
+                    const fileName = `TASKDATA-${study.internalName}--ACCOUNT-HOLDERS--DATE-${downloadDate}--TIME-${downloadTime}`;
 
                     this.fileService.exportAsCSV(tabularData, fileName);
                 },
@@ -110,7 +112,9 @@ export class DataTreeComponent implements OnInit {
             .subscribe(
                 (crowdsourcedUsers) => {
                     const tabularData = getCrowdsourcedUserDataAsDataTableFormat(crowdsourcedUsers);
-                    const fileName = `TASKDATA_${study.internalName}_CROWDSOURCED_USERS`;
+                    const downloadDate = new Date().toDateString();
+                    const downloadTime = new Date().toLocaleTimeString();
+                    const fileName = `TASKDATA-${study.internalName}--CROWDSOURCED-USERS--DATE-${downloadDate}--TIME-${downloadTime}`;
 
                     this.fileService.exportAsCSV(tabularData, fileName);
                 },
@@ -137,9 +141,9 @@ export class DataTreeComponent implements OnInit {
             )
             .subscribe((participantData: ParticipantData[]) => {
                 const tabularData = getParticipantDataAsDataTableFormat(participantData, studyTask.task.taskType);
-                const fileName = `STUDY_${study.id}_INDEX_${studyTask.taskOrder}_TASK_${
-                    studyTask.task.name
-                }_DATE_${new Date().toLocaleDateString()}`;
+                const downloadDate = new Date().toDateString();
+                const downloadTime = new Date().toLocaleTimeString();
+                const fileName = `STUDY-${study.id}--INDEX-${studyTask.taskOrder}--TASK-${studyTask.task.name}--DATE-${downloadDate}--TIME-${downloadTime}`;
 
                 this.fileService.exportAsCSV(tabularData, fileName);
             })
@@ -149,11 +153,11 @@ export class DataTreeComponent implements OnInit {
     }
 
     downloadAllSnapshots(study: Study) {
-        this.fileService.exportAsJSONFile(study.snapshots, `STUDY_${study.id}_SNAPSHOTS`);
+        this.fileService.exportAsJSONFile(study.snapshots, `STUDY-${study.id}--SNAPSHOTS`);
     }
 
     downloadSnapshotForDate(study: Study, dateKey: string) {
-        this.fileService.exportAsJSONFile(study.snapshots[dateKey], `STUDY_${study.id}_SNAPSHOT_${dateKey}`);
+        this.fileService.exportAsJSONFile(study.snapshots[dateKey], `STUDY-${study.id}--SNAPSHOT-DATE-${dateKey}`);
     }
 
     @Input()
@@ -177,9 +181,8 @@ export class DataTreeComponent implements OnInit {
                         .sort((a, b) => new Date(b).valueOf() - new Date(a).valueOf())
                         .map((snapshot) => {
                             const date = new Date(snapshot);
-
                             return {
-                                name: `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`,
+                                name: `${date.toDateString()}: ${date.toTimeString()}`,
                                 clickAction: () => {
                                     this.downloadSnapshotForDate(study, snapshot);
                                 },

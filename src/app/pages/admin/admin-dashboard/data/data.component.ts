@@ -12,7 +12,7 @@ import { ParticipantData } from 'src/app/models/ParticipantData';
 import { TaskType } from 'src/app/models/enums';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { StudyUserService } from 'src/app/services/study-user.service';
-import { FileService } from 'src/app/services/file.service';
+import { FileService, replaceSpacesColonsAndUnderscores } from 'src/app/services/file.service';
 import * as JSZip from 'jszip';
 import * as FileSaver from 'file-saver';
 import { CrowdsourcedUser } from 'src/app/models/User';
@@ -138,9 +138,9 @@ export class DataComponent implements OnInit, OnDestroy {
 
                 dataTableFormat = this.formatDates(dataTableFormat);
                 this.tableData = dataTableFormat;
-                this.fileName = `STUDY_${study.id}_INDEX_${indexSelected}_TASK_${
-                    studyTask.task.name
-                }_DATE_${new Date().toLocaleDateString()}`;
+                const downloadDate = new Date().toDateString();
+                const downloadTime = new Date().toLocaleTimeString();
+                this.fileName = `STUDY-${study.id}--INDEX-${indexSelected}--TASK-${studyTask.task.name}--DATE-${downloadDate}--TIME-${downloadTime}`;
             })
             .add(() => {
                 this.loaderService.hideLoader();
@@ -340,7 +340,11 @@ export class DataComponent implements OnInit, OnDestroy {
             )
             .subscribe((zippedFile) => {
                 zippedFile.generateAsync({ type: 'blob' }).then((zipped) => {
-                    FileSaver.saveAs(zipped, `STUDY_${study.id}_${new Date().toLocaleDateString()}.zip`);
+                    const downloadDate = new Date().toDateString();
+                    const downloadTime = new Date().toLocaleTimeString();
+
+                    const fileName = `STUDY-${study.id}--DATE-${downloadDate}--TIME-${downloadTime}.zip`;
+                    FileSaver.saveAs(zipped, replaceSpacesColonsAndUnderscores(fileName));
                 });
             })
             .add(() => {
