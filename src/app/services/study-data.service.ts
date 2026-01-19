@@ -43,4 +43,10 @@ export class ParticipantDataService {
             `${environment.apiBaseURL}${this.RESOURCE_PATH}/${studyId}/${taskOrder}`
         );
     }
+
+    getParticipantDataWithFilters(studyId: number, filters: { wasSkipped?: boolean }): Observable<ParticipantData[]> {
+        return this.http.get<ParticipantData[]>(
+            `${environment.apiBaseURL}${this.RESOURCE_PATH}/${studyId}?wasSkipped=${filters.wasSkipped ?? false}`
+        );
+    }
 }

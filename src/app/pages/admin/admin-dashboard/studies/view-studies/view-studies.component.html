@@ -3,6 +3,7 @@
         <h2 class="mb-5">Organization Studies</h2>
         <div>
             <button
+                *ngIf="isAdmin"
                 (click)="downloadStudyUsers()"
                 [disabled]="isGuest"
                 mat-raised-button

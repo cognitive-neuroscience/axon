@@ -58,7 +58,10 @@ export function formatDate(dateTime: string): string {
     }
 }
 
-export function getStudyUserDataAsDataTableFormat(studyUsers: StudyUser[]): DataTableFormat[] {
+export function getStudyUserDataAsDataTableFormat(
+    studyUsers: StudyUser[],
+    skippedParticipantData: ParticipantData[]
+): DataTableFormat[] {
     return studyUsers.map((studyUser) => {
         const consentInputs = { ...(studyUser.data || {}) };
 
@@ -73,17 +76,30 @@ export function getStudyUserDataAsDataTableFormat(studyUsers: StudyUser[]): Data
                 hasAcceptedConsent: studyUser.hasAcceptedConsent,
                 lang: studyUser.lang,
                 ...consentInputs,
+                skippedTaskIds: skippedParticipantData
+                    .filter((skippedParticipant) => skippedParticipant.userId === studyUser.userId.toString())
+                    .map((skippedParticipant) => skippedParticipant.taskOrder)
+                    .join(','),
             },
             expandable: [],
         };
     });
 }
 
-export function getCrowdsourcedUserDataAsDataTableFormat(crowdsourcedUsers: CrowdsourcedUser[]): DataTableFormat[] {
-    let crowdsourcedUsersDataTable: DataTableFormat[] = crowdsourcedUsers.map((data) => {
+export function getCrowdsourcedUserDataAsDataTableFormat(
+    crowdsourcedUsers: CrowdsourcedUser[],
+    skippedParticipantData: ParticipantData[]
+): DataTableFormat[] {
+    let crowdsourcedUsersDataTable: DataTableFormat[] = crowdsourcedUsers.map((crowdsourcedUser) => {
         return {
             fields: {
-                ...data,
+                ...crowdsourcedUser,
+                skippedTaskIds: skippedParticipantData
+                    .filter(
+                        (skippedParticipant) => skippedParticipant.userId === crowdsourcedUser.participantId.toString()
+                    )
+                    .map((skippedParticipant) => skippedParticipant.taskOrder)
+                    .join(','),
             },
             expandable: [],
         };

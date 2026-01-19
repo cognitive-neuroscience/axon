@@ -15,5 +15,6 @@ export class StudyUser {
 
 export class StudyUserSummary {
     userId: number;
+    email: string;
     studies: number[];
 }

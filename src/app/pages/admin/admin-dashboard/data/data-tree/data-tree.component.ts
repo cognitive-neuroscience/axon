@@ -16,6 +16,7 @@ import {
 import { UserStateService } from 'src/app/services/user-state-service';
 import { ParticipantDataService } from 'src/app/services/study-data.service';
 import { catchError } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 import { ParticipantData } from 'src/app/models/ParticipantData';
 
 interface DataNode {
@@ -84,11 +85,15 @@ export class DataTreeComponent implements OnInit {
     downloadStudyUserData(study: Study) {
         this.loaderService.showLoader();
 
-        this.studyUserService
-            .getStudyUsersForStudy(study.id)
+        forkJoin({
+            studyUsers: this.studyUserService.getStudyUsersForStudy(study.id),
+            skippedParticipantData: this.participantDataService.getParticipantDataWithFilters(study.id, {
+                wasSkipped: true,
+            }),
+        })
             .subscribe(
-                (studyUsers) => {
-                    const tabularData = getStudyUserDataAsDataTableFormat(studyUsers);
+                ({ studyUsers, skippedParticipantData }) => {
+                    const tabularData = getStudyUserDataAsDataTableFormat(studyUsers, skippedParticipantData);
                     const downloadDate = new Date().toDateString();
                     const downloadTime = new Date().toLocaleTimeString();
                     const fileName = `TASKDATA-${study.internalName}--ACCOUNT-HOLDERS--DATE-${downloadDate}--TIME-${downloadTime}`;
@@ -107,11 +112,18 @@ export class DataTreeComponent implements OnInit {
     downloadCrowdsourcedUserData(study: Study) {
         this.loaderService.showLoader();
 
-        this.crowdSourcedUserService
-            .getCrowdsourcedUsersByStudyId(study.id)
+        forkJoin({
+            crowdsourcedUsers: this.crowdSourcedUserService.getCrowdsourcedUsersByStudyId(study.id),
+            skippedParticipantData: this.participantDataService.getParticipantDataWithFilters(study.id, {
+                wasSkipped: true,
+            }),
+        })
             .subscribe(
-                (crowdsourcedUsers) => {
-                    const tabularData = getCrowdsourcedUserDataAsDataTableFormat(crowdsourcedUsers);
+                ({ crowdsourcedUsers, skippedParticipantData }) => {
+                    const tabularData = getCrowdsourcedUserDataAsDataTableFormat(
+                        crowdsourcedUsers,
+                        skippedParticipantData
+                    );
                     const downloadDate = new Date().toDateString();
                     const downloadTime = new Date().toLocaleTimeString();
                     const fileName = `TASKDATA-${study.internalName}--CROWDSOURCED-USERS--DATE-${downloadDate}--TIME-${downloadTime}`;
