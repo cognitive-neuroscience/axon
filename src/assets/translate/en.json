@@ -67,5 +67,10 @@
         "next": "Next",
         "start": "Start",
         "previous": "Previous"
+    },
+    "skip-button": {
+        "skip": "Skip",
+        "confirmation-dialog-title": "Are you sure you want to skip this task?",
+        "confirmation-dialog-message": "Once you skip, you will be unable to do this task again."
     }
 }

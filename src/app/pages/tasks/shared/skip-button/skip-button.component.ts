@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { mergeMap, take } from 'rxjs/operators';
 import { ConfirmationService } from 'src/app/services/confirmation/confirmation.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
@@ -16,15 +17,15 @@ export class SkipButtonComponent implements OnInit {
     @Output()
     shouldSkip: EventEmitter<boolean> = new EventEmitter();
 
-    constructor(private confirmationService: ConfirmationService, private loaderService: LoaderService) {}
+    constructor(private confirmationService: ConfirmationService, private translateService: TranslateService) {}
 
     ngOnInit(): void {}
 
     handleSkip(): void {
         this.confirmationService
             .openConfirmationDialog(
-                'Are you sure you want to skip this task?',
-                'Once you skip, you will be unable to do this task again.'
+                this.translateService.instant('skip-button.confirmation-dialog-title'),
+                this.translateService.instant('skip-button.confirmation-dialog-message')
             )
             .pipe(take(1))
             .subscribe((ok) => {

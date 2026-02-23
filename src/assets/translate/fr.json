@@ -67,5 +67,10 @@
         "next": "Suivant",
         "start": "Commencer",
         "previous": "Précedent"
+    },
+    "skip-button": {
+        "skip": "Ignorer",
+        "confirmation-dialog-title": "Êtes-vous sûr de vouloir ignorer cette tâche?",
+        "confirmation-dialog-message": "Si vous ignorez cette tâche, vous ne pourrez plus l'effectuer."
     }
 }
