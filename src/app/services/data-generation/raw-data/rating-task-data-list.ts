@@ -318,317 +318,385 @@ export const RatingTaskActivities = {
 };
 
 // legend are ordered from low to high endorsement
-export const RatingTaskQuestionList = [
-    {
-        question: {
-            en: 'How much do you look forward to the outcome of this activity?',
-            fr: 'À quel point avez-vous hâte au résultat de cette activité?',
+export const RatingTaskQuestionList = {
+    long: [
+        {
+            question: {
+                en: 'How much do you look forward to the outcome of this activity?',
+                fr: 'À quel point avez-vous hâte au résultat de cette activité?',
+            },
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'Very much',
+                    fr: 'Beaucoup',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Not at all',
-                fr: 'Pas du tout',
+        {
+            question: {
+                en: 'How much is this activity good for you?',
+                fr: 'À quel point cette activité est-elle bénéfique pour vous?',
             },
-            {
-                en: 'Very much',
-                fr: 'Beaucoup',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How much is this activity good for you?',
-            fr: 'À quel point cette activité est-elle bénéfique pour vous?',
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'Very much',
+                    fr: 'Très bien',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Not at all',
-                fr: 'Pas du tout',
+        {
+            question: {
+                en: 'How much do you enjoy carrying out this activity?',
+                fr: 'À quel point aimez-vous entreprendre (c.-à-d. faire) cette activité?',
             },
-            {
-                en: 'Very much',
-                fr: 'Très bien',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How much do you enjoy carrying out this activity?',
-            fr: 'À quel point aimez-vous entreprendre (c.-à-d. faire) cette activité?',
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'Very much',
+                    fr: 'Beaucoup',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Not at all',
-                fr: 'Pas du tout',
+        {
+            question: {
+                en: 'How much do you feel you should do this activity?',
+                fr: 'À quel point pensez-vous que vous devriez faire cette activité?',
             },
-            {
-                en: 'Very much',
-                fr: 'Beaucoup',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How much do you feel you should do this activity?',
-            fr: 'À quel point pensez-vous que vous devriez faire cette activité?',
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'Very much',
+                    fr: 'Beaucoup',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Not at all',
-                fr: 'Pas du tout',
+        {
+            question: {
+                en: 'How much do your loved ones think you should do this activity?',
+                fr: 'À quel point vos proches pensent-ils que vous devriez faire cette activité?',
             },
-            {
-                en: 'Very much',
-                fr: 'Beaucoup',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How much do your loved ones think you should do this activity?',
-            fr: 'À quel point vos proches pensent-ils que vous devriez faire cette activité?',
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'Very much',
+                    fr: 'Beaucoup',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Not at all',
-                fr: 'Pas du tout',
+        {
+            question: {
+                en: 'How physically effortful does this activity feel to you?',
+                fr: 'À quel point cette activité vous demande-t-elle un effort physique?',
             },
-            {
-                en: 'Very much',
-                fr: 'Beaucoup',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How physically effortful does this activity feel to you?',
-            fr: 'À quel point cette activité vous demande-t-elle un effort physique?',
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'Very effortful',
+                    fr: 'Beaucoup',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Not at all',
-                fr: 'Pas du tout',
+        {
+            question: {
+                en: 'How mentally effortful does this activity feel to you?',
+                fr: 'À quel point cette activité vous demande-t-elle un effort mental?',
             },
-            {
-                en: 'Very effortful',
-                fr: 'Beaucoup',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How mentally effortful does this activity feel to you?',
-            fr: 'À quel point cette activité vous demande-t-elle un effort mental?',
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'Very effortful',
+                    fr: 'Beaucoup',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Not at all',
-                fr: 'Pas du tout',
+        {
+            question: {
+                en: 'How negative do you feel when doing this activity?',
+                fr: 'À quel point éprouvez-vous des sentiments négatifs lorsque vous faites cette activité?',
             },
-            {
-                en: 'Very effortful',
-                fr: 'Beaucoup',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How negative do you feel when doing this activity?',
-            fr: 'À quel point éprouvez-vous des sentiments négatifs lorsque vous faites cette activité?',
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'Very negative',
+                    fr: 'Beaucoup',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Not at all',
-                fr: 'Pas du tout',
+        {
+            question: {
+                en: 'How hard is it to get started on this activity?',
+                fr: "À quel point est-il difficile pour vous d'initier ou de vous lancer dans cette activité?",
             },
-            {
-                en: 'Very negative',
-                fr: 'Beaucoup',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How hard is it to get started on this activity?',
-            fr: "À quel point est-il difficile pour vous d'initier ou de vous lancer dans cette activité?",
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'Very hard',
+                    fr: 'Beaucoup',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Not at all',
-                fr: 'Pas du tout',
+        {
+            question: {
+                en: 'How much do you have to plan for this activity?',
+                fr: "À quel point devez-vous planifier d'avance pour cette activité?",
             },
-            {
-                en: 'Very hard',
-                fr: 'Beaucoup',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How much do you have to plan for this activity?',
-            fr: "À quel point devez-vous planifier d'avance pour cette activité?",
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'Lots of planning',
+                    fr: 'Beaucoup',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Not at all',
-                fr: 'Pas du tout',
+        {
+            question: {
+                en: 'To what extent is this activity part of your routine?',
+                fr: 'À quel point cette activité fait-elle partie de votre routine?',
             },
-            {
-                en: 'Lots of planning',
-                fr: 'Beaucoup',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'To what extent is this activity part of your routine?',
-            fr: 'À quel point cette activité fait-elle partie de votre routine?',
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'Very much',
+                    fr: 'Beaucoup',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Not at all',
-                fr: 'Pas du tout',
+        {
+            question: {
+                en: 'How certain are you about how this activity will turn out?',
+                fr: 'À quel point êtes-vous certain de la façon dont cette activité va se dérouler?',
             },
-            {
-                en: 'Very much',
-                fr: 'Beaucoup',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How certain are you about how this activity will turn out?',
-            fr: 'À quel point êtes-vous certain de la façon dont cette activité va se dérouler?',
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'Very certain',
+                    fr: 'Beaucoup',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Not at all',
-                fr: 'Pas du tout',
+        {
+            question: {
+                en: 'How much does this activity help you feel close or connected to others?',
+                fr: 'À quel point cette activité vous aide-t-elle à vous sentir proche ou connecté aux autres?',
             },
-            {
-                en: 'Very certain',
-                fr: 'Beaucoup',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How much does this activity help you feel close or connected to others?',
-            fr: 'À quel point cette activité vous aide-t-elle à vous sentir proche ou connecté aux autres?',
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'Very much',
+                    fr: 'Beaucoup',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Not at all',
-                fr: 'Pas du tout',
+        {
+            question: {
+                en: 'How much time does it usually take to do this activity?',
+                fr: 'Combien de temps vous faut-il habituellement pour faire cette activité?',
             },
-            {
-                en: 'Very much',
-                fr: 'Beaucoup',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How much time does it usually take to do this activity?',
-            fr: 'Combien de temps vous faut-il habituellement pour faire cette activité?',
+            legend: [
+                {
+                    en: 'A few minutes',
+                    fr: 'Quelques minutes',
+                },
+                {
+                    en: '30 minutes',
+                    fr: '30 minutes',
+                },
+                {
+                    en: 'Around an hour',
+                    fr: 'Environ une heure',
+                },
+                {
+                    en: 'A few hours',
+                    fr: 'Quelques heures',
+                },
+                {
+                    en: 'Most of the day',
+                    fr: 'La plupart de la journée',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'A few minutes',
-                fr: 'Quelques minutes',
+        {
+            question: {
+                en: 'How much money does it take to do this activity?',
+                fr: "Combien d'argent vous faut-il pour faire cette activité?",
             },
-            {
-                en: '30 minutes',
-                fr: '30 minutes',
-            },
-            {
-                en: 'Around an hour',
-                fr: 'Environ une heure',
-            },
-            {
-                en: 'A few hours',
-                fr: 'Quelques heures',
-            },
-            {
-                en: 'Most of the day',
-                fr: 'La plupart de la journée',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How much money does it take to do this activity?',
-            fr: "Combien d'argent vous faut-il pour faire cette activité?",
+            legend: [
+                {
+                    en: 'Free',
+                    fr: 'Gratuit',
+                },
+                {
+                    en: 'More than I can afford',
+                    fr: 'Plus que ce que je peux me permettre',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Free',
-                fr: 'Gratuit',
+        {
+            question: {
+                en: 'How often do you typically engage in this activity?',
+                fr: 'À quelle fréquence entreprenez-vous habituellement cette activité?',
             },
-            {
-                en: 'More than I can afford',
-                fr: 'Plus que ce que je peux me permettre',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How often do you typically engage in this activity?',
-            fr: 'À quelle fréquence entreprenez-vous habituellement cette activité?',
+            legend: [
+                {
+                    en: 'A few times per lifetime or never',
+                    fr: 'Quelques fois par vie ou jamais',
+                },
+                {
+                    en: 'A few times per year',
+                    fr: 'Quelques fois par an',
+                },
+                {
+                    en: 'Monthly',
+                    fr: 'Une fois par mois',
+                },
+                {
+                    en: 'Weekly',
+                    fr: 'Une fois par semaine',
+                },
+                {
+                    en: 'Daily',
+                    fr: 'Quotidiennement',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'A few times per lifetime or never',
-                fr: 'Quelques fois par vie ou jamais',
+        {
+            question: {
+                en: 'How much does your age interfere with your ability to complete this activity?',
+                fr: 'À quel point votre âge interfère-t-il avec votre capacité à réaliser cette activité?',
             },
-            {
-                en: 'A few times per year',
-                fr: 'Quelques fois par an',
-            },
-            {
-                en: 'Monthly',
-                fr: 'Une fois par mois',
-            },
-            {
-                en: 'Weekly',
-                fr: 'Une fois par semaine',
-            },
-            {
-                en: 'Daily',
-                fr: 'Quotidiennement',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How much does your age interfere with your ability to complete this activity?',
-            fr: 'À quel point votre âge interfère-t-il avec votre capacité à réaliser cette activité?',
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'A lot',
+                    fr: 'Beaucoup',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Not at all',
-                fr: 'Pas du tout',
+        {
+            question: {
+                en: 'How much does your health condition affect your ability to complete this activity?',
+                fr: 'À quel point votre état de santé affecte-t-il votre capacité à réaliser cette activité?',
             },
-            {
-                en: 'A lot',
-                fr: 'Beaucoup',
-            },
-        ],
-    },
-    {
-        question: {
-            en: 'How much does your health condition affect your ability to complete this activity?',
-            fr: 'À quel point votre état de santé affecte-t-il votre capacité à réaliser cette activité?',
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'A lot',
+                    fr: 'Beaucoup',
+                },
+            ],
         },
-        legend: [
-            {
-                en: 'Not at all',
-                fr: 'Pas du tout',
+        {
+            question: {
+                en: 'How good are you at this activity?',
+                fr: 'À quel point vous sentez-vous compétent(e) dans cette activité?',
             },
-            {
-                en: 'A lot',
-                fr: 'Beaucoup',
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'A lot',
+                    fr: 'Beaucoup',
+                },
+            ],
+        },
+    ],
+    short: [
+        {
+            question: {
+                en: 'How effortful is this activity for you?',
+                fr: "À quel point cette activité vous demande-t-elle de l'effort?",
             },
-        ],
-    },
-];
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'A lot',
+                    fr: 'Beaucoup',
+                },
+            ],
+        },
+        {
+            question: {
+                en: 'How enjoyable is this activity for you?',
+                fr: 'À quel point cette activité vous plait-elle?',
+            },
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'A lot',
+                    fr: 'Beaucoup',
+                },
+            ],
+        },
+        {
+            question: {
+                en: 'How much do you feel you should do this activity?',
+                fr: 'À quel point sentez-vous que vous devriez faire cette activité?',
+            },
+            legend: [
+                {
+                    en: 'Not at all',
+                    fr: 'Pas du tout',
+                },
+                {
+                    en: 'A lot',
+                    fr: 'Beaucoup',
+                },
+            ],
+        },
+    ],
+};

@@ -7,6 +7,7 @@
         <div class="question-container flex-column-center">
             <span class="question">{{ getTranslation(questionShown) }}</span>
         </div>
+        <div>{{ counterbalance }} (This will be removed later, just for testing purposes)</div>
         <div class="slider-container">
             <ng-container *ngIf="showSlider">
                 <div *ngIf="isPractice" class="text-center hint py-3">
