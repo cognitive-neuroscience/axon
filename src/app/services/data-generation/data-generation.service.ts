@@ -56,7 +56,7 @@ import {
 export class DataGenerationService {
     constructor(private imageService: ImageService) {}
 
-    generateRatingStimuli(numDoSomethingActivities: number): RatingTaskStimuli[] {
+    generateRatingStimuli(numDoSomethingActivities: number, version: 'long' | 'short' = 'long'): RatingTaskStimuli[] {
         const doSomethingActivities = selectNRandomElementsNoRepeats(
             RatingTaskActivities.DoSomething,
             numDoSomethingActivities
@@ -65,7 +65,7 @@ export class DataGenerationService {
         const activities = shuffle(doSomethingActivities.concat(doNothingActivities));
 
         const ratingTaskStimuli: RatingTaskStimuli[] = activities.map((activity) => {
-            const questions = shuffle(deepClone(RatingTaskQuestionList));
+            const questions = shuffle(deepClone(RatingTaskQuestionList[version]));
             const isDoNothingActivity =
                 RatingTaskActivities.DoNothing.findIndex((x) => x.en === activity.en && x.fr === activity.fr) >= 0;
 

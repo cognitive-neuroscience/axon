@@ -15,8 +15,10 @@ import { ITranslationText } from 'src/app/models/InternalDTOs';
 import { TranslateService } from '@ngx-translate/core';
 
 export enum RatingTaskCounterBalance {
-    LOWTOHIGHENDORSEMENT = 'LOWTOHIGH',
-    HIGHTOLOWENDORSEMENT = 'HIGHTOLOW',
+    LOWTOHIGHENDORSEMENTLONG = 'LOWTOHIGH_LONG',
+    HIGHTOLOWENDORSEMENTLONG = 'HIGHTOLOW_LONG',
+    LOWTOHIGHENDORSEMENTSHORT = 'LOWTOHIGH_SHORT',
+    HIGHTOLOWENDORSEMENTSHORT = 'HIGHTOLOW_SHORT',
     NA = 'NA',
 }
 
@@ -26,6 +28,9 @@ export interface RaterTaskMetadata {
         numTrials: number;
         isPractice: boolean;
         maxResponseTime: number;
+        resetCache?: boolean;
+        // this is not for low to high or high to low endorsement counterbalance, but for the long or short version of the task (or "" if none. If none, should default to original long version)
+        counterbalanceShortVersionOption?: '' | 'counterbalance' | 'counterbalance-alternative';
         interTrialDelay: number;
         delayToShowHelpMessage: number;
         durationHelpMessageShown: number;
@@ -68,8 +73,10 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
     private delayToShowRatingSlider: number;
     private durationHelpMessageShown: number;
     private durationOutOftimeMessageShown: number;
-    private counterbalance: RatingTaskCounterBalance;
+    counterbalance: RatingTaskCounterBalance;
     private numDoSomethingActivities: number;
+    private counterbalanceShortVersionOption: '' | 'counterbalance' | 'counterbalance-alternative';
+    private resetCache: boolean;
 
     // high level variables
     taskData: EverydayChoiceTaskData[];
@@ -131,6 +138,8 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         this.delayToShowRatingSlider = metadata.componentConfig.delayToShowRatingSlider || 0;
         this.durationOutOftimeMessageShown = metadata.componentConfig.durationOutOftimeMessageShown || undefined;
         this.numDoSomethingActivities = metadata.componentConfig.numDoSomethingActivities;
+        this.counterbalanceShortVersionOption = metadata.componentConfig.counterbalanceShortVersionOption || '';
+        this.resetCache = metadata.componentConfig.resetCache || false;
 
         this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as RatingTaskCounterBalance;
 
@@ -154,15 +163,31 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
 
     start() {
         this.taskData = [];
+        if (this.resetCache) {
+            this.config.setCacheValue(RaterCache.STIMULI, null);
+            this.config.setCacheValue(RaterCache.ACTIVITIES_FOR_CHOICER, null);
+        }
         // either the stimuli has been defined in config or we generate it here
         if (!this.stimuli) {
             const raterActivitiesInConfig = this.config.getCacheValue(RaterCache.STIMULI);
+
+            let shouldDoLongVersion =
+                this.counterbalance === RatingTaskCounterBalance.LOWTOHIGHENDORSEMENTLONG ||
+                this.counterbalance === RatingTaskCounterBalance.HIGHTOLOWENDORSEMENTLONG ||
+                this.counterbalance === RatingTaskCounterBalance.NA ||
+                !this.counterbalanceShortVersionOption;
+            if (this.counterbalanceShortVersionOption === 'counterbalance-alternative') {
+                shouldDoLongVersion = !shouldDoLongVersion;
+            }
 
             // use activities in config if it exists; otherwise generate our own
             const raterActivities = (
                 raterActivitiesInConfig
                     ? raterActivitiesInConfig
-                    : this.dataGenService.generateRatingStimuli(this.numDoSomethingActivities)
+                    : this.dataGenService.generateRatingStimuli(
+                          this.numDoSomethingActivities,
+                          shouldDoLongVersion ? 'long' : 'short'
+                      )
             ) as RatingTaskStimuli[];
 
             this.stimuli = raterActivities.slice(0, this.numTrials);
@@ -180,7 +205,9 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         }
         this.currentStimuliIndex = 0;
         this.currentQuestionIndex = 0;
-        this.shouldReverse = this.counterbalance === RatingTaskCounterBalance.HIGHTOLOWENDORSEMENT;
+        this.shouldReverse =
+            this.counterbalance === RatingTaskCounterBalance.HIGHTOLOWENDORSEMENTLONG ||
+            this.counterbalance === RatingTaskCounterBalance.HIGHTOLOWENDORSEMENTSHORT;
         super.start();
     }
 
