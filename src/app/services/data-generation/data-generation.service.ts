@@ -56,15 +56,21 @@ import {
 export class DataGenerationService {
     constructor(private imageService: ImageService) {}
 
-    generateRatingStimuli(numDoSomethingActivities: number, version: 'long' | 'short' = 'long'): RatingTaskStimuli[] {
+    generateRatingActivities(numDoSomethingActivities: number): ITranslationText[] {
         const doSomethingActivities = selectNRandomElementsNoRepeats(
             RatingTaskActivities.DoSomething,
             numDoSomethingActivities
         );
         const doNothingActivities = deepClone(RatingTaskActivities.DoNothing);
-        const activities = shuffle(doSomethingActivities.concat(doNothingActivities));
+        return shuffle(doSomethingActivities.concat(doNothingActivities));
+    }
 
-        const ratingTaskStimuli: RatingTaskStimuli[] = activities.map((activity) => {
+    generateRatingStimuli(
+        existingActivities: ITranslationText[],
+        version: 'long' | 'short' = 'long'
+    ): RatingTaskStimuli[] {
+        const shuffledActivities = shuffle(existingActivities);
+        const ratingTaskStimuli: RatingTaskStimuli[] = shuffledActivities.map((activity) => {
             const questions = shuffle(deepClone(RatingTaskQuestionList[version]));
             const isDoNothingActivity =
                 RatingTaskActivities.DoNothing.findIndex((x) => x.en === activity.en && x.fr === activity.fr) >= 0;

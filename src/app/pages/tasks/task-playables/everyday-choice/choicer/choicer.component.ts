@@ -110,7 +110,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
             throw new Error('values not defined, cannot start study');
         }
 
-        this.ratingTaskActivities = config.getCacheValue(RaterCache.ACTIVITIES_FOR_CHOICER);
+        this.ratingTaskActivities = config.getCacheValue(RaterCache.ALL_ACTIVITIES) as ITranslationText[];
         this.isPractice = metadata.componentConfig.isPractice || false;
         this.interTrialDelay = metadata.componentConfig.interTrialDelay || 0;
         this.maxResponseTime = metadata.componentConfig.maxResponseTime || undefined;

@@ -13,6 +13,7 @@ import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
 import { EverydayChoiceTaskData } from 'src/app/models/ParticipantData';
 import { ITranslationText } from 'src/app/models/InternalDTOs';
 import { TranslateService } from '@ngx-translate/core';
+import { RATER_PRACTICE_LONG_VERSION_STIMULI, RATER_PRACTICE_SHORT_VERSION_STIMULI } from './rater-practice-stimuli';
 
 export enum RatingTaskCounterBalance {
     LOWTOHIGHENDORSEMENTLONG = 'LOWTOHIGH_LONG',
@@ -40,12 +41,14 @@ export interface RaterTaskMetadata {
         numDoSomethingActivities: number;
         stimuliConfig: {
             type: StimuliProvidedType;
+            counterbalance: 'counterbalance' | 'counterbalance-alternative';
             stimuli: RatingTaskStimuli[];
         };
     };
 }
 
 export enum RaterCache {
+    ALL_ACTIVITIES = 'rater-all-activities',
     ACTIVITIES_FOR_CHOICER = 'rater-activities-for-choicer',
     STIMULI = 'rater-stimuli',
 }
@@ -77,6 +80,7 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
     private numDoSomethingActivities: number;
     private counterbalanceShortVersionOption: '' | 'counterbalance' | 'counterbalance-alternative';
     private resetCache: boolean;
+    private shouldDoLongVersion: boolean;
 
     // high level variables
     taskData: EverydayChoiceTaskData[];
@@ -142,9 +146,36 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         this.resetCache = metadata.componentConfig.resetCache || false;
 
         this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as RatingTaskCounterBalance;
+        this.shouldDoLongVersion =
+            this.counterbalance === RatingTaskCounterBalance.LOWTOHIGHENDORSEMENTLONG ||
+            this.counterbalance === RatingTaskCounterBalance.HIGHTOLOWENDORSEMENTLONG ||
+            this.counterbalance === RatingTaskCounterBalance.NA ||
+            !this.counterbalanceShortVersionOption;
+        if (this.counterbalanceShortVersionOption === 'counterbalance-alternative') {
+            this.shouldDoLongVersion = !this.shouldDoLongVersion;
+        }
 
-        if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
-            this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
+        if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED) {
+            if (!this.counterbalanceShortVersionOption) {
+                // for regular everyday choice task
+                this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
+            } else if (this.shouldDoLongVersion) {
+                this.stimuli = RATER_PRACTICE_LONG_VERSION_STIMULI;
+            } else {
+                this.stimuli = RATER_PRACTICE_SHORT_VERSION_STIMULI;
+            }
+        } else {
+            // we only generate the activity data once and store it in the cache so we can reuse it later.
+            const allActivities = this.config.getCacheValue(RaterCache.ALL_ACTIVITIES) as ITranslationText[];
+            if (!allActivities) {
+                this.config.setCacheValue(
+                    RaterCache.ALL_ACTIVITIES,
+                    this.dataGenService.generateRatingActivities(this.numDoSomethingActivities)
+                );
+
+                this.config.setCacheValue(RaterCache.ACTIVITIES_FOR_CHOICER, allActivities);
+            }
+        }
     }
 
     constructor(
@@ -161,46 +192,30 @@ export class RaterComponent extends AbstractBaseTaskComponent implements OnDestr
         return this.translationMapping.practiceHelpMessage[this.translateService.currentLang];
     }
 
+    // TODO: ...this codebase is a little bit of a mess as its trying to accommodate both the regular everyday choice
+    // and the updated everyday choice with counterbalance.
+    // With the counterbalance, we want to reuse the same exact activities from before so when resetCache is called. So the
+    // first time these activities are generated, we store them in the cache so we can reuse them later. From then on, we reset the
+    // cache with the generated activities if they exist.
     start() {
         this.taskData = [];
         if (this.resetCache) {
-            this.config.setCacheValue(RaterCache.STIMULI, null);
-            this.config.setCacheValue(RaterCache.ACTIVITIES_FOR_CHOICER, null);
+            this.config.setCacheValue(
+                RaterCache.STIMULI,
+                this.dataGenService.generateRatingStimuli(
+                    this.config.getCacheValue(RaterCache.ALL_ACTIVITIES) as ITranslationText[],
+                    this.shouldDoLongVersion ? 'long' : 'short'
+                )
+            );
         }
+
         // either the stimuli has been defined in config or we generate it here
         if (!this.stimuli) {
-            const raterActivitiesInConfig = this.config.getCacheValue(RaterCache.STIMULI);
-
-            let shouldDoLongVersion =
-                this.counterbalance === RatingTaskCounterBalance.LOWTOHIGHENDORSEMENTLONG ||
-                this.counterbalance === RatingTaskCounterBalance.HIGHTOLOWENDORSEMENTLONG ||
-                this.counterbalance === RatingTaskCounterBalance.NA ||
-                !this.counterbalanceShortVersionOption;
-            if (this.counterbalanceShortVersionOption === 'counterbalance-alternative') {
-                shouldDoLongVersion = !shouldDoLongVersion;
-            }
-
-            // use activities in config if it exists; otherwise generate our own
-            const raterActivities = (
-                raterActivitiesInConfig
-                    ? raterActivitiesInConfig
-                    : this.dataGenService.generateRatingStimuli(
-                          this.numDoSomethingActivities,
-                          shouldDoLongVersion ? 'long' : 'short'
-                      )
-            ) as RatingTaskStimuli[];
-
+            const raterActivities = this.config.getCacheValue(RaterCache.STIMULI) as RatingTaskStimuli[];
             this.stimuli = raterActivities.slice(0, this.numTrials);
             this.config.setCacheValue(
                 RaterCache.STIMULI,
                 raterActivities.slice(this.numTrials, raterActivities.length)
-            );
-
-            const activitiesForChoicerInConfig =
-                this.config.getCacheValue(RaterCache.ACTIVITIES_FOR_CHOICER) || ([] as ITranslationText[]);
-            this.config.setCacheValue(
-                RaterCache.ACTIVITIES_FOR_CHOICER,
-                activitiesForChoicerInConfig.concat(this.stimuli.map((x) => x.activity))
             );
         }
         this.currentStimuliIndex = 0;
