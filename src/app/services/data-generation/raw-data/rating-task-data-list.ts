@@ -669,7 +669,7 @@ export const RatingTaskQuestionList = {
         {
             question: {
                 en: 'How enjoyable is this activity for you?',
-                fr: 'À quel point cette activité vous plait-elle?',
+                fr: 'À quel point cette activité vous plaît-elle?',
             },
             legend: [
                 {

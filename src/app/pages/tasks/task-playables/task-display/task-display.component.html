@@ -20,7 +20,14 @@
                 <ng-container *ngIf="section.sectionType === 'text'">
                     <div
                         class="section"
-                        [innerHTML]="injectString(section.textContent, section.injection, section.cacheKey)"
+                        [innerHTML]="
+                            injectString(
+                                section.textContent,
+                                section.injection,
+                                section.cacheKey,
+                                section.counterbalanceStringMapping
+                            )
+                        "
                     ></div>
                 </ng-container>
                 <div

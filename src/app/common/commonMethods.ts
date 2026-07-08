@@ -107,7 +107,7 @@ export function getTextForLang(currLang: SupportedLangs, textObj: ITranslationTe
     } else if (typeof textObj === 'string') {
         // for backwards compatibility sake, textObj is just a plain string with no translation
         return textObj;
-    } else if (!textObj[currLang]) {
+    } else if (textObj[currLang] === undefined || textObj[currLang] === null) {
         // no translation for the given language
         const hasEnglish = !textObj[SupportedLangs.EN];
         // also no translation for english

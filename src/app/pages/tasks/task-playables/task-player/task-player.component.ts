@@ -126,7 +126,7 @@ export class TaskPlayerComponent implements OnDestroy {
             this.state.studyID = this.taskManager.study.id;
         }
 
-        const counterBalanceGroups = taskMetadataConfig.taskConfig?.counterBalanceGroups;
+        const counterBalanceGroups = taskMetadataConfig.taskConfig?.counterBalanceGroups || {};
         if (counterBalanceGroups) {
             const groupKeys = Object.keys(counterBalanceGroups);
             if (groupKeys.length > 0) {
