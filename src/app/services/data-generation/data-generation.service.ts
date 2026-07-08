@@ -85,7 +85,7 @@ export class DataGenerationService {
         return ratingTaskStimuli;
     }
 
-    generateChoiceStimuli(activities: ITranslationText[]): ChoiceTaskStimulus[] {
+    generateChoiceStimuli(activities: ITranslationText[], addSecondStimuliSet: boolean): ChoiceTaskStimulus[] {
         if (!activities.length || activities.length <= 2) throw new Error('At least three activities are needed');
 
         const shuffledActivities = shuffle(activities);
@@ -104,6 +104,8 @@ export class DataGenerationService {
                 set: 'first',
             });
         }
+
+        if (!addSecondStimuliSet) return [...shuffle(firstSetPairs)];
 
         const secondSetPairs: ChoiceTaskStimulus[] = [];
         for (let i = 0; i < shuffledActivities.length; i++) {
