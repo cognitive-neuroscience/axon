@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
+import { MatMenuModule } from '@angular/material/menu';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateService } from '@ngx-translate/core';
 
 import { LandingPageComponent } from './landing-page.component';
 
@@ -11,7 +13,16 @@ describe('LandingPageComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [LandingPageComponent],
-            imports: [RouterTestingModule, MatCardModule],
+            imports: [RouterTestingModule, MatCardModule, MatMenuModule],
+            providers: [
+                {
+                    provide: TranslateService,
+                    useValue: {
+                        currentLang: 'en',
+                        use: jest.fn(),
+                    },
+                },
+            ],
         }).compileComponents();
     });
 

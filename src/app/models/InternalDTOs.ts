@@ -97,6 +97,7 @@ export enum UserResponse {
 export interface ITranslationText {
     en: string;
     fr: string;
+    nl?: string;
 }
 
 export class NullTime {

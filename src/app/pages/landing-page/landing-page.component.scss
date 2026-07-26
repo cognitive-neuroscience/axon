@@ -1,3 +1,20 @@
+.landing-navbar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+    background: transparent;
+    z-index: 10;
+}
+
+.language-menu-button {
+    color: white;
+}
+
 .vector {
     position: fixed;
     top: 0;

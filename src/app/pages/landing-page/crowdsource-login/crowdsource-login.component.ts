@@ -1,21 +1,21 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { Observable, of, Subscription, throwError } from 'rxjs';
+import { mergeMap, take } from 'rxjs/operators';
+import { wait } from 'src/app/common/commonMethods';
+import { HttpStatus } from 'src/app/models/Auth';
+import { SupportedLangs } from 'src/app/models/enums';
+import { ClearanceService } from 'src/app/services/clearance.service';
+import { CrowdSourcedUserService } from 'src/app/services/crowdsourced-user.service';
+import { LoaderService } from 'src/app/services/loader/loader.service';
+import { SessionStorageService } from 'src/app/services/sessionStorage.service';
+import { StudyService } from 'src/app/services/study.service';
+import { UserStateService } from 'src/app/services/user-state-service';
 import { SnackbarService } from '../../../services/snackbar/snackbar.service';
 import { TaskManagerService } from '../../../services/task-manager.service';
-import { Observable, Subscription, of, throwError } from 'rxjs';
-import { catchError, mergeMap, take, tap } from 'rxjs/operators';
-import { wait } from 'src/app/common/commonMethods';
-import { LoaderService } from 'src/app/services/loader/loader.service';
-import { ClearanceService } from 'src/app/services/clearance.service';
-import { SupportedLangs } from 'src/app/models/enums';
-import { MatDialog } from '@angular/material/dialog';
 import { LanguageDialogComponent } from '../../participant/participant-dashboard/language-dialog/language-dialog.component';
-import { TranslateService } from '@ngx-translate/core';
-import { SessionStorageService } from 'src/app/services/sessionStorage.service';
-import { UserStateService } from 'src/app/services/user-state-service';
-import { CrowdSourcedUserService } from 'src/app/services/crowdsourced-user.service';
-import { HttpStatus } from 'src/app/models/Auth';
-import { StudyService } from 'src/app/services/study.service';
 declare function setFullScreen(): any;
 
 @Component({
@@ -100,11 +100,21 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                         async (user) => {
                             if (user) {
                                 await this.startGameInFullScreen();
-                                this._snackbarService.openSuccessSnackbar(
-                                    this.translateService.currentLang === SupportedLangs.FR
-                                        ? 'Votre ID a été enregistré avec succès!: ' + this.workerId
-                                        : 'Regisrered ID successfully: ' + this.workerId
-                                );
+
+                                let message = '';
+                                switch (this.translateService.currentLang) {
+                                    case SupportedLangs.FR:
+                                        message = 'Votre ID a été enregistré avec succès!: ' + this.workerId;
+                                        break;
+                                    case SupportedLangs.NL:
+                                        message = 'Regisrered ID successfully: ' + this.workerId;
+                                        break;
+                                    case SupportedLangs.EN:
+                                    default:
+                                        message = 'Registered ID successfully: ' + this.workerId;
+                                        break;
+                                }
+                                this._snackbarService.openSuccessSnackbar(message);
                                 this._taskManager.initStudy(this.studyId);
                             }
                         },

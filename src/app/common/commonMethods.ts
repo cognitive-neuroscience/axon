@@ -109,10 +109,9 @@ export function getTextForLang(currLang: SupportedLangs, textObj: ITranslationTe
         return textObj;
     } else if (textObj[currLang] === undefined || textObj[currLang] === null) {
         // no translation for the given language
-        const hasEnglish = !textObj[SupportedLangs.EN];
+        const noEnglish = textObj[SupportedLangs.EN] === undefined || textObj[SupportedLangs.EN] === null;
         // also no translation for english
-        if (!hasEnglish) return '';
-    } else {
-        return textObj[currLang];
+        return noEnglish ? '' : textObj[SupportedLangs.EN];
     }
+    return textObj[currLang];
 }

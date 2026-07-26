@@ -72,5 +72,41 @@
         "skip": "Ignorer",
         "confirmation-dialog-title": "Êtes-vous sûr de vouloir ignorer cette tâche?",
         "confirmation-dialog-message": "Si vous ignorez cette tâche, vous ne pourrez plus l'effectuer."
+    },
+    "landing-page": {
+        "contact-message": "Pour toute question ou pour des difficultés avec votre mot de passe, SVP contactez",
+        "login": {
+            "welcome": "Bienvenue au Labo Sharp",
+            "email": "Courriel",
+            "password": "Mot de passe",
+            "forgot-password": "Avez-vous oublié votre mot de passe?",
+            "login-button": "Connexion",
+            "register-button": "Enregistrez-vous"
+        },
+        "register": {
+            "welcome": "Bienvenue au Labo Sharp",
+            "email": "Courriel",
+            "confirm-email": "Confirmez votre courriel",
+            "password": "Mot de passe",
+            "confirm-password": "Confirmez votre mot de passe",
+            "already-registered": "Êtes-vous déjà enregistré? Connectez-vous",
+            "register-button": "Enregistrez-vous"
+        },
+        "reset-password": {
+            "title": "Réinitialiser votre mot de passe",
+            "instructions": "Saisissez votre courriel, le mot de passe temporaire que vous avez reçu par courriel, et un nouveau mot de passe",
+            "email": "Courriel",
+            "temporary-password": "Mot de passe temporaire",
+            "new-password": "Nouveau mot de passe",
+            "confirm-new-password": "Confirmez le mot de passe",
+            "reset-button": "Réinitialiser"
+        },
+        "forgot-password": {
+            "title": "Avez-vous oublié votre mot de passe?",
+            "instructions": "Saisissez votre courriel pour réinitialiser votre mot de passe. Vous devrez peut-être vérifier votre dossier spam",
+            "email": "Courriel",
+            "submit-button": "Soumettre",
+            "cancel": "Annuler"
+        }
     }
 }

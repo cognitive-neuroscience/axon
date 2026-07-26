@@ -1,0 +1,18 @@
+<div class="wrapper">
+    <!-- Start Practice Round -->
+    <div *ngIf="showStimulus" class="full-box flex-column-center">
+        <div class="choice-container">
+            <ng-container *ngIf="showInput">
+                <div *ngIf="isPractice" class="text-center py-3 hint">
+                    {{ practiceHelpMessage }}
+                </div>
+
+                <app-option-display
+                    (onSelectValue)="handleRoundInteraction($event)"
+                    [options]="activitiesShown"
+                    question=""
+                ></app-option-display>
+            </ng-container>
+        </div>
+    </div>
+</div>

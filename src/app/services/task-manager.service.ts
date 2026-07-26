@@ -197,11 +197,22 @@ export class TaskManagerService implements CanClear {
                 .subscribe(
                     () => {
                         this.router.navigate([`participant-dashboard/studies`]);
-                        this.snackbarService.openSuccessSnackbar(
-                            this.translateService.currentLang === SupportedLangs.FR
-                                ? 'Vous avez complété cette étude!'
-                                : 'Study complete!'
-                        );
+
+                        let message = '';
+                        switch (this.translateService.currentLang) {
+                            case SupportedLangs.FR:
+                                message = 'Vous avez complété cette étude!';
+                                break;
+                            case SupportedLangs.NL:
+                                message = 'Studie voltooid!';
+                                break;
+                            case SupportedLangs.EN:
+                            default:
+                                message = 'Study complete!';
+                                break;
+                        }
+
+                        this.snackbarService.openSuccessSnackbar(message);
                     },
                     (err) => {
                         this.handleErr(err);

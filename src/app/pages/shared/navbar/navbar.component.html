@@ -73,9 +73,20 @@
             >
             <!-- <a class="menu-item" routerLinkActive="active" [routerLink]="'/TBD'" mat-button color="basic">Settings</a> -->
         </ng-container>
-        <a (click)="handleLanguageSwitch()" class="menu-item" mat-button>{{
-            currentLang === 'fr' ? 'Switch to English' : 'Passer au Français'
-        }}</a>
+        <button class="menu-item" mat-button [matMenuTriggerFor]="languageMenu">
+            {{ currentLanguageLabel }}
+            <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #languageMenu="matMenu">
+            <button
+                mat-menu-item
+                *ngFor="let option of languageOptions"
+                [disabled]="option.code === currentLang"
+                (click)="handleLanguageSelect(option.code)"
+            >
+                {{ option.label }}
+            </button>
+        </mat-menu>
         <a class="menu-item" (click)="logout()" mat-button
             >{{ 'navbar.tooltip.logout' | translate }} &nbsp;<mat-icon>exit_to_app</mat-icon></a
         >

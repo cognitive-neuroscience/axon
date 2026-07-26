@@ -62,7 +62,20 @@ export class NavigationButtonsComponent implements OnInit {
     onNext: EventEmitter<Navigation> = new EventEmitter();
 
     get pleaseWaitText(): string {
-        return this.translateService.currentLang === SupportedLangs.EN ? 'Please wait: ' : 'Veuillez patienter: ';
+        let message = '';
+        switch (this.translateService.currentLang) {
+            case SupportedLangs.FR:
+                message = 'Veuillez patienter: ';
+                break;
+            case SupportedLangs.NL:
+                message = 'Please wait: ';
+                break;
+            case SupportedLangs.EN:
+            default:
+                message = 'Please wait: ';
+                break;
+        }
+        return message;
     }
 
     handleNext() {

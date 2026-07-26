@@ -33,6 +33,8 @@ export class SnackbarComponent {
                 return 'Close';
             case SupportedLangs.FR:
                 return 'Fermer';
+            case SupportedLangs.NL:
+                return 'Sluiten';
             default:
                 return 'Close';
         }

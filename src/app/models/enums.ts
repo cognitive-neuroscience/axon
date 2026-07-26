@@ -74,5 +74,6 @@ export enum ParticipantType {
 export enum SupportedLangs {
     EN = 'en',
     FR = 'fr',
+    NL = 'nl',
     NONE = '',
 }

@@ -32,7 +32,7 @@
             <ng-container *ngFor="let wordblock of block.words">
                 <p
                     class="{{ wordblock.indent ? 'indent-' + wordblock.indent : '' }} {{
-                        wordblock.en === '' && wordblock.fr === '' ? 'my-4' : 'my-1'
+                        wordblock.en === '' && wordblock.fr === '' && wordblock.nl === '' ? 'my-4' : 'my-1'
                     }}"
                     [innerHTML]="getTranslation(wordblock)"
                 ></p>

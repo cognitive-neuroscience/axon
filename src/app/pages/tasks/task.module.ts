@@ -9,6 +9,7 @@ import { NBackComponent } from './task-playables/n-back/n-back.component';
 import { OddballComponent } from './task-playables/oddball/oddball.component';
 import { PostChoiceComponent } from './unused/post-choice/post-choice.component';
 import { ChoicerComponent } from './task-playables/everyday-choice/choicer/choicer.component';
+import { ChoicerDutchComponent } from './task-playables/everyday-choice-dutch/choicer-dutch/choicer-dutch.component';
 import { RatingComponent } from './unused/rating/rating.component';
 import { ShapeGameComponent } from './unused/shape-game/shape-game.component';
 import { TaskDisplayComponent } from './task-playables/task-display/task-display.component';
@@ -19,6 +20,7 @@ import { TaskPlayerComponent } from './task-playables/task-player/task-player.co
 import { TaskSwitchingComponent } from './task-playables/task-switching/task-switching.component';
 import { TrailMakingComponent } from './task-playables/trail-making/trail-making.component';
 import { RaterComponent } from './task-playables/everyday-choice/rater/rater.component';
+import { RaterDutchComponent } from './task-playables/everyday-choice-dutch/rater-dutch/rater-dutch.component';
 import { NgZorroModule } from 'src/app/modules/ngzorro/ngzorro.module';
 import { NavigationButtonsComponent } from './shared/navigation-buttons/navigation-buttons.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -61,6 +63,7 @@ import { JudgementOfLineComponent } from './task-playables/judgement-of-line/jud
 
         // playables
         ChoicerComponent,
+        ChoicerDutchComponent,
         DemandSelectionComponent,
         DigitSpanComponent,
         FingerTappingTaskComponent,
@@ -68,6 +71,7 @@ import { JudgementOfLineComponent } from './task-playables/judgement-of-line/jud
         OddballComponent,
         PostChoiceComponent,
         RaterComponent,
+        RaterDutchComponent,
         SmileyFaceComponent,
         StroopComponent,
         TaskPlayerComponent,

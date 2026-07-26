@@ -73,11 +73,18 @@ export class NavbarComponent implements OnInit {
         private userStateService: UserStateService
     ) {}
 
+    readonly languageOptions: { code: SupportedLangs; label: string }[] = [
+        { code: SupportedLangs.EN, label: 'English' },
+        { code: SupportedLangs.FR, label: 'Français' },
+        { code: SupportedLangs.NL, label: 'Nederlands' },
+    ];
+
     ngOnInit(): void {}
 
-    handleLanguageSwitch() {
+    handleLanguageSelect(newLang: SupportedLangs) {
+        if (newLang === this.currentLang) return;
+
         this.loaderService.showLoader();
-        const newLang = this.currentLang === SupportedLangs.FR ? SupportedLangs.EN : SupportedLangs.FR;
 
         this.userStateService
             .getOrUpdateUserState()
@@ -101,6 +108,10 @@ export class NavbarComponent implements OnInit {
 
     get currentLang(): string {
         return this.translateService.currentLang;
+    }
+
+    get currentLanguageLabel(): string {
+        return this.languageOptions.find((option) => option.code === this.currentLang)?.label ?? 'English';
     }
 
     logout() {

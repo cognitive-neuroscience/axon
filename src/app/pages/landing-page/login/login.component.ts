@@ -1,16 +1,19 @@
 import { Component, OnDestroy } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
-import { Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { Role, SupportedLangs } from 'src/app/models/enums';
-import { catchError, finalize, mergeMap } from 'rxjs/operators';
+import { catchError, finalize, mergeMap, tap } from 'rxjs/operators';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { HttpStatusCode } from '@angular/common/http';
 import { HttpStatus } from 'src/app/models/Auth';
 import { UserStateService } from 'src/app/services/user-state-service';
+import { LocalStorageService } from 'src/app/services/localStorageService.service';
+import { UserService } from 'src/app/services/user.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-login',
@@ -48,9 +51,7 @@ export class LoginComponent implements OnDestroy {
         const hasErrors =
             formControls.email.errors || formControls.password.errors || formControls.confirmPassword.errors;
 
-        if (hasErrors) {
-            return;
-        }
+        if (hasErrors) return;
 
         const email = formControls.email.value;
         const password = formControls.password.value;
@@ -60,6 +61,17 @@ export class LoginComponent implements OnDestroy {
             .login(email, password)
             .pipe(
                 mergeMap(() => this.userStateService.getOrUpdateUserState()),
+                mergeMap((user) => {
+                    const preferredLang = this.localStorageService.getPreferredLangInLocalStorage();
+                    if (!preferredLang || preferredLang === user.lang) {
+                        this.translateService.use(user.lang || SupportedLangs.EN);
+                        return of(user);
+                    }
+
+                    return this.userService
+                        .updateUser({ ...user, lang: preferredLang })
+                        .pipe(tap(() => this.translateService.use(preferredLang)));
+                }),
                 catchError((err) => {
                     throw err;
                 }),
@@ -69,9 +81,20 @@ export class LoginComponent implements OnDestroy {
             )
             .subscribe(
                 (user) => {
-                    this.snackbarService.openSuccessSnackbar(
-                        user.lang === SupportedLangs.FR ? 'Connexion réussie!' : 'Successfully logged in!'
-                    );
+                    let message = '';
+                    switch (user.lang) {
+                        case SupportedLangs.FR:
+                            message = 'Connexion réussie!';
+                            break;
+                        case SupportedLangs.NL:
+                            message = 'Successfully logged in!';
+                            break;
+                        case SupportedLangs.EN:
+                        default:
+                            message = 'Successfully logged in!';
+                            break;
+                    }
+                    this.snackbarService.openSuccessSnackbar(message);
                     this.handleNavigate(user.role);
                 },
                 (err: HttpStatus) => {
@@ -112,7 +135,10 @@ export class LoginComponent implements OnDestroy {
         private fb: UntypedFormBuilder,
         private loaderService: LoaderService,
         private clearanceService: ClearanceService,
-        private userStateService: UserStateService
+        private userStateService: UserStateService,
+        private localStorageService: LocalStorageService,
+        private userService: UserService,
+        private translateService: TranslateService
     ) {}
 
     private handleNavigate(role: Role) {

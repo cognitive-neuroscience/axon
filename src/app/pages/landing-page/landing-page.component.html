@@ -1,15 +1,26 @@
+<div class="landing-navbar">
+    <button class="language-menu-button" mat-button [matMenuTriggerFor]="languageMenu">
+        {{ currentLanguageLabel }}
+        <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #languageMenu="matMenu">
+        <button
+            mat-menu-item
+            *ngFor="let option of languageOptions"
+            [disabled]="option.code === currentLang"
+            (click)="handleLanguageSelect(option.code)"
+        >
+            {{ option.label }}
+        </button>
+    </mat-menu>
+</div>
+
 <div class="login flex-column-center">
     <mat-card class="card shadow-lg" style="overflow: auto; max-height: 90%">
         <router-outlet></router-outlet>
         <div class="mt-4" style="padding: 0 1rem">
             <span class="error-text"
-                >For any questions/concerns/password problems, please contact <b>sharplab.neuro@mcgill.ca</b></span
-            >
-            <br />
-            <br />
-            <span class="error-text"
-                >Pour toute question ou pour des difficultés avec votre mot de passe, SVP contactez
-                sharplab.neuro@mcgill.ca <b>sharplab.neuro@mcgill.ca</b></span
+                >{{ 'landing-page.contact-message' | translate }} <b>sharplab.neuro@mcgill.ca</b></span
             >
         </div>
     </mat-card>

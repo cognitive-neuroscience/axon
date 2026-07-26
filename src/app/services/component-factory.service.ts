@@ -3,6 +3,8 @@ import { TaskDisplayComponent } from '../pages/tasks/task-playables/task-display
 import { Playable } from '../pages/tasks/task-playables/playable';
 import { RaterComponent } from '../pages/tasks/task-playables/everyday-choice/rater/rater.component';
 import { ChoicerComponent } from '../pages/tasks/task-playables/everyday-choice/choicer/choicer.component';
+import { RaterDutchComponent } from '../pages/tasks/task-playables/everyday-choice-dutch/rater-dutch/rater-dutch.component';
+import { ChoicerDutchComponent } from '../pages/tasks/task-playables/everyday-choice-dutch/choicer-dutch/choicer-dutch.component';
 import { OddballComponent } from '../pages/tasks/task-playables/oddball/oddball.component';
 import { StroopComponent } from '../pages/tasks/task-playables/stroop/stroop.component';
 import { SmileyFaceComponent } from '../pages/tasks/task-playables/smiley-face/smiley-face.component';
@@ -52,6 +54,8 @@ export enum ComponentName {
     JUDGEMENT_OF_LINE_COMPONENT = 'JUDGEMENTOFLINECOMPONENT',
     RATING_COMPONENT_COUNTERBALANCE_SHORT = 'RATINGCOMPONENTCOUNTERBALANCESHORT',
     CHOICE_COMPONENT_COUNTERBALANCE_SHORT = 'CHOICECOMPONENTCOUNTERBALANCESHORT',
+    RATING_COMPONENT_DUTCH = 'RATINGCOMPONENTDUTCH',
+    CHOICE_COMPONENT_DUTCH = 'CHOICECOMPONENTDUTCH',
 
     // Special Components
     EMBEDDED_PAGE_COMPONENT = 'EMBEDDEDPAGECOMPONENT',
@@ -88,6 +92,8 @@ const ComponentMap = {
     [ComponentName.JUDGEMENT_OF_LINE_COMPONENT]: JudgementOfLineComponent,
     [ComponentName.RATING_COMPONENT_COUNTERBALANCE_SHORT]: RaterComponent,
     [ComponentName.CHOICE_COMPONENT_COUNTERBALANCE_SHORT]: ChoicerComponent,
+    [ComponentName.RATING_COMPONENT_DUTCH]: RaterDutchComponent,
+    [ComponentName.CHOICE_COMPONENT_DUTCH]: ChoicerDutchComponent,
 };
 
 @Injectable({
