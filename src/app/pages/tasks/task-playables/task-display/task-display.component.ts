@@ -13,8 +13,9 @@ export interface DisplaySection {
     sectionType: 'text' | 'image-horizontal' | 'image-square' | 'image-small' | 'image-fill';
     imagePath?: string | ITranslationText;
     imageAlignment?: 'left' | 'center' | 'right';
+    counterbalanceStringMapping?: { [key: string]: string };
     textContent?: string | ITranslationText;
-    injection: 'counterbalance' | 'counterbalance-alternative' | 'cached-string';
+    injection: 'counterbalance' | 'counterbalance-alternative' | 'cached-string' | 'counterbalance-string-mapping';
     cacheKey: string;
 }
 
@@ -104,8 +105,9 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
 
     injectString(
         textContent: string,
-        injection: 'cached-string' | 'counterbalance' | 'counterbalance-alternative',
-        cacheKey: string
+        injection: 'cached-string' | 'counterbalance' | 'counterbalance-alternative' | 'counterbalance-string-mapping',
+        cacheKey: string,
+        counterbalanceStringMapping?: { [key: string]: string }
     ): string {
         const text = getTextForLang(this.translateService.currentLang as SupportedLangs, textContent);
 
@@ -117,6 +119,13 @@ export class TaskDisplayComponent implements OnDestroy, Playable {
                 return text.replace('???', this.counterbalanceStr);
             case 'counterbalance-alternative':
                 return text.replace('???', this.counterbalanceAltStr);
+            case 'counterbalance-string-mapping':
+                const replaceWithBlock = counterbalanceStringMapping[this.config.counterbalanceNumber];
+                const replaceWithText = getTextForLang(
+                    this.translateService.currentLang as SupportedLangs,
+                    replaceWithBlock
+                );
+                return text.replace('???', replaceWithText);
             default:
                 return text;
         }

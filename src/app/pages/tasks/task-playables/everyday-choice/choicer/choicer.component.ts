@@ -24,6 +24,7 @@ export interface ChoiceTaskMetadata {
         durationHelpMessageShown: number;
         delayToShowRatingInput: number;
         durationOutOftimeMessageShown: number;
+        addSecondStimuliSet: boolean;
         stimuliConfig: {
             type: StimuliProvidedType;
             stimuli: ChoiceTaskStimulus[];
@@ -52,7 +53,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     private delayToShowRatingInput: number;
     private durationHelpMessageShown: number;
     private durationOutOftimeMessageShown: number;
-
+    private addSecondStimuliSet: boolean;
     // shared state variables
     ratingTaskActivities: ITranslationText[];
 
@@ -110,7 +111,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
             throw new Error('values not defined, cannot start study');
         }
 
-        this.ratingTaskActivities = config.getCacheValue(RaterCache.ACTIVITIES_FOR_CHOICER);
+        this.ratingTaskActivities = config.getCacheValue(RaterCache.ALL_ACTIVITIES) as ITranslationText[];
         this.isPractice = metadata.componentConfig.isPractice || false;
         this.interTrialDelay = metadata.componentConfig.interTrialDelay || 0;
         this.maxResponseTime = metadata.componentConfig.maxResponseTime || undefined;
@@ -118,7 +119,7 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
         this.delayToShowHelpMessage = metadata.componentConfig.delayToShowHelpMessage || undefined;
         this.durationHelpMessageShown = metadata.componentConfig.durationHelpMessageShown || undefined;
         this.delayToShowRatingInput = metadata.componentConfig.delayToShowRatingInput || 0;
-
+        this.addSecondStimuliSet = metadata.componentConfig.addSecondStimuliSet || false;
         if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED)
             this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
     }
@@ -130,7 +131,11 @@ export class ChoicerComponent extends AbstractBaseTaskComponent implements OnDes
     start() {
         this.taskData = [];
         // either the stimuli has been defined in config or we generate it here
-        if (!this.stimuli) this.stimuli = this.dataGenService.generateChoiceStimuli(this.ratingTaskActivities);
+        if (!this.stimuli)
+            this.stimuli = this.dataGenService.generateChoiceStimuli(
+                this.ratingTaskActivities,
+                this.addSecondStimuliSet
+            );
         this.currentStimuliIndex = 0;
         super.start();
     }
