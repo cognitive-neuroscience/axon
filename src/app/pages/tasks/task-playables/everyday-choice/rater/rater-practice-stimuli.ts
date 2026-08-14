@@ -54,8 +54,8 @@ export const RATER_PRACTICE_SHORT_VERSION_STIMULI: RatingTaskStimuli[] = [
         questions: [
             {
                 question: {
-                    en: 'How effortful is this activity for your?',
-                    fr: "À quel point cette activité vous demande-t-elle de l'effort ?",
+                    en: 'How effortful is this activity for you?',
+                    fr: "À quel point cette activité vous demande-t-elle de l'effort?",
                 },
                 legend: [
                     {
@@ -79,7 +79,7 @@ export const RATER_PRACTICE_SHORT_VERSION_STIMULI: RatingTaskStimuli[] = [
                         fr: 'Pas du tout',
                     },
                     {
-                        en: 'Very effortful',
+                        en: 'Very much',
                         fr: 'Beaucoup',
                     },
                 ],
