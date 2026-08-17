@@ -1,5 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { LanguageDialogComponent } from './language-dialog.component';
 
@@ -10,10 +11,15 @@ describe('LanguageDialogComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [LanguageDialogComponent],
+            imports: [CommonModule],
             providers: [
                 {
                     provide: MatDialogRef,
                     useValue: {},
+                },
+                {
+                    provide: MAT_DIALOG_DATA,
+                    useValue: null,
                 },
             ],
         }).compileComponents();

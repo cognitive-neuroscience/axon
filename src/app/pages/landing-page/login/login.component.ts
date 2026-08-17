@@ -6,6 +6,7 @@ import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { Role, SupportedLangs } from 'src/app/models/enums';
+import { isOrganizationSupportedLang } from 'src/app/models/Organization';
 import { catchError, finalize, mergeMap, tap } from 'rxjs/operators';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { HttpStatusCode } from '@angular/common/http';
@@ -62,8 +63,16 @@ export class LoginComponent implements OnDestroy {
             .pipe(
                 mergeMap(() => this.userStateService.getOrUpdateUserState()),
                 mergeMap((user) => {
+                    if (!user) {
+                        throw { status: HttpStatusCode.InternalServerError, message: 'There was an error' };
+                    }
+
                     const preferredLang = this.localStorageService.getPreferredLangInLocalStorage();
-                    if (!preferredLang || preferredLang === user.lang) {
+                    if (
+                        !preferredLang ||
+                        !isOrganizationSupportedLang(preferredLang, user.organization) ||
+                        preferredLang === user.lang
+                    ) {
                         this.translateService.use(user.lang || SupportedLangs.EN);
                         return of(user);
                     }

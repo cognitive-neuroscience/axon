@@ -1,7 +1,7 @@
 import { SharplabTaskConfig } from '../pages/tasks/task-playables/task-player/task-player.component';
 import { Task } from './Task';
 
-export class StudyTask {
+export interface StudyTask {
     studyId: number;
     task: Task;
     taskOrder: number;

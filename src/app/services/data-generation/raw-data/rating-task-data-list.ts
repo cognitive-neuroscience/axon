@@ -1136,9 +1136,281 @@ export const RatingTaskActivitiesDutch = {
     },
 };
 
-export const RatingTaskQuestionListDutch = {
-    question: {
-        en: 'How much do you look forward to the outcome of this activity?',
-        nl: 'Hoeveel ben je van plan om de uitkomst van deze activiteit te verwachten?',
+// legend are ordered from low to high endorsement
+export const RatingTaskQuestionListDutch = [
+    {
+        question: {
+            isMultiPartQuestion: false,
+            en: 'How much do you enjoy carrying out this activity?',
+            nl: 'In welke mate geniet je van het uitvoeren van deze activiteit?',
+        },
+        legend: [
+            {
+                en: "Really don't enjoy",
+                nl: 'Helemaal niet',
+            },
+            {
+                en: 'Really enjoy',
+                nl: 'Heel erg',
+            },
+        ],
     },
-};
+    {
+        question: {
+            isMultiPartQuestion: false,
+            en: 'How much do you feel you should do this activity?',
+            nl: 'In welke mate heb je het gevoel dat je deze activiteit zou moeten doen?',
+        },
+        legend: [
+            {
+                en: "Shouldn't",
+                nl: 'Ik zou het niet echt moeten doen',
+            },
+            {
+                en: 'Does not matter',
+                nl: 'Het maakt niet uit',
+            },
+            {
+                en: 'Should',
+                nl: 'Ik zou het echt moeten doen',
+            },
+        ],
+    },
+    {
+        question: {
+            isMultiPartQuestion: false,
+            en: 'How much do your loved ones think you should do this activity?',
+            nl: 'In welke mate vinden je dierbaren dat je deze activiteit zou moeten doen?',
+        },
+        legend: [
+            {
+                en: "Shouldn't",
+                nl: 'Ik zou het niet echt moeten doen',
+            },
+            {
+                en: 'Does not matter',
+                nl: 'Het maakt niet uit',
+            },
+            {
+                en: 'Should',
+                nl: 'Ik zou het echt moeten doen',
+            },
+        ],
+    },
+    {
+        question: {
+            isMultiPartQuestion: false,
+            en: 'How physically effortful does this activity feel to you?',
+            nl: 'Hoe lichamelijk inspannend voelt deze activiteit voor jou?',
+        },
+        legend: [
+            {
+                en: 'No effort',
+                nl: 'Helemaal niet inspannend',
+            },
+            {
+                en: 'Huge amount of effort',
+                nl: 'Heel inspannend',
+            },
+        ],
+    },
+    {
+        question: {
+            isMultiPartQuestion: false,
+            en: 'How mentally effortful does this activity feel to you?',
+            nl: 'Hoe mentaal inspannend voelt deze activiteit voor jou?',
+        },
+        legend: [
+            {
+                en: 'No effort',
+                nl: 'Helemaal niet inspannend',
+            },
+            {
+                en: 'Huge amount of effort',
+                nl: 'Heel inspannend',
+            },
+        ],
+    },
+    {
+        question: {
+            isMultiPartQuestion: false,
+            en: 'How much time does it usually take to do this activity?',
+            nl: 'Hoeveel tijd kost het je meestal om deze activiteit uit te voeren?',
+        },
+        legend: [
+            {
+                en: 'A few minutes',
+                nl: 'Een paar minuten',
+            },
+            {
+                en: '10 to 30 minutes',
+                nl: '10 tot 30 minuten',
+            },
+            {
+                en: 'Around an hour',
+                nl: 'Ongeveer een uur',
+            },
+            {
+                en: 'A few hours',
+                nl: 'Een paar uur',
+            },
+            {
+                en: 'Most of the day',
+                nl: 'Het grootste deel van de dag',
+            },
+        ],
+    },
+    {
+        question: {
+            isMultiPartQuestion: false,
+            en: 'How much money does it take to do this activity?',
+            nl: 'Hoeveel geld kost het je om deze activiteit uit te voeren?',
+        },
+        legend: [
+            {
+                en: 'Free',
+                nl: 'Gratis',
+            },
+            {
+                en: 'An average amount',
+                nl: 'Een gemiddelde hoeveelheid',
+            },
+            {
+                en: 'Cannot afford it',
+                nl: 'Meer dan ik me kan veroorloven',
+            },
+        ],
+    },
+    {
+        question: {
+            isMultiPartQuestion: false,
+            en: 'How negative do you feel when doing this activity?',
+            nl: 'Hoe negatief voel je je tijdens het uitvoeren van deze activiteit?',
+        },
+        legend: [
+            {
+                en: 'Not at all',
+                nl: 'Helemaal niet negatief',
+            },
+            {
+                en: 'Very much',
+                nl: 'Erg negatief',
+            },
+        ],
+    },
+    {
+        question: {
+            isMultiPartQuestion: false,
+            en: 'How hard is it to get started on this activity?',
+            nl: 'Hoe moeilijk vind je het om te beginnen met deze activiteit?',
+        },
+        legend: [
+            {
+                en: 'Very hard',
+                nl: 'Erg moeilijk',
+            },
+            {
+                en: 'Not hard at all',
+                nl: 'Helemaal niet moeilijk',
+            },
+        ],
+    },
+    {
+        question: {
+            isMultiPartQuestion: false,
+            en: 'How often do you typically engage in this activity?',
+            nl: 'Hoe vaak doe je deze activiteit normaal gesproken?',
+        },
+        legend: [
+            {
+                en: 'Never',
+                nl: 'Nooit',
+            },
+            {
+                en: 'A few times in my lifetime',
+                nl: 'Een paar keer in mijn leven',
+            },
+            {
+                en: 'A few times per year',
+                nl: 'Een paar keer per jaar',
+            },
+            {
+                en: 'Monthly',
+                nl: 'Maandelijks',
+            },
+            {
+                en: 'Weekly',
+                nl: 'Wekelijks',
+            },
+            {
+                en: 'Daily',
+                nl: 'Dagelijks',
+            },
+        ],
+    },
+    {
+        question: {
+            isMultiPartQuestion: false,
+            en: 'To what extent is this activity part of your routine?',
+            nl: 'In welke mate is deze activiteit deel van je routine?',
+        },
+        legend: [
+            {
+                en: 'Not at all',
+                nl: 'Helemaal niet',
+            },
+            {
+                en: 'Very much so',
+                nl: 'Heel erg',
+            },
+        ],
+    },
+    {
+        question: {
+            isMultiPartQuestion: true,
+            en: 'Do you have a condition that affects your ability to complete this activity?',
+            nl: 'Heb je een aandoening die jouw vermogen om deze activiteit te voltooien beïnvloedt?',
+        },
+        legend: [
+            {
+                en: 'No',
+                nl: 'Nee',
+            },
+            {
+                en: 'Yes',
+                nl: 'Ja',
+            },
+        ],
+        followUpQuestion: {
+            en: 'How much does this condition affect your ability to complete this activity?',
+            nl: 'In welke mate beïnvloedt deze aandoening jouw vermogen om deze activiteit te voltooien?',
+        },
+        followUpLegend: [
+            {
+                en: 'Very slightly / Not applicable',
+                nl: 'Heel minimaal / Niet van toepassing',
+            },
+            {
+                en: 'A lot (I cannot do it)',
+                nl: 'Heel erg (Ik kan het niet doen)',
+            },
+        ],
+    },
+    {
+        question: {
+            isMultiPartQuestion: false,
+            en: 'How much does this activity help you feel closer or connected to others?',
+            nl: 'In welke mate helpt deze activiteit je om je dichterbij of meer verbonden met anderen te voelen?',
+        },
+        legend: [
+            {
+                en: 'Not at all',
+                nl: 'Helemaal niet',
+            },
+            {
+                en: 'A lot',
+                nl: 'Heel erg',
+            },
+        ],
+    },
+];

@@ -1,7 +1,7 @@
 import { Role, SupportedLangs } from './enums';
 import { Organization } from './Organization';
 
-export class User {
+export interface User {
     id: number;
     name: string;
     email: string;
@@ -13,7 +13,7 @@ export class User {
     organization: Organization | null;
 }
 
-export class CrowdsourcedUser {
+export interface CrowdsourcedUser {
     participantId: string;
     studyId: number;
     registerDate: string;

@@ -17,7 +17,7 @@ export class SnackbarService {
             panelClasses.push('center-snackbar');
         }
 
-        this.openSnackbar(new SnackbarData(message, action, SnackbarType.INFO), panelClasses, duration);
+        this.openSnackbar({ message, action, type: SnackbarType.INFO }, panelClasses, duration);
     }
 
     public clearSnackbar() {
@@ -31,7 +31,7 @@ export class SnackbarService {
             panelClasses.push('center-snackbar');
         }
 
-        this.openSnackbar(new SnackbarData(message, action, SnackbarType.SUCCESS), panelClasses, duration);
+        this.openSnackbar({ message, action, type: SnackbarType.SUCCESS }, panelClasses, duration);
     }
 
     // action doesn't do anything right now, kept in case we want to implement later
@@ -41,7 +41,7 @@ export class SnackbarService {
             panelClasses.push('center-snackbar');
         }
 
-        this.openSnackbar(new SnackbarData(message, action, SnackbarType.ERROR), panelClasses, duration);
+        this.openSnackbar({ message, action, type: SnackbarType.ERROR }, panelClasses, duration);
     }
 
     private openSnackbar(

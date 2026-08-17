@@ -7,6 +7,7 @@ import { mergeMap, take } from 'rxjs/operators';
 import { wait } from 'src/app/common/commonMethods';
 import { HttpStatus } from 'src/app/models/Auth';
 import { SupportedLangs } from 'src/app/models/enums';
+import { getOrganizationSupportedLangs } from 'src/app/models/Organization';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { CrowdSourcedUserService } from 'src/app/services/crowdsourced-user.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
@@ -25,7 +26,7 @@ declare function setFullScreen(): any;
 })
 export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
     workerId: string = '';
-    studyId: number;
+    studyId: number | null = null;
     urlContainsCode: boolean = false;
     subscriptions: Subscription[] = [];
     wasClicked = false;
@@ -56,7 +57,6 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                 const studyIdFromURL = params['studyid'] as string;
                 if (studyIdFromURL) {
                     this.urlContainsCode = true;
-                    this.studyId = parseInt(studyIdFromURL);
                 }
             })
         );
@@ -65,13 +65,14 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
     onRegister() {
         if (this.wasClicked || !this.studyId) return;
         if (this.workerId.length === 0) return;
+        if (this.studyId === null) return;
 
         this.wasClicked = true;
         this.clearanceService.clearServices();
 
         this.studyService.getStudyById(this.studyId).subscribe(
             (study) => {
-                this.openLanguageDialog()
+                this.openLanguageDialog(getOrganizationSupportedLangs(study?.body?.owner?.organization ?? null))
                     .pipe(
                         mergeMap((lang) => {
                             if (!lang) return throwError('user exited dialog');
@@ -82,7 +83,7 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                         mergeMap((lang) => {
                             return this.crowdSourcedUserService.createCrowdSourcedUserAndLogin(
                                 this.workerId,
-                                this.studyId,
+                                this.studyId!,
                                 lang
                             );
                         }),
@@ -115,7 +116,7 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                                         break;
                                 }
                                 this._snackbarService.openSuccessSnackbar(message);
-                                this._taskManager.initStudy(this.studyId);
+                                this._taskManager.initStudy(this.studyId!);
                             }
                         },
                         (err: HttpStatus) => {
@@ -171,8 +172,11 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
         await wait(1000); // delay to allow screen to expand
     }
 
-    openLanguageDialog(): Observable<SupportedLangs> {
-        return this.dialog.open(LanguageDialogComponent, { disableClose: true }).afterClosed().pipe(take(1));
+    openLanguageDialog(supportedLangs: SupportedLangs[]): Observable<SupportedLangs> {
+        return this.dialog
+            .open(LanguageDialogComponent, { disableClose: true, data: { supportedLangs } })
+            .afterClosed()
+            .pipe(take(1));
     }
 
     ngOnDestroy() {

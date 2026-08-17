@@ -16,7 +16,7 @@ import { environment } from 'src/environments/environment';
 
 declare function setFullScreen(): any;
 
-class RatingTask extends BaseParticipantData {
+interface RatingTask extends BaseParticipantData {
     counterbalance: number;
     ratingType: string;
     activity: string;

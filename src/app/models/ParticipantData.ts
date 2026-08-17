@@ -23,7 +23,7 @@ export enum TaskNames {
     EVERYDAYCHOICE = 'everydaychoice',
 }
 
-export abstract class BaseParticipantData {
+export interface BaseParticipantData {
     trial: number;
     userID: string;
     submitted: string; // ISO date string
@@ -31,7 +31,7 @@ export abstract class BaseParticipantData {
     studyId: number;
 }
 
-export class StroopTaskData extends BaseParticipantData {
+export interface StroopTaskData extends BaseParticipantData {
     actualAnswer: UserResponse;
     userAnswer: UserResponse;
     isCongruent: boolean;
@@ -40,7 +40,7 @@ export class StroopTaskData extends BaseParticipantData {
     score: number;
 }
 
-export class NBackTaskData extends BaseParticipantData {
+export interface NBackTaskData extends BaseParticipantData {
     actualAnswer: UserResponse;
     userAnswer: UserResponse;
     responseTime: number;
@@ -51,7 +51,7 @@ export class NBackTaskData extends BaseParticipantData {
     nback: string;
 }
 
-export class TaskSwitchingTaskData extends BaseParticipantData {
+export interface TaskSwitchingTaskData extends BaseParticipantData {
     color: string;
     digit: number;
     actualAnswer: UserResponse;
@@ -61,7 +61,7 @@ export class TaskSwitchingTaskData extends BaseParticipantData {
     score: number;
 }
 
-export class DemandSelectionTaskData extends BaseParticipantData {
+export interface DemandSelectionTaskData extends BaseParticipantData {
     firstPatch: string;
     secondPatch: string;
     selectedPatch: string;
@@ -79,7 +79,7 @@ export class DemandSelectionTaskData extends BaseParticipantData {
     score: number;
 }
 
-export class TrailMakingTaskData extends BaseParticipantData {
+export interface TrailMakingTaskData extends BaseParticipantData {
     trialType: string;
     actualAnswer: string;
     userAnswer: string;
@@ -87,7 +87,7 @@ export class TrailMakingTaskData extends BaseParticipantData {
     isCorrect: boolean;
 }
 
-export class FingerTappingTaskData extends BaseParticipantData {
+export interface FingerTappingTaskData extends BaseParticipantData {
     block: number;
     dominantHand: UseHand;
     handUsed: string;
@@ -96,7 +96,7 @@ export class FingerTappingTaskData extends BaseParticipantData {
     isCorrect: boolean;
 }
 
-export class DigitSpanTaskData extends BaseParticipantData {
+export interface DigitSpanTaskData extends BaseParticipantData {
     actualAnswer: string; // the actual sequence given
     userAnswer: string; // the sequence the user inputs
     responseTime: number; // time from when keypad entered screen to participant submitting their response
@@ -106,7 +106,7 @@ export class DigitSpanTaskData extends BaseParticipantData {
     score: number;
 }
 
-export class OddballTaskData extends BaseParticipantData {
+export interface OddballTaskData extends BaseParticipantData {
     stimulus: string;
     targetResponse: Key;
     responseTime: number;
@@ -118,7 +118,7 @@ export class OddballTaskData extends BaseParticipantData {
     score: number;
 }
 
-export class SmileyFaceTaskData extends BaseParticipantData {
+export interface SmileyFaceTaskData extends BaseParticipantData {
     actualAnswer: string;
     userAnswer: string;
     responseTime: number;
@@ -136,7 +136,7 @@ export class SmileyFaceTaskData extends BaseParticipantData {
     isNewVersion: boolean;
 }
 
-export class EverydayChoiceTaskData extends BaseParticipantData {
+export interface EverydayChoiceTaskData extends BaseParticipantData {
     taskName: string;
     counterbalance: RatingTaskCounterBalance;
     activity: string;
@@ -147,7 +147,7 @@ export class EverydayChoiceTaskData extends BaseParticipantData {
     choiceTaskStimulusSet: 'first' | 'second' | '';
 }
 
-export class SARTTaskData extends BaseParticipantData {
+export interface SARTTaskData extends BaseParticipantData {
     setType: SARTStimuliSetType;
     blockNum: number;
     digit: number;
@@ -159,7 +159,7 @@ export class SARTTaskData extends BaseParticipantData {
     isCorrect: boolean;
 }
 
-export class FaceNameAssociationTaskData extends BaseParticipantData {
+export interface FaceNameAssociationTaskData extends BaseParticipantData {
     isPractice: boolean;
     phase: 'learning-phase' | 'test-phase';
     imagePresented: string;
@@ -176,7 +176,7 @@ export class FaceNameAssociationTaskData extends BaseParticipantData {
     attentionCheck: string;
 }
 
-export class JudgementOfLineTaskData extends BaseParticipantData {
+export interface JudgementOfLineTaskData extends BaseParticipantData {
     isPractice: boolean;
     targetLinePresented: string;
     targetAnglePresented: string;
@@ -185,7 +185,7 @@ export class JudgementOfLineTaskData extends BaseParticipantData {
     userAnswer: string;
 }
 
-export class PLTTaskData extends BaseParticipantData {
+export interface PLTTaskData extends BaseParticipantData {
     score: number;
     isPractice: boolean;
     phase: 'practice-phase' | 'training-phase' | 'test-phase';
@@ -204,7 +204,7 @@ export class PLTTaskData extends BaseParticipantData {
     responseTime: number;
 }
 
-export class IowaGamblingTaskData extends BaseParticipantData {
+export interface IowaGamblingTaskData extends BaseParticipantData {
     buttonChoice: number;
     selectButtonResponseTime: number;
     pressSpaceResponseTime: number;
@@ -215,7 +215,7 @@ export class IowaGamblingTaskData extends BaseParticipantData {
     feePaid: number;
 }
 
-export class InformationTaskData extends BaseParticipantData {
+export interface InformationTaskData extends BaseParticipantData {
     roundNum: number;
     trialScore: number;
     cumulativeRoundScore: number;
@@ -225,7 +225,7 @@ export class InformationTaskData extends BaseParticipantData {
     expectedToExploit: boolean;
 }
 
-export class SDMTData extends BaseParticipantData {
+export interface SDMTData extends BaseParticipantData {
     blockNum: number;
     imageURL: string;
     isCorrect: boolean;
@@ -234,7 +234,7 @@ export class SDMTData extends BaseParticipantData {
     timeFromLastValidKeyPress: number;
 }
 
-export class ParticipantData {
+export interface ParticipantData {
     userId: string;
     studyId: number;
     taskOrder: number;

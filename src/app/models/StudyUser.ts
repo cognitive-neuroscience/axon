@@ -1,7 +1,7 @@
 import { SupportedLangs } from './enums';
 import { NullTime } from './InternalDTOs';
 
-export class StudyUser {
+export interface StudyUser {
     userId: number;
     studyId: number;
     completionCode: string;
@@ -13,7 +13,7 @@ export class StudyUser {
     data?: Record<string, any>;
 }
 
-export class StudyUserSummary {
+export interface StudyUserSummary {
     userId: number;
     email: string;
     studies: number[];
