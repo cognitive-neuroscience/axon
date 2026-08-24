@@ -1,25 +1,22 @@
 import { Component, OnDestroy } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { NzMarks } from 'ng-zorro-antd/slider';
+import { getTextForLang, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
+import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
+import { ITranslationText, UserResponse } from 'src/app/models/InternalDTOs';
+import { EverydayChoiceDutchTaskData } from 'src/app/models/ParticipantData';
+import { ComponentName } from 'src/app/services/component-factory.service';
+import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
+import { RatingTaskStimuliDutch } from 'src/app/services/data-generation/stimuli-models';
+import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
-import { getTextForLang, throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
-import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
-import { RatingTaskStimuli } from 'src/app/services/data-generation/stimuli-models';
 import { AbstractBaseTaskComponent } from '../../base-task';
 import { TaskPlayerState } from '../../task-player/task-player.component';
-import { LoaderService } from 'src/app/services/loader/loader.service';
-import { NzMarks } from 'ng-zorro-antd/slider';
-import { ComponentName } from 'src/app/services/component-factory.service';
-import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
-import { EverydayChoiceTaskData } from 'src/app/models/ParticipantData';
-import { ITranslationText } from 'src/app/models/InternalDTOs';
-import { TranslateService } from '@ngx-translate/core';
-import { RATER_PRACTICE_LONG_VERSION_STIMULI, RATER_PRACTICE_SHORT_VERSION_STIMULI } from './rater-practice-stimuli';
 
-export enum RatingTaskCounterBalance {
-    LOWTOHIGHENDORSEMENTLONG = 'LOWTOHIGH_LONG',
-    HIGHTOLOWENDORSEMENTLONG = 'HIGHTOLOW_LONG',
-    LOWTOHIGHENDORSEMENTSHORT = 'LOWTOHIGH_SHORT',
-    HIGHTOLOWENDORSEMENTSHORT = 'HIGHTOLOW_SHORT',
+export enum RatingTaskCounterBalanceDutch {
+    LOWTOHIGHENDORSEMENT = 'LOWTOHIGH',
+    HIGHTOLOWENDORSEMENT = 'HIGHTOLOW',
     NA = 'NA',
 }
 
@@ -29,28 +26,36 @@ export interface RaterTaskMetadata {
         numTrials: number;
         isPractice: boolean;
         maxResponseTime: number;
-        resetCache?: boolean;
-        // this is not for low to high or high to low endorsement counterbalance, but for the long or short version of the task (or "" if none. If none, should default to original long version)
-        counterbalanceShortVersionOption?: '' | 'counterbalance' | 'counterbalance-alternative';
         interTrialDelay: number;
         delayToShowHelpMessage: number;
         durationHelpMessageShown: number;
+        counterbalance: RatingTaskCounterBalanceDutch;
         delayToShowRatingSlider: number;
         durationOutOftimeMessageShown: number;
         interActivityDelay: number;
-        numDoSomethingActivities: number;
+        // Social activities
+        numHHHActivities: number;
+        numHHLActivities: number;
+        numHLHActivities: number;
+        numHLLActivities: number;
+        // Non social activities
+        numLHHActivities: number;
+        numLHLActivities: number;
+        numLLHActivities: number;
+        numLLLActivities: number;
+        // Ambiguous activities
+        numAMBActivities: number;
         stimuliConfig: {
             type: StimuliProvidedType;
-            counterbalance: 'counterbalance' | 'counterbalance-alternative';
-            stimuli: RatingTaskStimuli[];
+            stimuli: RatingTaskStimuliDutch[];
         };
     };
 }
 
-export enum RaterCache {
-    ALL_ACTIVITIES = 'rater-all-activities',
-    ACTIVITIES_FOR_CHOICER = 'rater-activities-for-choicer',
-    STIMULI = 'rater-stimuli',
+export enum RaterCacheDutch {
+    ALL_ACTIVITIES = 'rater-dutch-all-activities',
+    ACTIVITIES_FOR_CHOICER = 'rater-dutch-activities-for-choicer',
+    STIMULI = 'rater-dutch-stimuli',
 }
 
 @Component({
@@ -76,15 +81,24 @@ export class RaterDutchComponent extends AbstractBaseTaskComponent implements On
     private delayToShowRatingSlider: number;
     private durationHelpMessageShown: number;
     private durationOutOftimeMessageShown: number;
-    counterbalance: RatingTaskCounterBalance;
-    private numDoSomethingActivities: number;
-    private counterbalanceShortVersionOption: '' | 'counterbalance' | 'counterbalance-alternative';
-    private resetCache: boolean;
-    private shouldDoLongVersion: boolean;
+    counterbalance: RatingTaskCounterBalanceDutch;
+
+    // social activities
+    private numHHHActivities: number;
+    private numHHLActivities: number;
+    private numHLHActivities: number;
+    private numHLLActivities: number;
+    // non social activities
+    private numLHHActivities: number;
+    private numLHLActivities: number;
+    private numLLHActivities: number;
+    private numLLLActivities: number;
+    // ambiguous activities
+    private numAMBActivities: number;
 
     // high level variables
-    taskData: EverydayChoiceTaskData[];
-    stimuli: RatingTaskStimuli[];
+    taskData: EverydayChoiceDutchTaskData[];
+    stimuli: RatingTaskStimuliDutch[];
     currentStimuliIndex: number; // index of the stimuli we are on
     currentQuestionIndex: number; // index of the question we are on within the stimulus
     shouldReverse: boolean = false; // based on counterbalance - reverses order of endorsement
@@ -107,20 +121,35 @@ export class RaterDutchComponent extends AbstractBaseTaskComponent implements On
     translationMapping = {
         helpMessage: {
             en: 'Please make the rating by adjusting the slider and clicking next',
-            fr: 'Veuillez utiliser votre souris pour placer le curseur à l’endroit de l’échelle qui correspond à votre réponse.',
+            nl: 'Geef uw beoordeling door de schuifregelaar aan te passen en op Volgende te klikken.',
         },
         maxResponseMessage: {
             en: 'Please do your best to provide your answer in the time allotted for the next trial.',
-            fr: 'SVP essayer d’indiquer votre réponse dans les délais prévus pour le prochain tour',
+            nl: 'Probeer uw antwoord binnen de beschikbare tijd voor de volgende ronde te geven.',
         },
         practiceHelpMessage: {
             en: 'Please use your mouse to drag the cursor to the spot on the scale that corresponds to your answer.',
-            fr: "Veuillez utiliser votre souris pour déplacer le curseur à la position de l'échelle qui correspond à votre réponse.",
+            nl: 'Gebruik uw muis om de schuifregelaar naar de positie op de schaal te slepen die overeenkomt met uw antwoord.',
         },
     };
 
-    get currentStimulus(): RatingTaskStimuli {
+    get currentStimulus(): RatingTaskStimuliDutch {
         return this.stimuli[this.currentStimuliIndex];
+    }
+
+    get currentQuestion(): RatingTaskStimuliDutch['questions'][number] | undefined {
+        return this.currentStimulus?.questions[this.currentQuestionIndex];
+    }
+
+    get isCurrentQuestionMultiPart(): boolean {
+        return !!this.currentQuestion?.isMultiPartQuestion;
+    }
+
+    get binaryChoiceOptions(): { label: string; value: string }[] {
+        return (this.currentQuestion?.legend ?? []).map((item) => ({
+            label: item[this.translateService.currentLang as SupportedLangs] || item.en,
+            value: item.en,
+        }));
     }
 
     configure(metadata: RaterTaskMetadata, config: TaskPlayerState) {
@@ -141,39 +170,40 @@ export class RaterDutchComponent extends AbstractBaseTaskComponent implements On
         this.durationHelpMessageShown = metadata.componentConfig.durationHelpMessageShown || undefined;
         this.delayToShowRatingSlider = metadata.componentConfig.delayToShowRatingSlider || 0;
         this.durationOutOftimeMessageShown = metadata.componentConfig.durationOutOftimeMessageShown || undefined;
-        this.numDoSomethingActivities = metadata.componentConfig.numDoSomethingActivities;
-        this.counterbalanceShortVersionOption = metadata.componentConfig.counterbalanceShortVersionOption || '';
-        this.resetCache = metadata.componentConfig.resetCache || false;
 
-        this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as RatingTaskCounterBalance;
-        this.shouldDoLongVersion =
-            this.counterbalance === RatingTaskCounterBalance.LOWTOHIGHENDORSEMENTLONG ||
-            this.counterbalance === RatingTaskCounterBalance.HIGHTOLOWENDORSEMENTLONG ||
-            this.counterbalance === RatingTaskCounterBalance.NA ||
-            !this.counterbalanceShortVersionOption;
-        if (this.counterbalanceShortVersionOption === 'counterbalance-alternative') {
-            this.shouldDoLongVersion = !this.shouldDoLongVersion;
-        }
+        this.numHHHActivities = metadata.componentConfig.numHHHActivities || 0;
+        this.numHHLActivities = metadata.componentConfig.numHHLActivities || 0;
+        this.numHLHActivities = metadata.componentConfig.numHLHActivities || 0;
+        this.numHLLActivities = metadata.componentConfig.numHLLActivities || 0;
+        this.numLHHActivities = metadata.componentConfig.numLHHActivities || 0;
+        this.numLHLActivities = metadata.componentConfig.numLHLActivities || 0;
+        this.numLLHActivities = metadata.componentConfig.numLLHActivities || 0;
+        this.numLLLActivities = metadata.componentConfig.numLLLActivities || 0;
+        this.numAMBActivities = metadata.componentConfig.numAMBActivities || 0;
+        this.counterbalance = config.counterBalanceGroups[config.counterbalanceNumber] as RatingTaskCounterBalanceDutch;
 
         if (metadata.componentConfig.stimuliConfig.type === StimuliProvidedType.HARDCODED) {
-            if (!this.counterbalanceShortVersionOption) {
-                // for regular everyday choice task
-                this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
-            } else if (this.shouldDoLongVersion) {
-                this.stimuli = RATER_PRACTICE_LONG_VERSION_STIMULI;
-            } else {
-                this.stimuli = RATER_PRACTICE_SHORT_VERSION_STIMULI;
-            }
+            this.stimuli = metadata.componentConfig.stimuliConfig.stimuli;
         } else {
             // we only generate the activity data once and store it in the cache so we can reuse it later.
-            const allActivities = this.config.getCacheValue(RaterCache.ALL_ACTIVITIES) as ITranslationText[];
+            const allActivities = this.config.getCacheValue(RaterCacheDutch.ALL_ACTIVITIES) as ITranslationText[];
             if (!allActivities) {
                 this.config.setCacheValue(
-                    RaterCache.ALL_ACTIVITIES,
-                    this.dataGenService.generateRatingActivities(this.numDoSomethingActivities)
+                    RaterCacheDutch.ALL_ACTIVITIES,
+                    this.dataGenService.generateRatingActivitiesDutch(
+                        this.numHHHActivities,
+                        this.numHHLActivities,
+                        this.numHLHActivities,
+                        this.numHLLActivities,
+                        this.numLHHActivities,
+                        this.numLHLActivities,
+                        this.numLLHActivities,
+                        this.numLLLActivities,
+                        this.numAMBActivities
+                    )
                 );
 
-                this.config.setCacheValue(RaterCache.ACTIVITIES_FOR_CHOICER, allActivities);
+                this.config.setCacheValue(RaterCacheDutch.ACTIVITIES_FOR_CHOICER, allActivities);
             }
         }
     }
@@ -192,37 +222,27 @@ export class RaterDutchComponent extends AbstractBaseTaskComponent implements On
         return this.translationMapping.practiceHelpMessage[this.translateService.currentLang];
     }
 
-    // TODO: ...this codebase is a little bit of a mess as its trying to accommodate both the regular everyday choice
-    // and the updated everyday choice with counterbalance.
-    // With the counterbalance, we want to reuse the same exact activities from before so when resetCache is called. So the
-    // first time these activities are generated, we store them in the cache so we can reuse them later. From then on, we reset the
-    // cache with the generated activities if they exist.
     start() {
         this.taskData = [];
-        if (this.resetCache) {
-            this.config.setCacheValue(
-                RaterCache.STIMULI,
-                this.dataGenService.generateRatingStimuli(
-                    this.config.getCacheValue(RaterCache.ALL_ACTIVITIES) as ITranslationText[],
-                    this.shouldDoLongVersion ? 'long' : 'short'
-                )
-            );
-        }
 
         // either the stimuli has been defined in config or we generate it here
         if (!this.stimuli) {
-            const raterActivities = this.config.getCacheValue(RaterCache.STIMULI) as RatingTaskStimuli[];
+            this.config.setCacheValue(
+                RaterCacheDutch.STIMULI,
+                this.dataGenService.generateRatingStimuliDutch(
+                    this.config.getCacheValue(RaterCacheDutch.ALL_ACTIVITIES) as ITranslationText[]
+                )
+            );
+            const raterActivities = this.config.getCacheValue(RaterCacheDutch.STIMULI) as RatingTaskStimuliDutch[];
             this.stimuli = raterActivities.slice(0, this.numTrials);
             this.config.setCacheValue(
-                RaterCache.STIMULI,
+                RaterCacheDutch.STIMULI,
                 raterActivities.slice(this.numTrials, raterActivities.length)
             );
         }
         this.currentStimuliIndex = 0;
         this.currentQuestionIndex = 0;
-        this.shouldReverse =
-            this.counterbalance === RatingTaskCounterBalance.HIGHTOLOWENDORSEMENTLONG ||
-            this.counterbalance === RatingTaskCounterBalance.HIGHTOLOWENDORSEMENTSHORT;
+        this.shouldReverse = this.counterbalance === RatingTaskCounterBalanceDutch.HIGHTOLOWENDORSEMENT;
         super.start();
     }
 
@@ -231,20 +251,26 @@ export class RaterDutchComponent extends AbstractBaseTaskComponent implements On
         this.showSlider = false;
         this.timerService.clearTimer();
 
+        const currentQuestion = this.currentQuestion;
+        // Follow-up questions keep isMultiPartQuestion: false in stimuli so they are not
+        // treated as another gate. Still record them as multi-part in taskData when the
+        // previous trial was a Yes on this activity's gate question.
+        const isMultiPartInTaskData = !!currentQuestion?.isMultiPartQuestion || this.isCurrentQuestionFollowUp();
+
         this.taskData.push({
             taskName: 'Rating Game',
             trial: ++this.trialNum,
             userID: this.userID,
             counterbalance: this.counterbalance,
             userAnswer: null,
-            question: this.currentStimulus.questions[this.currentQuestionIndex].question.en,
+            question: currentQuestion!.question.en,
+            isMultiPartQuestion: isMultiPartInTaskData,
             activity: this.currentStimulus.activity.en,
             activityType: this.currentStimulus.type,
             responseTime: null,
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
             studyId: this.studyId,
-            choiceTaskStimulusSet: '',
         });
 
         this.setStimuliUI(this.currentStimulus);
@@ -271,7 +297,7 @@ export class RaterDutchComponent extends AbstractBaseTaskComponent implements On
                 }
             );
         }
-        if (this.delayToShowHelpMessage !== undefined) {
+        if (this.delayToShowHelpMessage !== undefined && !this.isCurrentQuestionMultiPart) {
             this.setTimer(
                 'helpMessageTimer',
                 this.translationMapping.helpMessage[this.translateService.currentLang as SupportedLangs],
@@ -281,11 +307,15 @@ export class RaterDutchComponent extends AbstractBaseTaskComponent implements On
         }
     }
 
-    private setStimuliUI(stimulus: RatingTaskStimuli) {
+    private setStimuliUI(stimulus: RatingTaskStimuliDutch) {
         const stimulusQuestion = stimulus.questions[this.currentQuestionIndex];
 
         this.activityShown = stimulus.activity;
         this.questionShown = stimulusQuestion.question;
+
+        if (stimulusQuestion.isMultiPartQuestion) {
+            return;
+        }
 
         const tempMarks: NzMarks = {};
         let index = 0;
@@ -304,19 +334,28 @@ export class RaterDutchComponent extends AbstractBaseTaskComponent implements On
      * Only when we receive null as an arg (meaning that the timeout has completed)
      * that we move on. Otherwise, we just keep replacing the trial with updated data
      */
-    handleRoundInteraction(sliderValue: number) {
+    handleRoundInteraction(inputValue: number | string | null) {
         const thisTrial = this.taskData[this.taskData.length - 1];
-        if (sliderValue === null) {
+        if (inputValue === null) {
             // no input, ran out of time
             thisTrial.responseTime = this.maxResponseTime;
-            thisTrial.userAnswer = `${50}`; // set anchor to default middle
-            super.handleRoundInteraction(sliderValue);
+            thisTrial.userAnswer = this.isCurrentQuestionMultiPart ? UserResponse.NA : `${50}`;
+            super.handleRoundInteraction(inputValue);
+            return;
+        }
+
+        // Yes/No can be clicked twice before the view updates; ignore extra clicks
+        if (this.isCurrentQuestionMultiPart && thisTrial.userAnswer !== null) {
             return;
         }
 
         thisTrial.responseTime = this.timerService.getTime();
         thisTrial.submitted = this.timerService.getCurrentTimestamp();
-        thisTrial.userAnswer = `${sliderValue}`;
+        thisTrial.userAnswer = `${inputValue}`;
+        if (this.isCurrentQuestionMultiPart) {
+            super.handleRoundInteraction(inputValue);
+            return;
+        }
         this.showNextButton = true;
         return;
     }
@@ -328,6 +367,8 @@ export class RaterDutchComponent extends AbstractBaseTaskComponent implements On
     }
 
     async decideToRepeat() {
+        this.insertFollowUpQuestionIfNeeded();
+
         // we have reached past the final question for the activity
         const finishedLastQuestion = this.currentQuestionIndex >= this.currentStimulus.questions.length - 1;
         if (finishedLastQuestion) {
@@ -351,6 +392,46 @@ export class RaterDutchComponent extends AbstractBaseTaskComponent implements On
         if (this.isDestroyed) return;
         this.beginRound();
         return;
+    }
+
+    /**
+     * If the current question is a Yes/No gate and the participant selected Yes,
+     * insert the follow-up as the next question on this activity. The inserted
+     * question has isMultiPartQuestion: false so it is shown as a normal slider
+     * and does not trigger another insertion.
+     */
+    private insertFollowUpQuestionIfNeeded() {
+        const currentQuestion = this.currentQuestion;
+        if (
+            !currentQuestion?.isMultiPartQuestion ||
+            !currentQuestion.followUpQuestion ||
+            !currentQuestion.followUpLegend
+        ) {
+            return;
+        }
+
+        const thisTrial = this.taskData[this.taskData.length - 1];
+        const yesAnswer = currentQuestion.legend[currentQuestion.legend.length - 1].en;
+        if (thisTrial?.userAnswer !== yesAnswer) {
+            return;
+        }
+
+        this.currentStimulus.questions.splice(this.currentQuestionIndex + 1, 0, {
+            question: currentQuestion.followUpQuestion,
+            legend: currentQuestion.followUpLegend,
+            isMultiPartQuestion: false,
+        });
+    }
+
+    // True when this round is the follow-up inserted after a Yes on the previous gate.
+    private isCurrentQuestionFollowUp(): boolean {
+        const previousQuestion = this.currentStimulus?.questions[this.currentQuestionIndex - 1];
+        const previousTrial = this.taskData[this.taskData.length - 1];
+        if (!previousQuestion?.isMultiPartQuestion || !previousTrial) {
+            return false;
+        }
+        const yesAnswer = previousQuestion.legend[previousQuestion.legend.length - 1].en;
+        return previousTrial.userAnswer === yesAnswer;
     }
 
     private setTimer(

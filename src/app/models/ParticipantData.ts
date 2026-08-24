@@ -9,6 +9,7 @@ import {
     SARTTrialType,
     SmileyFaceType,
 } from '../services/data-generation/stimuli-models';
+import { RatingTaskCounterBalanceDutch } from '../pages/tasks/task-playables/everyday-choice-dutch/rater-dutch/rater-dutch.component';
 
 export enum TaskNames {
     ODDBALL = 'oddball',
@@ -145,6 +146,21 @@ export interface EverydayChoiceTaskData extends BaseParticipantData {
     activityType: 'DoNothing' | 'DoSomething' | '';
     responseTime: number;
     choiceTaskStimulusSet: 'first' | 'second' | '';
+}
+
+export interface EverydayChoiceDutchTaskData extends BaseParticipantData {
+    taskName: string;
+    counterbalance: RatingTaskCounterBalanceDutch;
+    // True for both the Yes/No gate trial and the follow-up rating trial so the pair
+    // can be identified in the export. This is not the same as stimuli.questions[].isMultiPartQuestion:
+    // follow-ups are stored as their own rows but are NOT marked as multi-part on the stimuli
+    // question, otherwise we would treat them as another gate and insert another follow-up.
+    isMultiPartQuestion: boolean;
+    activity: string;
+    question: string;
+    userAnswer: string;
+    activityType: 'social_activity' | 'non_social_activity' | 'ambiguous_activity' | '';
+    responseTime: number;
 }
 
 export interface SARTTaskData extends BaseParticipantData {

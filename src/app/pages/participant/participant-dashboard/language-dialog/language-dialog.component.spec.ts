@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { LanguageDialogComponent } from './language-dialog.component';
+import { LocalStorageService } from 'src/app/services/localStorageService.service';
 
 describe('LanguageDialogComponent', () => {
     let component: LanguageDialogComponent;
@@ -20,6 +21,12 @@ describe('LanguageDialogComponent', () => {
                 {
                     provide: MAT_DIALOG_DATA,
                     useValue: null,
+                },
+                {
+                    provide: LocalStorageService,
+                    useValue: {
+                        setPreferredLangInLocalStorage: jest.fn(),
+                    },
                 },
             ],
         }).compileComponents();

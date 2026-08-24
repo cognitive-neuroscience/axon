@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, finalize, map, mergeMap, take, tap } from 'rxjs/operators';
 import { SupportedLangs } from 'src/app/models/enums';
-import { getOrganizationSupportedLangs, isOrganizationSupportedLang } from 'src/app/models/Organization';
+import { getOrganizationSupportedLangs, shouldPromptForOrganizationLang } from 'src/app/models/Organization';
 import { Study } from 'src/app/models/Study';
 import { StudyUser } from 'src/app/models/StudyUser';
 import { User } from 'src/app/models/User';
@@ -16,6 +16,7 @@ import { StudyUserService } from 'src/app/services/study-user.service';
 import { StudyService } from 'src/app/services/study.service';
 import { UserStateService } from 'src/app/services/user-state-service';
 import { UserService } from 'src/app/services/user.service';
+import { LocalStorageService } from 'src/app/services/localStorageService.service';
 import { LanguageDialogComponent } from './language-dialog/language-dialog.component';
 
 @Component({
@@ -37,7 +38,8 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
         private userStateService: UserStateService,
         private authService: AuthService,
         private snackbarService: SnackbarService,
-        private studyService: StudyService
+        private studyService: StudyService,
+        private localStorageService: LocalStorageService
     ) {}
 
     private shouldReroute(studyConfig: Study['config'], studyUsers: StudyUser[]): boolean {
@@ -82,7 +84,8 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
                 mergeMap(() => this.userStateService.getOrUpdateUserState(true)),
                 mergeMap((res: User | null) => {
                     this.loaderService.hideLoader();
-                    if (!res || isOrganizationSupportedLang(res.lang, res.organization)) {
+                    const preferredLang = this.localStorageService.getPreferredLangInLocalStorage();
+                    if (!res || !shouldPromptForOrganizationLang(res.lang, preferredLang, res.organization)) {
                         return of(res);
                     }
                     return this.openLanguageDialog(getOrganizationSupportedLangs(res.organization)).pipe(

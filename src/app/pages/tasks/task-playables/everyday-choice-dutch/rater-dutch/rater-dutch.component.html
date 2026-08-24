@@ -12,24 +12,34 @@
                 <div *ngIf="isPractice" class="text-center hint py-3">
                     {{ practiceHelpMessage }}
                 </div>
-                <app-slider
-                    [shouldReverseLegend]="shouldReverse"
-                    [marks]="currentSliderMarks"
-                    (sliderValueSelected)="handleRoundInteraction($event)"
-                ></app-slider>
-                <div class="flex-row-space-around" style="margin-top: 7rem">
-                    <button
-                        class="next-button-text"
-                        style="padding: 0.25rem 1rem"
-                        (click)="completeRound()"
-                        *ngIf="showNextButton"
-                        mat-raised-button
-                        color="primary"
-                    >
-                        Next &nbsp;
-                        <mat-icon>arrow_forward</mat-icon>
-                    </button>
-                </div>
+                <ng-container *ngIf="isCurrentQuestionMultiPart; else ratingSlider">
+                    <app-option-display
+                        question=""
+                        [options]="binaryChoiceOptions"
+                        (onSelectValue)="handleRoundInteraction($event)"
+                    ></app-option-display>
+                </ng-container>
+                <ng-template #ratingSlider>
+                    <app-slider
+                        [shouldReverseLegend]="shouldReverse"
+                        [marks]="currentSliderMarks"
+                        (sliderValueSelected)="handleRoundInteraction($event)"
+                    ></app-slider>
+                    <div class="flex-row-space-around next-button-row">
+                        <button
+                            class="next-button-text"
+                            [class.next-button-hidden]="!showNextButton"
+                            [disabled]="!showNextButton"
+                            style="padding: 0.25rem 1rem"
+                            (click)="completeRound()"
+                            mat-raised-button
+                            color="primary"
+                        >
+                            Next &nbsp;
+                            <mat-icon>arrow_forward</mat-icon>
+                        </button>
+                    </div>
+                </ng-template>
             </ng-container>
         </div>
     </div>

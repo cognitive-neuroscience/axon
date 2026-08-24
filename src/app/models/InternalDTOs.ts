@@ -84,7 +84,7 @@ export enum UserResponse {
 
 export interface ITranslationText {
     en: string;
-    fr: string;
+    fr?: string;
     nl?: string;
 }
 

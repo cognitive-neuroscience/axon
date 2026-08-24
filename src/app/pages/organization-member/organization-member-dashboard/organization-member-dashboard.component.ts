@@ -3,8 +3,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { mergeMap, take, tap } from 'rxjs/operators';
 import { SupportedLangs } from 'src/app/models/enums';
-import { getOrganizationSupportedLangs, isOrganizationSupportedLang } from 'src/app/models/Organization';
+import { getOrganizationSupportedLangs, shouldPromptForOrganizationLang } from 'src/app/models/Organization';
 import { LoaderService } from 'src/app/services/loader/loader.service';
+import { LocalStorageService } from 'src/app/services/localStorageService.service';
 import { UserStateService } from 'src/app/services/user-state-service';
 import { LanguageDialogComponent } from '../../participant/participant-dashboard/language-dialog/language-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -21,7 +22,8 @@ export class OrganizationMemberDashboardComponent implements OnInit {
         private translateService: TranslateService,
         private loaderService: LoaderService,
         private dialog: MatDialog,
-        private userService: UserService
+        private userService: UserService,
+        private localStorageService: LocalStorageService
     ) {}
 
     get userName(): string {
@@ -43,7 +45,8 @@ export class OrganizationMemberDashboardComponent implements OnInit {
                 mergeMap(() => this.userStateService.getOrUpdateUserState(true)),
                 mergeMap((res) => {
                     this.loaderService.hideLoader();
-                    return res && !isOrganizationSupportedLang(res.lang, res.organization)
+                    const preferredLang = this.localStorageService.getPreferredLangInLocalStorage();
+                    return res && shouldPromptForOrganizationLang(res.lang, preferredLang, res.organization)
                         ? this.openLanguageDialog(getOrganizationSupportedLangs(res.organization)).pipe(
                               mergeMap((lang) => this.userService.updateUser({ ...res, lang }))
                           )

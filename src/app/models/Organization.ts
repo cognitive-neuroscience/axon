@@ -39,3 +39,12 @@ export function isOrganizationSupportedLang(
     if (!lang || lang === SupportedLangs.NONE) return false;
     return getOrganizationSupportedLangs(organization).includes(lang as SupportedLangs);
 }
+
+export function shouldPromptForOrganizationLang(
+    lang: SupportedLangs | string | null | undefined,
+    selectedLang: SupportedLangs | string | null | undefined,
+    organization: Organization | null | undefined
+): boolean {
+    if (!isOrganizationSupportedLang(lang, organization)) return true;
+    return Boolean(selectedLang) && !isOrganizationSupportedLang(selectedLang, organization);
+}

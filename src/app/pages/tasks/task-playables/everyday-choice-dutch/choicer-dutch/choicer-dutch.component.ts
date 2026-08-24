@@ -3,16 +3,16 @@ import { TranslateService } from '@ngx-translate/core';
 import { throwErrIfNotDefined, wait } from 'src/app/common/commonMethods';
 import { StimuliProvidedType, SupportedLangs } from 'src/app/models/enums';
 import { ITranslationText, UserResponse } from 'src/app/models/InternalDTOs';
-import { EverydayChoiceTaskData } from 'src/app/models/ParticipantData';
+import { EverydayChoiceDutchTaskData } from 'src/app/models/ParticipantData';
 import { ComponentName } from 'src/app/services/component-factory.service';
 import { DataGenerationService } from 'src/app/services/data-generation/data-generation.service';
-import { ChoiceTaskStimulus } from 'src/app/services/data-generation/stimuli-models';
+import { ChoiceTaskStimulus, ChoiceTaskStimulusDutch } from 'src/app/services/data-generation/stimuli-models';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { AbstractBaseTaskComponent } from '../../base-task';
 import { TaskPlayerState } from '../../task-player/task-player.component';
-import { RaterCache, RatingTaskCounterBalance } from '../rater-dutch/rater-dutch.component';
+import { RaterCacheDutch, RatingTaskCounterBalanceDutch } from '../rater-dutch/rater-dutch.component';
 
 export interface ChoiceTaskMetadata {
     componentName: ComponentName;
@@ -58,8 +58,8 @@ export class ChoicerDutchComponent extends AbstractBaseTaskComponent implements 
     ratingTaskActivities: ITranslationText[];
 
     // high level variables
-    taskData: EverydayChoiceTaskData[];
-    stimuli: ChoiceTaskStimulus[];
+    taskData: EverydayChoiceDutchTaskData[];
+    stimuli: ChoiceTaskStimulusDutch[];
     currentStimuliIndex: number; // index of the stimuli we are on
 
     // local state variables
@@ -89,7 +89,7 @@ export class ChoicerDutchComponent extends AbstractBaseTaskComponent implements 
         },
     };
 
-    get currentStimulus(): ChoiceTaskStimulus {
+    get currentStimulus(): ChoiceTaskStimulusDutch {
         return this.stimuli[this.currentStimuliIndex];
     }
 
@@ -111,7 +111,7 @@ export class ChoicerDutchComponent extends AbstractBaseTaskComponent implements 
             throw new Error('values not defined, cannot start study');
         }
 
-        this.ratingTaskActivities = config.getCacheValue(RaterCache.ALL_ACTIVITIES) as ITranslationText[];
+        this.ratingTaskActivities = config.getCacheValue(RaterCacheDutch.ALL_ACTIVITIES) as ITranslationText[];
         this.isPractice = metadata.componentConfig.isPractice || false;
         this.interTrialDelay = metadata.componentConfig.interTrialDelay || 0;
         this.maxResponseTime = metadata.componentConfig.maxResponseTime || undefined;
@@ -131,11 +131,7 @@ export class ChoicerDutchComponent extends AbstractBaseTaskComponent implements 
     start() {
         this.taskData = [];
         // either the stimuli has been defined in config or we generate it here
-        if (!this.stimuli)
-            this.stimuli = this.dataGenService.generateChoiceStimuli(
-                this.ratingTaskActivities,
-                this.addSecondStimuliSet
-            );
+        if (!this.stimuli) this.stimuli = this.dataGenService.generateChoiceStimuliDutch(this.ratingTaskActivities);
         this.currentStimuliIndex = 0;
         super.start();
     }
@@ -149,16 +145,16 @@ export class ChoicerDutchComponent extends AbstractBaseTaskComponent implements 
             taskName: 'Choice Game',
             trial: ++this.trialNum,
             userID: this.userID,
-            counterbalance: RatingTaskCounterBalance.NA,
+            counterbalance: RatingTaskCounterBalanceDutch.NA,
             userAnswer: null,
             question: UserResponse.NA,
+            isMultiPartQuestion: false,
             activity: `${this.currentStimulus.firstActivity.en} VS ${this.currentStimulus.secondActivity.en}`,
             activityType: '',
             responseTime: null,
             submitted: this.timerService.getCurrentTimestamp(),
             isPractice: this.isPractice,
             studyId: this.studyId,
-            choiceTaskStimulusSet: this.currentStimulus.set || '',
         });
 
         this.setStimuliUI(this.currentStimulus);
@@ -195,7 +191,7 @@ export class ChoicerDutchComponent extends AbstractBaseTaskComponent implements 
         }
     }
 
-    private setStimuliUI(stimulus: ChoiceTaskStimulus) {
+    private setStimuliUI(stimulus: ChoiceTaskStimulusDutch) {
         this.activitiesShown = [
             {
                 label: stimulus.firstActivity[this.translateService.currentLang as SupportedLangs],

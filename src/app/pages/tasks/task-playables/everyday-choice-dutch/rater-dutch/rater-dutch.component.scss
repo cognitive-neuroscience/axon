@@ -22,7 +22,7 @@
 }
 
 .slider-container {
-    height: 200px;
+    min-height: 200px;
 }
 
 .stimulus-top {
@@ -39,9 +39,18 @@
     line-height: normal;
 }
 
+.next-button-row {
+    margin-top: 7rem;
+}
+
+.next-button-hidden {
+    visibility: hidden;
+    pointer-events: none;
+}
+
 @include for-small-device-only {
     .slider-container {
-        width: 450px;
+        width: 550px;
     }
 
     .hint,
@@ -57,7 +66,7 @@
 
 @include for-small-desktop-only {
     .slider-container {
-        width: 700px;
+        width: 850px;
     }
 
     .hint,
@@ -73,7 +82,7 @@
 
 @include for-desktop-up {
     .slider-container {
-        width: 800px;
+        width: 1000px;
     }
 
     .hint,
@@ -89,7 +98,7 @@
 
 @include for-large-desktop-up {
     .slider-container {
-        width: 1000px;
+        width: 1250px;
     }
 
     .hint,

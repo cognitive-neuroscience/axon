@@ -2,6 +2,7 @@ import { Component, Inject, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SupportedLangs } from 'src/app/models/enums';
 import { parseSupportedLangs } from 'src/app/models/Organization';
+import { LocalStorageService } from 'src/app/services/localStorageService.service';
 
 const LANGUAGE_OPTION_LABELS: { code: SupportedLangs; label: string }[] = [
     { code: SupportedLangs.EN, label: 'English' },
@@ -19,6 +20,7 @@ export class LanguageDialogComponent {
 
     constructor(
         private dialogRef: MatDialogRef<LanguageDialogComponent>,
+        private localStorageService: LocalStorageService,
         @Optional() @Inject(MAT_DIALOG_DATA) public data: { supportedLangs?: SupportedLangs[] } | null
     ) {
         const supportedLangs = parseSupportedLangs(data?.supportedLangs);
@@ -26,6 +28,7 @@ export class LanguageDialogComponent {
     }
 
     onEmitLanguage(lang: SupportedLangs) {
+        this.localStorageService.setPreferredLangInLocalStorage(lang);
         this.dialogRef.close(lang);
     }
 }

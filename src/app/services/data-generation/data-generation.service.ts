@@ -21,11 +21,17 @@ import {
     OddballStimulusPath,
     OddballTargetStimulus,
 } from './raw-data/oddball-image-list';
-import { RatingTaskActivities, RatingTaskQuestionList } from './raw-data/rating-task-data-list';
+import {
+    RatingTaskActivities,
+    RatingTaskActivitiesDutch,
+    RatingTaskQuestionList,
+    RatingTaskQuestionListDutch,
+} from './raw-data/rating-task-data-list';
 import { getSDMTPracticeStimuli, getSDMTRealStimuli } from './raw-data/sdmt-data-list';
 import { TrailMakingSet } from './raw-data/trail-making-list';
 import {
     ChoiceTaskStimulus,
+    ChoiceTaskStimulusDutch,
     DemandSelectionCounterbalance,
     DemandSelectionStimulus,
     DigitSpanStimulus,
@@ -37,6 +43,7 @@ import {
     PLTStimulus,
     PLTStimulusType,
     RatingTaskStimuli,
+    RatingTaskStimuliDutch,
     SARTStimuliSetType,
     SARTStimulus,
     SARTTrialType,
@@ -94,7 +101,6 @@ export class DataGenerationService {
         for (let i = 0; i < shuffledActivities.length; i++) {
             let firstActivity = shuffledActivities[i];
             let secondActivity = shuffledActivities[(i + 1) % shuffledActivities.length];
-
             const shouldSwitch = getRandomNumber(0, 2) === 1;
             if (shouldSwitch) [firstActivity, secondActivity] = [secondActivity, firstActivity];
 
@@ -123,6 +129,229 @@ export class DataGenerationService {
         }
 
         return [...shuffle(firstSetPairs), ...shuffle(secondSetPairs)];
+    }
+
+    generateRatingActivitiesDutch(
+        // social activities
+        numHHHActivities: number,
+        numHHLActivities: number,
+        numHLHActivities: number,
+        numHLLActivities: number,
+        // non social activities
+        numLHHActivities: number,
+        numLHLActivities: number,
+        numLLHActivities: number,
+        numLLLActivities: number,
+        // ambiguous activities
+        numAMBActivities: number
+    ): ITranslationText[] {
+        const HHHActivities = selectNRandomElementsNoRepeats(
+            RatingTaskActivitiesDutch.Social['7HHH'],
+            numHHHActivities
+        );
+        const HHLActivities = selectNRandomElementsNoRepeats(
+            RatingTaskActivitiesDutch.Social['4HHL'],
+            numHHLActivities
+        );
+        const HLHActivities = selectNRandomElementsNoRepeats(
+            RatingTaskActivitiesDutch.Social['8HLH'],
+            numHLHActivities
+        );
+        const HLLActivities = selectNRandomElementsNoRepeats(
+            RatingTaskActivitiesDutch.Social['2HLL'],
+            numHLLActivities
+        );
+        const LHHActivities = selectNRandomElementsNoRepeats(
+            RatingTaskActivitiesDutch.nonSocial['5LHH'],
+            numLHHActivities
+        );
+        const LHLActivities = selectNRandomElementsNoRepeats(
+            RatingTaskActivitiesDutch.nonSocial['3LHL'],
+            numLHLActivities
+        );
+        const LLHActivities = selectNRandomElementsNoRepeats(
+            RatingTaskActivitiesDutch.nonSocial['6LLH'],
+            numLLHActivities
+        );
+        const LLLActivities = selectNRandomElementsNoRepeats(
+            RatingTaskActivitiesDutch.nonSocial['1LLL'],
+            numLLLActivities
+        );
+        const AMBActivities = selectNRandomElementsNoRepeats(
+            RatingTaskActivitiesDutch.Ambiguous['9AMB'],
+            numAMBActivities
+        );
+
+        return shuffle([
+            ...HHHActivities,
+            ...HHLActivities,
+            ...HLHActivities,
+            ...HLLActivities,
+            ...LHHActivities,
+            ...LHLActivities,
+            ...LLHActivities,
+            ...LLLActivities,
+            ...AMBActivities,
+        ]);
+    }
+
+    private getRatingStimuliDutchActivityType(
+        activity: ITranslationText
+    ): 'social_activity' | 'non_social_activity' | 'ambiguous_activity' {
+        const socialActivities = [
+            ...RatingTaskActivitiesDutch.Social['7HHH'],
+            ...RatingTaskActivitiesDutch.Social['4HHL'],
+            ...RatingTaskActivitiesDutch.Social['8HLH'],
+            ...RatingTaskActivitiesDutch.Social['2HLL'],
+        ];
+        const nonSocialActivities = [
+            ...RatingTaskActivitiesDutch.nonSocial['5LHH'],
+            ...RatingTaskActivitiesDutch.nonSocial['3LHL'],
+            ...RatingTaskActivitiesDutch.nonSocial['6LLH'],
+            ...RatingTaskActivitiesDutch.nonSocial['1LLL'],
+        ];
+        const ambiguousActivities = [...RatingTaskActivitiesDutch.Ambiguous['9AMB']];
+
+        if (socialActivities.findIndex((x) => x.en === activity.en && x.nl === activity.nl) >= 0)
+            return 'social_activity';
+        if (nonSocialActivities.findIndex((x) => x.en === activity.en && x.nl === activity.nl) >= 0)
+            return 'non_social_activity';
+        if (ambiguousActivities.findIndex((x) => x.en === activity.en && x.nl === activity.nl) >= 0)
+            return 'ambiguous_activity';
+        throw new Error('Invalid activity');
+    }
+
+    generateRatingStimuliDutch(existingActivities: ITranslationText[]): RatingTaskStimuliDutch[] {
+        const shuffledActivities = shuffle(existingActivities);
+        const frequencyQuestion = 'How often do you typically engage in this activity?';
+        const ratingTaskStimuli: RatingTaskStimuliDutch[] = shuffledActivities.map((activity) => {
+            const questions = deepClone(RatingTaskQuestionListDutch);
+            const lastQuestion = questions.find((question) => question.question.en === frequencyQuestion);
+            const otherQuestions = questions.filter((question) => question.question.en !== frequencyQuestion);
+            if (!lastQuestion) throw new Error('Frequency question not found');
+            const orderedQuestions = [...shuffle(otherQuestions), lastQuestion];
+
+            return {
+                activity: activity,
+                type: this.getRatingStimuliDutchActivityType(activity),
+                questions: orderedQuestions.map((questionListItem) => ({
+                    question: questionListItem.question,
+                    isMultiPartQuestion: questionListItem.isMultiPartQuestion,
+                    legend: questionListItem.legend,
+                    followUpQuestion: questionListItem.followUpQuestion ?? undefined,
+                    followUpLegend: questionListItem.followUpLegend ?? undefined,
+                })),
+            };
+        });
+
+        return ratingTaskStimuli;
+    }
+
+    /**
+     * Builds 80 pairs from 40 activities.
+     * Set 1: a random neighbor cycle so each activity appears twice.
+     * Set 2: enough social vs non-social pairs to reach 35% of all 80 pairs;
+     * the remaining set 2 pairs are chosen at random.
+     */
+    generateChoiceStimuliDutch(activities: ITranslationText[]): ChoiceTaskStimulusDutch[] {
+        if (activities.length !== 40) {
+            throw new Error('Dutch choice stimuli require exactly 40 activities to generate 80 pairs');
+        }
+
+        const minMixedRatio = 0.35;
+        const pairCount = activities.length * 2;
+        const numMinMixedPairs = Math.ceil(pairCount * minMixedRatio);
+        const social: ITranslationText[] = [];
+        const nonSocial: ITranslationText[] = [];
+
+        activities.forEach((activity) => {
+            const type = this.getRatingStimuliDutchActivityType(activity);
+            if (type === 'social_activity') social.push(activity);
+            else if (type === 'non_social_activity') nonSocial.push(activity);
+        });
+
+        const maxPossibleMixedPairsUsedInFirstSet = Math.min(
+            activities.length,
+            social.length * 2,
+            nonSocial.length * 2
+        );
+        if (social.length * nonSocial.length - maxPossibleMixedPairsUsedInFirstSet < numMinMixedPairs) {
+            throw new Error(
+                `Cannot create ${numMinMixedPairs} social vs non-social pairs from ${social.length} social and ${nonSocial.length} non-social activities`
+            );
+        }
+
+        // create first set of pairs from cycle - satisfies that all activities appear twice
+        const shuffledActivities = shuffle(activities);
+        const firstSet = shuffledActivities.map((activity, index) =>
+            this.toDutchChoicePair(activity, shuffledActivities[(index + 1) % shuffledActivities.length])
+        );
+        // create second set of pairs - satisfies that 35% of all pairs are social vs non-social
+        const usedPairKeys = new Set(
+            firstSet.map((pair) => this.getDutchPairKey(pair.firstActivity, pair.secondActivity))
+        );
+        const secondSet = this.createDutchSecondSetChoicePairs(
+            activities,
+            social,
+            nonSocial,
+            usedPairKeys,
+            numMinMixedPairs,
+            40
+        );
+
+        return shuffle([...firstSet, ...secondSet]);
+    }
+
+    private createDutchSecondSetChoicePairs(
+        activities: ITranslationText[],
+        social: ITranslationText[],
+        nonSocial: ITranslationText[],
+        usedPairKeys: Set<string>,
+        mixedPairCount: number,
+        setSize: number
+    ): ChoiceTaskStimulusDutch[] {
+        const unusedMixedPairs: [ITranslationText, ITranslationText][] = [];
+        social.forEach((socialActivity) => {
+            nonSocial.forEach((nonSocialActivity) => {
+                if (!usedPairKeys.has(this.getDutchPairKey(socialActivity, nonSocialActivity))) {
+                    unusedMixedPairs.push([socialActivity, nonSocialActivity]);
+                }
+            });
+        });
+
+        const selectedMixed = shuffle(unusedMixedPairs).slice(0, mixedPairCount);
+        selectedMixed.forEach(([first, second]) => usedPairKeys.add(this.getDutchPairKey(first, second)));
+
+        const unusedRandomPairs: [ITranslationText, ITranslationText][] = [];
+        for (let i = 0; i < activities.length; i++) {
+            for (let j = i + 1; j < activities.length; j++) {
+                if (!usedPairKeys.has(this.getDutchPairKey(activities[i], activities[j]))) {
+                    unusedRandomPairs.push([activities[i], activities[j]]);
+                }
+            }
+        }
+
+        const remainderCount = setSize - mixedPairCount;
+        const selectedRandom = shuffle(unusedRandomPairs).slice(0, remainderCount);
+        return [...selectedMixed, ...selectedRandom].map(([first, second]) => this.toDutchChoicePair(first, second));
+    }
+
+    private toDutchChoicePair(
+        firstActivity: ITranslationText,
+        secondActivity: ITranslationText
+    ): ChoiceTaskStimulusDutch {
+        if (getRandomNumber(0, 2) === 1) {
+            [firstActivity, secondActivity] = [secondActivity, firstActivity];
+        }
+
+        return {
+            firstActivity,
+            secondActivity,
+        };
+    }
+
+    private getDutchPairKey(first: ITranslationText, second: ITranslationText): string {
+        return [`${first.en}::${first.nl}`, `${second.en}::${second.nl}`].sort().join('|');
     }
 
     // start of oddball data generation
