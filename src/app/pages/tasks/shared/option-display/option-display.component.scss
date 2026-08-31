@@ -19,25 +19,25 @@
 
     @include for-small-device-only {
         font-size: 1rem;
-        max-width: 200px;
-        min-height: 100px;
+        max-width: 180px;
+        min-height: 72px;
     }
 
     @include for-small-desktop-only {
-        font-size: 1.5rem;
+        font-size: 1.15rem;
         max-width: 200px;
-        min-height: 150px;
+        min-height: 80px;
     }
 
     @include for-desktop-up {
-        font-size: 1.8rem;
-        max-width: 250px;
-        min-height: 150px;
+        font-size: 1.25rem;
+        max-width: 220px;
+        min-height: 88px;
     }
 
     @include for-large-desktop-up {
-        font-size: 2rem;
-        max-width: 300px;
-        min-height: 200px;
+        font-size: 1.35rem;
+        max-width: 240px;
+        min-height: 96px;
     }
 }

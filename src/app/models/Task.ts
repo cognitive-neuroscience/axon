@@ -1,7 +1,7 @@
 import { SharplabTaskConfig } from '../pages/tasks/task-playables/task-player/task-player.component';
 import { Platform, TaskType } from './enums';
 
-export class Task {
+export interface Task {
     id: number;
     fromPlatform: Platform;
     taskType: TaskType;

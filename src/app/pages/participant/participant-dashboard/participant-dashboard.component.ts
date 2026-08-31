@@ -4,8 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, finalize, map, mergeMap, take, tap } from 'rxjs/operators';
 import { SupportedLangs } from 'src/app/models/enums';
+import { getOrganizationSupportedLangs, shouldPromptForOrganizationLang } from 'src/app/models/Organization';
 import { Study } from 'src/app/models/Study';
 import { StudyUser } from 'src/app/models/StudyUser';
+import { User } from 'src/app/models/User';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { SessionStorageService } from 'src/app/services/sessionStorage.service';
@@ -14,6 +16,7 @@ import { StudyUserService } from 'src/app/services/study-user.service';
 import { StudyService } from 'src/app/services/study.service';
 import { UserStateService } from 'src/app/services/user-state-service';
 import { UserService } from 'src/app/services/user.service';
+import { LocalStorageService } from 'src/app/services/localStorageService.service';
 import { LanguageDialogComponent } from './language-dialog/language-dialog.component';
 
 @Component({
@@ -35,7 +38,8 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
         private userStateService: UserStateService,
         private authService: AuthService,
         private snackbarService: SnackbarService,
-        private studyService: StudyService
+        private studyService: StudyService,
+        private localStorageService: LocalStorageService
     ) {}
 
     private shouldReroute(studyConfig: Study['config'], studyUsers: StudyUser[]): boolean {
@@ -50,7 +54,8 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        let studyId = parseInt(this.sessionStorageService.getStudyIdToRegisterInSessionStorage());
+        const studyIdFromStorage = this.sessionStorageService.getStudyIdToRegisterInSessionStorage();
+        let studyId = studyIdFromStorage ? parseInt(studyIdFromStorage) : NaN;
         this.isLoading = true;
         this.loaderService.showLoader();
 
@@ -63,30 +68,39 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
                     .pipe(map((studyUsers) => ({ study, studyUsers })));
             }),
             tap(({ study, studyUsers }) => {
-                if (this.shouldReroute(study.body.config, studyUsers)) {
-                    studyId = study.body.config.rerouteConfig.rerouteTo;
+                const studyBody = study.body;
+                if (!studyBody || !studyUsers) return;
+                if (this.shouldReroute(studyBody.config, studyUsers)) {
+                    const rerouteTo = studyBody.config?.rerouteConfig?.rerouteTo;
+                    if (rerouteTo) studyId = rerouteTo;
                 }
             })
         );
 
-        sub = (studyId ? redirectSub : of(null))
+        const init$: Observable<unknown> = studyId ? redirectSub : of(null);
+
+        sub = init$
             .pipe(
                 mergeMap(() => this.userStateService.getOrUpdateUserState(true)),
-                mergeMap((res) => {
+                mergeMap((res: User | null) => {
                     this.loaderService.hideLoader();
-                    return res?.lang === SupportedLangs.NONE
-                        ? this.openLanguageDialog().pipe(
-                              mergeMap((lang) => this.userService.updateUser({ ...res, lang }))
-                          )
-                        : of(res);
+                    const preferredLang = this.localStorageService.getPreferredLangInLocalStorage();
+                    if (!res || !shouldPromptForOrganizationLang(res.lang, preferredLang, res.organization)) {
+                        return of(res);
+                    }
+                    return this.openLanguageDialog(getOrganizationSupportedLangs(res.organization)).pipe(
+                        mergeMap((lang) => this.userService.updateUser({ ...res, lang }))
+                    );
                 }),
-                tap((user) => {
+                tap((user: User | null) => {
                     this.translateService.use(user?.lang ? user.lang : SupportedLangs.EN);
                     this.loaderService.showLoader();
                 }),
-                mergeMap((user) => {
+                mergeMap((user: User | null) => {
                     // register the participant for the given study saved in session storage if it exists
-                    return studyId ? this.studyUserService.registerParticipantForStudy(user, studyId) : of(null);
+                    return studyId && user
+                        ? this.studyUserService.registerParticipantForStudy(user, studyId)
+                        : of(null);
                 }),
                 // force update as sometimes the retrieved studyUsers value is cached elsewhere
                 // and does not reflect our recent call to registerParticipantForStudy
@@ -112,11 +126,8 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
                 })
             )
             .subscribe(
-                (_res) => {
-                    // noop
-                    _res;
-                },
-                (err) => {
+                () => {},
+                (err: { status?: number }) => {
                     if (err.status === 401) {
                         this.snackbarService.openErrorSnackbar('forbidden');
                         this.authService.logout(false);
@@ -129,8 +140,11 @@ export class ParticipantDashboardComponent implements OnInit, OnDestroy {
         this.subscriptions.push(sub);
     }
 
-    openLanguageDialog(): Observable<SupportedLangs> {
-        return this.dialog.open(LanguageDialogComponent, { disableClose: true }).afterClosed().pipe(take(1));
+    openLanguageDialog(supportedLangs: SupportedLangs[]): Observable<SupportedLangs> {
+        return this.dialog
+            .open(LanguageDialogComponent, { disableClose: true, data: { supportedLangs } })
+            .afterClosed()
+            .pipe(take(1));
     }
 
     ngOnDestroy(): void {

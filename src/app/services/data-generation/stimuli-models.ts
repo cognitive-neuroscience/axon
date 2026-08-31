@@ -9,6 +9,25 @@ export interface RatingTaskStimuli {
     }[];
 }
 
+export interface RatingTaskStimuliDutch {
+    activity: ITranslationText;
+    type: 'social_activity' | 'non_social_activity' | 'ambiguous_activity';
+    questions: {
+        question: ITranslationText;
+        // True only for the Yes/No gate. Follow-up questions must remain false so they
+        // are not treated as another gate (which would insert another follow-up).
+        isMultiPartQuestion: boolean;
+        legend: ITranslationText[]; // automatically low to high endorsement by default
+        followUpQuestion?: ITranslationText;
+        followUpLegend?: ITranslationText[];
+    }[];
+}
+
+export interface ChoiceTaskStimulusDutch {
+    firstActivity: ITranslationText;
+    secondActivity: ITranslationText;
+}
+
 export interface ChoiceTaskStimulus {
     firstActivity: ITranslationText;
     secondActivity: ITranslationText;

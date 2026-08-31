@@ -14,7 +14,7 @@ import { TimerService } from 'src/app/services/timer.service';
 import { getRandomNumber, wait } from 'src/app/common/commonMethods';
 import { environment } from 'src/environments/environment';
 
-class ChoiceTask extends BaseParticipantData {
+interface ChoiceTask extends BaseParticipantData {
     activityLeft: string;
     activityRight: string;
     userAnswer: string;

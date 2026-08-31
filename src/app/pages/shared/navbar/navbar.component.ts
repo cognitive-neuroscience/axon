@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { mergeMap } from 'rxjs/operators';
 import { Role, SupportedLangs } from 'src/app/models/enums';
-import { Organization } from 'src/app/models/Organization';
+import { getOrganizationSupportedLangs, Organization } from 'src/app/models/Organization';
 import { AuthService } from 'src/app/services/auth.service';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
@@ -73,11 +73,23 @@ export class NavbarComponent implements OnInit {
         private userStateService: UserStateService
     ) {}
 
+    private readonly allLanguageOptions: { code: SupportedLangs; label: string }[] = [
+        { code: SupportedLangs.EN, label: 'English' },
+        { code: SupportedLangs.FR, label: 'Français' },
+        { code: SupportedLangs.NL, label: 'Nederlands' },
+    ];
+
+    get languageOptions(): { code: SupportedLangs; label: string }[] {
+        const supportedLangs = getOrganizationSupportedLangs(this.organization);
+        return this.allLanguageOptions.filter((option) => supportedLangs.includes(option.code));
+    }
+
     ngOnInit(): void {}
 
-    handleLanguageSwitch() {
+    handleLanguageSelect(newLang: SupportedLangs) {
+        if (newLang === this.currentLang) return;
+
         this.loaderService.showLoader();
-        const newLang = this.currentLang === SupportedLangs.FR ? SupportedLangs.EN : SupportedLangs.FR;
 
         this.userStateService
             .getOrUpdateUserState()
@@ -101,6 +113,10 @@ export class NavbarComponent implements OnInit {
 
     get currentLang(): string {
         return this.translateService.currentLang;
+    }
+
+    get currentLanguageLabel(): string {
+        return this.languageOptions.find((option) => option.code === this.currentLang)?.label ?? 'English';
     }
 
     logout() {

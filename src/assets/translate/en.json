@@ -72,5 +72,41 @@
         "skip": "Skip",
         "confirmation-dialog-title": "Are you sure you want to skip this task?",
         "confirmation-dialog-message": "Once you skip, you will be unable to do this task again."
+    },
+    "landing-page": {
+        "contact-message": "For any questions/concerns/password problems, please contact",
+        "login": {
+            "welcome": "Welcome to the Sharp Lab",
+            "email": "Email",
+            "password": "Password",
+            "forgot-password": "Forgot your password?",
+            "login-button": "Log in",
+            "register-button": "Register"
+        },
+        "register": {
+            "welcome": "Welcome to the Sharp Lab",
+            "email": "Email",
+            "confirm-email": "Confirm email",
+            "password": "Password",
+            "confirm-password": "Confirm password",
+            "already-registered": "Are you already registered? Log in",
+            "register-button": "Register"
+        },
+        "reset-password": {
+            "title": "Reset your password",
+            "instructions": "Enter your email, the temporary password you received, and your new password below",
+            "email": "Email",
+            "temporary-password": "Temporary password",
+            "new-password": "New password",
+            "confirm-new-password": "Confirm new password",
+            "reset-button": "Reset"
+        },
+        "forgot-password": {
+            "title": "Forgot your password?",
+            "instructions": "Enter your email address below to reset your password. You may need to check your spam folder",
+            "email": "Email",
+            "submit-button": "Submit",
+            "cancel": "Cancel"
+        }
     }
 }

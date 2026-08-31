@@ -22,10 +22,19 @@ export class ConsentDialogComponent implements OnInit {
     ngOnInit(): void {}
 
     onEmitConsent($event: Record<string, string> | null) {
-        const message =
-            this.translateService.currentLang === SupportedLangs.EN
-                ? 'Are you sure you want to accept?'
-                : 'Êtes-vous certain(e) de vouloir accepter?';
+        let message = '';
+        switch (this.translateService.currentLang) {
+            case SupportedLangs.FR:
+                message = 'Êtes-vous certain(e) de vouloir accepter?';
+                break;
+            case SupportedLangs.NL:
+                message = 'Weet je zeker dat je deze toestemming wilt accepter?';
+                break;
+            case SupportedLangs.EN:
+            default:
+                message = 'Are you sure you want to accept?';
+                break;
+        }
 
         if ($event) {
             this.confirmationService

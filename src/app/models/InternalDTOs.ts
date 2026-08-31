@@ -1,31 +1,19 @@
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackbarType, TaskType } from './enums';
 
-export class ConfirmationDialogMessage {
+export interface ConfirmationDialogMessage {
     message: string;
-
-    warning: string;
-
-    constructor(msg: string, warning?: string) {
-        this.message = msg;
-        this.warning = warning;
-    }
+    warning?: string;
 }
 
-export class SnackbarData {
+export interface SnackbarData {
     message: string[] | string;
-    action: string;
+    action?: string;
     type: SnackbarType;
-    snackbarRef: MatSnackBar;
-
-    constructor(msg: string[] | string, act: string, type: SnackbarType) {
-        this.message = msg;
-        this.action = act;
-        this.type = type;
-    }
+    snackbarRef?: MatSnackBar;
 }
 
-export class EmbeddedPageData {
+export interface EmbeddedPageData {
     ID: string;
     taskType: TaskType;
 }
@@ -96,10 +84,11 @@ export enum UserResponse {
 
 export interface ITranslationText {
     en: string;
-    fr: string;
+    fr?: string;
+    nl?: string;
 }
 
-export class NullTime {
+export interface NullTime {
     Valid: boolean;
     Time: string;
 }

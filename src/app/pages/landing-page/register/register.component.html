@@ -1,19 +1,18 @@
 <div class="card-padding">
-    <h1 style="color: #3f51b5; margin: 0">Welcome to the Sharp Lab</h1>
-    <h1 style="color: gray">Bienvenue au Labo Sharp</h1>
+    <h1 style="color: #3f51b5">{{ 'landing-page.register.welcome' | translate }}</h1>
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>EMAIL / COURRIEL</mat-label>
+            <mat-label>{{ 'landing-page.register.email' | translate }}</mat-label>
             <input matInput formControlName="email" type="email" placeholder="example@domain.com" email required />
-            <mat-error *ngIf="registerForm.get('email')?.hasError('required')"
-                >This is required / Ceci est requis</mat-error
-            >
-            <mat-error *ngIf="registerForm.get('email')?.hasError('email')"
-                >This must be a valid email / Ceci doit être un e-mail valide</mat-error
-            >
+            <mat-error *ngIf="registerForm.get('email')?.hasError('required')">{{
+                'errorMessages.required' | translate
+            }}</mat-error>
+            <mat-error *ngIf="registerForm.get('email')?.hasError('email')">{{
+                'errorMessages.emailInvalid' | translate
+            }}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>CONFIRM EMAIL / CONFIRMEZ VOTRE COURRIEL</mat-label>
+            <mat-label>{{ 'landing-page.register.confirm-email' | translate }}</mat-label>
             <input
                 matInput
                 formControlName="confirmEmail"
@@ -22,18 +21,18 @@
                 email
                 required
             />
-            <mat-error *ngIf="registerForm.get('confirmEmail')?.hasError('required')"
-                >This is required / Ceci est requis</mat-error
-            >
-            <mat-error *ngIf="registerForm.get('confirmEmail')?.hasError('email')"
-                >This must be a valid email / Ceci doit être un e-mail valide</mat-error
-            >
-            <mat-error *ngIf="registerForm.hasError('emailMatchErr')"
-                >Emails must match / Les e-mails doivent correspondre</mat-error
-            >
+            <mat-error *ngIf="registerForm.get('confirmEmail')?.hasError('required')">{{
+                'errorMessages.required' | translate
+            }}</mat-error>
+            <mat-error *ngIf="registerForm.get('confirmEmail')?.hasError('email')">{{
+                'errorMessages.emailInvalid' | translate
+            }}</mat-error>
+            <mat-error *ngIf="registerForm.hasError('emailMatchErr')">{{
+                'errorMessages.emailsMustMatch' | translate
+            }}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>PASSWORD / MOT DE PASSE</mat-label>
+            <mat-label>{{ 'landing-page.register.password' | translate }}</mat-label>
             <mat-icon style="cursor: pointer" (click)="togglePasswordVisibility()" matSuffix>{{
                 passwordIsVisible ? 'visibility' : 'visibility_off'
             }}</mat-icon>
@@ -45,12 +44,12 @@
                 placeholder="my-strong-password"
                 required
             />
-            <mat-error *ngIf="registerForm.get('password')?.hasError('required')"
-                >This is required / Ceci est requis</mat-error
-            >
+            <mat-error *ngIf="registerForm.get('password')?.hasError('required')">{{
+                'errorMessages.required' | translate
+            }}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>CONFIRM PASSWORD / CONFIRMEZ VOTRE MOT DE PASSE</mat-label>
+            <mat-label>{{ 'landing-page.register.confirm-password' | translate }}</mat-label>
             <mat-icon style="cursor: pointer" (click)="togglePasswordVisibility()" matSuffix>{{
                 passwordIsVisible ? 'visibility' : 'visibility_off'
             }}</mat-icon>
@@ -61,20 +60,19 @@
                 placeholder="my-strong-password"
                 required
             />
-            <mat-error *ngIf="registerForm.get('confirmPassword').hasError('required')"
-                >This is required / Ceci est requis</mat-error
-            >
-            <mat-error *ngIf="registerForm.hasError('passwordMatchErr')"
-                >Passwords must match / Les mots de passe doivent correspondre
-            </mat-error>
+            <mat-error *ngIf="registerForm.get('confirmPassword').hasError('required')">{{
+                'errorMessages.required' | translate
+            }}</mat-error>
+            <mat-error *ngIf="registerForm.hasError('passwordMatchErr')">{{
+                'errorMessages.passwordsMustMatch' | translate
+            }}</mat-error>
         </mat-form-field>
         <a
             class="btn-block mb-3 underline-on-hover"
             style="color: #3f51b5; font-size: 1.2rem; line-height: normal"
             (click)="navigateToLoginPage()"
         >
-            Are you already registered? Log in <br />
-            <span style="color: gray"> Êtes-vous déjà enregistré? Connectez-vous </span>
+            {{ 'landing-page.register.already-registered' | translate }}
         </a>
         <div matRipple matRippleColor="#ffffff33">
             <button
@@ -83,8 +81,9 @@
                 mat-flat-button
                 color="primary"
                 [disabled]="!registerForm.valid"
+                style="text-transform: uppercase"
             >
-                REGISTER / ENREGISTREZ-VOUS
+                {{ 'landing-page.register.register-button' | translate }}
             </button>
         </div>
     </form>

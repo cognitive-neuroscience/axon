@@ -4,7 +4,7 @@ import { StudyTask } from './StudyTask';
 import { Task } from './Task';
 import { User } from './User';
 
-export class ReroutingConfig {
+export interface ReroutingConfig {
     mustCompleteOneOf: {
         studyId: number;
         currentTaskIndex: number;
@@ -12,7 +12,7 @@ export class ReroutingConfig {
     rerouteTo: number;
 }
 
-export class Study {
+export interface Study {
     id: number;
     createdAt: string;
     deletedAt: NullTime;

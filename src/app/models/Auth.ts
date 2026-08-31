@@ -1,4 +1,4 @@
-export class HttpStatus {
+export interface HttpStatus {
     status: number;
     message: string;
 }

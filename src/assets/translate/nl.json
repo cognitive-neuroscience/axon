@@ -1,0 +1,112 @@
+{
+    "participant-studies-page": {
+        "greeting": "Welkom",
+        "introduction": "Dit is het online onderzoeksplatform van Dr. Sharp aan McGill University.",
+        "descriptor": "Hieronder vindt u de studie (of studies) waarvoor u zich heeft geregistreerd.",
+        "instruction": "Klik op de rode knop om het toestemmingsformulier te bekijken. Nadat u toestemming heeft gegeven, kunt u op de blauwe knop klikken om de studie te starten (of voort te zetten).",
+        "progress-descriptor": "De voortgangsbalk laat zien hoe ver u bent.",
+        "warning": "Zodra u een spel heeft afgerond, klikt u op \"NEXT\" totdat u bij het begin van het volgende spel bent. Als u dit niet doet, moet u de taak opnieuw starten.",
+        "title": "Uw studies",
+        "consent-warning": "U moet het toestemmingsformulier hieronder lezen en accepteren voordat u de studie start",
+        "progress-message": {
+            "complete": "studie voltooid",
+            "status": "voltooid",
+            "in-progress": "studie bezig"
+        },
+        "contact-us-message": "Vragen? Stuur ons een e-mail op",
+        "buttons": {
+            "start-study": "Start studie",
+            "continue-study": "Ga verder met studie",
+            "view-consent": "Bekijk toestemming",
+            "study-not-started": "Studie is gesloten",
+            "study-completed": "U heeft deze studie voltooid"
+        }
+    },
+    "dialog": {
+        "buttons": {
+            "continue": "Doorgaan",
+            "cancel": "Annuleren"
+        }
+    },
+    "navbar": {
+        "studies": "Studies",
+        "tooltip": {
+            "logout": "uitloggen"
+        },
+        "title": "Dashboard"
+    },
+    "tasks": {
+        "feedback": {
+            "correct": "Juist",
+            "incorrect": "Onjuist",
+            "too-slow": "Te langzaam",
+            "no-response": "Geen antwoord",
+            "you-won": "Je hebt gewonnen!"
+        },
+        "finger-tapping": {
+            "begin-tapping": "Begin met tikken",
+            "continue-tapping": "Ga door met tikken"
+        },
+        "response": {
+            "yes": "Ja",
+            "no": "Nee"
+        }
+    },
+    "errorMessages": {
+        "required": "Dit is verplicht",
+        "passwordsMustMatch": "Wachtwoorden moeten overeenkomen",
+        "emailInvalid": "Dit moet een geldig e-mailadres zijn",
+        "emailsMustMatch": "E-mailadressen moeten overeenkomen",
+        "unansweredQuestions": "Er zijn nog ongeldige of onbeantwoorde vragen hierboven. Controleer uw antwoorden om te zorgen dat u elke vraag heeft beantwoord",
+        "minValidation": "Moet hoger zijn dan",
+        "maxValidation": "Moet lager zijn dan",
+        "studyNotAvailable": "Deze studie is niet beschikbaar"
+    },
+    "buttons": {
+        "submit": "verzenden",
+        "next": "Volgende",
+        "start": "Start",
+        "previous": "Vorige"
+    },
+    "skip-button": {
+        "skip": "Overslaan",
+        "confirmation-dialog-title": "Weet u zeker dat u deze taak wilt overslaan?",
+        "confirmation-dialog-message": "Als u overslaat, kunt u deze taak niet opnieuw doen."
+    },
+    "landing-page": {
+        "contact-message": "Voor vragen, zorgen of problemen met uw wachtwoord, neem contact op met",
+        "login": {
+            "welcome": "Welkom bij het Sharp Lab",
+            "email": "E-mail",
+            "password": "Wachtwoord",
+            "forgot-password": "Wachtwoord vergeten?",
+            "login-button": "Inloggen",
+            "register-button": "Registreren"
+        },
+        "register": {
+            "welcome": "Welkom bij het Sharp Lab",
+            "email": "E-mail",
+            "confirm-email": "Bevestig e-mail",
+            "password": "Wachtwoord",
+            "confirm-password": "Bevestig wachtwoord",
+            "already-registered": "Bent u al geregistreerd? Log in",
+            "register-button": "Registreren"
+        },
+        "reset-password": {
+            "title": "Wachtwoord opnieuw instellen",
+            "instructions": "Voer hieronder uw e-mailadres, het tijdelijke wachtwoord dat u heeft ontvangen, en uw nieuwe wachtwoord in",
+            "email": "E-mail",
+            "temporary-password": "Tijdelijk wachtwoord",
+            "new-password": "Nieuw wachtwoord",
+            "confirm-new-password": "Bevestig nieuw wachtwoord",
+            "reset-button": "Opnieuw instellen"
+        },
+        "forgot-password": {
+            "title": "Wachtwoord vergeten?",
+            "instructions": "Voer hieronder uw e-mailadres in om uw wachtwoord opnieuw in te stellen. Controleer eventueel ook uw spammap",
+            "email": "E-mail",
+            "submit-button": "Verzenden",
+            "cancel": "Annuleren"
+        }
+    }
+}

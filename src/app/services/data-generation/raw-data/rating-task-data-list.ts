@@ -700,3 +700,719 @@ export const RatingTaskQuestionList = {
         },
     ],
 };
+
+export const RatingTaskActivitiesDutch = {
+    Social: {
+        '7HHH': [
+            {
+                en: 'Cook a meal',
+                nl: 'Een maaltijd koken',
+            },
+            {
+                en: 'Play team sports',
+                nl: 'Een teamsport doen',
+            },
+            {
+                en: 'Call a friend/family',
+                nl: 'Een vriend/familielid opbellen',
+            },
+            {
+                en: 'Attend a family gathering',
+                nl: 'Een familiebijeenkomst bijwonen',
+            },
+            {
+                en: 'Take a step towards picking up a new hobby',
+                nl: 'Een stap zetten in het oppikken van een nieuwe hobby',
+            },
+            {
+                en: 'Play a game with others',
+                nl: 'Samen een spelletje spelen',
+            },
+            {
+                en: 'Chat with a neighbour',
+                nl: 'Kletsen met een buur',
+            },
+            {
+                en: 'Go to the art gallery or museum',
+                nl: 'Naar een kunstgalerie of museum gaan',
+            },
+            {
+                en: 'Go out with a friend',
+                nl: 'Op stap gaan met een vriend',
+            },
+            {
+                en: 'Attend a religious service',
+                nl: 'Religieuze activiteiten',
+            },
+            {
+                en: 'Attend an exercise class',
+                nl: 'Sportles',
+            },
+            {
+                en: 'Go to a restaurant or café',
+                nl: 'Uiteten in een restaurant/café',
+            },
+            {
+                en: 'Do volunteer work',
+                nl: 'Vrijwilligerswerk doen',
+            },
+            {
+                en: 'Sing',
+                nl: 'Zingen',
+            },
+        ],
+        '4HHL': [
+            {
+                en: 'Have visitors over',
+                nl: 'Bezoek hebben',
+            },
+            {
+                en: 'Have drinks with others',
+                nl: 'Borrelen',
+            },
+            {
+                en: 'Celebrate a special occasion',
+                nl: 'Een feest vieren',
+            },
+            {
+                en: 'Attend a lecture',
+                nl: 'Een lezing bijwonen',
+            },
+            {
+                en: 'Go for a walk outside',
+                nl: 'Een wandeling maken',
+            },
+            {
+                en: 'Eating',
+                nl: 'Eten',
+            },
+            {
+                en: 'Physical therapy',
+                nl: 'Fysiotherapie',
+            },
+            {
+                en: 'Babysit',
+                nl: 'Oppassen op een kind',
+            },
+            {
+                en: 'Crafting',
+                nl: 'Knutselen',
+            },
+            {
+                en: 'Make music',
+                nl: 'Muziek maken',
+            },
+            {
+                en: 'Go to the movies or theater',
+                nl: 'Naar het theater of de bioscoop gaan',
+            },
+            {
+                en: 'Pick something up at the bakery',
+                nl: 'Naar de bakker gaan',
+            },
+            {
+                en: 'Go to the market',
+                nl: 'Naar de markt gaan',
+            },
+            {
+                en: 'Go to the park',
+                nl: 'Naar het park gaan',
+            },
+            {
+                en: 'Visit someone',
+                nl: 'Op bezoek zijn',
+            },
+        ],
+        '8HLH': [
+            {
+                en: 'Meet with your accountant or financial planner',
+                nl: 'Afspreken met je boekhouder of financieel adviseur',
+            },
+            {
+                en: 'Bake a treat',
+                nl: 'Een lekkernij bakken',
+            },
+            {
+                en: 'Schedule an appointment',
+                nl: 'Een afspraak inplannen',
+            },
+            {
+                en: 'Write a thank you note',
+                nl: 'Een bedankbriefje schrijven',
+            },
+            {
+                en: 'Take a class or workshop',
+                nl: 'Een cursus of workshop volgen',
+            },
+            {
+                en: 'Go for a drive',
+                nl: 'Een eindje rijden',
+            },
+            {
+                en: 'Buy birthday presents',
+                nl: 'Een verjaardagscadeau kopen',
+            },
+            {
+                en: 'Help someone',
+                nl: 'Iemand helpen',
+            },
+            {
+                en: 'Go shopping for clothes',
+                nl: 'Kleding winkelen',
+            },
+            {
+                en: 'Get a haircut',
+                nl: 'Naar de kapper gaan',
+            },
+            {
+                en: 'Go to the bank',
+                nl: 'Naar de bank gaan',
+            },
+            {
+                en: 'Go to a sports game',
+                nl: 'Naar een sportwedstrijd gaan',
+            },
+        ],
+        '2HLL': [
+            {
+                en: 'Do the groceries',
+                nl: 'Boodschappen doen',
+            },
+            {
+                en: 'Respond to a text message',
+                nl: 'Een berichtje beantwoorden',
+            },
+            {
+                en: 'Order in food',
+                nl: 'Eten bestellen',
+            },
+            {
+                en: 'Go to the liquor store',
+                nl: 'Naar de slijterij gaan',
+            },
+        ],
+    },
+    nonSocial: {
+        '5LHH': [
+            {
+                en: 'Take a shower',
+                nl: 'Douchen',
+            },
+            {
+                en: 'Choose a movie',
+                nl: 'Een film uitkiezen om te kijken',
+            },
+            {
+                en: 'Prepare a healthy snack',
+                nl: 'Een gezond tussendoortje klaarmaken',
+            },
+            {
+                en: 'Play a game alone',
+                nl: 'In je eentje een spel spelen',
+            },
+            {
+                en: 'Study/read up on a topic of interest',
+                nl: 'Studeren/over een interessant onderwerp lezen',
+            },
+        ],
+        '3LHL': [
+            {
+                en: 'Get dressed',
+                nl: 'Aankleden',
+            },
+            {
+                en: 'Take a nap',
+                nl: 'Een dutje doen',
+            },
+            {
+                en: 'Take care of pets',
+                nl: 'Huisdieren verzorgen',
+            },
+            {
+                en: 'Take a bath',
+                nl: 'In bad gaan',
+            },
+            {
+                en: 'Lay in bed',
+                nl: 'In bed liggen',
+            },
+            {
+                en: 'Make lunch',
+                nl: 'Lunch maken',
+            },
+            {
+                en: 'Listen to a radio show or podcast',
+                nl: 'Naar de radio of een podcast luisteren',
+            },
+            {
+                en: 'Listen to music',
+                nl: 'Naar muziek luisteren',
+            },
+            {
+                en: 'Browse the internet',
+                nl: 'Op het internet surfen',
+            },
+            {
+                en: 'Watch a TV show',
+                nl: 'TV kijken',
+            },
+        ],
+        '6LLH': [
+            {
+                en: 'Pay your utilities bills',
+                nl: 'Betalen van je GWL-rekeningen (gas, water en licht)',
+            },
+            {
+                en: 'Go get blood tests',
+                nl: 'Bloed laten prikken',
+            },
+            {
+                en: 'Go fill a prescription',
+                nl: 'Medicijnen halen bij de apotheek',
+            },
+            {
+                en: 'Look up a medical condition',
+                nl: 'Een medische aandoening opzoeken',
+            },
+            {
+                en: 'Tidy the house',
+                nl: 'Het huis opruimen',
+            },
+            {
+                en: 'Watch the news',
+                nl: 'Het nieuws kijken',
+            },
+            {
+                en: 'Write in a journal',
+                nl: 'In een dagboek schrijven',
+            },
+            {
+                en: 'Organize your files',
+                nl: 'Je bestanden ordenen',
+            },
+            {
+                en: 'Upgrade your computer or phone software',
+                nl: 'Je computer- of telefoonsoftware bijwerken',
+            },
+            {
+                en: 'Organize your photos',
+                nl: "Je foto's sorteren",
+            },
+            {
+                en: 'Organize your cupboards',
+                nl: 'Je keukenkastjes ordenen',
+            },
+            {
+                en: 'Organize your closet',
+                nl: 'Je kledingkast organiseren',
+            },
+            {
+                en: 'Replace a lightbulb or other small fix-up',
+                nl: 'Een lamp vervangen of andere kleine reparaties',
+            },
+            {
+                en: 'Do some stretching',
+                nl: 'Wat stretchoefeningen doen',
+            },
+        ],
+        '1LLL': [
+            {
+                en: 'Daydream',
+                nl: 'Dagdromen',
+            },
+            {
+                en: 'Take the garbage out',
+                nl: 'De vuilnis buiten zetten',
+            },
+            {
+                en: 'Do a load of laundry',
+                nl: 'De was doen',
+            },
+            {
+                en: 'Clean the tub',
+                nl: 'Het bad schoonmaken',
+            },
+            {
+                en: 'Change your sheets',
+                nl: 'Je beddengoed verschonen',
+            },
+            {
+                en: 'Floss your teeth',
+                nl: 'Je tanden flossen',
+            },
+            {
+                en: 'Take your medication',
+                nl: 'Medicijnen innemen',
+            },
+            {
+                en: 'Watch street life from your window',
+                nl: 'Naar de straat kijken uit het raam',
+            },
+            {
+                en: 'Do nothing in particular',
+                nl: 'Niets bijzonders doen',
+            },
+            {
+                en: 'Sort your mail',
+                nl: 'Post sorteren',
+            },
+            {
+                en: 'Vacuum the floor',
+                nl: 'De vloer stofzuigen',
+            },
+        ],
+    },
+    Ambiguous: {
+        '9AMB': [
+            {
+                en: 'Get gas',
+                nl: 'Tanken',
+            },
+            {
+                en: 'Rake the leaves',
+                nl: 'Bladeren harken',
+            },
+            {
+                en: 'Do the dishes',
+                nl: 'De afwas doen',
+            },
+            {
+                en: 'Get the car washed',
+                nl: 'De auto laten wassen',
+            },
+            {
+                en: 'Prepare the grocery list',
+                nl: 'Een boodschappenlijstje maken',
+            },
+            {
+                en: 'Fill out an online survey',
+                nl: 'Een online vragenlijst invullen',
+            },
+            {
+                en: 'Reply to emails',
+                nl: 'Emails beantwoorden',
+            },
+            {
+                en: 'Cycle',
+                nl: 'Fietsen',
+            },
+            {
+                en: 'Go to the zoo',
+                nl: 'Naar de dierentuin gaan',
+            },
+            {
+                en: 'Go to a concert',
+                nl: 'Naar een concert gaan',
+            },
+            {
+                en: 'Make a puzzle (jigsaw, crossword, sudoku)',
+                nl: 'Puzzelen (legpuzzel, kruiswoord, sudoku)',
+            },
+            {
+                en: 'Travel by public transport',
+                nl: 'Reizen met het OV',
+            },
+            {
+                en: 'Iron your dress clothes',
+                nl: 'Strijk je nette kleren',
+            },
+            {
+                en: 'Exercise at home',
+                nl: 'Thuis sporten',
+            },
+            {
+                en: 'Do garden work',
+                nl: 'Tuinieren',
+            },
+            {
+                en: 'Rest',
+                nl: 'Uitrusten',
+            },
+            {
+                en: 'Go for a swim',
+                nl: 'Zwemmen',
+            },
+        ],
+    },
+};
+
+// legend are ordered from low to high endorsement
+export const RatingTaskQuestionListDutch = [
+    // {
+    //     isMultiPartQuestion: false,
+    //     question: {
+    //         en: 'How much do you enjoy carrying out this activity?',
+    //         nl: 'In welke mate geniet je van het uitvoeren van deze activiteit?',
+    //     },
+    //     legend: [
+    //         {
+    //             en: "Really don't enjoy",
+    //             nl: 'Helemaal niet',
+    //         },
+    //         {
+    //             en: 'Really enjoy',
+    //             nl: 'Heel erg',
+    //         },
+    //     ],
+    // },
+    // {
+    //     isMultiPartQuestion: false,
+    //     question: {
+    //         en: 'How much do you feel you should do this activity?',
+    //         nl: 'In welke mate heb je het gevoel dat je deze activiteit zou moeten doen?',
+    //     },
+    //     legend: [
+    //         {
+    //             en: "Shouldn't",
+    //             nl: 'Ik zou het niet echt moeten doen',
+    //         },
+    //         {
+    //             en: 'Does not matter',
+    //             nl: 'Het maakt niet uit',
+    //         },
+    //         {
+    //             en: 'Should',
+    //             nl: 'Ik zou het echt moeten doen',
+    //         },
+    //     ],
+    // },
+    // {
+    //     isMultiPartQuestion: false,
+    //     question: {
+    //         en: 'How much do your loved ones think you should do this activity?',
+    //         nl: 'In welke mate vinden je dierbaren dat je deze activiteit zou moeten doen?',
+    //     },
+    //     legend: [
+    //         {
+    //             en: "Shouldn't",
+    //             nl: 'Ik zou het niet echt moeten doen',
+    //         },
+    //         {
+    //             en: 'Does not matter',
+    //             nl: 'Het maakt niet uit',
+    //         },
+    //         {
+    //             en: 'Should',
+    //             nl: 'Ik zou het echt moeten doen',
+    //         },
+    //     ],
+    // },
+    // {
+    //     question: {
+    //         isMultiPartQuestion: false,
+    //         en: 'How physically effortful does this activity feel to you?',
+    //         nl: 'Hoe lichamelijk inspannend voelt deze activiteit voor jou?',
+    //     },
+    //     legend: [
+    //         {
+    //             en: 'No effort',
+    //             nl: 'Helemaal niet inspannend',
+    //         },
+    //         {
+    //             en: 'Huge amount of effort',
+    //             nl: 'Heel inspannend',
+    //         },
+    //     ],
+    // },
+    // {
+    //     isMultiPartQuestion: false,
+    //     question: {
+    //         en: 'How mentally effortful does this activity feel to you?',
+    //         nl: 'Hoe mentaal inspannend voelt deze activiteit voor jou?',
+    //     },
+    //     legend: [
+    //         {
+    //             en: 'No effort',
+    //             nl: 'Helemaal niet inspannend',
+    //         },
+    //         {
+    //             en: 'Huge amount of effort',
+    //             nl: 'Heel inspannend',
+    //         },
+    //     ],
+    // },
+    // {
+    //     isMultiPartQuestion: false,
+    //     question: {
+    //         en: 'How much time does it usually take to do this activity?',
+    //         nl: 'Hoeveel tijd kost het je meestal om deze activiteit uit te voeren?',
+    //     },
+    //     legend: [
+    //         {
+    //             en: 'A few minutes',
+    //             nl: 'Een paar minuten',
+    //         },
+    //         {
+    //             en: '10 to 30 minutes',
+    //             nl: '10 tot 30 minuten',
+    //         },
+    //         {
+    //             en: 'Around an hour',
+    //             nl: 'Ongeveer een uur',
+    //         },
+    //         {
+    //             en: 'A few hours',
+    //             nl: 'Een paar uur',
+    //         },
+    //         {
+    //             en: 'Most of the day',
+    //             nl: 'Het grootste deel van de dag',
+    //         },
+    //     ],
+    // },
+    // {
+    //     isMultiPartQuestion: false,
+    //     question: {
+    //         en: 'How much money does it take to do this activity?',
+    //         nl: 'Hoeveel geld kost het je om deze activiteit uit te voeren?',
+    //     },
+    //     legend: [
+    //         {
+    //             en: 'Free',
+    //             nl: 'Gratis',
+    //         },
+    //         {
+    //             en: 'An average amount',
+    //             nl: 'Een gemiddelde hoeveelheid',
+    //         },
+    //         {
+    //             en: 'Cannot afford it',
+    //             nl: 'Meer dan ik me kan veroorloven',
+    //         },
+    //     ],
+    // },
+    // {
+    //     isMultiPartQuestion: false,
+    //     question: {
+    //         en: 'How negative do you feel when doing this activity?',
+    //         nl: 'Hoe negatief voel je je tijdens het uitvoeren van deze activiteit?',
+    //     },
+    //     legend: [
+    //         {
+    //             en: 'Not at all',
+    //             nl: 'Helemaal niet negatief',
+    //         },
+    //         {
+    //             en: 'Very much',
+    //             nl: 'Erg negatief',
+    //         },
+    //     ],
+    // },
+    // {
+    //     isMultiPartQuestion: false,
+    //     question: {
+    //         en: 'How hard is it to get started on this activity?',
+    //         nl: 'Hoe moeilijk vind je het om te beginnen met deze activiteit?',
+    //     },
+    //     legend: [
+    //         {
+    //             en: 'Not hard at all',
+    //             nl: 'Helemaal niet moeilijk',
+    //         },
+    //         {
+    //             en: 'Very hard',
+    //             nl: 'Erg moeilijk',
+    //         },
+    //     ],
+    // },
+    // {
+    //     isMultiPartQuestion: false,
+    //     question: {
+    //         en: 'To what extent is this activity part of your routine?',
+    //         nl: 'In welke mate is deze activiteit deel van je routine?',
+    //     },
+    //     legend: [
+    //         {
+    //             en: 'Not at all',
+    //             nl: 'Helemaal niet',
+    //         },
+    //         {
+    //             en: 'Very much so',
+    //             nl: 'Heel erg',
+    //         },
+    //     ],
+    // },
+    // {
+    //     isMultiPartQuestion: true,
+    //     question: {
+    //         en: 'Do you have a condition that affects your ability to complete this activity?',
+    //         nl: 'Heb je een aandoening die jouw vermogen om deze activiteit te voltooien beïnvloedt?',
+    //     },
+    //     legend: [
+    //         {
+    //             en: 'No',
+    //             nl: 'Nee',
+    //         },
+    //         {
+    //             en: 'Yes',
+    //             nl: 'Ja',
+    //         },
+    //     ],
+    //     followUpQuestion: {
+    //         en: 'How much does this condition affect your ability to complete this activity?',
+    //         nl: 'In welke mate beïnvloedt deze aandoening jouw vermogen om deze activiteit te voltooien?',
+    //     },
+    //     followUpLegend: [
+    //         {
+    //             en: 'Very slightly / Not applicable',
+    //             nl: 'Heel minimaal / Niet van toepassing',
+    //         },
+    //         {
+    //             en: 'A lot (I cannot do it)',
+    //             nl: 'Heel erg (Ik kan het niet doen)',
+    //         },
+    //     ],
+    // },
+    // {
+    //     isMultiPartQuestion: false,
+    //     question: {
+    //         en: 'How much does this activity help you feel closer or connected to others?',
+    //         nl: 'In welke mate helpt deze activiteit je om je dichterbij of meer verbonden met anderen te voelen?',
+    //     },
+    //     legend: [
+    //         {
+    //             en: 'Not at all',
+    //             nl: 'Helemaal niet',
+    //         },
+    //         {
+    //             en: 'A lot',
+    //             nl: 'Heel erg',
+    //         },
+    //     ],
+    // },
+    {
+        isMultiPartQuestion: false,
+        question: {
+            en: 'How often do you typically engage in this activity?',
+            nl: 'Hoe vaak doe je deze activiteit normaal gesproken?',
+        },
+        legend: [
+            {
+                en: 'Never',
+                nl: 'Nooit',
+            },
+            {
+                en: 'A few times in my lifetime',
+                nl: 'Een paar keer in mijn leven',
+            },
+            {
+                en: 'A few times per year',
+                nl: 'Een paar keer per jaar',
+            },
+            {
+                en: 'Monthly',
+                nl: 'Maandelijks',
+            },
+            {
+                en: 'Weekly',
+                nl: 'Wekelijks',
+            },
+            {
+                en: 'Daily',
+                nl: 'Dagelijks',
+            },
+        ],
+        followUpQuestion: undefined,
+        followUpLegend: undefined,
+    },
+];

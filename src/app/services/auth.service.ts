@@ -55,11 +55,20 @@ export class AuthService {
             .subscribe(
                 () => {
                     if (showLogoutMessage) {
-                        this.snackbarService.openSuccessSnackbar(
-                            this.translateService.currentLang === SupportedLangs.FR
-                                ? 'Déconnecté'
-                                : 'You are logged out'
-                        );
+                        let message = '';
+                        switch (this.translateService.currentLang) {
+                            case SupportedLangs.FR:
+                                message = 'Déconnecté';
+                                break;
+                            case SupportedLangs.NL:
+                                message = 'Afgemeld';
+                                break;
+                            case SupportedLangs.EN:
+                            default:
+                                message = 'You are logged out';
+                                break;
+                        }
+                        this.snackbarService.openSuccessSnackbar(message);
                     }
                 },
                 (_err) => {

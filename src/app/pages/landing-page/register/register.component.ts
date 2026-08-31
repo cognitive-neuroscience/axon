@@ -1,12 +1,14 @@
-import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
+import { HttpStatusCode } from '@angular/common/http';
 import { Component, OnDestroy } from '@angular/core';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { HttpStatus } from 'src/app/models/Auth';
 import { ParticipantRouteNames, Role, RouteNames, SupportedLangs } from 'src/app/models/enums';
 import { ClearanceService } from 'src/app/services/clearance.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
+import { LocalStorageService } from 'src/app/services/localStorageService.service';
 import { SnackbarService } from 'src/app/services/snackbar/snackbar.service';
 import { TimerService } from 'src/app/services/timer.service';
 import { UserService } from 'src/app/services/user.service';
@@ -52,7 +54,9 @@ export class RegisterComponent implements OnDestroy {
         private snackbarService: SnackbarService,
         private loaderService: LoaderService,
         private clearanceService: ClearanceService,
-        private timerService: TimerService
+        private timerService: TimerService,
+        private localStorageService: LocalStorageService,
+        private translateService: TranslateService
     ) {}
 
     registerForm = this.fb.group(
@@ -87,21 +91,30 @@ export class RegisterComponent implements OnDestroy {
                     id: 0,
                     role: Role.PARTICIPANT,
                     changePasswordRequired: false,
-                    lang: SupportedLangs.NONE,
+                    lang: this.localStorageService.getPreferredLangInLocalStorage() ?? SupportedLangs.NONE,
                     organization: null,
                 })
                 .subscribe(
                     (_) => {
                         this.router.navigate([RouteNames.LANDINGPAGE_LOGIN_BASEROUTE]).then((navigated: boolean) => {
                             if (navigated) {
-                                this.snackbarService.openSuccessSnackbar(
-                                    [
-                                        'Your username was successfully registered! Now, please login using the username and password you just created',
-                                        'Votre nom d’utilisateur a été enregistré avec succès! Connectez-vous maintenant en utilisant le nom d’utilisateur et le mot de passe que vous venez de créer',
-                                    ],
-                                    undefined,
-                                    20000
-                                );
+                                let message = '';
+                                switch (this.translateService.currentLang) {
+                                    case SupportedLangs.FR:
+                                        message =
+                                            'Votre nom d’utilisateur a été enregistré avec succès! Connectez-vous maintenant en utilisant le nom d’utilisateur et le mot de passe que vous venez de créer';
+                                        break;
+                                    case SupportedLangs.NL:
+                                        message =
+                                            'Uw gebruikersnaam is succesvol geregistreerd! Log nu in met de gebruikersnaam en het wachtwoord die u zojuist heeft aangemaakt';
+                                        break;
+                                    case SupportedLangs.EN:
+                                    default:
+                                        message =
+                                            'Your username was successfully registered! Now, please login using the username and password you just created';
+                                        break;
+                                }
+                                this.snackbarService.openSuccessSnackbar(message, undefined, 20000);
                             }
                         });
                     },
