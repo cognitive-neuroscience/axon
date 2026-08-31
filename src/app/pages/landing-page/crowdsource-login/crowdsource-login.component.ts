@@ -57,6 +57,7 @@ export class CrowdSourceLoginComponent implements OnInit, OnDestroy {
                 const studyIdFromURL = params['studyid'] as string;
                 if (studyIdFromURL) {
                     this.urlContainsCode = true;
+                    this.studyId = parseInt(studyIdFromURL);
                 }
             })
         );
