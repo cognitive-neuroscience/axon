@@ -19,8 +19,15 @@ export class OptionDisplayComponent implements OnInit {
     @Output()
     onSelectValue: EventEmitter<string> = new EventEmitter();
 
-    handleSelectOption(value: string) {
-        this.onSelectValue.emit(value);
+    handleSelectOption(value: number | boolean | string) {
+        this.onSelectValue.emit(String(value));
+    }
+
+    trackByOption(
+        _index: number,
+        option: { label: string; value: number | boolean | string }
+    ): string | number | boolean {
+        return option.value;
     }
 
     ngOnInit(): void {}

@@ -145,12 +145,7 @@ export class RaterDutchComponent extends AbstractBaseTaskComponent implements On
         return !!this.currentQuestion?.isMultiPartQuestion;
     }
 
-    get binaryChoiceOptions(): { label: string; value: string }[] {
-        return (this.currentQuestion?.legend ?? []).map((item) => ({
-            label: item[this.translateService.currentLang as SupportedLangs] || item.en,
-            value: item.en,
-        }));
-    }
+    binaryChoiceOptions: { label: string; value: string }[] = [];
 
     configure(metadata: RaterTaskMetadata, config: TaskPlayerState) {
         try {
@@ -312,6 +307,10 @@ export class RaterDutchComponent extends AbstractBaseTaskComponent implements On
 
         this.activityShown = stimulus.activity;
         this.questionShown = stimulusQuestion.question;
+        this.binaryChoiceOptions = (stimulusQuestion.legend ?? []).map((item) => ({
+            label: item[this.translateService.currentLang as SupportedLangs] || item.en,
+            value: item.en,
+        }));
 
         if (stimulusQuestion.isMultiPartQuestion) {
             return;

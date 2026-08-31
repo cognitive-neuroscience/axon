@@ -4,8 +4,9 @@
 
         <div class="button-container">
             <button
-                *ngFor="let option of options"
+                *ngFor="let option of options; trackBy: trackByOption"
                 class="option-button"
+                type="button"
                 (click)="handleSelectOption(option.value)"
                 mat-raised-button
                 color="primary"

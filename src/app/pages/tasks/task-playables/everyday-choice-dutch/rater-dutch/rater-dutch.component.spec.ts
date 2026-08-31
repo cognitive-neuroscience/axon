@@ -117,7 +117,6 @@ describe('RaterDutchComponent', () => {
                     submitted: '',
                     isPractice: false,
                     studyId: 1,
-                    choiceTaskStimulusSet: '',
                 },
             ];
         });
@@ -144,6 +143,18 @@ describe('RaterDutchComponent', () => {
             expect(component.stimuli[0].questions[0].isMultiPartQuestion).toBe(true);
             expect(component.stimuli[0].questions[1].question.en).toBe('How enjoyable is this activity?');
             expect(component.currentQuestionIndex).toBe(1);
+        });
+
+        it('completes the round when a yes/no option is selected', () => {
+            spyOn(component['timerService'], 'getTime').and.returnValue(123);
+            spyOn(component['timerService'], 'getCurrentTimestamp').and.returnValue('ts');
+            spyOn(component, 'completeRound');
+
+            component.handleRoundInteraction('Yes');
+
+            expect(component.taskData[0].userAnswer).toBe('Yes');
+            expect(component.taskData[0].responseTime).toBe(123);
+            expect(component.completeRound).toHaveBeenCalled();
         });
     });
 });
