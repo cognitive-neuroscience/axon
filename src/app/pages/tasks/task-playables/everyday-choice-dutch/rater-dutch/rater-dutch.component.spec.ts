@@ -81,7 +81,7 @@ describe('RaterDutchComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(RaterDutchComponent);
         component = fixture.componentInstance;
-        spyOn(component, 'start');
+        jest.spyOn(component, 'start').mockImplementation(() => {});
         fixture.detectChanges();
     });
 
@@ -101,7 +101,7 @@ describe('RaterDutchComponent', () => {
             component.currentQuestionIndex = 0;
             component['interTrialDelay'] = 0;
             component['interActivityDelay'] = 0;
-            spyOn(component, 'beginRound').and.returnValue(Promise.resolve());
+            jest.spyOn(component, 'beginRound').mockResolvedValue(undefined);
             component.taskData = [
                 {
                     taskName: 'Rating Game',
@@ -146,9 +146,9 @@ describe('RaterDutchComponent', () => {
         });
 
         it('completes the round when a yes/no option is selected', () => {
-            spyOn(component['timerService'], 'getTime').and.returnValue(123);
-            spyOn(component['timerService'], 'getCurrentTimestamp').and.returnValue('ts');
-            spyOn(component, 'completeRound');
+            jest.spyOn(component['timerService'], 'getTime').mockReturnValue(123);
+            jest.spyOn(component['timerService'], 'getCurrentTimestamp').mockReturnValue('ts');
+            jest.spyOn(component, 'completeRound').mockImplementation(() => {});
 
             component.handleRoundInteraction('Yes');
 
