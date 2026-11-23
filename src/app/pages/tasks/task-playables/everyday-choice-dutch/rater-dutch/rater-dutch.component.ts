@@ -222,13 +222,13 @@ export class RaterDutchComponent extends AbstractBaseTaskComponent implements On
 
         // either the stimuli has been defined in config or we generate it here
         if (!this.stimuli) {
-            this.config.setCacheValue(
-                RaterCacheDutch.STIMULI,
+            // The stimuli pool is generated once and shared across rater runs; each run takes its
+            // trials off the front and caches the rest, so no activity is shown twice.
+            const raterActivities =
+                (this.config.getCacheValue(RaterCacheDutch.STIMULI) as RatingTaskStimuliDutch[]) ??
                 this.dataGenService.generateRatingStimuliDutch(
                     this.config.getCacheValue(RaterCacheDutch.ALL_ACTIVITIES) as ITranslationText[]
-                )
-            );
-            const raterActivities = this.config.getCacheValue(RaterCacheDutch.STIMULI) as RatingTaskStimuliDutch[];
+                );
             this.stimuli = raterActivities.slice(0, this.numTrials);
             this.config.setCacheValue(
                 RaterCacheDutch.STIMULI,

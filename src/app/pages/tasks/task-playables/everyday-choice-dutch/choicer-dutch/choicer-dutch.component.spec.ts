@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { MaterialModule } from 'src/app/modules/material/material.module';
 
 import { ChoicerDutchComponent } from './choicer-dutch.component';
@@ -22,6 +23,7 @@ describe('ChoicerDutchComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [ChoicerDutchComponent, MockAppSlider],
             imports: [MaterialModule, HttpClientTestingModule],
+            providers: [{ provide: TranslateService, useValue: { currentLang: 'en' } }],
         }).compileComponents();
     });
 
